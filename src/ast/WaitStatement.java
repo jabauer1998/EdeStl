@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.verilog_parser.ast.statement;
+package io.github.h20man13.emulator_ide.verilog_parser.ast.statement;
 
 
 import io.github.h20man13.emulator_ide.common.Position;

@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.gui.gui_job;
+package io.github.h20man13.emulator_ide.gui.gui_job;
 
 import java.io.File;
 import java.io.FileWriter;

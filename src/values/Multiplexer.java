@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.verilog_interpreter.interpreter.value.circuit_elem.circuitry;
+package io.github.h20man13.emulator_ide.verilog_interpreter.interpreter.value.circuit_elem.circuitry;
 
 import io.github.h20man13.emulator_ide.verilog_interpreter.interpreter.value.circuit_elem.nodes.gates.NandGate;
 import io.github.h20man13.emulator_ide.verilog_interpreter.interpreter.value.circuit_elem.nodes.gates.NotGate;

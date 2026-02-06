@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.common;
+package io.github.h20man13.emulator_ide.common;
 
 public class Search {
     public static int findNextNonWhitespace(int cursorPosition, String text, SearchDirection direc){

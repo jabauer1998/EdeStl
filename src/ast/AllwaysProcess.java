@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.verilog_parser.ast.module_item.process;
+package io.github.h20man13.emulator_ide.verilog_parser.ast.module_item.process;
 
 import java.util.concurrent.Semaphore;
 import io.github.h20man13.emulator_ide.common.Position;

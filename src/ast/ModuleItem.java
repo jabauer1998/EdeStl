@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.verilog_parser.ast.module_item;
+package io.github.h20man13.emulator_ide.verilog_parser.ast.module_item;
 
 import io.github.h20man13.emulator_ide.verilog_interpreter.interpreter.Environment;
 import io.github.h20man13.emulator_ide.verilog_interpreter.visitor_passes.visitor.ModuleVisitor;

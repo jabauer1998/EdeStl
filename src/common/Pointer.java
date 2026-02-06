@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.common;
+package io.github.h20man13.emulator_ide.common;
 
 public class Pointer<DataType> {
     private DataType data;

@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.verilog_interpreter.interpreter.value.circuit_elem;
+package io.github.h20man13.emulator_ide.verilog_interpreter.interpreter.value.circuit_elem;
 
 import javax.naming.OperationNotSupportedException;
 import io.github.h20man13.emulator_ide.verilog_interpreter.interpreter.value.Value;

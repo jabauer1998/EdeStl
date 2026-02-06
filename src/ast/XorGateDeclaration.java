@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.verilog_parser.ast.module_item.gate_declaration;
+package io.github.h20man13.emulator_ide.verilog_parser.ast.module_item.gate_declaration;
 
 
 import java.util.List;

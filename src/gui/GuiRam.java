@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.gui.gui_machine;
+package io.github.h20man13.emulator_ide.gui.gui_machine;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

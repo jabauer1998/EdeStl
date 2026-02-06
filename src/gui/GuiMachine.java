@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.gui.gui_machine;
+package io.github.h20man13.emulator_ide.gui.gui_machine;
 
 import io.github.h20man13.emulator_ide._interface.Machine;
 import io.github.h20man13.emulator_ide.gui.gui_machine.GuiRam.AddressFormat;

@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.verilog_interpreter.interpreter.value.ede;
+package io.github.h20man13.emulator_ide.verilog_interpreter.interpreter.value.ede;
 
 import io.github.h20man13.emulator_ide._interface.Machine;
 import io.github.h20man13.emulator_ide.verilog_interpreter.interpreter.value.Value;

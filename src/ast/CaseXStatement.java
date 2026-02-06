@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.verilog_parser.ast.statement._case_;
+package io.github.h20man13.emulator_ide.verilog_parser.ast.statement._case_;
 
 
 import java.util.List;

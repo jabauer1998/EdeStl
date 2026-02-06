@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.verilog_interpreter.interpreter.value.pattern;
+package io.github.h20man13.emulator_ide.verilog_interpreter.interpreter.value.pattern;
 
 import io.github.h20man13.emulator_ide.verilog_interpreter.Utils;
 import io.github.h20man13.emulator_ide.verilog_interpreter.interpreter.value.BoolVal;

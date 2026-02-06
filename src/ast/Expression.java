@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.verilog_parser.ast.expression;
+package io.github.h20man13.emulator_ide.verilog_parser.ast.expression;
 import io.github.h20man13.emulator_ide.common.debug.ErrorLog;
 import io.github.h20man13.emulator_ide.verilog_interpreter.interpreter.Environment;
 import io.github.h20man13.emulator_ide.verilog_interpreter.interpreter.value.Value;

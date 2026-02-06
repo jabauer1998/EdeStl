@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.common.debug.item;
+package io.github.h20man13.emulator_ide.common.debug.item;
 
 
 import io.github.h20man13.emulator_ide.common.Position;

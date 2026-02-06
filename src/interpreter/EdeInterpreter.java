@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.verilog_interpreter.interpreter;
+package io.github.h20man13.emulator_ide.verilog_interpreter.interpreter;
 
 import javax.swing.tree.ExpandVetoException;
 import io.github.h20man13.emulator_ide._interface.Machine;

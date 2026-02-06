@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.verilog_parser;
+package io.github.h20man13.emulator_ide.verilog_parser;
 
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.verilog_interpreter;
+package io.github.h20man13.emulator_ide.verilog_interpreter;
 
 import java.io.File;
 import java.util.List;

@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.common.debug;
+package io.github.h20man13.emulator_ide.common.debug;
 
 
 import io.github.h20man13.emulator_ide.common.io.Destination;

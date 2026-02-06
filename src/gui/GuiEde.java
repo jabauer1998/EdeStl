@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.gui;
+package io.github.h20man13.emulator_ide.gui;
 
 import java.util.concurrent.Callable;
 import io.github.h20man13.emulator_ide._interface.Machine;

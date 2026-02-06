@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.verilog_parser.ast;
+package io.github.h20man13.emulator_ide.verilog_parser.ast;
 
 import java.util.Collections;
 import java.util.List;

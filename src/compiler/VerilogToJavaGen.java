@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.verilog_compiler.compiler;
+package io.github.h20man13.emulator_ide.verilog_compiler.compiler;
 
 
 import java.util.HashSet;

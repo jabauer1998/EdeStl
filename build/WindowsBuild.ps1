@@ -20,16 +20,18 @@ if($javaExists -ne ""){
 	    if(Test-Path -Path build\BuildList.txt){
 		Remove-Item -Force build\BuildList.txt
 	    }
-	    New-Item -Path "build\BuildList.txt" -ItemType File
+	    New-Item -Path "build\BuildList.txt" -ItemType File -Encoding "UTF-8"
 	    Get-ChildItem -Path "$srcRoot/src" -Recurse -File | Select-Object -ExpandProperty FullName > build\BuildList.txt
-	    Get-Content -Path 'build\BuildList.txt' | Set-Content -Path 'build.BuildList.txt' -Encoding utf8
+	    Get-Content -Path 'build\BuildList.txt' | Set-Content -Path 'build\BuildList.txt' -Encoding "utf-8"
 	    foreach ($line in Get-Content -Path 'build\BuildList.txt') {
-		New-Item -Path "$line.out" -ItemType File
-		Get-Content -Path $line | Set-Content -Path "$line.out" -Encoding utf8
-		mv "$line.out" $line
+		$content = Get-Content -Path $line -Raw
+    
+		# Write the content back without BOM using .NET method
+		$Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
+		[System.IO.File]::WriteAllText($line, $content, $Utf8NoBomEncoding)
 	    }
 	    cat "build/BuildList.txt"
-	    javac "@build/BuildList.txt" -encoding "UTF-8"
+	    javac "@build/BuildList.txt" -cp "lib\openjfx-25.0.2_windows-x64_bin-sdk\javafx-sdk-25.0.2\lib\*" -encoding "UTF-8"
 	} elseif ($command -eq "clean"){
 	    Remove-Item -Recurse bin/*
 	} elseif ($command -eq "publish"){

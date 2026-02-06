@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.verilog_interpreter.interpreter.value.circuit_elem.web;
+package io.github.h20man13.emulator_ide.verilog_interpreter.interpreter.value.circuit_elem.web;
 
 
 import java.util.HashSet;

@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.verilog_parser.ast.label;
+package io.github.h20man13.emulator_ide.verilog_parser.ast.label;
 
 import io.github.h20man13.emulator_ide.common.Pointer;
 import io.github.h20man13.emulator_ide.common.Position;

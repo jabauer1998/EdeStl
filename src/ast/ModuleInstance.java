@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.verilog_parser.ast.module_item.instantiation;
+package io.github.h20man13.emulator_ide.verilog_parser.ast.module_item.instantiation;
 
 
 import java.util.List;

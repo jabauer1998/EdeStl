@@ -1,4 +1,4 @@
-﻿package io.github.h20man13.emulator_ide.verilog_parser.pre_processor;
+package io.github.h20man13.emulator_ide.verilog_parser.pre_processor;
 
 import java.util.LinkedList;
 import java.util.List;
