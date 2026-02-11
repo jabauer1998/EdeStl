@@ -9,8 +9,8 @@ import ede.stl.common.SymbolTable;
  * function names, module names Etc...
  */
 
-public interface .Value .{
-    public <DataType> Pointer<DataType> get.Value .SymbolTable<Pointer<DataType>> environment);
+public interface LValue {
+    public <DataType> Pointer<DataType> getLValue(SymbolTable<Pointer<DataType>> environment);
 }
 
 

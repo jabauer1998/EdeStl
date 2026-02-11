@@ -22,7 +22,7 @@ public class Identifier extends Label {
         super(start, identifierLexeme);
     }
 
-    public <DataType> Pointer<DataType> get.Value .SymbolTable<Pointer<DataType>> table){
+    public <DataType> Pointer<DataType> getLValue(SymbolTable<Pointer<DataType>> table){
         return null;
     }
 

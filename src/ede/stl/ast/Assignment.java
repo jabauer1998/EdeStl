@@ -14,14 +14,14 @@ import ede.stl.passes.StatementVisitor;
  */
 public abstract class Assignment<ToType, FromType> extends AstNode implements Statement {
 
-    public ToType leftHandSide; // the.Value .on the left hand side of the expression
+    public ToType leftHandSide; // the lvalue on the left hand side of the expression
     public FromType rightHandSide;    // the expresson on the right hand side of the equals
 
     /**
-     * The Assignment constructor takes an .Value .expression and an expression to form an
-     * ssignment
+     * The Assignment constructor takes an lvalue expression and an expression to form an
+     * assignment
      * 
-     * @param .Value .
+     * @param lvalue
      * @param exp
      */
     protected Assignment(Position start, ToType leftHandSide, FromType rightHandSide) {
