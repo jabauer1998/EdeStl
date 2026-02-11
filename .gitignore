@@ -1,3 +1,15 @@
 lib/**
 *~
 *#
+*.class
+bin/
+.#*
+
+# Java
+*.jar
+*.war
+*.ear
+*.iml
+.idea/
+*.swp
+*.swo
