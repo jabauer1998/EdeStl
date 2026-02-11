@@ -1,6 +1,6 @@
 package ede.stl.Value ;
 
-public class RealVal implements.Value .
+public class RealVal implements Value {
     
     private double.Value .
 

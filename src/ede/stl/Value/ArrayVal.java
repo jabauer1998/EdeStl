@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import ede.stl.common.Utils;
 import ede.stl.Value .Value;
 
-public class ArrayVal<ArrayType extends.Value . implements.Value .{
+public class ArrayVal<ArrayType extends Value> implements Value {
     private final ArrayList<ArrayType> ArrList;
 
     public ArrayVal.Value .begin,.Value .end){
-    	int intVal = begin.in.Value .);
-			int intVal2 = end.in.Value .);
-			int size = (intVal > intVal2 ? (intVal - intVal2) : (intVal2 - intVal));
+        int intVal = begin.in.Value .);
+                        int intVal2 = end.in.Value .);
+                        int size = (intVal > intVal2 ? (intVal - intVal2) : (intVal2 - intVal));
       this.ArrList = new ArrayList<ArrayType>(size);
     }
 

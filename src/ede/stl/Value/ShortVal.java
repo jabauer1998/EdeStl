@@ -2,7 +2,7 @@ package ede.stl.Value ;
 
 import ede.stl.common.Utils;
 
-public class ShortVal implements.Value .
+public class ShortVal implements Value {
     
     private short.Value .
 

@@ -3,7 +3,7 @@ package ede.stl.Value ;
 import ede.stl.gui.Machine;
 import ede.stl.Value .Value;
 
-public class EdeStatVal implements.Value .
+public class EdeStatVal implements Value {
     private String statString;
     private Machine gui;
 

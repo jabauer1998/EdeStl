@@ -2,7 +2,7 @@ package ede.stl.Value ;
 
 import ede.stl.common.Utils;
 
-public class UnsignedByteVal implements.Value . Unsigned{
+public class UnsignedByteVal implements Value, Unsigned {
     private Byte.Value .
 
     public UnsignedByteVal(byte.Value .{

@@ -20,7 +20,7 @@ import ede.stl.circuit.CircuitElem;
  * @author Jacob Bauer
  */
 
-public abstract class Pattern implements.Value .
+public abstract class Pattern implements Value {
 
     private final String pattern;
 
