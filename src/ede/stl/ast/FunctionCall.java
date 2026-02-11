@@ -1,8 +1,9 @@
 package ede.stl.ast;
 
+
 import ede.stl.common.Position;
 import ede.stl.interpreter.Environment;
-import ede.stl.Value .Value;
+import ede.stl.Value.Value;
 import ede.stl.ast.AstNode;
 import ede.stl.ast.Expression;
 import ede.stl.ast.FunctionDeclaration;
@@ -13,7 +14,7 @@ import java.util.Collections;
 
 /**
  * The FunctionCall is used to call functions Functions are different than tasks because
- * they have a return.Value .
+ * they have a return value
  * 
  * @author Jacob Bauer
  */
@@ -61,61 +62,3 @@ public class FunctionCall extends AstNode implements Expression {
         return sb.toString();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

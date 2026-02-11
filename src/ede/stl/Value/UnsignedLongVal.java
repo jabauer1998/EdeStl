@@ -1,77 +1,77 @@
-package ede.stl.Value ;
+package ede.stl.Value;
 
 import ede.stl.common.Utils;
 
-public class UnsignedLongVal implements Value, Unsigned {
+public class UnsignedLongVal implements Value, Unsigned{
 
-    private long.Value .
+    private long value;
 
-    public UnsignedLongVal(long.Value .{
-        this.Value .=.Value .
+    public UnsignedLongVal(long value){
+        this.value = value;
     }
 
     public String toString(){
-        long.Value .= lon.Value .);
-        return Long.toUnsignedString.Value .;
+        long value = longValue();
+        return Long.toUnsignedString(value);
     }
 
     @Override
-    public boolean isLong(){
+    public boolean isLongValue(){
         return false;
     }
 
     @Override
-    public boolean isUnsignedLong(){
+    public boolean isUnsignedLongValue(){
         return true;
     }
 
     @Override
-    public double rea.Value .){ // TODO Auto-generated method stub
-        return (double.Value .
+    public double realValue(){ // TODO Auto-generated method stub
+        return (double)value;
     }
 
     @Override
-    public long lon.Value .){ // TODO Auto-generated method stub
-        return.Value .
+    public long longValue(){ // TODO Auto-generated method stub
+        return value;
     }
 
     @Override
-    public int in.Value .){ // TODO Auto-generated method stub
-        return (int.Value .
+    public int intValue(){ // TODO Auto-generated method stub
+        return (int)value;
     }
 
     @Override
-    public short shor.Value .){ // TODO Auto-generated method stub
-        return (short.Value .
+    public short shortValue(){ // TODO Auto-generated method stub
+        return (short)value;
     }
 
     @Override
-    public byte byt.Value .){ // TODO Auto-generated method stub
-        return (byte.Value .
+    public byte byteValue(){ // TODO Auto-generated method stub
+        return (byte)value;
     }
 
     @Override
-    public boolean boo.Value .){ // TODO Auto-generated method stub
-        return.Value .!= 0;
+    public boolean boolValue(){ // TODO Auto-generated method stub
+        return value != 0;
     }
 
     @Override
-    public boolean isBool(){ // TODO Auto-generated method stub
+    public boolean isBoolValue(){ // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public boolean isShort(){ // TODO Auto-generated method stub
+    public boolean isShortValue(){ // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public boolean isUnsignedShort(){ // TODO Auto-generated method stub
+    public boolean isUnsignedShortValue(){ // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public boolean isByte(){ // TODO Auto-generated method stub
+    public boolean isByteValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
@@ -81,22 +81,22 @@ public class UnsignedLongVal implements Value, Unsigned {
     }
 
     @Override
-    public boolean isInt(){ // TODO Auto-generated method stub
+    public boolean isIntValue(){ // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public boolean isUnsignedInt(){ // TODO Auto-generated method stub
+    public boolean isUnsignedIntValue(){ // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public boolean isReal(){ // TODO Auto-generated method stub
+    public boolean isRealValue(){ // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public boolean isString(){ // TODO Auto-generated method stub
+    public boolean isStringValue(){ // TODO Auto-generated method stub
         return false;
     }
 
@@ -116,7 +116,7 @@ public class UnsignedLongVal implements Value, Unsigned {
     }
 
     @Override
-    public.Value .getShallowSlice(int startIndex, int endIndex) throws Exception{ // TODO Auto-generated method stub
+    public Value getShallowSlice(int startIndex, int endIndex) throws Exception{ // TODO Auto-generated method stub
     if(startIndex > 64 || startIndex < 0){
         throw new UnsupportedOperationException("Error startIndex is out of bounds at " +startIndex);
     }
@@ -130,66 +130,8 @@ public class UnsignedLongVal implements Value, Unsigned {
 
     int size = end - start + 1;
 
-    long val = .Value .>> start);
+    long val = (value >> start);
     long toKeepMask = ((1 << size) - 1);
 
     return Utils.getOptimalUnsignedForm(val & toKeepMask); } 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

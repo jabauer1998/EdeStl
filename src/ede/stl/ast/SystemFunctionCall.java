@@ -1,5 +1,6 @@
 package ede.stl.ast;
 
+
 import ede.stl.common.Position;
 import ede.stl.ast.Expression;
 import ede.stl.passes.ExpressionVisitor;
@@ -7,7 +8,7 @@ import java.util.List;
 
 /**
  * The FunctionCall is used to call functions Functions are different than tasks because
- * they have a return.Value .
+ * they have a return value
  * 
  * @author Jacob Bauer
  */
@@ -36,61 +37,3 @@ public class SystemFunctionCall extends FunctionCall {
         return sb.toString();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

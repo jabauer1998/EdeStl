@@ -1,25 +1,25 @@
-package ede.stl.Value ;
+package ede.stl.Value;
 
 import ede.stl.common.Utils;
 
-public class UnsignedByteVal implements Value, Unsigned {
-    private Byte.Value .
+public class UnsignedByteVal implements Value, Unsigned{
+    private Byte value;
 
-    public UnsignedByteVal(byte.Value .{
-        this.Value .=.Value .
+    public UnsignedByteVal(byte value){
+        this.value = value;
     }
 
-    public UnsignedByteVal(int.Value .{
-        this.Value .= (byte.Value .
+    public UnsignedByteVal(int value){
+        this.value = (byte)value;
     }
 
     public String toString(){
-        byte.Value .= this.byt.Value .);
-        return Integer.toUnsignedString.Value .;
+        byte value = this.byteValue();
+        return Integer.toUnsignedString(value);
     }
 
     @Override
-    public boolean isByte(){
+    public boolean isByteValue(){
         return false;
     }
 
@@ -28,65 +28,65 @@ public class UnsignedByteVal implements Value, Unsigned {
         return true;
     }
 
-    public long lon.Value .){
-        return Byte.toUnsignedLong.Value .;
+    public long longValue(){
+        return Byte.toUnsignedLong(value);
     }
 
-    public int in.Value .){
-        return Byte.toUnsignedInt.Value .;
+    public int intValue(){
+        return Byte.toUnsignedInt(value);
     }
 
-    public short shor.Value .){
-        return (short)Byte.toUnsignedInt.Value .;
+    public short shortValue(){
+        return (short)Byte.toUnsignedInt(value);
     }
 
-    public byte byt.Value .){
-        return.Value .
+    public byte byteValue(){
+        return value;
     }
 
     @Override
-    public double rea.Value .){ // TODO Auto-generated method stub
-    return (double.Value . }
+    public double realValue(){ // TODO Auto-generated method stub
+    return (double)value; }
 
     @Override
-    public boolean boo.Value .){ // TODO Auto-generated method stub
-    return.Value .!= 0; }
+    public boolean boolValue(){ // TODO Auto-generated method stub
+    return value != 0; }
 
     @Override
-    public boolean isBool(){
+    public boolean isBoolValue(){
         return false;
     }
 
     @Override
-    public boolean isShort(){ // TODO Auto-generated method stub
+    public boolean isShortValue(){ // TODO Auto-generated method stub
     return false; }
 
     @Override
-    public boolean isUnsignedShort(){ // TODO Auto-generated method stub
+    public boolean isUnsignedShortValue(){ // TODO Auto-generated method stub
     return false; }
 
     @Override
-    public boolean isInt(){ // TODO Auto-generated method stub
+    public boolean isIntValue(){ // TODO Auto-generated method stub
     return false; }
 
     @Override
-    public boolean isUnsignedInt(){ // TODO Auto-generated method stub
+    public boolean isUnsignedIntValue(){ // TODO Auto-generated method stub
     return false; }
 
     @Override
-    public boolean isLong(){ // TODO Auto-generated method stub
+    public boolean isLongValue(){ // TODO Auto-generated method stub
     return false; }
 
     @Override
-    public boolean isUnsignedLong(){ // TODO Auto-generated method stub
+    public boolean isUnsignedLongValue(){ // TODO Auto-generated method stub
     return false; }
 
     @Override
-    public boolean isReal(){ // TODO Auto-generated method stub
+    public boolean isRealValue(){ // TODO Auto-generated method stub
     return false; }
 
     @Override
-    public boolean isString(){ // TODO Auto-generated method stub
+    public boolean isStringValue(){ // TODO Auto-generated method stub
     return false; }
 
     @Override
@@ -102,7 +102,7 @@ public class UnsignedByteVal implements Value, Unsigned {
     return false; }
 
     @Override
-    public.Value .getShallowSlice(int startIndex, int endIndex) throws Exception{
+    public Value getShallowSlice(int startIndex, int endIndex) throws Exception{
         if(startIndex > 8 || startIndex < 0){
             throw new UnsupportedOperationException("Error startIndex is out of bounds at " +startIndex);
         }
@@ -116,68 +116,10 @@ public class UnsignedByteVal implements Value, Unsigned {
 
         int size = end - start + 1;
 
-        long val = .Value .>> start);
+        long val = (value >> start);
         long toKeepMask = ((1 << size) - 1);
 
         return Utils.getOptimalUnsignedForm(val & toKeepMask);
     }
     
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,9 +1,10 @@
 package ede.stl.ast;
 
+
 import ede.stl.common.Position;
 import ede.stl.common.ErrorLog;
 import ede.stl.interpreter.Environment;
-import ede.stl.Value .Value;
+import ede.stl.Value.Value;
 import ede.stl.ast.AstNode;
 import ede.stl.ast.Expression;
 import ede.stl.passes.ExpressionVisitor;
@@ -54,61 +55,3 @@ public class TernaryOperation extends AstNode implements Expression {
         return sb.toString();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

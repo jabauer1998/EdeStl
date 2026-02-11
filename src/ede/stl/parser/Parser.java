@@ -1,5 +1,6 @@
 package ede.stl.parser;
 
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -556,21 +557,21 @@ public class Parser {
 
 				String ident = parseRawIdentifier();
 
-				Reg.Vector.Ident .Value .dent = vector.new Ident(start, ident);
+				Reg.Vector.Ident rValueIdent = vector.new Ident(start, ident);
 
-				return .Value .dent;
+				return rValueIdent;
 			} else {
 				String ident = parseRawIdentifier();
-				Reg.Scalar.Ident .Value .dent = new Reg().new Scalar().new Ident(start, ident);
-				return .Value .dent;
+				Reg.Scalar.Ident rValueIdent = new Reg().new Scalar().new Ident(start, ident);
+				return rValueIdent;
 			}
 
 		} else if (willMatch(Token.Type.INTEGER)) {
 			skip();
 			Position localStart = getStart();
 			String ident = parseRawIdentifier();
-			Int.Ident .Value .dent = new Int().new Ident(localStart, ident);
-			return .Value .dent;
+			Int.Ident rValueIdent = new Int().new Ident(localStart, ident);
+			return rValueIdent;
 		} else if (willMatch(Token.Type.REAL)) {
 			skip();
 			String ident = parseRawIdentifier();
@@ -694,7 +695,7 @@ public class Parser {
 		return new ContinuousAssignment(start, assignList);
 	}
 
-	// RegDeclaration -> REG Re.Value .ist ; | REG [ ConstExpression : ConstExpression ] Re.Value .ist ;
+	// RegDeclaration -> REG RegValueList ; | REG [ ConstExpression : ConstExpression ] RegValueList ;
 	private List<ModuleItem> parseRegDeclaration(){
 		match(Token.Type.REG);
 
@@ -774,8 +775,8 @@ public class Parser {
 		return result;
 	}
 
-	// OutputRegDeclaration -> OUTPUT REG Re.Value .ist ; | OUTPUT REG [ ConstExpression :
-	// ConstExpression ] Re.Value .ist ;
+	// OutputRegDeclaration -> OUTPUT REG RegValueList ; | OUTPUT REG [ ConstExpression :
+	// ConstExpression ] RegValueList ;
 	private List<ModuleItem> parseOutputRegDeclaration(){
 		match(Token.Type.REG);
 
@@ -1335,14 +1336,14 @@ public class Parser {
 			}
 
 		} else if (willMatch(Token.Type.LCURL)) {
-			.Value .concat = parseConcatenation();
+			LValue concat = parseConcatenation();
 			if (willMatch(Token.Type.LE)) { // it is a blocking assignment
 				return parseNonBlockingAssignment(start, concat);
 			} else { // it is a non blocking assignment
 				return parseBlockingAssignment(start, concat);
 			}
 
-		} else { // .Value .or task_enable
+		} else { // lvalue or task_enable
 			String ident = parseRawIdentifier();
 
 			if (willMatch(Token.Type.LPAR)) {
@@ -1367,7 +1368,7 @@ public class Parser {
 
 				if (willMatch(Token.Type.RBRACK)) {
 					skip();
-					.Value .vec = new Element(start, ident, exp1);
+					LValue vec = new Element(start, ident, exp1);
 
 					if (willMatch(Token.Type.EQ1)) { // it is a blocking assignment
 						return parseBlockingAssignment(start, vec);
@@ -1380,7 +1381,7 @@ public class Parser {
 					ConstantExpression exp2 = parseConstantExpression();
 					match(Token.Type.RBRACK);
 					ConstantExpression cexp1 = new ConstantExpression(start, exp1);
-					.Value .vec = new Slice(start, ident, cexp1, exp2);
+					LValue vec = new Slice(start, ident, cexp1, exp2);
 
 					if (willMatch(Token.Type.EQ1)) { // it is a blocking assignment
 						return parseBlockingAssignment(start, vec);
@@ -1391,11 +1392,11 @@ public class Parser {
 				}
 
 			} else if (willMatch(Token.Type.EQ1)) { // it is a blocking assignment
-				.Value ..Value .= new Identifier(start, ident);
-				return parseBlockingAssignment(start,.Value .;
+				LValue lvalue = new Identifier(start, ident);
+				return parseBlockingAssignment(start,lvalue);
 			} else if (willMatch(Token.Type.LE)) { // it is a non blocking assignment
-				.Value ..Value .= new Identifier(start, ident);
-				return parseNonBlockingAssignment(start, .Value .;
+				LValue lvalue = new Identifier(start, ident);
+				return parseNonBlockingAssignment(start, lvalue);
 			} else {
 				Token matched = peek();
 				errorAndExit("Unexpected Statement token of type " + matched.getTokenType() + " and lexeme "
@@ -1408,34 +1409,34 @@ public class Parser {
 	}
 
 
-	//NonBlockingAssignment -> .Value .<= Expression; NonBlockingAssignment | NULL
-	private NonBlockingAssignment parseNonBlockingAssignment(Position start, .Value .value){
-		List<.Value . .Value . new ArrayList<.Value .();
+	//NonBlockingAssignment -> LValue <= Expression; NonBlockingAssignment | NULL
+	private NonBlockingAssignment parseNonBlockingAssignment(Position start, LValue value){
+		List<LValue> lValues = new ArrayList<LValue>();
 		List<Expression> expressions = new ArrayList<Expression>();
 		match(Token.Type.LE);
 		Expression expression = parseExpression();
 		match(Token.Type.SEMI, STRATEGY.REPAIR);
 		expressions.add(expression);
-		.Value .dd.Value .;
+		lValues.add(value);
 		
 		while(willMatch(Token.Type.IDENT, Token.Type.LCURL)){
-			.Value ..Value .= parse.Value .);
+			LValue lvalue = parseLValue();
 			match(Token.Type.LE);
 			expression = parseExpression();
 			match(Token.Type.SEMI);
-			.Value .dd(.Value .;
+			lValues.add(lvalue);
 			expressions.add(expression);
 		}
 
-		return new NonBlockingAssignment(start, .Value .expressions);
+		return new NonBlockingAssignment(start, lValues, expressions);
 	}
 
-	//NonBlockingAssignment -> .Value .<= Expression; NonBlockingAssignment | NULL
-	private BlockingAssignment parseBlockingAssignment(Position start, .Value .value){
+	//NonBlockingAssignment -> LValue <= Expression; NonBlockingAssignment | NULL
+	private BlockingAssignment parseBlockingAssignment(Position start, LValue value){
 		match(Token.Type.EQ1);
 		Expression expression = parseExpression();
 		match(Token.Type.SEMI, STRATEGY.REPAIR);
-		return new BlockingAssignment(start,.Value . expression);
+		return new BlockingAssignment(start, value, expression);
 	}
 
 	// StatementOrNull -> {Statement | NULL} ;
@@ -1534,10 +1535,10 @@ public class Parser {
 		return new ForStatement(start, init, expr, change, stat);
 	}
 
-	// Assignment -> .Value .= Expression
+	// Assignment -> LValue = Expression
 	private BlockingAssignment parseAssignment(){
 		Position start = getStart();
-		.Value .exp = parse.Value .);
+		LValue exp = parseLValue();
 		match(Token.Type.EQ1, STRATEGY.REPAIR);
 		Expression exp1 = parseExpression();
 		return new BlockingAssignment(start, exp, exp1);
@@ -1689,9 +1690,9 @@ public class Parser {
 
 	}
 
-	// .Value .-> IDENT | IDENT [ Expression ] | IDENT [ Expression : Expression ] |
+	// lvalue -> IDENT | IDENT [ Expression ] | IDENT [ Expression : Expression ] |
 	// Concatenation
-	private .Value .parse.Value .){
+	private LValue parseLValue(){
 
 		if (willMatch(Token.Type.LCURL)) {
 			return parseConcatenation();
@@ -1995,7 +1996,7 @@ public class Parser {
 
 	}
 
-	// Primary -> Nu.Value .| IDENT | Concatenation | SystemCall | ( Expression ) |
+	// Primary -> NumValue | IDENT | Concatenation | SystemCall | ( Expression ) |
 	// MACROIDENT
 	private Expression parsePrimary(){
 
@@ -2126,61 +2127,3 @@ public class Parser {
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

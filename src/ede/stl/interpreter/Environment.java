@@ -10,7 +10,7 @@ import ede.stl.common.Pointer;
 import ede.stl.common.SymbolTable;
 import ede.stl.common.FormattedScanner;
 import ede.stl.gui.GuiEde;
-import ede.stl.Value .Value;
+import ede.stl.Value.Value;
 import ede.stl.ast.ModuleDeclaration;
 import ede.stl.ast.FunctionDeclaration;
 import ede.stl.ast.TaskDeclaration;
@@ -25,7 +25,7 @@ public class Environment {
   private SymbolTable<ModuleDeclaration>  moduleTable;
 	private SymbolTable<TaskDeclaration> taskTable;
 	private SymbolTable<FunctionDeclaration> functionTable;
-	private SymbolTable<Pointer.Value .> variableTable;
+	private SymbolTable<Pointer<Value>> variableTable;
 
    private Stack<String> callStack;
 	 private Stack<Boolean> exitStack;
@@ -114,7 +114,7 @@ public class Environment {
         return functionTable.getEntry(symbol);
     }
 
-    public Pointer.Value . lookupVariable(String symbol){
+    public Pointer<Value> lookupVariable(String symbol){
         return variableTable.getEntry(symbol);
     }
 
@@ -150,9 +150,9 @@ public class Environment {
         return this.processList.get(index);
     }
 
-    public void addVariable(String symbol,.Value .value){
-        Pointer.Value ..Value .ointer = new Pointer.Value ..Value .;
-        variableTable.addEntry(symbol,.Value .ointer);
+    public void addVariable(String symbol, Value value){
+        Pointer<Value> valuePointer = new Pointer<Value>(value);
+        variableTable.addEntry(symbol, valuePointer);
     }
 
     public void addStackFrame(String ScopeName){
@@ -268,61 +268,3 @@ public class Environment {
         writableFileDescriptorArray.set(fileDescriptor, null);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

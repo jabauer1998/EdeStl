@@ -7,35 +7,35 @@ import org.objectweb.asm.Opcodes;
 import ede.stl.common.Pointer;
 import ede.stl.common.FormattedScanner;
 import ede.stl.interpreter.Environment;
-import ede.stl.Value .BoolVal;
-import ede.stl.Value .ByteVal;
-import ede.stl.Value .IntVal;
-import ede.stl.Value .LongVal;
-import ede.stl.Value .RealVal;
-import ede.stl.Value .ShortVal;
-import ede.stl.Value .StrVal;
-import ede.stl.Value .UnsignedByteVal;
-import ede.stl.Value .UnsignedIntVal;
-import ede.stl.Value .UnsignedLongVal;
-import ede.stl.Value .UnsignedShortVal;
-import ede.stl.Value .Value;
-import ede.stl.Value .VectorVal;
-import ede.stl.Value .ArrayIntVal;
-import ede.stl.Value .ArrayRegVal;
-import ede.stl.Value .ArrayVal;
-import ede.stl.Value .ArrayVectorVal;
+import ede.stl.Value.BoolVal;
+import ede.stl.Value.ByteVal;
+import ede.stl.Value.IntVal;
+import ede.stl.Value.LongVal;
+import ede.stl.Value.RealVal;
+import ede.stl.Value.ShortVal;
+import ede.stl.Value.StrVal;
+import ede.stl.Value.UnsignedByteVal;
+import ede.stl.Value.UnsignedIntVal;
+import ede.stl.Value.UnsignedLongVal;
+import ede.stl.Value.UnsignedShortVal;
+import ede.stl.Value.Value;
+import ede.stl.Value.VectorVal;
+import ede.stl.Value.ArrayIntVal;
+import ede.stl.Value.ArrayRegVal;
+import ede.stl.Value.ArrayVal;
+import ede.stl.Value.ArrayVectorVal;
 import ede.stl.circuit.CircuitElem;
-import ede.stl.Value .HalfAdder;
-import ede.stl.Value .RippleCarryAdder;
-import ede.stl.Value .RippleCarrySubtractor;
-import ede.stl.Value .RegVal;
+import ede.stl.circuit.HalfAdder;
+import ede.stl.circuit.RippleCarryAdder;
+import ede.stl.circuit.RippleCarrySubtractor;
+import ede.stl.Value.RegVal;
 import ede.stl.circuit.AndGate;
 import ede.stl.circuit.NotGate;
 import ede.stl.circuit.OrGate;
-import ede.stl.circuit.XNorGate;
+import ede.stl.circuit.XnorGate;
 import ede.stl.circuit.XorGate;
-import ede.stl.Value .WireVal;
-import ede.stl.Value .Pattern;
+import ede.stl.circuit.WireVal;
+import ede.stl.Value.Pattern;
 import ede.stl.ast.Expression;
 import ede.stl.ast.ModuleItem;
 import ede.stl.ast.Input;
@@ -158,7 +158,7 @@ public class Utils {
 		throw new Exception(errorParam);
 	}
 
-	public static void errorAndExit(String errorParam, io.github.h20man13.emulator_ide.common.Position position) throws Exception{
+	public static void errorAndExit(String errorParam, ede.stl.common.Position position) throws Exception{
 		Utils.errorAndExit(errorParam + position.toString());
 	}
 
@@ -187,32 +187,32 @@ public class Utils {
 		}
 	}
 
-    public static Value dd(Value left, Value right) throws Exception{
-        if(left.isReal() && right.isReal()) return new RealVal(left.realValue() + right.realValue());
-		else if(left.isReal() && right.isBool()) return new RealVal(left.realValue() + right.realValue());
-        else if(left.isReal() && right.isUnsignedByteValue()) return new RealVal(left.realValue() + right.realValue()); 
-        else if(left.isReal() && right.isByte()) return new RealVal(left.realValue() + right.realValue());
-		else if(left.isReal() && right.isUnsignedInt()) return new RealVal(left.realValue() + right.realValue());
-        else if(left.isReal() && right.isInt()) return new RealVal(left.realValue() + right.realValue());
-		else if(left.isReal() && right.isUnsignedShort()) return new RealVal(left.realValue() + right.realValue());
-		else if(left.isReal() && right.isShort()) return new RealVal(left.realValue() + right.realValue());
-		else if(left.isReal() && right.isUnsignedLong()) return new RealVal(left.realValue() + right.realValue());
-		else if(left.isReal() && right.isLong()) return new RealVal(left.realValue() + right.realValue());
-		else if(left.isReal() && right.isRegister()) return new RealVal(left.realValue() + right.realValue());
-		else if(left.isReal() && right.isVector()) return new RealVal(left.realValue() + right.realValue());
+    public static Value add(Value left, Value right) throws Exception{
+        if(left.isRealValue() && right.isRealValue()) return new RealVal(left.realValue() + right.realValue());
+		else if(left.isRealValue() && right.isBoolValue()) return new RealVal(left.realValue() + right.realValue());
+        else if(left.isRealValue() && right.isUnsignedByteValue()) return new RealVal(left.realValue() + right.realValue()); 
+        else if(left.isRealValue() && right.isByteValue()) return new RealVal(left.realValue() + right.realValue());
+		else if(left.isRealValue() && right.isUnsignedIntValue()) return new RealVal(left.realValue() + right.realValue());
+        else if(left.isRealValue() && right.isIntValue()) return new RealVal(left.realValue() + right.realValue());
+		else if(left.isRealValue() && right.isUnsignedShortValue()) return new RealVal(left.realValue() + right.realValue());
+		else if(left.isRealValue() && right.isShortValue()) return new RealVal(left.realValue() + right.realValue());
+		else if(left.isRealValue() && right.isUnsignedLongValue()) return new RealVal(left.realValue() + right.realValue());
+		else if(left.isRealValue() && right.isLongValue()) return new RealVal(left.realValue() + right.realValue());
+		else if(left.isRealValue() && right.isRegister()) return new RealVal(left.realValue() + right.realValue());
+		else if(left.isRealValue() && right.isVector()) return new RealVal(left.realValue() + right.realValue());
 		
-		else if(left.isBool() && right.isReal()) return new RealVal(left.realValue() + right.realValue());
-		else if(left.isBool() && right.isBool()) return new UnsignedByteVal(left.byteValue() + right.byteValue());
-        else if(left.isBool() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() + right.byteValue()); 
-        else if(left.isBool() && right.isByte()) return new ByteVal(left.byteValue() + right.byteValue());
-		else if(left.isBool() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() + right.intValue());
-        else if(left.isBool() && right.isInt()) return new IntVal(left.intValue() + right.intValue());
-		else if(left.isBool() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() + right.shortValue());
-		else if(left.isBool() && right.isShort()) return new ShortVal(left.shortValue() + right.shortValue());
-		else if(left.isBool() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() + right.longValue());
-		else if(left.isBool() && right.isLong()) return new LongVal(left.longValue() + right.longValue());
-		else if(left.isBool() && right.isRegister()) return new UnsignedByteVal(left.byteValue() + right.byteValue());
-		else if(left.isBool() && right.isVector()) {
+		else if(left.isBoolValue() && right.isRealValue()) return new RealVal(left.realValue() + right.realValue());
+		else if(left.isBoolValue() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() + right.byteValue());
+        else if(left.isBoolValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() + right.byteValue()); 
+        else if(left.isBoolValue() && right.isByteValue()) return new ByteVal(left.byteValue() + right.byteValue());
+		else if(left.isBoolValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() + right.intValue());
+        else if(left.isBoolValue() && right.isIntValue()) return new IntVal(left.intValue() + right.intValue());
+		else if(left.isBoolValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() + right.shortValue());
+		else if(left.isBoolValue() && right.isShortValue()) return new ShortVal(left.shortValue() + right.shortValue());
+		else if(left.isBoolValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
+		else if(left.isBoolValue() && right.isLongValue()) return new LongVal(left.longValue() + right.longValue());
+		else if(left.isBoolValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() + right.byteValue());
+		else if(left.isBoolValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new UnsignedIntVal(left.byteValue() + right.byteValue());
@@ -221,16 +221,16 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() + right.longValue());
 		}
 
-		else if(left.isUnsignedByteValue() && right.isReal()) return new RealVal(left.realValue() + right.realValue());
-		else if(left.isUnsignedByteValue() && right.isBool()) return new UnsignedByteVal(left.byteValue() + right.byteValue());
+		else if(left.isUnsignedByteValue() && right.isRealValue()) return new RealVal(left.realValue() + right.realValue());
+		else if(left.isUnsignedByteValue() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() + right.byteValue());
         else if(left.isUnsignedByteValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.byteValue() + right.byteValue()); 
-        else if(left.isUnsignedByteValue() && right.isByte()) return new UnsignedIntVal(left.byteValue() + right.byteValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() + right.intValue());
-        else if(left.isUnsignedByteValue() && right.isInt()) return new UnsignedIntVal(left.intValue() + right.intValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedShort()) return new UnsignedIntVal(left.shortValue() + right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isShort()) return new UnsignedIntVal(left.shortValue() + right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() + right.longValue());
-		else if(left.isUnsignedByteValue() && right.isLong()) return new UnsignedLongVal(left.longValue() + right.longValue());
+        else if(left.isUnsignedByteValue() && right.isByteValue()) return new UnsignedIntVal(left.byteValue() + right.byteValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() + right.intValue());
+        else if(left.isUnsignedByteValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() + right.intValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.shortValue() + right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isShortValue()) return new UnsignedIntVal(left.shortValue() + right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
+		else if(left.isUnsignedByteValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
 		else if(left.isUnsignedByteValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() + right.byteValue());
 		else if(left.isUnsignedByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -241,18 +241,18 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() + right.longValue());
 		}
 
-		else if(left.isByte() && right.isReal()) return new RealVal(left.realValue() + right.realValue());
-		else if(left.isByte() && right.isBool()) return new ByteVal(left.byteValue() + right.byteValue());
-        else if(left.isByte() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.byteValue() + right.byteValue()); 
-        else if(left.isByte() && right.isByte()) return new IntVal(left.byteValue() + right.byteValue());
-		else if(left.isByte() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() + right.intValue());
-        else if(left.isByte() && right.isInt()) return new IntVal(left.intValue() + right.intValue());
-		else if(left.isByte() && right.isUnsignedShort()) return new UnsignedIntVal(left.shortValue() + right.shortValue());
-		else if(left.isByte() && right.isShort()) return new IntVal(left.shortValue() + right.shortValue());
-		else if(left.isByte() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() + right.longValue());
-		else if(left.isByte() && right.isLong()) return new LongVal(left.longValue() + right.longValue());
-		else if(left.isByte() && right.isRegister()) return new UnsignedByteVal(left.byteValue() + right.byteValue());
-		else if(left.isByte() && right.isVector()) {
+		else if(left.isByteValue() && right.isRealValue()) return new RealVal(left.realValue() + right.realValue());
+		else if(left.isByteValue() && right.isBoolValue()) return new ByteVal(left.byteValue() + right.byteValue());
+        else if(left.isByteValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.byteValue() + right.byteValue()); 
+        else if(left.isByteValue() && right.isByteValue()) return new IntVal(left.byteValue() + right.byteValue());
+		else if(left.isByteValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() + right.intValue());
+        else if(left.isByteValue() && right.isIntValue()) return new IntVal(left.intValue() + right.intValue());
+		else if(left.isByteValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.shortValue() + right.shortValue());
+		else if(left.isByteValue() && right.isShortValue()) return new IntVal(left.shortValue() + right.shortValue());
+		else if(left.isByteValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
+		else if(left.isByteValue() && right.isLongValue()) return new LongVal(left.longValue() + right.longValue());
+		else if(left.isByteValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() + right.byteValue());
+		else if(left.isByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new UnsignedIntVal(left.byteValue() + right.byteValue());
@@ -261,18 +261,18 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() + right.longValue());
 		}
 
-		else if(left.isUnsignedShort() && right.isReal()) return new RealVal(left.realValue() + right.realValue());
-		else if(left.isUnsignedShort() && right.isBool()) return new UnsignedShortVal(left.shortValue() + right.shortValue());
-        else if(left.isUnsignedShort() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.shortValue() + right.shortValue()); 
-        else if(left.isUnsignedShort() && right.isByte()) return new UnsignedIntVal(left.shortValue() + right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() + right.intValue());
-        else if(left.isUnsignedShort() && right.isInt()) return new UnsignedIntVal(left.intValue() + right.intValue());
-		else if(left.isUnsignedShort() && right.isUnsignedShort()) return new UnsignedIntVal(left.shortValue() + right.shortValue());
-		else if(left.isUnsignedShort() && right.isShort()) return new UnsignedIntVal(left.shortValue() + right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() + right.longValue());
-		else if(left.isUnsignedShort() && right.isLong()) return new UnsignedLongVal(left.longValue() + right.longValue());
-		else if(left.isUnsignedShort() && right.isRegister()) return new UnsignedIntVal(left.shortValue() + right.shortValue());
-		else if(left.isUnsignedShort() && right.isVector()) {
+		else if(left.isUnsignedShortValue() && right.isRealValue()) return new RealVal(left.realValue() + right.realValue());
+		else if(left.isUnsignedShortValue() && right.isBoolValue()) return new UnsignedShortVal(left.shortValue() + right.shortValue());
+        else if(left.isUnsignedShortValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.shortValue() + right.shortValue()); 
+        else if(left.isUnsignedShortValue() && right.isByteValue()) return new UnsignedIntVal(left.shortValue() + right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() + right.intValue());
+        else if(left.isUnsignedShortValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() + right.intValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.shortValue() + right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isShortValue()) return new UnsignedIntVal(left.shortValue() + right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
+		else if(left.isUnsignedShortValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
+		else if(left.isUnsignedShortValue() && right.isRegister()) return new UnsignedIntVal(left.shortValue() + right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new UnsignedIntVal(left.shortValue() + right.shortValue());
@@ -280,18 +280,18 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() + right.longValue());
 		}
 
-		else if(left.isShort() && right.isReal()) return new RealVal(left.realValue() + right.realValue());
-		else if(left.isShort() && right.isBool()) return new UnsignedShortVal(left.shortValue() + right.shortValue());
-        else if(left.isShort() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.shortValue() + right.shortValue()); 
-        else if(left.isShort() && right.isByte()) return new IntVal(left.shortValue() + right.shortValue());
-		else if(left.isShort() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() + right.intValue());
-        else if(left.isShort() && right.isInt()) return new IntVal(left.intValue() + right.intValue());
-		else if(left.isShort() && right.isUnsignedShort()) return new UnsignedIntVal(left.shortValue() + right.shortValue());
-		else if(left.isShort() && right.isShort()) return new IntVal(left.shortValue() + right.shortValue());
-		else if(left.isShort() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() + right.longValue());
-		else if(left.isShort() && right.isLong()) return new LongVal(left.longValue() + right.longValue());
-		else if(left.isShort() && right.isRegister()) return new UnsignedShortVal(left.byteValue() + right.byteValue());
-		else if(left.isShort() && right.isVector()) {
+		else if(left.isShortValue() && right.isRealValue()) return new RealVal(left.realValue() + right.realValue());
+		else if(left.isShortValue() && right.isBoolValue()) return new UnsignedShortVal(left.shortValue() + right.shortValue());
+        else if(left.isShortValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.shortValue() + right.shortValue()); 
+        else if(left.isShortValue() && right.isByteValue()) return new IntVal(left.shortValue() + right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() + right.intValue());
+        else if(left.isShortValue() && right.isIntValue()) return new IntVal(left.intValue() + right.intValue());
+		else if(left.isShortValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.shortValue() + right.shortValue());
+		else if(left.isShortValue() && right.isShortValue()) return new IntVal(left.shortValue() + right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
+		else if(left.isShortValue() && right.isLongValue()) return new LongVal(left.longValue() + right.longValue());
+		else if(left.isShortValue() && right.isRegister()) return new UnsignedShortVal(left.byteValue() + right.byteValue());
+		else if(left.isShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new UnsignedIntVal(left.shortValue() + right.shortValue());
@@ -299,78 +299,78 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() + right.longValue());
 		}
 
-		else if(left.isUnsignedInt() && right.isReal()) return new RealVal(left.realValue() + right.realValue());
-		else if(left.isUnsignedInt() && right.isBool()) return new UnsignedIntVal(left.intValue() + right.intValue());
-        else if(left.isUnsignedInt() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() + right.intValue()); 
-        else if(left.isUnsignedInt() && right.isByte()) return new UnsignedIntVal(left.shortValue() + right.shortValue());
-		else if(left.isUnsignedInt() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() + right.intValue());
-        else if(left.isUnsignedInt() && right.isInt()) return new UnsignedIntVal(left.intValue() + right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedShort()) return new UnsignedIntVal(left.intValue() + right.intValue());
-		else if(left.isUnsignedInt() && right.isShort()) return new UnsignedIntVal(left.intValue() + right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() + right.longValue());
-		else if(left.isUnsignedInt() && right.isLong()) return new UnsignedLongVal(left.longValue() + right.longValue());
-		else if(left.isUnsignedInt() && right.isRegister()) return new UnsignedIntVal(left.intValue() + right.intValue());
-		else if(left.isUnsignedInt() && right.isVector()) {
+		else if(left.isUnsignedIntValue() && right.isRealValue()) return new RealVal(left.realValue() + right.realValue());
+		else if(left.isUnsignedIntValue() && right.isBoolValue()) return new UnsignedIntVal(left.intValue() + right.intValue());
+        else if(left.isUnsignedIntValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() + right.intValue()); 
+        else if(left.isUnsignedIntValue() && right.isByteValue()) return new UnsignedIntVal(left.shortValue() + right.shortValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() + right.intValue());
+        else if(left.isUnsignedIntValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() + right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.intValue() + right.intValue());
+		else if(left.isUnsignedIntValue() && right.isShortValue()) return new UnsignedIntVal(left.intValue() + right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
+		else if(left.isUnsignedIntValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
+		else if(left.isUnsignedIntValue() && right.isRegister()) return new UnsignedIntVal(left.intValue() + right.intValue());
+		else if(left.isUnsignedIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new UnsignedIntVal(left.intValue() + right.intValue());
 			else return new UnsignedLongVal(left.longValue() + right.longValue());
 		}
 
-		else if(left.isInt() && right.isReal()) return new RealVal(left.realValue() + right.realValue());
-		else if(left.isInt() && right.isBool()) return new UnsignedIntVal(left.intValue() + right.intValue());
-        else if(left.isInt() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() + right.intValue()); 
-        else if(left.isInt() && right.isByte()) return new IntVal(left.intValue() + right.intValue());
-		else if(left.isInt() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() + right.intValue());
-        else if(left.isInt() && right.isInt()) return new IntVal(left.intValue() + right.intValue());
-		else if(left.isInt() && right.isUnsignedShort()) return new UnsignedIntVal(left.intValue() + right.intValue());
-		else if(left.isInt() && right.isShort()) return new IntVal(left.intValue() + right.intValue());
-		else if(left.isInt() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() + right.longValue());
-		else if(left.isInt() && right.isLong()) return new LongVal(left.longValue() + right.longValue());
-		else if(left.isInt() && right.isRegister()) return new UnsignedIntVal(left.intValue() + right.intValue());
-		else if(left.isInt() && right.isVector()) {
+		else if(left.isIntValue() && right.isRealValue()) return new RealVal(left.realValue() + right.realValue());
+		else if(left.isIntValue() && right.isBoolValue()) return new UnsignedIntVal(left.intValue() + right.intValue());
+        else if(left.isIntValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() + right.intValue()); 
+        else if(left.isIntValue() && right.isByteValue()) return new IntVal(left.intValue() + right.intValue());
+		else if(left.isIntValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() + right.intValue());
+        else if(left.isIntValue() && right.isIntValue()) return new IntVal(left.intValue() + right.intValue());
+		else if(left.isIntValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.intValue() + right.intValue());
+		else if(left.isIntValue() && right.isShortValue()) return new IntVal(left.intValue() + right.intValue());
+		else if(left.isIntValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
+		else if(left.isIntValue() && right.isLongValue()) return new LongVal(left.longValue() + right.longValue());
+		else if(left.isIntValue() && right.isRegister()) return new UnsignedIntVal(left.intValue() + right.intValue());
+		else if(left.isIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new UnsignedIntVal(left.intValue() + right.intValue());
 			else return new UnsignedLongVal(left.longValue() + right.longValue());
 		}
 
-		else if(left.isUnsignedLong() && right.isReal()) return new RealVal(left.realValue() + right.realValue());
-		else if(left.isUnsignedLong() && right.isBool()) return new UnsignedLongVal(left.longValue() + right.longValue());
-        else if(left.isUnsignedLong() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() + right.longValue()); 
-        else if(left.isUnsignedLong() && right.isByte()) return new UnsignedLongVal(left.longValue() + right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedInt()) return new UnsignedLongVal(left.longValue() + right.longValue());
-        else if(left.isUnsignedLong() && right.isInt()) return new UnsignedLongVal(left.longValue() + right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedShort()) return new UnsignedLongVal(left.longValue() + right.longValue());
-		else if(left.isUnsignedLong() && right.isShort()) return new UnsignedLongVal(left.longValue() + right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() + right.longValue());
-		else if(left.isUnsignedLong() && right.isLong()) return new UnsignedLongVal(left.longValue() + right.longValue());
-		else if(left.isUnsignedLong() && right.isRegister()) return new UnsignedLongVal(left.longValue() + right.longValue());
-		else if(left.isUnsignedLong() && right.isVector()) return new UnsignedLongVal(left.longValue() + right.longValue());
+		else if(left.isUnsignedLongValue() && right.isRealValue()) return new RealVal(left.realValue() + right.realValue());
+		else if(left.isUnsignedLongValue() && right.isBoolValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
+        else if(left.isUnsignedLongValue() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() + right.longValue()); 
+        else if(left.isUnsignedLongValue() && right.isByteValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedIntValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
+        else if(left.isUnsignedLongValue() && right.isIntValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedShortValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
+		else if(left.isUnsignedLongValue() && right.isShortValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
+		else if(left.isUnsignedLongValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
+		else if(left.isUnsignedLongValue() && right.isRegister()) return new UnsignedLongVal(left.longValue() + right.longValue());
+		else if(left.isUnsignedLongValue() && right.isVector()) return new UnsignedLongVal(left.longValue() + right.longValue());
 
-		else if(left.isLong() && right.isReal()) return new RealVal(left.realValue() + right.realValue());
-		else if(left.isLong() && right.isBool()) return new UnsignedLongVal(left.longValue() + right.longValue());
-        else if(left.isLong() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() + right.longValue()); 
-        else if(left.isLong() && right.isByte()) return new LongVal(left.longValue() + right.longValue());
-		else if(left.isLong() && right.isUnsignedInt()) return new UnsignedLongVal(left.longValue() + right.longValue());
-        else if(left.isLong() && right.isInt()) return new LongVal(left.longValue() + right.longValue());
-		else if(left.isLong() && right.isUnsignedShort()) return new UnsignedLongVal(left.longValue() + right.longValue());
-		else if(left.isLong() && right.isShort()) return new LongVal(left.longValue() + right.longValue());
-		else if(left.isLong() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() + right.longValue());
-		else if(left.isLong() && right.isLong()) return new LongVal(left.longValue() + right.longValue());
-		else if(left.isLong() && right.isRegister()) return new UnsignedLongVal(left.longValue() + right.longValue());
-		else if(left.isLong() && right.isVector()) return new UnsignedLongVal(left.longValue() + right.longValue());
+		else if(left.isLongValue() && right.isRealValue()) return new RealVal(left.realValue() + right.realValue());
+		else if(left.isLongValue() && right.isBoolValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
+        else if(left.isLongValue() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() + right.longValue()); 
+        else if(left.isLongValue() && right.isByteValue()) return new LongVal(left.longValue() + right.longValue());
+		else if(left.isLongValue() && right.isUnsignedIntValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
+        else if(left.isLongValue() && right.isIntValue()) return new LongVal(left.longValue() + right.longValue());
+		else if(left.isLongValue() && right.isUnsignedShortValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
+		else if(left.isLongValue() && right.isShortValue()) return new LongVal(left.longValue() + right.longValue());
+		else if(left.isLongValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
+		else if(left.isLongValue() && right.isLongValue()) return new LongVal(left.longValue() + right.longValue());
+		else if(left.isLongValue() && right.isRegister()) return new UnsignedLongVal(left.longValue() + right.longValue());
+		else if(left.isLongValue() && right.isVector()) return new UnsignedLongVal(left.longValue() + right.longValue());
 
-		else if(left.isRegister() && right.isReal()) return new RealVal(left.realValue() + right.realValue());
-		else if(left.isRegister() && right.isBool()) return new UnsignedByteVal(left.byteValue() + right.byteValue());
+		else if(left.isRegister() && right.isRealValue()) return new RealVal(left.realValue() + right.realValue());
+		else if(left.isRegister() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() + right.byteValue());
         else if(left.isRegister() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.byteValue() + right.byteValue()); 
-        else if(left.isRegister() && right.isByte()) return new UnsignedIntVal(left.byteValue() + right.byteValue());
-		else if(left.isRegister() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() + right.intValue());
-        else if(left.isRegister() && right.isInt()) return new UnsignedIntVal(left.intValue() + right.intValue());
-		else if(left.isRegister() && right.isUnsignedShort()) return new UnsignedIntVal(left.shortValue() + right.shortValue());
-		else if(left.isRegister() && right.isShort()) return new UnsignedIntVal(left.shortValue() + right.shortValue());
-		else if(left.isRegister() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() + right.longValue());
-		else if(left.isRegister() && right.isLong()) return new UnsignedLongVal(left.longValue() + right.longValue());
+        else if(left.isRegister() && right.isByteValue()) return new UnsignedIntVal(left.byteValue() + right.byteValue());
+		else if(left.isRegister() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() + right.intValue());
+        else if(left.isRegister() && right.isIntValue()) return new UnsignedIntVal(left.intValue() + right.intValue());
+		else if(left.isRegister() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.shortValue() + right.shortValue());
+		else if(left.isRegister() && right.isShortValue()) return new UnsignedIntVal(left.shortValue() + right.shortValue());
+		else if(left.isRegister() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
+		else if(left.isRegister() && right.isLongValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
 		else if(left.isRegister() && right.isRegister()) return new UnsignedByteVal(left.byteValue() + right.byteValue());
 		else if(left.isRegister() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -381,16 +381,16 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() + right.longValue());
 		}
 
-		else if(left.isVector() && right.isReal()) return new RealVal(left.realValue() + right.realValue());
-		else if(left.isVector() && right.isBool()) return new UnsignedByteVal(left.byteValue() + right.byteValue());
+		else if(left.isVector() && right.isRealValue()) return new RealVal(left.realValue() + right.realValue());
+		else if(left.isVector() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() + right.byteValue());
         else if(left.isVector() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() + right.byteValue()); 
-        else if(left.isVector() && right.isByte()) return new UnsignedByteVal(left.byteValue() + right.byteValue());
-		else if(left.isVector() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() + right.intValue());
-        else if(left.isVector() && right.isInt()) return new UnsignedIntVal(left.intValue() + right.intValue());
-		else if(left.isVector() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() + right.shortValue());
-		else if(left.isVector() && right.isShort()) return new UnsignedShortVal(left.shortValue() + right.shortValue());
-		else if(left.isVector() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() + right.longValue());
-		else if(left.isVector() && right.isLong()) return new UnsignedLongVal(left.longValue() + right.longValue());
+        else if(left.isVector() && right.isByteValue()) return new UnsignedByteVal(left.byteValue() + right.byteValue());
+		else if(left.isVector() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() + right.intValue());
+        else if(left.isVector() && right.isIntValue()) return new UnsignedIntVal(left.intValue() + right.intValue());
+		else if(left.isVector() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() + right.shortValue());
+		else if(left.isVector() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() + right.shortValue());
+		else if(left.isVector() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
+		else if(left.isVector() && right.isLongValue()) return new UnsignedLongVal(left.longValue() + right.longValue());
 		else if(left.isVector() && right.isRegister()) return new UnsignedByteVal(left.byteValue() + right.byteValue());
 		else if(left.isVector() && right.isVector()) return new UnsignedLongVal(left.longValue() + right.longValue());
 		else {
@@ -490,32 +490,32 @@ public class Utils {
 		return Utils.errorOccured();
 	}
 
-    public static Value inus(Value left, Value right) throws Exception{
-        if(left.isReal() && right.isReal()) return new RealVal(left.realValue() - right.realValue());
-		else if(left.isReal() && right.isBool()) return new RealVal(left.realValue() - right.realValue());
-        else if(left.isReal() && right.isUnsignedByteValue()) return new RealVal(left.realValue() - right.realValue()); 
-        else if(left.isReal() && right.isByte()) return new RealVal(left.realValue() - right.realValue());
-		else if(left.isReal() && right.isUnsignedInt()) return new RealVal(left.realValue() - right.realValue());
-        else if(left.isReal() && right.isInt()) return new RealVal(left.realValue() - right.realValue());
-		else if(left.isReal() && right.isUnsignedShort()) return new RealVal(left.realValue() - right.realValue());
-		else if(left.isReal() && right.isShort()) return new RealVal(left.realValue() - right.realValue());
-		else if(left.isReal() && right.isUnsignedLong()) return new RealVal(left.realValue() - right.realValue());
-		else if(left.isReal() && right.isLong()) return new RealVal(left.realValue() - right.realValue());
-		else if(left.isReal() && right.isRegister()) return new RealVal(left.realValue() - right.realValue());
-		else if(left.isReal() && right.isVector()) return new RealVal(left.realValue() - right.realValue());
+    public static Value minus(Value left, Value right) throws Exception{
+        if(left.isRealValue() && right.isRealValue()) return new RealVal(left.realValue() - right.realValue());
+		else if(left.isRealValue() && right.isBoolValue()) return new RealVal(left.realValue() - right.realValue());
+        else if(left.isRealValue() && right.isUnsignedByteValue()) return new RealVal(left.realValue() - right.realValue()); 
+        else if(left.isRealValue() && right.isByteValue()) return new RealVal(left.realValue() - right.realValue());
+		else if(left.isRealValue() && right.isUnsignedIntValue()) return new RealVal(left.realValue() - right.realValue());
+        else if(left.isRealValue() && right.isIntValue()) return new RealVal(left.realValue() - right.realValue());
+		else if(left.isRealValue() && right.isUnsignedShortValue()) return new RealVal(left.realValue() - right.realValue());
+		else if(left.isRealValue() && right.isShortValue()) return new RealVal(left.realValue() - right.realValue());
+		else if(left.isRealValue() && right.isUnsignedLongValue()) return new RealVal(left.realValue() - right.realValue());
+		else if(left.isRealValue() && right.isLongValue()) return new RealVal(left.realValue() - right.realValue());
+		else if(left.isRealValue() && right.isRegister()) return new RealVal(left.realValue() - right.realValue());
+		else if(left.isRealValue() && right.isVector()) return new RealVal(left.realValue() - right.realValue());
 		
-		else if(left.isBool() && right.isReal()) return new RealVal(left.realValue() - right.realValue());
-		else if(left.isBool() && right.isBool()) return new UnsignedByteVal(left.byteValue() - right.byteValue());
-        else if(left.isBool() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() - right.byteValue()); 
-        else if(left.isBool() && right.isByte()) return new ByteVal(left.byteValue() - right.byteValue());
-		else if(left.isBool() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() - right.intValue());
-        else if(left.isBool() && right.isInt()) return new IntVal(left.intValue() - right.intValue());
-		else if(left.isBool() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() - right.shortValue());
-		else if(left.isBool() && right.isShort()) return new ShortVal(left.shortValue() - right.shortValue());
-		else if(left.isBool() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() - right.longValue());
-		else if(left.isBool() && right.isLong()) return new LongVal(left.longValue() - right.longValue());
-		else if(left.isBool() && right.isRegister()) return new UnsignedByteVal(left.byteValue() - right.byteValue());
-		else if(left.isBool() && right.isVector()) {
+		else if(left.isBoolValue() && right.isRealValue()) return new RealVal(left.realValue() - right.realValue());
+		else if(left.isBoolValue() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() - right.byteValue());
+        else if(left.isBoolValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() - right.byteValue()); 
+        else if(left.isBoolValue() && right.isByteValue()) return new ByteVal(left.byteValue() - right.byteValue());
+		else if(left.isBoolValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() - right.intValue());
+        else if(left.isBoolValue() && right.isIntValue()) return new IntVal(left.intValue() - right.intValue());
+		else if(left.isBoolValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() - right.shortValue());
+		else if(left.isBoolValue() && right.isShortValue()) return new ShortVal(left.shortValue() - right.shortValue());
+		else if(left.isBoolValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
+		else if(left.isBoolValue() && right.isLongValue()) return new LongVal(left.longValue() - right.longValue());
+		else if(left.isBoolValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() - right.byteValue());
+		else if(left.isBoolValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new UnsignedIntVal(left.byteValue() - right.byteValue());
@@ -524,16 +524,16 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() - right.longValue());
 		}
 
-		else if(left.isUnsignedByteValue() && right.isReal()) return new RealVal(left.realValue() - right.realValue());
-		else if(left.isUnsignedByteValue() && right.isBool()) return new UnsignedByteVal(left.byteValue() - right.byteValue());
+		else if(left.isUnsignedByteValue() && right.isRealValue()) return new RealVal(left.realValue() - right.realValue());
+		else if(left.isUnsignedByteValue() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() - right.byteValue());
         else if(left.isUnsignedByteValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.byteValue() - right.byteValue()); 
-        else if(left.isUnsignedByteValue() && right.isByte()) return new UnsignedIntVal(left.byteValue() - right.byteValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() - right.intValue());
-        else if(left.isUnsignedByteValue() && right.isInt()) return new UnsignedIntVal(left.intValue() - right.intValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedShort()) return new UnsignedIntVal(left.shortValue() - right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isShort()) return new UnsignedIntVal(left.shortValue() - right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() - right.longValue());
-		else if(left.isUnsignedByteValue() && right.isLong()) return new UnsignedLongVal(left.longValue() - right.longValue());
+        else if(left.isUnsignedByteValue() && right.isByteValue()) return new UnsignedIntVal(left.byteValue() - right.byteValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() - right.intValue());
+        else if(left.isUnsignedByteValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() - right.intValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.shortValue() - right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isShortValue()) return new UnsignedIntVal(left.shortValue() - right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
+		else if(left.isUnsignedByteValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
 		else if(left.isUnsignedByteValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() - right.byteValue());
 		else if(left.isUnsignedByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -544,18 +544,18 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() - right.longValue());
 		}
 
-		else if(left.isByte() && right.isReal()) return new RealVal(left.realValue() - right.realValue());
-		else if(left.isByte() && right.isBool()) return new ByteVal(left.byteValue() - right.byteValue());
-        else if(left.isByte() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.byteValue() - right.byteValue()); 
-        else if(left.isByte() && right.isByte()) return new IntVal(left.byteValue() - right.byteValue());
-		else if(left.isByte() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() - right.intValue());
-        else if(left.isByte() && right.isInt()) return new IntVal(left.intValue() - right.intValue());
-		else if(left.isByte() && right.isUnsignedShort()) return new UnsignedIntVal(left.shortValue() - right.shortValue());
-		else if(left.isByte() && right.isShort()) return new IntVal(left.shortValue() - right.shortValue());
-		else if(left.isByte() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() - right.longValue());
-		else if(left.isByte() && right.isLong()) return new LongVal(left.longValue() - right.longValue());
-		else if(left.isByte() && right.isRegister()) return new UnsignedByteVal(left.byteValue() - right.byteValue());
-		else if(left.isByte() && right.isVector()) {
+		else if(left.isByteValue() && right.isRealValue()) return new RealVal(left.realValue() - right.realValue());
+		else if(left.isByteValue() && right.isBoolValue()) return new ByteVal(left.byteValue() - right.byteValue());
+        else if(left.isByteValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.byteValue() - right.byteValue()); 
+        else if(left.isByteValue() && right.isByteValue()) return new IntVal(left.byteValue() - right.byteValue());
+		else if(left.isByteValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() - right.intValue());
+        else if(left.isByteValue() && right.isIntValue()) return new IntVal(left.intValue() - right.intValue());
+		else if(left.isByteValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.shortValue() - right.shortValue());
+		else if(left.isByteValue() && right.isShortValue()) return new IntVal(left.shortValue() - right.shortValue());
+		else if(left.isByteValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
+		else if(left.isByteValue() && right.isLongValue()) return new LongVal(left.longValue() - right.longValue());
+		else if(left.isByteValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() - right.byteValue());
+		else if(left.isByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new UnsignedIntVal(left.byteValue() - right.byteValue());
@@ -564,18 +564,18 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() - right.longValue());
 		}
 
-		else if(left.isUnsignedShort() && right.isReal()) return new RealVal(left.realValue() - right.realValue());
-		else if(left.isUnsignedShort() && right.isBool()) return new UnsignedShortVal(left.shortValue() - right.shortValue());
-        else if(left.isUnsignedShort() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.shortValue() - right.shortValue()); 
-        else if(left.isUnsignedShort() && right.isByte()) return new UnsignedIntVal(left.shortValue() - right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() - right.intValue());
-        else if(left.isUnsignedShort() && right.isInt()) return new UnsignedIntVal(left.intValue() - right.intValue());
-		else if(left.isUnsignedShort() && right.isUnsignedShort()) return new UnsignedIntVal(left.shortValue() - right.shortValue());
-		else if(left.isUnsignedShort() && right.isShort()) return new UnsignedIntVal(left.shortValue() - right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() - right.longValue());
-		else if(left.isUnsignedShort() && right.isLong()) return new UnsignedLongVal(left.longValue() - right.longValue());
-		else if(left.isUnsignedShort() && right.isRegister()) return new UnsignedIntVal(left.shortValue() - right.shortValue());
-		else if(left.isUnsignedShort() && right.isVector()) {
+		else if(left.isUnsignedShortValue() && right.isRealValue()) return new RealVal(left.realValue() - right.realValue());
+		else if(left.isUnsignedShortValue() && right.isBoolValue()) return new UnsignedShortVal(left.shortValue() - right.shortValue());
+        else if(left.isUnsignedShortValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.shortValue() - right.shortValue()); 
+        else if(left.isUnsignedShortValue() && right.isByteValue()) return new UnsignedIntVal(left.shortValue() - right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() - right.intValue());
+        else if(left.isUnsignedShortValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() - right.intValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.shortValue() - right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isShortValue()) return new UnsignedIntVal(left.shortValue() - right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
+		else if(left.isUnsignedShortValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
+		else if(left.isUnsignedShortValue() && right.isRegister()) return new UnsignedIntVal(left.shortValue() - right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new UnsignedIntVal(left.shortValue() - right.shortValue());
@@ -583,18 +583,18 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() - right.longValue());
 		}
 
-		else if(left.isShort() && right.isReal()) return new RealVal(left.realValue() - right.realValue());
-		else if(left.isShort() && right.isBool()) return new UnsignedShortVal(left.shortValue() - right.shortValue());
-        else if(left.isShort() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.shortValue() - right.shortValue()); 
-        else if(left.isShort() && right.isByte()) return new IntVal(left.shortValue() - right.shortValue());
-		else if(left.isShort() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() - right.intValue());
-        else if(left.isShort() && right.isInt()) return new IntVal(left.intValue() - right.intValue());
-		else if(left.isShort() && right.isUnsignedShort()) return new UnsignedIntVal(left.shortValue() - right.shortValue());
-		else if(left.isShort() && right.isShort()) return new IntVal(left.shortValue() - right.shortValue());
-		else if(left.isShort() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() - right.longValue());
-		else if(left.isShort() && right.isLong()) return new LongVal(left.longValue() - right.longValue());
-		else if(left.isShort() && right.isRegister()) return new UnsignedShortVal(left.byteValue() - right.byteValue());
-		else if(left.isShort() && right.isVector()) {
+		else if(left.isShortValue() && right.isRealValue()) return new RealVal(left.realValue() - right.realValue());
+		else if(left.isShortValue() && right.isBoolValue()) return new UnsignedShortVal(left.shortValue() - right.shortValue());
+        else if(left.isShortValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.shortValue() - right.shortValue()); 
+        else if(left.isShortValue() && right.isByteValue()) return new IntVal(left.shortValue() - right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() - right.intValue());
+        else if(left.isShortValue() && right.isIntValue()) return new IntVal(left.intValue() - right.intValue());
+		else if(left.isShortValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.shortValue() - right.shortValue());
+		else if(left.isShortValue() && right.isShortValue()) return new IntVal(left.shortValue() - right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
+		else if(left.isShortValue() && right.isLongValue()) return new LongVal(left.longValue() - right.longValue());
+		else if(left.isShortValue() && right.isRegister()) return new UnsignedShortVal(left.byteValue() - right.byteValue());
+		else if(left.isShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new UnsignedIntVal(left.shortValue() - right.shortValue());
@@ -602,78 +602,78 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() - right.longValue());
 		}
 
-		else if(left.isUnsignedInt() && right.isReal()) return new RealVal(left.realValue() - right.realValue());
-		else if(left.isUnsignedInt() && right.isBool()) return new UnsignedIntVal(left.intValue() - right.intValue());
-        else if(left.isUnsignedInt() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() - right.intValue()); 
-        else if(left.isUnsignedInt() && right.isByte()) return new UnsignedIntVal(left.shortValue() - right.shortValue());
-		else if(left.isUnsignedInt() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() - right.intValue());
-        else if(left.isUnsignedInt() && right.isInt()) return new UnsignedIntVal(left.intValue() - right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedShort()) return new UnsignedIntVal(left.intValue() - right.intValue());
-		else if(left.isUnsignedInt() && right.isShort()) return new UnsignedIntVal(left.intValue() - right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() - right.longValue());
-		else if(left.isUnsignedInt() && right.isLong()) return new UnsignedLongVal(left.longValue() - right.longValue());
-		else if(left.isUnsignedInt() && right.isRegister()) return new UnsignedIntVal(left.intValue() - right.intValue());
-		else if(left.isUnsignedInt() && right.isVector()) {
+		else if(left.isUnsignedIntValue() && right.isRealValue()) return new RealVal(left.realValue() - right.realValue());
+		else if(left.isUnsignedIntValue() && right.isBoolValue()) return new UnsignedIntVal(left.intValue() - right.intValue());
+        else if(left.isUnsignedIntValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() - right.intValue()); 
+        else if(left.isUnsignedIntValue() && right.isByteValue()) return new UnsignedIntVal(left.shortValue() - right.shortValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() - right.intValue());
+        else if(left.isUnsignedIntValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() - right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.intValue() - right.intValue());
+		else if(left.isUnsignedIntValue() && right.isShortValue()) return new UnsignedIntVal(left.intValue() - right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
+		else if(left.isUnsignedIntValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
+		else if(left.isUnsignedIntValue() && right.isRegister()) return new UnsignedIntVal(left.intValue() - right.intValue());
+		else if(left.isUnsignedIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new UnsignedIntVal(left.intValue() - right.intValue());
 			else return new UnsignedLongVal(left.longValue() - right.longValue());
 		}
 
-		else if(left.isInt() && right.isReal()) return new RealVal(left.realValue() - right.realValue());
-		else if(left.isInt() && right.isBool()) return new UnsignedIntVal(left.intValue() - right.intValue());
-        else if(left.isInt() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() - right.intValue()); 
-        else if(left.isInt() && right.isByte()) return new IntVal(left.intValue() - right.intValue());
-		else if(left.isInt() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() - right.intValue());
-        else if(left.isInt() && right.isInt()) return new IntVal(left.intValue() - right.intValue());
-		else if(left.isInt() && right.isUnsignedShort()) return new UnsignedIntVal(left.intValue() - right.intValue());
-		else if(left.isInt() && right.isShort()) return new IntVal(left.intValue() - right.intValue());
-		else if(left.isInt() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() - right.longValue());
-		else if(left.isInt() && right.isLong()) return new LongVal(left.longValue() - right.longValue());
-		else if(left.isInt() && right.isRegister()) return new UnsignedIntVal(left.intValue() - right.intValue());
-		else if(left.isInt() && right.isVector()) {
+		else if(left.isIntValue() && right.isRealValue()) return new RealVal(left.realValue() - right.realValue());
+		else if(left.isIntValue() && right.isBoolValue()) return new UnsignedIntVal(left.intValue() - right.intValue());
+        else if(left.isIntValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() - right.intValue()); 
+        else if(left.isIntValue() && right.isByteValue()) return new IntVal(left.intValue() - right.intValue());
+		else if(left.isIntValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() - right.intValue());
+        else if(left.isIntValue() && right.isIntValue()) return new IntVal(left.intValue() - right.intValue());
+		else if(left.isIntValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.intValue() - right.intValue());
+		else if(left.isIntValue() && right.isShortValue()) return new IntVal(left.intValue() - right.intValue());
+		else if(left.isIntValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
+		else if(left.isIntValue() && right.isLongValue()) return new LongVal(left.longValue() - right.longValue());
+		else if(left.isIntValue() && right.isRegister()) return new UnsignedIntVal(left.intValue() - right.intValue());
+		else if(left.isIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new UnsignedIntVal(left.intValue() - right.intValue());
 			else return new UnsignedLongVal(left.longValue() - right.longValue());
 		}
 
-		else if(left.isUnsignedLong() && right.isReal()) return new RealVal(left.realValue() - right.realValue());
-		else if(left.isUnsignedLong() && right.isBool()) return new UnsignedLongVal(left.longValue() - right.longValue());
-        else if(left.isUnsignedLong() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() - right.longValue()); 
-        else if(left.isUnsignedLong() && right.isByte()) return new UnsignedLongVal(left.longValue() - right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedInt()) return new UnsignedLongVal(left.longValue() - right.longValue());
-        else if(left.isUnsignedLong() && right.isInt()) return new UnsignedLongVal(left.longValue() - right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedShort()) return new UnsignedLongVal(left.longValue() - right.longValue());
-		else if(left.isUnsignedLong() && right.isShort()) return new UnsignedLongVal(left.longValue() - right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() - right.longValue());
-		else if(left.isUnsignedLong() && right.isLong()) return new UnsignedLongVal(left.longValue() - right.longValue());
-		else if(left.isUnsignedLong() && right.isRegister()) return new UnsignedLongVal(left.longValue() - right.longValue());
-		else if(left.isUnsignedLong() && right.isVector()) return new UnsignedLongVal(left.longValue() - right.longValue());
+		else if(left.isUnsignedLongValue() && right.isRealValue()) return new RealVal(left.realValue() - right.realValue());
+		else if(left.isUnsignedLongValue() && right.isBoolValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
+        else if(left.isUnsignedLongValue() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() - right.longValue()); 
+        else if(left.isUnsignedLongValue() && right.isByteValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedIntValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
+        else if(left.isUnsignedLongValue() && right.isIntValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedShortValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
+		else if(left.isUnsignedLongValue() && right.isShortValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
+		else if(left.isUnsignedLongValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
+		else if(left.isUnsignedLongValue() && right.isRegister()) return new UnsignedLongVal(left.longValue() - right.longValue());
+		else if(left.isUnsignedLongValue() && right.isVector()) return new UnsignedLongVal(left.longValue() - right.longValue());
 
-		else if(left.isLong() && right.isReal()) return new RealVal(left.realValue() - right.realValue());
-		else if(left.isLong() && right.isBool()) return new UnsignedLongVal(left.longValue() - right.longValue());
-        else if(left.isLong() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() - right.longValue()); 
-        else if(left.isLong() && right.isByte()) return new LongVal(left.longValue() - right.longValue());
-		else if(left.isLong() && right.isUnsignedInt()) return new UnsignedLongVal(left.longValue() - right.longValue());
-        else if(left.isLong() && right.isInt()) return new LongVal(left.longValue() - right.longValue());
-		else if(left.isLong() && right.isUnsignedShort()) return new UnsignedLongVal(left.longValue() - right.longValue());
-		else if(left.isLong() && right.isShort()) return new LongVal(left.longValue() - right.longValue());
-		else if(left.isLong() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() - right.longValue());
-		else if(left.isLong() && right.isLong()) return new LongVal(left.longValue() - right.longValue());
-		else if(left.isLong() && right.isRegister()) return new UnsignedLongVal(left.longValue() - right.longValue());
-		else if(left.isLong() && right.isVector()) return new UnsignedLongVal(left.longValue() - right.longValue());
+		else if(left.isLongValue() && right.isRealValue()) return new RealVal(left.realValue() - right.realValue());
+		else if(left.isLongValue() && right.isBoolValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
+        else if(left.isLongValue() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() - right.longValue()); 
+        else if(left.isLongValue() && right.isByteValue()) return new LongVal(left.longValue() - right.longValue());
+		else if(left.isLongValue() && right.isUnsignedIntValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
+        else if(left.isLongValue() && right.isIntValue()) return new LongVal(left.longValue() - right.longValue());
+		else if(left.isLongValue() && right.isUnsignedShortValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
+		else if(left.isLongValue() && right.isShortValue()) return new LongVal(left.longValue() - right.longValue());
+		else if(left.isLongValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
+		else if(left.isLongValue() && right.isLongValue()) return new LongVal(left.longValue() - right.longValue());
+		else if(left.isLongValue() && right.isRegister()) return new UnsignedLongVal(left.longValue() - right.longValue());
+		else if(left.isLongValue() && right.isVector()) return new UnsignedLongVal(left.longValue() - right.longValue());
 
-		else if(left.isRegister() && right.isReal()) return new RealVal(left.realValue() - right.realValue());
-		else if(left.isRegister() && right.isBool()) return new UnsignedByteVal(left.byteValue() - right.byteValue());
+		else if(left.isRegister() && right.isRealValue()) return new RealVal(left.realValue() - right.realValue());
+		else if(left.isRegister() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() - right.byteValue());
         else if(left.isRegister() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.byteValue() - right.byteValue()); 
-        else if(left.isRegister() && right.isByte()) return new UnsignedIntVal(left.byteValue() - right.byteValue());
-		else if(left.isRegister() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() - right.intValue());
-        else if(left.isRegister() && right.isInt()) return new UnsignedIntVal(left.intValue() - right.intValue());
-		else if(left.isRegister() && right.isUnsignedShort()) return new UnsignedIntVal(left.shortValue() - right.shortValue());
-		else if(left.isRegister() && right.isShort()) return new UnsignedIntVal(left.shortValue() - right.shortValue());
-		else if(left.isRegister() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() - right.longValue());
-		else if(left.isRegister() && right.isLong()) return new UnsignedLongVal(left.longValue() - right.longValue());
+        else if(left.isRegister() && right.isByteValue()) return new UnsignedIntVal(left.byteValue() - right.byteValue());
+		else if(left.isRegister() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() - right.intValue());
+        else if(left.isRegister() && right.isIntValue()) return new UnsignedIntVal(left.intValue() - right.intValue());
+		else if(left.isRegister() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.shortValue() - right.shortValue());
+		else if(left.isRegister() && right.isShortValue()) return new UnsignedIntVal(left.shortValue() - right.shortValue());
+		else if(left.isRegister() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
+		else if(left.isRegister() && right.isLongValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
 		else if(left.isRegister() && right.isRegister()) return new UnsignedByteVal(left.byteValue() - right.byteValue());
 		else if(left.isRegister() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -684,16 +684,16 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() - right.longValue());
 		}
 
-		else if(left.isVector() && right.isReal()) return new RealVal(left.realValue() - right.realValue());
-		else if(left.isVector() && right.isBool()) return new UnsignedByteVal(left.byteValue() - right.byteValue());
+		else if(left.isVector() && right.isRealValue()) return new RealVal(left.realValue() - right.realValue());
+		else if(left.isVector() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() - right.byteValue());
         else if(left.isVector() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() - right.byteValue()); 
-        else if(left.isVector() && right.isByte()) return new UnsignedByteVal(left.byteValue() - right.byteValue());
-		else if(left.isVector() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() - right.intValue());
-        else if(left.isVector() && right.isInt()) return new UnsignedIntVal(left.intValue() - right.intValue());
-		else if(left.isVector() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() - right.shortValue());
-		else if(left.isVector() && right.isShort()) return new UnsignedShortVal(left.shortValue() - right.shortValue());
-		else if(left.isVector() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() - right.longValue());
-		else if(left.isVector() && right.isLong()) return new UnsignedLongVal(left.longValue() - right.longValue());
+        else if(left.isVector() && right.isByteValue()) return new UnsignedByteVal(left.byteValue() - right.byteValue());
+		else if(left.isVector() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() - right.intValue());
+        else if(left.isVector() && right.isIntValue()) return new UnsignedIntVal(left.intValue() - right.intValue());
+		else if(left.isVector() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() - right.shortValue());
+		else if(left.isVector() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() - right.shortValue());
+		else if(left.isVector() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
+		else if(left.isVector() && right.isLongValue()) return new UnsignedLongVal(left.longValue() - right.longValue());
 		else if(left.isVector() && right.isRegister()) return new UnsignedByteVal(left.byteValue() - right.byteValue());
 		else if(left.isVector() && right.isVector()) return new UnsignedLongVal(left.longValue() - right.longValue());
 		else {
@@ -752,32 +752,32 @@ public class Utils {
 		}
 	}
 
-    public static Value imes(Value left, Value right) throws Exception{
-        if(left.isReal() && right.isReal()) return new RealVal(left.realValue() * right.realValue());
-		else if(left.isReal() && right.isBool()) return new RealVal(left.realValue() * right.realValue());
-        else if(left.isReal() && right.isUnsignedByteValue()) return new RealVal(left.realValue() * right.realValue()); 
-        else if(left.isReal() && right.isByte()) return new RealVal(left.realValue() * right.realValue());
-		else if(left.isReal() && right.isUnsignedInt()) return new RealVal(left.realValue() * right.realValue());
-        else if(left.isReal() && right.isInt()) return new RealVal(left.realValue() * right.realValue());
-		else if(left.isReal() && right.isUnsignedShort()) return new RealVal(left.realValue() * right.realValue());
-		else if(left.isReal() && right.isShort()) return new RealVal(left.realValue() * right.realValue());
-		else if(left.isReal() && right.isUnsignedLong()) return new RealVal(left.realValue() * right.realValue());
-		else if(left.isReal() && right.isLong()) return new RealVal(left.realValue() * right.realValue());
-		else if(left.isReal() && right.isRegister()) return new RealVal(left.realValue() * right.realValue());
-		else if(left.isReal() && right.isVector()) return new RealVal(left.realValue() * right.realValue());
+    public static Value times(Value left, Value right) throws Exception{
+        if(left.isRealValue() && right.isRealValue()) return new RealVal(left.realValue() * right.realValue());
+		else if(left.isRealValue() && right.isBoolValue()) return new RealVal(left.realValue() * right.realValue());
+        else if(left.isRealValue() && right.isUnsignedByteValue()) return new RealVal(left.realValue() * right.realValue()); 
+        else if(left.isRealValue() && right.isByteValue()) return new RealVal(left.realValue() * right.realValue());
+		else if(left.isRealValue() && right.isUnsignedIntValue()) return new RealVal(left.realValue() * right.realValue());
+        else if(left.isRealValue() && right.isIntValue()) return new RealVal(left.realValue() * right.realValue());
+		else if(left.isRealValue() && right.isUnsignedShortValue()) return new RealVal(left.realValue() * right.realValue());
+		else if(left.isRealValue() && right.isShortValue()) return new RealVal(left.realValue() * right.realValue());
+		else if(left.isRealValue() && right.isUnsignedLongValue()) return new RealVal(left.realValue() * right.realValue());
+		else if(left.isRealValue() && right.isLongValue()) return new RealVal(left.realValue() * right.realValue());
+		else if(left.isRealValue() && right.isRegister()) return new RealVal(left.realValue() * right.realValue());
+		else if(left.isRealValue() && right.isVector()) return new RealVal(left.realValue() * right.realValue());
 		
-		else if(left.isBool() && right.isReal()) return new RealVal(left.realValue() * right.realValue());
-		else if(left.isBool() && right.isBool()) return new UnsignedByteVal(left.byteValue() * right.byteValue());
-        else if(left.isBool() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() * right.byteValue()); 
-        else if(left.isBool() && right.isByte()) return new ByteVal(left.byteValue() * right.byteValue());
-		else if(left.isBool() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() * right.intValue());
-        else if(left.isBool() && right.isInt()) return new IntVal(left.intValue() * right.intValue());
-		else if(left.isBool() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() * right.shortValue());
-		else if(left.isBool() && right.isShort()) return new ShortVal(left.shortValue() * right.shortValue());
-		else if(left.isBool() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() * right.longValue());
-		else if(left.isBool() && right.isLong()) return new LongVal(left.longValue() * right.longValue());
-		else if(left.isBool() && right.isRegister()) return new UnsignedByteVal(left.byteValue() * right.byteValue());
-		else if(left.isBool() && right.isVector()) {
+		else if(left.isBoolValue() && right.isRealValue()) return new RealVal(left.realValue() * right.realValue());
+		else if(left.isBoolValue() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() * right.byteValue());
+        else if(left.isBoolValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() * right.byteValue()); 
+        else if(left.isBoolValue() && right.isByteValue()) return new ByteVal(left.byteValue() * right.byteValue());
+		else if(left.isBoolValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() * right.intValue());
+        else if(left.isBoolValue() && right.isIntValue()) return new IntVal(left.intValue() * right.intValue());
+		else if(left.isBoolValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() * right.shortValue());
+		else if(left.isBoolValue() && right.isShortValue()) return new ShortVal(left.shortValue() * right.shortValue());
+		else if(left.isBoolValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
+		else if(left.isBoolValue() && right.isLongValue()) return new LongVal(left.longValue() * right.longValue());
+		else if(left.isBoolValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() * right.byteValue());
+		else if(left.isBoolValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new UnsignedIntVal(left.byteValue() * right.byteValue());
@@ -786,16 +786,16 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() * right.longValue());
 		}
 
-		else if(left.isUnsignedByteValue() && right.isReal()) return new RealVal(left.realValue() * right.realValue());
-		else if(left.isUnsignedByteValue() && right.isBool()) return new UnsignedByteVal(left.byteValue() * right.byteValue());
+		else if(left.isUnsignedByteValue() && right.isRealValue()) return new RealVal(left.realValue() * right.realValue());
+		else if(left.isUnsignedByteValue() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() * right.byteValue());
         else if(left.isUnsignedByteValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.byteValue() * right.byteValue()); 
-        else if(left.isUnsignedByteValue() && right.isByte()) return new UnsignedIntVal(left.byteValue() * right.byteValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() * right.intValue());
-        else if(left.isUnsignedByteValue() && right.isInt()) return new UnsignedIntVal(left.intValue() * right.intValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedShort()) return new UnsignedIntVal(left.shortValue() * right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isShort()) return new UnsignedIntVal(left.shortValue() * right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() * right.longValue());
-		else if(left.isUnsignedByteValue() && right.isLong()) return new UnsignedLongVal(left.longValue() * right.longValue());
+        else if(left.isUnsignedByteValue() && right.isByteValue()) return new UnsignedIntVal(left.byteValue() * right.byteValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() * right.intValue());
+        else if(left.isUnsignedByteValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() * right.intValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.shortValue() * right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isShortValue()) return new UnsignedIntVal(left.shortValue() * right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
+		else if(left.isUnsignedByteValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
 		else if(left.isUnsignedByteValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() * right.byteValue());
 		else if(left.isUnsignedByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -806,18 +806,18 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() * right.longValue());
 		}
 
-		else if(left.isByte() && right.isReal()) return new RealVal(left.realValue() * right.realValue());
-		else if(left.isByte() && right.isBool()) return new ByteVal(left.byteValue() * right.byteValue());
-        else if(left.isByte() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.byteValue() * right.byteValue()); 
-        else if(left.isByte() && right.isByte()) return new IntVal(left.byteValue() * right.byteValue());
-		else if(left.isByte() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() * right.intValue());
-        else if(left.isByte() && right.isInt()) return new IntVal(left.intValue() * right.intValue());
-		else if(left.isByte() && right.isUnsignedShort()) return new UnsignedIntVal(left.shortValue() * right.shortValue());
-		else if(left.isByte() && right.isShort()) return new IntVal(left.shortValue() * right.shortValue());
-		else if(left.isByte() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() * right.longValue());
-		else if(left.isByte() && right.isLong()) return new LongVal(left.longValue() * right.longValue());
-		else if(left.isByte() && right.isRegister()) return new UnsignedByteVal(left.byteValue() * right.byteValue());
-		else if(left.isByte() && right.isVector()) {
+		else if(left.isByteValue() && right.isRealValue()) return new RealVal(left.realValue() * right.realValue());
+		else if(left.isByteValue() && right.isBoolValue()) return new ByteVal(left.byteValue() * right.byteValue());
+        else if(left.isByteValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.byteValue() * right.byteValue()); 
+        else if(left.isByteValue() && right.isByteValue()) return new IntVal(left.byteValue() * right.byteValue());
+		else if(left.isByteValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() * right.intValue());
+        else if(left.isByteValue() && right.isIntValue()) return new IntVal(left.intValue() * right.intValue());
+		else if(left.isByteValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.shortValue() * right.shortValue());
+		else if(left.isByteValue() && right.isShortValue()) return new IntVal(left.shortValue() * right.shortValue());
+		else if(left.isByteValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
+		else if(left.isByteValue() && right.isLongValue()) return new LongVal(left.longValue() * right.longValue());
+		else if(left.isByteValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() * right.byteValue());
+		else if(left.isByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new UnsignedIntVal(left.byteValue() * right.byteValue());
@@ -826,18 +826,18 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() * right.longValue());
 		}
 
-		else if(left.isUnsignedShort() && right.isReal()) return new RealVal(left.realValue() * right.realValue());
-		else if(left.isUnsignedShort() && right.isBool()) return new UnsignedShortVal(left.shortValue() * right.shortValue());
-        else if(left.isUnsignedShort() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.shortValue() * right.shortValue()); 
-        else if(left.isUnsignedShort() && right.isByte()) return new UnsignedIntVal(left.shortValue() * right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() * right.intValue());
-        else if(left.isUnsignedShort() && right.isInt()) return new UnsignedIntVal(left.intValue() * right.intValue());
-		else if(left.isUnsignedShort() && right.isUnsignedShort()) return new UnsignedIntVal(left.shortValue() * right.shortValue());
-		else if(left.isUnsignedShort() && right.isShort()) return new UnsignedIntVal(left.shortValue() * right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() * right.longValue());
-		else if(left.isUnsignedShort() && right.isLong()) return new UnsignedLongVal(left.longValue() * right.longValue());
-		else if(left.isUnsignedShort() && right.isRegister()) return new UnsignedIntVal(left.shortValue() * right.shortValue());
-		else if(left.isUnsignedShort() && right.isVector()) {
+		else if(left.isUnsignedShortValue() && right.isRealValue()) return new RealVal(left.realValue() * right.realValue());
+		else if(left.isUnsignedShortValue() && right.isBoolValue()) return new UnsignedShortVal(left.shortValue() * right.shortValue());
+        else if(left.isUnsignedShortValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.shortValue() * right.shortValue()); 
+        else if(left.isUnsignedShortValue() && right.isByteValue()) return new UnsignedIntVal(left.shortValue() * right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() * right.intValue());
+        else if(left.isUnsignedShortValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() * right.intValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.shortValue() * right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isShortValue()) return new UnsignedIntVal(left.shortValue() * right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
+		else if(left.isUnsignedShortValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
+		else if(left.isUnsignedShortValue() && right.isRegister()) return new UnsignedIntVal(left.shortValue() * right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new UnsignedIntVal(left.shortValue() * right.shortValue());
@@ -845,18 +845,18 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() * right.longValue());
 		}
 
-		else if(left.isShort() && right.isReal()) return new RealVal(left.realValue() * right.realValue());
-		else if(left.isShort() && right.isBool()) return new UnsignedShortVal(left.shortValue() * right.shortValue());
-        else if(left.isShort() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.shortValue() * right.shortValue()); 
-        else if(left.isShort() && right.isByte()) return new IntVal(left.shortValue() * right.shortValue());
-		else if(left.isShort() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() * right.intValue());
-        else if(left.isShort() && right.isInt()) return new IntVal(left.intValue() * right.intValue());
-		else if(left.isShort() && right.isUnsignedShort()) return new UnsignedIntVal(left.shortValue() * right.shortValue());
-		else if(left.isShort() && right.isShort()) return new IntVal(left.shortValue() * right.shortValue());
-		else if(left.isShort() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() * right.longValue());
-		else if(left.isShort() && right.isLong()) return new LongVal(left.longValue() * right.longValue());
-		else if(left.isShort() && right.isRegister()) return new UnsignedShortVal(left.byteValue() * right.byteValue());
-		else if(left.isShort() && right.isVector()) {
+		else if(left.isShortValue() && right.isRealValue()) return new RealVal(left.realValue() * right.realValue());
+		else if(left.isShortValue() && right.isBoolValue()) return new UnsignedShortVal(left.shortValue() * right.shortValue());
+        else if(left.isShortValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.shortValue() * right.shortValue()); 
+        else if(left.isShortValue() && right.isByteValue()) return new IntVal(left.shortValue() * right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() * right.intValue());
+        else if(left.isShortValue() && right.isIntValue()) return new IntVal(left.intValue() * right.intValue());
+		else if(left.isShortValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.shortValue() * right.shortValue());
+		else if(left.isShortValue() && right.isShortValue()) return new IntVal(left.shortValue() * right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
+		else if(left.isShortValue() && right.isLongValue()) return new LongVal(left.longValue() * right.longValue());
+		else if(left.isShortValue() && right.isRegister()) return new UnsignedShortVal(left.byteValue() * right.byteValue());
+		else if(left.isShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new UnsignedIntVal(left.shortValue() * right.shortValue());
@@ -864,78 +864,78 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() * right.longValue());
 		}
 
-		else if(left.isUnsignedInt() && right.isReal()) return new RealVal(left.realValue() * right.realValue());
-		else if(left.isUnsignedInt() && right.isBool()) return new UnsignedIntVal(left.intValue() * right.intValue());
-        else if(left.isUnsignedInt() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() * right.intValue()); 
-        else if(left.isUnsignedInt() && right.isByte()) return new UnsignedIntVal(left.shortValue() * right.shortValue());
-		else if(left.isUnsignedInt() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() * right.intValue());
-        else if(left.isUnsignedInt() && right.isInt()) return new UnsignedIntVal(left.intValue() * right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedShort()) return new UnsignedIntVal(left.intValue() * right.intValue());
-		else if(left.isUnsignedInt() && right.isShort()) return new UnsignedIntVal(left.intValue() * right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() * right.longValue());
-		else if(left.isUnsignedInt() && right.isLong()) return new UnsignedLongVal(left.longValue() * right.longValue());
-		else if(left.isUnsignedInt() && right.isRegister()) return new UnsignedIntVal(left.intValue() * right.intValue());
-		else if(left.isUnsignedInt() && right.isVector()) {
+		else if(left.isUnsignedIntValue() && right.isRealValue()) return new RealVal(left.realValue() * right.realValue());
+		else if(left.isUnsignedIntValue() && right.isBoolValue()) return new UnsignedIntVal(left.intValue() * right.intValue());
+        else if(left.isUnsignedIntValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() * right.intValue()); 
+        else if(left.isUnsignedIntValue() && right.isByteValue()) return new UnsignedIntVal(left.shortValue() * right.shortValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() * right.intValue());
+        else if(left.isUnsignedIntValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() * right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.intValue() * right.intValue());
+		else if(left.isUnsignedIntValue() && right.isShortValue()) return new UnsignedIntVal(left.intValue() * right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
+		else if(left.isUnsignedIntValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
+		else if(left.isUnsignedIntValue() && right.isRegister()) return new UnsignedIntVal(left.intValue() * right.intValue());
+		else if(left.isUnsignedIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new UnsignedIntVal(left.intValue() * right.intValue());
 			else return new UnsignedLongVal(left.longValue() * right.longValue());
 		}
 
-		else if(left.isInt() && right.isReal()) return new RealVal(left.realValue() * right.realValue());
-		else if(left.isInt() && right.isBool()) return new UnsignedIntVal(left.intValue() * right.intValue());
-        else if(left.isInt() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() * right.intValue()); 
-        else if(left.isInt() && right.isByte()) return new IntVal(left.intValue() * right.intValue());
-		else if(left.isInt() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() * right.intValue());
-        else if(left.isInt() && right.isInt()) return new IntVal(left.intValue() * right.intValue());
-		else if(left.isInt() && right.isUnsignedShort()) return new UnsignedIntVal(left.intValue() * right.intValue());
-		else if(left.isInt() && right.isShort()) return new IntVal(left.intValue() * right.intValue());
-		else if(left.isInt() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() * right.longValue());
-		else if(left.isInt() && right.isLong()) return new LongVal(left.longValue() * right.longValue());
-		else if(left.isInt() && right.isRegister()) return new UnsignedIntVal(left.intValue() * right.intValue());
-		else if(left.isInt() && right.isVector()) {
+		else if(left.isIntValue() && right.isRealValue()) return new RealVal(left.realValue() * right.realValue());
+		else if(left.isIntValue() && right.isBoolValue()) return new UnsignedIntVal(left.intValue() * right.intValue());
+        else if(left.isIntValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() * right.intValue()); 
+        else if(left.isIntValue() && right.isByteValue()) return new IntVal(left.intValue() * right.intValue());
+		else if(left.isIntValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() * right.intValue());
+        else if(left.isIntValue() && right.isIntValue()) return new IntVal(left.intValue() * right.intValue());
+		else if(left.isIntValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.intValue() * right.intValue());
+		else if(left.isIntValue() && right.isShortValue()) return new IntVal(left.intValue() * right.intValue());
+		else if(left.isIntValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
+		else if(left.isIntValue() && right.isLongValue()) return new LongVal(left.longValue() * right.longValue());
+		else if(left.isIntValue() && right.isRegister()) return new UnsignedIntVal(left.intValue() * right.intValue());
+		else if(left.isIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new UnsignedIntVal(left.intValue() * right.intValue());
 			else return new UnsignedLongVal(left.longValue() * right.longValue());
 		}
 
-		else if(left.isUnsignedLong() && right.isReal()) return new RealVal(left.realValue() * right.realValue());
-		else if(left.isUnsignedLong() && right.isBool()) return new UnsignedLongVal(left.longValue() * right.longValue());
-        else if(left.isUnsignedLong() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() * right.longValue()); 
-        else if(left.isUnsignedLong() && right.isByte()) return new UnsignedLongVal(left.longValue() * right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedInt()) return new UnsignedLongVal(left.longValue() * right.longValue());
-        else if(left.isUnsignedLong() && right.isInt()) return new UnsignedLongVal(left.longValue() * right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedShort()) return new UnsignedLongVal(left.longValue() * right.longValue());
-		else if(left.isUnsignedLong() && right.isShort()) return new UnsignedLongVal(left.longValue() * right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() * right.longValue());
-		else if(left.isUnsignedLong() && right.isLong()) return new UnsignedLongVal(left.longValue() * right.longValue());
-		else if(left.isUnsignedLong() && right.isRegister()) return new UnsignedLongVal(left.longValue() * right.longValue());
-		else if(left.isUnsignedLong() && right.isVector()) return new UnsignedLongVal(left.longValue() * right.longValue());
+		else if(left.isUnsignedLongValue() && right.isRealValue()) return new RealVal(left.realValue() * right.realValue());
+		else if(left.isUnsignedLongValue() && right.isBoolValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
+        else if(left.isUnsignedLongValue() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() * right.longValue()); 
+        else if(left.isUnsignedLongValue() && right.isByteValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedIntValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
+        else if(left.isUnsignedLongValue() && right.isIntValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedShortValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
+		else if(left.isUnsignedLongValue() && right.isShortValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
+		else if(left.isUnsignedLongValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
+		else if(left.isUnsignedLongValue() && right.isRegister()) return new UnsignedLongVal(left.longValue() * right.longValue());
+		else if(left.isUnsignedLongValue() && right.isVector()) return new UnsignedLongVal(left.longValue() * right.longValue());
 
-		else if(left.isLong() && right.isReal()) return new RealVal(left.realValue() * right.realValue());
-		else if(left.isLong() && right.isBool()) return new UnsignedLongVal(left.longValue() * right.longValue());
-        else if(left.isLong() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() * right.longValue()); 
-        else if(left.isLong() && right.isByte()) return new LongVal(left.longValue() * right.longValue());
-		else if(left.isLong() && right.isUnsignedInt()) return new UnsignedLongVal(left.longValue() * right.longValue());
-        else if(left.isLong() && right.isInt()) return new LongVal(left.longValue() * right.longValue());
-		else if(left.isLong() && right.isUnsignedShort()) return new UnsignedLongVal(left.longValue() * right.longValue());
-		else if(left.isLong() && right.isShort()) return new LongVal(left.longValue() * right.longValue());
-		else if(left.isLong() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() * right.longValue());
-		else if(left.isLong() && right.isLong()) return new LongVal(left.longValue() * right.longValue());
-		else if(left.isLong() && right.isRegister()) return new UnsignedLongVal(left.longValue() * right.longValue());
-		else if(left.isLong() && right.isVector()) return new UnsignedLongVal(left.longValue() * right.longValue());
+		else if(left.isLongValue() && right.isRealValue()) return new RealVal(left.realValue() * right.realValue());
+		else if(left.isLongValue() && right.isBoolValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
+        else if(left.isLongValue() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() * right.longValue()); 
+        else if(left.isLongValue() && right.isByteValue()) return new LongVal(left.longValue() * right.longValue());
+		else if(left.isLongValue() && right.isUnsignedIntValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
+        else if(left.isLongValue() && right.isIntValue()) return new LongVal(left.longValue() * right.longValue());
+		else if(left.isLongValue() && right.isUnsignedShortValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
+		else if(left.isLongValue() && right.isShortValue()) return new LongVal(left.longValue() * right.longValue());
+		else if(left.isLongValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
+		else if(left.isLongValue() && right.isLongValue()) return new LongVal(left.longValue() * right.longValue());
+		else if(left.isLongValue() && right.isRegister()) return new UnsignedLongVal(left.longValue() * right.longValue());
+		else if(left.isLongValue() && right.isVector()) return new UnsignedLongVal(left.longValue() * right.longValue());
 
-		else if(left.isRegister() && right.isReal()) return new RealVal(left.realValue() * right.realValue());
-		else if(left.isRegister() && right.isBool()) return new UnsignedByteVal(left.byteValue() * right.byteValue());
+		else if(left.isRegister() && right.isRealValue()) return new RealVal(left.realValue() * right.realValue());
+		else if(left.isRegister() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() * right.byteValue());
         else if(left.isRegister() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.byteValue() * right.byteValue()); 
-        else if(left.isRegister() && right.isByte()) return new UnsignedIntVal(left.byteValue() * right.byteValue());
-		else if(left.isRegister() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() * right.intValue());
-        else if(left.isRegister() && right.isInt()) return new UnsignedIntVal(left.intValue() * right.intValue());
-		else if(left.isRegister() && right.isUnsignedShort()) return new UnsignedIntVal(left.shortValue() * right.shortValue());
-		else if(left.isRegister() && right.isShort()) return new UnsignedIntVal(left.shortValue() * right.shortValue());
-		else if(left.isRegister() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() * right.longValue());
-		else if(left.isRegister() && right.isLong()) return new UnsignedLongVal(left.longValue() * right.longValue());
+        else if(left.isRegister() && right.isByteValue()) return new UnsignedIntVal(left.byteValue() * right.byteValue());
+		else if(left.isRegister() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() * right.intValue());
+        else if(left.isRegister() && right.isIntValue()) return new UnsignedIntVal(left.intValue() * right.intValue());
+		else if(left.isRegister() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.shortValue() * right.shortValue());
+		else if(left.isRegister() && right.isShortValue()) return new UnsignedIntVal(left.shortValue() * right.shortValue());
+		else if(left.isRegister() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
+		else if(left.isRegister() && right.isLongValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
 		else if(left.isRegister() && right.isRegister()) return new UnsignedByteVal(left.byteValue() * right.byteValue());
 		else if(left.isRegister() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -946,16 +946,16 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() * right.longValue());
 		}
 
-		else if(left.isVector() && right.isReal()) return new RealVal(left.realValue() * right.realValue());
-		else if(left.isVector() && right.isBool()) return new UnsignedByteVal(left.byteValue() * right.byteValue());
+		else if(left.isVector() && right.isRealValue()) return new RealVal(left.realValue() * right.realValue());
+		else if(left.isVector() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() * right.byteValue());
         else if(left.isVector() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() * right.byteValue()); 
-        else if(left.isVector() && right.isByte()) return new UnsignedByteVal(left.byteValue() * right.byteValue());
-		else if(left.isVector() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() * right.intValue());
-        else if(left.isVector() && right.isInt()) return new UnsignedIntVal(left.intValue() * right.intValue());
-		else if(left.isVector() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() * right.shortValue());
-		else if(left.isVector() && right.isShort()) return new UnsignedShortVal(left.shortValue() * right.shortValue());
-		else if(left.isVector() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() * right.longValue());
-		else if(left.isVector() && right.isLong()) return new UnsignedLongVal(left.longValue() * right.longValue());
+        else if(left.isVector() && right.isByteValue()) return new UnsignedByteVal(left.byteValue() * right.byteValue());
+		else if(left.isVector() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() * right.intValue());
+        else if(left.isVector() && right.isIntValue()) return new UnsignedIntVal(left.intValue() * right.intValue());
+		else if(left.isVector() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() * right.shortValue());
+		else if(left.isVector() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() * right.shortValue());
+		else if(left.isVector() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
+		else if(left.isVector() && right.isLongValue()) return new UnsignedLongVal(left.longValue() * right.longValue());
 		else if(left.isVector() && right.isRegister()) return new UnsignedByteVal(left.byteValue() * right.byteValue());
 		else if(left.isVector() && right.isVector()) return new UnsignedLongVal(left.longValue() * right.longValue());
 		else {
@@ -965,32 +965,32 @@ public class Utils {
 
     }
 
-    public static Value iv(Value left, Value right) throws Exception{
-        if(left.isReal() && right.isReal()) return new RealVal(left.realValue() / right.realValue());
-		else if(left.isReal() && right.isBool()) return new RealVal(left.realValue() / right.realValue());
-        else if(left.isReal() && right.isUnsignedByteValue()) return new RealVal(left.realValue() / right.realValue()); 
-        else if(left.isReal() && right.isByte()) return new RealVal(left.realValue() / right.realValue());
-		else if(left.isReal() && right.isUnsignedInt()) return new RealVal(left.realValue() / right.realValue());
-        else if(left.isReal() && right.isInt()) return new RealVal(left.realValue() / right.realValue());
-		else if(left.isReal() && right.isUnsignedShort()) return new RealVal(left.realValue() / right.realValue());
-		else if(left.isReal() && right.isShort()) return new RealVal(left.realValue() / right.realValue());
-		else if(left.isReal() && right.isUnsignedLong()) return new RealVal(left.realValue() / right.realValue());
-		else if(left.isReal() && right.isLong()) return new RealVal(left.realValue() / right.realValue());
-		else if(left.isReal() && right.isRegister()) return new RealVal(left.realValue() / right.realValue());
-		else if(left.isReal() && right.isVector()) return new RealVal(left.realValue() / right.realValue());
+    public static Value div(Value left, Value right) throws Exception{
+        if(left.isRealValue() && right.isRealValue()) return new RealVal(left.realValue() / right.realValue());
+		else if(left.isRealValue() && right.isBoolValue()) return new RealVal(left.realValue() / right.realValue());
+        else if(left.isRealValue() && right.isUnsignedByteValue()) return new RealVal(left.realValue() / right.realValue()); 
+        else if(left.isRealValue() && right.isByteValue()) return new RealVal(left.realValue() / right.realValue());
+		else if(left.isRealValue() && right.isUnsignedIntValue()) return new RealVal(left.realValue() / right.realValue());
+        else if(left.isRealValue() && right.isIntValue()) return new RealVal(left.realValue() / right.realValue());
+		else if(left.isRealValue() && right.isUnsignedShortValue()) return new RealVal(left.realValue() / right.realValue());
+		else if(left.isRealValue() && right.isShortValue()) return new RealVal(left.realValue() / right.realValue());
+		else if(left.isRealValue() && right.isUnsignedLongValue()) return new RealVal(left.realValue() / right.realValue());
+		else if(left.isRealValue() && right.isLongValue()) return new RealVal(left.realValue() / right.realValue());
+		else if(left.isRealValue() && right.isRegister()) return new RealVal(left.realValue() / right.realValue());
+		else if(left.isRealValue() && right.isVector()) return new RealVal(left.realValue() / right.realValue());
 		
-		else if(left.isBool() && right.isReal()) return new RealVal(left.realValue() / right.realValue());
-		else if(left.isBool() && right.isBool()) return new RealVal(left.byteValue() / right.byteValue());
-        else if(left.isBool() && right.isUnsignedByteValue()) return new RealVal(left.byteValue() / right.byteValue()); 
-        else if(left.isBool() && right.isByte()) return new RealVal(left.byteValue() / right.byteValue());
-		else if(left.isBool() && right.isUnsignedInt()) return new RealVal(left.intValue() / right.intValue());
-        else if(left.isBool() && right.isInt()) return new RealVal(left.intValue() / right.intValue());
-		else if(left.isBool() && right.isUnsignedShort()) return new RealVal(left.shortValue() / right.shortValue());
-		else if(left.isBool() && right.isShort()) return new RealVal(left.shortValue() / right.shortValue());
-		else if(left.isBool() && right.isUnsignedLong()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isBool() && right.isLong()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isBool() && right.isRegister()) return new RealVal(left.byteValue() / right.byteValue());
-		else if(left.isBool() && right.isVector()) {
+		else if(left.isBoolValue() && right.isRealValue()) return new RealVal(left.realValue() / right.realValue());
+		else if(left.isBoolValue() && right.isBoolValue()) return new RealVal(left.byteValue() / right.byteValue());
+        else if(left.isBoolValue() && right.isUnsignedByteValue()) return new RealVal(left.byteValue() / right.byteValue()); 
+        else if(left.isBoolValue() && right.isByteValue()) return new RealVal(left.byteValue() / right.byteValue());
+		else if(left.isBoolValue() && right.isUnsignedIntValue()) return new RealVal(left.intValue() / right.intValue());
+        else if(left.isBoolValue() && right.isIntValue()) return new RealVal(left.intValue() / right.intValue());
+		else if(left.isBoolValue() && right.isUnsignedShortValue()) return new RealVal(left.shortValue() / right.shortValue());
+		else if(left.isBoolValue() && right.isShortValue()) return new RealVal(left.shortValue() / right.shortValue());
+		else if(left.isBoolValue() && right.isUnsignedLongValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isBoolValue() && right.isLongValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isBoolValue() && right.isRegister()) return new RealVal(left.byteValue() / right.byteValue());
+		else if(left.isBoolValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new RealVal(left.byteValue() / right.byteValue());
@@ -999,16 +999,16 @@ public class Utils {
 			else return new RealVal(left.longValue() / right.longValue());
 		}
 
-		else if(left.isUnsignedByteValue() && right.isReal()) return new RealVal(left.realValue() / right.realValue());
-		else if(left.isUnsignedByteValue() && right.isBool()) return new RealVal(left.byteValue() / right.byteValue());
+		else if(left.isUnsignedByteValue() && right.isRealValue()) return new RealVal(left.realValue() / right.realValue());
+		else if(left.isUnsignedByteValue() && right.isBoolValue()) return new RealVal(left.byteValue() / right.byteValue());
         else if(left.isUnsignedByteValue() && right.isUnsignedByteValue()) return new RealVal(left.byteValue() / right.byteValue()); 
-        else if(left.isUnsignedByteValue() && right.isByte()) return new RealVal(left.byteValue() / right.byteValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedInt()) return new RealVal(left.intValue() / right.intValue());
-        else if(left.isUnsignedByteValue() && right.isInt()) return new RealVal(left.intValue() / right.intValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedShort()) return new RealVal(left.shortValue() / right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isShort()) return new RealVal(left.shortValue() / right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedLong()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isUnsignedByteValue() && right.isLong()) return new RealVal(left.longValue() / right.longValue());
+        else if(left.isUnsignedByteValue() && right.isByteValue()) return new RealVal(left.byteValue() / right.byteValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedIntValue()) return new RealVal(left.intValue() / right.intValue());
+        else if(left.isUnsignedByteValue() && right.isIntValue()) return new RealVal(left.intValue() / right.intValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedShortValue()) return new RealVal(left.shortValue() / right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isShortValue()) return new RealVal(left.shortValue() / right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedLongValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isUnsignedByteValue() && right.isLongValue()) return new RealVal(left.longValue() / right.longValue());
 		else if(left.isUnsignedByteValue() && right.isRegister()) return new RealVal(left.byteValue() / right.byteValue());
 		else if(left.isUnsignedByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -1019,18 +1019,18 @@ public class Utils {
 			else return new RealVal(left.longValue() / right.longValue());
 		}
 
-		else if(left.isByte() && right.isReal()) return new RealVal(left.realValue() / right.realValue());
-		else if(left.isByte() && right.isBool()) return new RealVal(left.byteValue() / right.byteValue());
-        else if(left.isByte() && right.isUnsignedByteValue()) return new RealVal(left.byteValue() / right.byteValue()); 
-        else if(left.isByte() && right.isByte()) return new RealVal(left.byteValue() / right.byteValue());
-		else if(left.isByte() && right.isUnsignedInt()) return new RealVal(left.intValue() / right.intValue());
-        else if(left.isByte() && right.isInt()) return new RealVal(left.intValue() / right.intValue());
-		else if(left.isByte() && right.isUnsignedShort()) return new RealVal(left.shortValue() / right.shortValue());
-		else if(left.isByte() && right.isShort()) return new RealVal(left.shortValue() / right.shortValue());
-		else if(left.isByte() && right.isUnsignedLong()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isByte() && right.isLong()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isByte() && right.isRegister()) return new RealVal(left.byteValue() / right.byteValue());
-		else if(left.isByte() && right.isVector()) {
+		else if(left.isByteValue() && right.isRealValue()) return new RealVal(left.realValue() / right.realValue());
+		else if(left.isByteValue() && right.isBoolValue()) return new RealVal(left.byteValue() / right.byteValue());
+        else if(left.isByteValue() && right.isUnsignedByteValue()) return new RealVal(left.byteValue() / right.byteValue()); 
+        else if(left.isByteValue() && right.isByteValue()) return new RealVal(left.byteValue() / right.byteValue());
+		else if(left.isByteValue() && right.isUnsignedIntValue()) return new RealVal(left.intValue() / right.intValue());
+        else if(left.isByteValue() && right.isIntValue()) return new RealVal(left.intValue() / right.intValue());
+		else if(left.isByteValue() && right.isUnsignedShortValue()) return new RealVal(left.shortValue() / right.shortValue());
+		else if(left.isByteValue() && right.isShortValue()) return new RealVal(left.shortValue() / right.shortValue());
+		else if(left.isByteValue() && right.isUnsignedLongValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isByteValue() && right.isLongValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isByteValue() && right.isRegister()) return new RealVal(left.byteValue() / right.byteValue());
+		else if(left.isByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new RealVal(left.byteValue() / right.byteValue());
@@ -1039,18 +1039,18 @@ public class Utils {
 			else return new RealVal(left.longValue() / right.longValue());
 		}
 
-		else if(left.isUnsignedShort() && right.isReal()) return new RealVal(left.realValue() / right.realValue());
-		else if(left.isUnsignedShort() && right.isBool()) return new RealVal(left.shortValue() / right.shortValue());
-        else if(left.isUnsignedShort() && right.isUnsignedByteValue()) return new RealVal(left.shortValue() / right.shortValue()); 
-        else if(left.isUnsignedShort() && right.isByte()) return new RealVal(left.shortValue() / right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedInt()) return new RealVal(left.intValue() / right.intValue());
-        else if(left.isUnsignedShort() && right.isInt()) return new RealVal(left.intValue() / right.intValue());
-		else if(left.isUnsignedShort() && right.isUnsignedShort()) return new RealVal(left.shortValue() / right.shortValue());
-		else if(left.isUnsignedShort() && right.isShort()) return new RealVal(left.shortValue() / right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedLong()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isUnsignedShort() && right.isLong()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isUnsignedShort() && right.isRegister()) return new RealVal(left.shortValue() / right.shortValue());
-		else if(left.isUnsignedShort() && right.isVector()) {
+		else if(left.isUnsignedShortValue() && right.isRealValue()) return new RealVal(left.realValue() / right.realValue());
+		else if(left.isUnsignedShortValue() && right.isBoolValue()) return new RealVal(left.shortValue() / right.shortValue());
+        else if(left.isUnsignedShortValue() && right.isUnsignedByteValue()) return new RealVal(left.shortValue() / right.shortValue()); 
+        else if(left.isUnsignedShortValue() && right.isByteValue()) return new RealVal(left.shortValue() / right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedIntValue()) return new RealVal(left.intValue() / right.intValue());
+        else if(left.isUnsignedShortValue() && right.isIntValue()) return new RealVal(left.intValue() / right.intValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedShortValue()) return new RealVal(left.shortValue() / right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isShortValue()) return new RealVal(left.shortValue() / right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedLongValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isUnsignedShortValue() && right.isLongValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isUnsignedShortValue() && right.isRegister()) return new RealVal(left.shortValue() / right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new RealVal(left.shortValue() / right.shortValue());
@@ -1058,18 +1058,18 @@ public class Utils {
 			else return new RealVal(left.longValue() / right.longValue());
 		}
 
-		else if(left.isShort() && right.isReal()) return new RealVal(left.realValue() / right.realValue());
-		else if(left.isShort() && right.isBool()) return new RealVal(left.shortValue() / right.shortValue());
-        else if(left.isShort() && right.isUnsignedByteValue()) return new RealVal(left.shortValue() / right.shortValue()); 
-        else if(left.isShort() && right.isByte()) return new RealVal(left.shortValue() / right.shortValue());
-		else if(left.isShort() && right.isUnsignedInt()) return new RealVal(left.intValue() / right.intValue());
-        else if(left.isShort() && right.isInt()) return new RealVal(left.intValue() / right.intValue());
-		else if(left.isShort() && right.isUnsignedShort()) return new RealVal(left.shortValue() / right.shortValue());
-		else if(left.isShort() && right.isShort()) return new RealVal(left.shortValue() / right.shortValue());
-		else if(left.isShort() && right.isUnsignedLong()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isShort() && right.isLong()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isShort() && right.isRegister()) return new RealVal(left.byteValue() / right.byteValue());
-		else if(left.isShort() && right.isVector()) {
+		else if(left.isShortValue() && right.isRealValue()) return new RealVal(left.realValue() / right.realValue());
+		else if(left.isShortValue() && right.isBoolValue()) return new RealVal(left.shortValue() / right.shortValue());
+        else if(left.isShortValue() && right.isUnsignedByteValue()) return new RealVal(left.shortValue() / right.shortValue()); 
+        else if(left.isShortValue() && right.isByteValue()) return new RealVal(left.shortValue() / right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedIntValue()) return new RealVal(left.intValue() / right.intValue());
+        else if(left.isShortValue() && right.isIntValue()) return new RealVal(left.intValue() / right.intValue());
+		else if(left.isShortValue() && right.isUnsignedShortValue()) return new RealVal(left.shortValue() / right.shortValue());
+		else if(left.isShortValue() && right.isShortValue()) return new RealVal(left.shortValue() / right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedLongValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isShortValue() && right.isLongValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isShortValue() && right.isRegister()) return new RealVal(left.byteValue() / right.byteValue());
+		else if(left.isShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new RealVal(left.shortValue() / right.shortValue());
@@ -1077,78 +1077,78 @@ public class Utils {
 			else return new RealVal(left.longValue() / right.longValue());
 		}
 
-		else if(left.isUnsignedInt() && right.isReal()) return new RealVal(left.realValue() / right.realValue());
-		else if(left.isUnsignedInt() && right.isBool()) return new RealVal(left.intValue() / right.intValue());
-        else if(left.isUnsignedInt() && right.isUnsignedByteValue()) return new RealVal(left.intValue() / right.intValue()); 
-        else if(left.isUnsignedInt() && right.isByte()) return new RealVal(left.shortValue() / right.shortValue());
-		else if(left.isUnsignedInt() && right.isUnsignedInt()) return new RealVal(left.intValue() / right.intValue());
-        else if(left.isUnsignedInt() && right.isInt()) return new RealVal(left.intValue() / right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedShort()) return new RealVal(left.intValue() / right.intValue());
-		else if(left.isUnsignedInt() && right.isShort()) return new RealVal(left.intValue() / right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedLong()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isUnsignedInt() && right.isLong()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isUnsignedInt() && right.isRegister()) return new RealVal(left.intValue() / right.intValue());
-		else if(left.isUnsignedInt() && right.isVector()) {
+		else if(left.isUnsignedIntValue() && right.isRealValue()) return new RealVal(left.realValue() / right.realValue());
+		else if(left.isUnsignedIntValue() && right.isBoolValue()) return new RealVal(left.intValue() / right.intValue());
+        else if(left.isUnsignedIntValue() && right.isUnsignedByteValue()) return new RealVal(left.intValue() / right.intValue()); 
+        else if(left.isUnsignedIntValue() && right.isByteValue()) return new RealVal(left.shortValue() / right.shortValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedIntValue()) return new RealVal(left.intValue() / right.intValue());
+        else if(left.isUnsignedIntValue() && right.isIntValue()) return new RealVal(left.intValue() / right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedShortValue()) return new RealVal(left.intValue() / right.intValue());
+		else if(left.isUnsignedIntValue() && right.isShortValue()) return new RealVal(left.intValue() / right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedLongValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isUnsignedIntValue() && right.isLongValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isUnsignedIntValue() && right.isRegister()) return new RealVal(left.intValue() / right.intValue());
+		else if(left.isUnsignedIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new RealVal(left.intValue() / right.intValue());
 			else return new RealVal(left.longValue() / right.longValue());
 		}
 
-		else if(left.isInt() && right.isReal()) return new RealVal(left.realValue() / right.realValue());
-		else if(left.isInt() && right.isBool()) return new RealVal(left.intValue() / right.intValue());
-        else if(left.isInt() && right.isUnsignedByteValue()) return new RealVal(left.intValue() / right.intValue()); 
-        else if(left.isInt() && right.isByte()) return new RealVal(left.intValue() / right.intValue());
-		else if(left.isInt() && right.isUnsignedInt()) return new RealVal(left.intValue() / right.intValue());
-        else if(left.isInt() && right.isInt()) return new RealVal(left.intValue() / right.intValue());
-		else if(left.isInt() && right.isUnsignedShort()) return new RealVal(left.intValue() / right.intValue());
-		else if(left.isInt() && right.isShort()) return new RealVal(left.intValue() / right.intValue());
-		else if(left.isInt() && right.isUnsignedLong()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isInt() && right.isLong()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isInt() && right.isRegister()) return new RealVal(left.intValue() / right.intValue());
-		else if(left.isInt() && right.isVector()) {
+		else if(left.isIntValue() && right.isRealValue()) return new RealVal(left.realValue() / right.realValue());
+		else if(left.isIntValue() && right.isBoolValue()) return new RealVal(left.intValue() / right.intValue());
+        else if(left.isIntValue() && right.isUnsignedByteValue()) return new RealVal(left.intValue() / right.intValue()); 
+        else if(left.isIntValue() && right.isByteValue()) return new RealVal(left.intValue() / right.intValue());
+		else if(left.isIntValue() && right.isUnsignedIntValue()) return new RealVal(left.intValue() / right.intValue());
+        else if(left.isIntValue() && right.isIntValue()) return new RealVal(left.intValue() / right.intValue());
+		else if(left.isIntValue() && right.isUnsignedShortValue()) return new RealVal(left.intValue() / right.intValue());
+		else if(left.isIntValue() && right.isShortValue()) return new RealVal(left.intValue() / right.intValue());
+		else if(left.isIntValue() && right.isUnsignedLongValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isIntValue() && right.isLongValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isIntValue() && right.isRegister()) return new RealVal(left.intValue() / right.intValue());
+		else if(left.isIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new RealVal(left.intValue() / right.intValue());
 			else return new RealVal(left.longValue() / right.longValue());
 		}
 
-		else if(left.isUnsignedLong() && right.isReal()) return new RealVal(left.realValue() / right.realValue());
-		else if(left.isUnsignedLong() && right.isBool()) return new RealVal(left.longValue() / right.longValue());
-        else if(left.isUnsignedLong() && right.isUnsignedByteValue()) return new RealVal(left.longValue() / right.longValue()); 
-        else if(left.isUnsignedLong() && right.isByte()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedInt()) return new RealVal(left.longValue() / right.longValue());
-        else if(left.isUnsignedLong() && right.isInt()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedShort()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isUnsignedLong() && right.isShort()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedLong()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isUnsignedLong() && right.isLong()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isUnsignedLong() && right.isRegister()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isUnsignedLong() && right.isVector()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isUnsignedLongValue() && right.isRealValue()) return new RealVal(left.realValue() / right.realValue());
+		else if(left.isUnsignedLongValue() && right.isBoolValue()) return new RealVal(left.longValue() / right.longValue());
+        else if(left.isUnsignedLongValue() && right.isUnsignedByteValue()) return new RealVal(left.longValue() / right.longValue()); 
+        else if(left.isUnsignedLongValue() && right.isByteValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedIntValue()) return new RealVal(left.longValue() / right.longValue());
+        else if(left.isUnsignedLongValue() && right.isIntValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedShortValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isUnsignedLongValue() && right.isShortValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedLongValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isUnsignedLongValue() && right.isLongValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isUnsignedLongValue() && right.isRegister()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isUnsignedLongValue() && right.isVector()) return new RealVal(left.longValue() / right.longValue());
 
-		else if(left.isLong() && right.isReal()) return new RealVal(left.realValue() / right.realValue());
-		else if(left.isLong() && right.isBool()) return new RealVal(left.longValue() / right.longValue());
-        else if(left.isLong() && right.isUnsignedByteValue()) return new RealVal(left.longValue() / right.longValue()); 
-        else if(left.isLong() && right.isByte()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isLong() && right.isUnsignedInt()) return new RealVal(left.longValue() / right.longValue());
-        else if(left.isLong() && right.isInt()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isLong() && right.isUnsignedShort()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isLong() && right.isShort()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isLong() && right.isUnsignedLong()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isLong() && right.isLong()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isLong() && right.isRegister()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isLong() && right.isVector()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isLongValue() && right.isRealValue()) return new RealVal(left.realValue() / right.realValue());
+		else if(left.isLongValue() && right.isBoolValue()) return new RealVal(left.longValue() / right.longValue());
+        else if(left.isLongValue() && right.isUnsignedByteValue()) return new RealVal(left.longValue() / right.longValue()); 
+        else if(left.isLongValue() && right.isByteValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isLongValue() && right.isUnsignedIntValue()) return new RealVal(left.longValue() / right.longValue());
+        else if(left.isLongValue() && right.isIntValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isLongValue() && right.isUnsignedShortValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isLongValue() && right.isShortValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isLongValue() && right.isUnsignedLongValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isLongValue() && right.isLongValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isLongValue() && right.isRegister()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isLongValue() && right.isVector()) return new RealVal(left.longValue() / right.longValue());
 
-		else if(left.isRegister() && right.isReal()) return new RealVal(left.realValue() / right.realValue());
-		else if(left.isRegister() && right.isBool()) return new RealVal(left.byteValue() / right.byteValue());
+		else if(left.isRegister() && right.isRealValue()) return new RealVal(left.realValue() / right.realValue());
+		else if(left.isRegister() && right.isBoolValue()) return new RealVal(left.byteValue() / right.byteValue());
         else if(left.isRegister() && right.isUnsignedByteValue()) return new RealVal(left.byteValue() / right.byteValue()); 
-        else if(left.isRegister() && right.isByte()) return new RealVal(left.byteValue() / right.byteValue());
-		else if(left.isRegister() && right.isUnsignedInt()) return new RealVal(left.intValue() / right.intValue());
-        else if(left.isRegister() && right.isInt()) return new RealVal(left.intValue() / right.intValue());
-		else if(left.isRegister() && right.isUnsignedShort()) return new RealVal(left.shortValue() / right.shortValue());
-		else if(left.isRegister() && right.isShort()) return new RealVal(left.shortValue() / right.shortValue());
-		else if(left.isRegister() && right.isUnsignedLong()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isRegister() && right.isLong()) return new RealVal(left.longValue() / right.longValue());
+        else if(left.isRegister() && right.isByteValue()) return new RealVal(left.byteValue() / right.byteValue());
+		else if(left.isRegister() && right.isUnsignedIntValue()) return new RealVal(left.intValue() / right.intValue());
+        else if(left.isRegister() && right.isIntValue()) return new RealVal(left.intValue() / right.intValue());
+		else if(left.isRegister() && right.isUnsignedShortValue()) return new RealVal(left.shortValue() / right.shortValue());
+		else if(left.isRegister() && right.isShortValue()) return new RealVal(left.shortValue() / right.shortValue());
+		else if(left.isRegister() && right.isUnsignedLongValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isRegister() && right.isLongValue()) return new RealVal(left.longValue() / right.longValue());
 		else if(left.isRegister() && right.isRegister()) return new RealVal(left.byteValue() / right.byteValue());
 		else if(left.isRegister() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -1159,16 +1159,16 @@ public class Utils {
 			else return new RealVal(left.longValue() / right.longValue());
 		}
 
-		else if(left.isVector() && right.isReal()) return new RealVal(left.realValue() / right.realValue());
-		else if(left.isVector() && right.isBool()) return new RealVal(left.byteValue() / right.byteValue());
+		else if(left.isVector() && right.isRealValue()) return new RealVal(left.realValue() / right.realValue());
+		else if(left.isVector() && right.isBoolValue()) return new RealVal(left.byteValue() / right.byteValue());
         else if(left.isVector() && right.isUnsignedByteValue()) return new RealVal(left.byteValue() / right.byteValue()); 
-        else if(left.isVector() && right.isByte()) return new RealVal(left.byteValue() / right.byteValue());
-		else if(left.isVector() && right.isUnsignedInt()) return new RealVal(left.intValue() / right.intValue());
-        else if(left.isVector() && right.isInt()) return new RealVal(left.intValue() / right.intValue());
-		else if(left.isVector() && right.isUnsignedShort()) return new RealVal(left.shortValue() / right.shortValue());
-		else if(left.isVector() && right.isShort()) return new RealVal(left.shortValue() / right.shortValue());
-		else if(left.isVector() && right.isUnsignedLong()) return new RealVal(left.longValue() / right.longValue());
-		else if(left.isVector() && right.isLong()) return new RealVal(left.longValue() / right.longValue());
+        else if(left.isVector() && right.isByteValue()) return new RealVal(left.byteValue() / right.byteValue());
+		else if(left.isVector() && right.isUnsignedIntValue()) return new RealVal(left.intValue() / right.intValue());
+        else if(left.isVector() && right.isIntValue()) return new RealVal(left.intValue() / right.intValue());
+		else if(left.isVector() && right.isUnsignedShortValue()) return new RealVal(left.shortValue() / right.shortValue());
+		else if(left.isVector() && right.isShortValue()) return new RealVal(left.shortValue() / right.shortValue());
+		else if(left.isVector() && right.isUnsignedLongValue()) return new RealVal(left.longValue() / right.longValue());
+		else if(left.isVector() && right.isLongValue()) return new RealVal(left.longValue() / right.longValue());
 		else if(left.isVector() && right.isRegister()) return new RealVal(left.byteValue() / right.byteValue());
 		else if(left.isVector() && right.isVector()) return new RealVal(left.longValue() / right.longValue());
 		else {
@@ -1177,18 +1177,18 @@ public class Utils {
 		}
     }
 
-    public static Value od(Value left, Value right) throws Exception{
-        if(left.isBool() && right.isBool()) return new UnsignedByteVal(left.byteValue() % right.byteValue());
-        else if(left.isBool() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() % right.byteValue()); 
-        else if(left.isBool() && right.isByte()) return new ByteVal(left.byteValue() % right.byteValue());
-		else if(left.isBool() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() % right.intValue());
-        else if(left.isBool() && right.isInt()) return new IntVal(left.intValue() % right.intValue());
-		else if(left.isBool() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
-		else if(left.isBool() && right.isShort()) return new ShortVal(left.shortValue() % right.shortValue());
-		else if(left.isBool() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() % right.longValue());
-		else if(left.isBool() && right.isLong()) return new LongVal(left.longValue() % right.longValue());
-		else if(left.isBool() && right.isRegister()) return new UnsignedByteVal(left.byteValue() % right.byteValue());
-		else if(left.isBool() && right.isVector()) {
+    public static Value mod(Value left, Value right) throws Exception{
+        if(left.isBoolValue() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() % right.byteValue());
+        else if(left.isBoolValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() % right.byteValue()); 
+        else if(left.isBoolValue() && right.isByteValue()) return new ByteVal(left.byteValue() % right.byteValue());
+		else if(left.isBoolValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() % right.intValue());
+        else if(left.isBoolValue() && right.isIntValue()) return new IntVal(left.intValue() % right.intValue());
+		else if(left.isBoolValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
+		else if(left.isBoolValue() && right.isShortValue()) return new ShortVal(left.shortValue() % right.shortValue());
+		else if(left.isBoolValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
+		else if(left.isBoolValue() && right.isLongValue()) return new LongVal(left.longValue() % right.longValue());
+		else if(left.isBoolValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() % right.byteValue());
+		else if(left.isBoolValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new UnsignedByteVal(left.byteValue() % right.byteValue());
@@ -1197,15 +1197,15 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() % right.longValue());
 		}
 
-		if(left.isUnsignedByteValue() && right.isBool()) return new UnsignedByteVal(left.byteValue() % right.byteValue());
+		if(left.isUnsignedByteValue() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() % right.byteValue());
         else if(left.isUnsignedByteValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() % right.byteValue()); 
-        else if(left.isUnsignedByteValue() && right.isByte()) return new UnsignedByteVal(left.byteValue() % right.byteValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() % right.intValue());
-        else if(left.isUnsignedByteValue() && right.isInt()) return new UnsignedIntVal(left.intValue() % right.intValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isShort()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() % right.longValue());
-		else if(left.isUnsignedByteValue() && right.isLong()) return new UnsignedLongVal(left.longValue() % right.longValue());
+        else if(left.isUnsignedByteValue() && right.isByteValue()) return new UnsignedByteVal(left.byteValue() % right.byteValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() % right.intValue());
+        else if(left.isUnsignedByteValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() % right.intValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
+		else if(left.isUnsignedByteValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
 		else if(left.isUnsignedByteValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() % right.byteValue());
 		else if(left.isUnsignedByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -1216,17 +1216,17 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() % right.longValue());
 		}
 
-		if(left.isByte() && right.isBool()) return new ByteVal(left.byteValue() % right.byteValue());
-        else if(left.isByte() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() % right.byteValue()); 
-        else if(left.isByte() && right.isByte()) return new ByteVal(left.byteValue() % right.byteValue());
-		else if(left.isByte() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() % right.intValue());
-        else if(left.isByte() && right.isInt()) return new IntVal(left.intValue() % right.intValue());
-		else if(left.isByte() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
-		else if(left.isByte() && right.isShort()) return new ShortVal(left.shortValue() % right.shortValue());
-		else if(left.isByte() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() % right.longValue());
-		else if(left.isByte() && right.isLong()) return new LongVal(left.longValue() % right.longValue());
-		else if(left.isByte() && right.isRegister()) return new UnsignedByteVal(left.byteValue() % right.byteValue());
-		else if(left.isByte() && right.isVector()) {
+		if(left.isByteValue() && right.isBoolValue()) return new ByteVal(left.byteValue() % right.byteValue());
+        else if(left.isByteValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() % right.byteValue()); 
+        else if(left.isByteValue() && right.isByteValue()) return new ByteVal(left.byteValue() % right.byteValue());
+		else if(left.isByteValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() % right.intValue());
+        else if(left.isByteValue() && right.isIntValue()) return new IntVal(left.intValue() % right.intValue());
+		else if(left.isByteValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
+		else if(left.isByteValue() && right.isShortValue()) return new ShortVal(left.shortValue() % right.shortValue());
+		else if(left.isByteValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
+		else if(left.isByteValue() && right.isLongValue()) return new LongVal(left.longValue() % right.longValue());
+		else if(left.isByteValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() % right.byteValue());
+		else if(left.isByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new UnsignedByteVal(left.byteValue() % right.byteValue());
@@ -1235,17 +1235,17 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() % right.longValue());
 		}
 
-		else if(left.isUnsignedShort() && right.isBool()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
-        else if(left.isUnsignedShort() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() % right.shortValue()); 
-        else if(left.isUnsignedShort() && right.isByte()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() % right.intValue());
-        else if(left.isUnsignedShort() && right.isInt()) return new UnsignedIntVal(left.intValue() % right.intValue());
-		else if(left.isUnsignedShort() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
-		else if(left.isUnsignedShort() && right.isShort()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() % right.longValue());
-		else if(left.isUnsignedShort() && right.isLong()) return new UnsignedLongVal(left.longValue() % right.longValue());
-		else if(left.isUnsignedShort() && right.isRegister()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
-		else if(left.isUnsignedShort() && right.isVector()) {
+		else if(left.isUnsignedShortValue() && right.isBoolValue()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
+        else if(left.isUnsignedShortValue() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() % right.shortValue()); 
+        else if(left.isUnsignedShortValue() && right.isByteValue()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() % right.intValue());
+        else if(left.isUnsignedShortValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() % right.intValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
+		else if(left.isUnsignedShortValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
+		else if(left.isUnsignedShortValue() && right.isRegister()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new UnsignedShortVal(left.shortValue() % right.shortValue());
@@ -1253,17 +1253,17 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() % right.longValue());
 		}
 
-		else if(left.isShort() && right.isBool()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
-        else if(left.isShort() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() % right.shortValue()); 
-        else if(left.isShort() && right.isByte()) return new ShortVal(left.shortValue() % right.shortValue());
-		else if(left.isShort() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() % right.intValue());
-        else if(left.isShort() && right.isInt()) return new IntVal(left.intValue() % right.intValue());
-		else if(left.isShort() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
-		else if(left.isShort() && right.isShort()) return new ShortVal(left.shortValue() % right.shortValue());
-		else if(left.isShort() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() % right.longValue());
-		else if(left.isShort() && right.isLong()) return new LongVal(left.longValue() % right.longValue());
-		else if(left.isShort() && right.isRegister()) return new UnsignedShortVal(left.byteValue() % right.byteValue());
-		else if(left.isShort() && right.isVector()) {
+		else if(left.isShortValue() && right.isBoolValue()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
+        else if(left.isShortValue() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() % right.shortValue()); 
+        else if(left.isShortValue() && right.isByteValue()) return new ShortVal(left.shortValue() % right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() % right.intValue());
+        else if(left.isShortValue() && right.isIntValue()) return new IntVal(left.intValue() % right.intValue());
+		else if(left.isShortValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
+		else if(left.isShortValue() && right.isShortValue()) return new ShortVal(left.shortValue() % right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
+		else if(left.isShortValue() && right.isLongValue()) return new LongVal(left.longValue() % right.longValue());
+		else if(left.isShortValue() && right.isRegister()) return new UnsignedShortVal(left.byteValue() % right.byteValue());
+		else if(left.isShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new UnsignedShortVal(left.shortValue() % right.shortValue());
@@ -1271,73 +1271,73 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() % right.longValue());
 		}
 
-		else if(left.isUnsignedInt() && right.isBool()) return new UnsignedIntVal(left.intValue() % right.intValue());
-        else if(left.isUnsignedInt() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() % right.intValue()); 
-        else if(left.isUnsignedInt() && right.isByte()) return new UnsignedIntVal(left.shortValue() % right.shortValue());
-		else if(left.isUnsignedInt() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() % right.intValue());
-        else if(left.isUnsignedInt() && right.isInt()) return new UnsignedIntVal(left.intValue() % right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedShort()) return new UnsignedIntVal(left.intValue() % right.intValue());
-		else if(left.isUnsignedInt() && right.isShort()) return new UnsignedIntVal(left.intValue() % right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() % right.longValue());
-		else if(left.isUnsignedInt() && right.isLong()) return new UnsignedLongVal(left.longValue() % right.longValue());
-		else if(left.isUnsignedInt() && right.isRegister()) return new UnsignedIntVal(left.intValue() % right.intValue());
-		else if(left.isUnsignedInt() && right.isVector()) {
+		else if(left.isUnsignedIntValue() && right.isBoolValue()) return new UnsignedIntVal(left.intValue() % right.intValue());
+        else if(left.isUnsignedIntValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() % right.intValue()); 
+        else if(left.isUnsignedIntValue() && right.isByteValue()) return new UnsignedIntVal(left.shortValue() % right.shortValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() % right.intValue());
+        else if(left.isUnsignedIntValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() % right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.intValue() % right.intValue());
+		else if(left.isUnsignedIntValue() && right.isShortValue()) return new UnsignedIntVal(left.intValue() % right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
+		else if(left.isUnsignedIntValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
+		else if(left.isUnsignedIntValue() && right.isRegister()) return new UnsignedIntVal(left.intValue() % right.intValue());
+		else if(left.isUnsignedIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new UnsignedIntVal(left.intValue() % right.intValue());
 			else return new UnsignedLongVal(left.longValue() % right.longValue());
 		}
 
-		else if(left.isInt() && right.isBool()) return new UnsignedIntVal(left.intValue() % right.intValue());
-        else if(left.isInt() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() % right.intValue()); 
-        else if(left.isInt() && right.isByte()) return new IntVal(left.intValue() % right.intValue());
-		else if(left.isInt() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() % right.intValue());
-        else if(left.isInt() && right.isInt()) return new IntVal(left.intValue() % right.intValue());
-		else if(left.isInt() && right.isUnsignedShort()) return new UnsignedIntVal(left.intValue() % right.intValue());
-		else if(left.isInt() && right.isShort()) return new IntVal(left.intValue() % right.intValue());
-		else if(left.isInt() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() % right.longValue());
-		else if(left.isInt() && right.isLong()) return new LongVal(left.longValue() % right.longValue());
-		else if(left.isInt() && right.isRegister()) return new UnsignedIntVal(left.intValue() % right.intValue());
-		else if(left.isInt() && right.isVector()) {
+		else if(left.isIntValue() && right.isBoolValue()) return new UnsignedIntVal(left.intValue() % right.intValue());
+        else if(left.isIntValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() % right.intValue()); 
+        else if(left.isIntValue() && right.isByteValue()) return new IntVal(left.intValue() % right.intValue());
+		else if(left.isIntValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() % right.intValue());
+        else if(left.isIntValue() && right.isIntValue()) return new IntVal(left.intValue() % right.intValue());
+		else if(left.isIntValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.intValue() % right.intValue());
+		else if(left.isIntValue() && right.isShortValue()) return new IntVal(left.intValue() % right.intValue());
+		else if(left.isIntValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
+		else if(left.isIntValue() && right.isLongValue()) return new LongVal(left.longValue() % right.longValue());
+		else if(left.isIntValue() && right.isRegister()) return new UnsignedIntVal(left.intValue() % right.intValue());
+		else if(left.isIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new UnsignedIntVal(left.intValue() % right.intValue());
 			else return new UnsignedLongVal(left.longValue() % right.longValue());
 		}
 
-		else if(left.isUnsignedLong() && right.isBool()) return new UnsignedLongVal(left.longValue() % right.longValue());
-        else if(left.isUnsignedLong() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() % right.longValue()); 
-        else if(left.isUnsignedLong() && right.isByte()) return new UnsignedLongVal(left.longValue() % right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedInt()) return new UnsignedLongVal(left.longValue() % right.longValue());
-        else if(left.isUnsignedLong() && right.isInt()) return new UnsignedLongVal(left.longValue() % right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedShort()) return new UnsignedLongVal(left.longValue() % right.longValue());
-		else if(left.isUnsignedLong() && right.isShort()) return new UnsignedLongVal(left.longValue() % right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() % right.longValue());
-		else if(left.isUnsignedLong() && right.isLong()) return new UnsignedLongVal(left.longValue() % right.longValue());
-		else if(left.isUnsignedLong() && right.isRegister()) return new UnsignedLongVal(left.longValue() % right.longValue());
-		else if(left.isUnsignedLong() && right.isVector()) return new UnsignedLongVal(left.longValue() % right.longValue());
+		else if(left.isUnsignedLongValue() && right.isBoolValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
+        else if(left.isUnsignedLongValue() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() % right.longValue()); 
+        else if(left.isUnsignedLongValue() && right.isByteValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedIntValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
+        else if(left.isUnsignedLongValue() && right.isIntValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedShortValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
+		else if(left.isUnsignedLongValue() && right.isShortValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
+		else if(left.isUnsignedLongValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
+		else if(left.isUnsignedLongValue() && right.isRegister()) return new UnsignedLongVal(left.longValue() % right.longValue());
+		else if(left.isUnsignedLongValue() && right.isVector()) return new UnsignedLongVal(left.longValue() % right.longValue());
 
-		else if(left.isLong() && right.isBool()) return new UnsignedLongVal(left.longValue() % right.longValue());
-        else if(left.isLong() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() % right.longValue()); 
-        else if(left.isLong() && right.isByte()) return new LongVal(left.longValue() % right.longValue());
-		else if(left.isLong() && right.isUnsignedInt()) return new UnsignedLongVal(left.longValue() % right.longValue());
-        else if(left.isLong() && right.isInt()) return new LongVal(left.longValue() % right.longValue());
-		else if(left.isLong() && right.isUnsignedShort()) return new UnsignedLongVal(left.longValue() % right.longValue());
-		else if(left.isLong() && right.isShort()) return new LongVal(left.longValue() % right.longValue());
-		else if(left.isLong() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() % right.longValue());
-		else if(left.isLong() && right.isLong()) return new LongVal(left.longValue() % right.longValue());
-		else if(left.isLong() && right.isRegister()) return new UnsignedLongVal(left.longValue() % right.longValue());
-		else if(left.isLong() && right.isVector()) return new UnsignedLongVal(left.longValue() % right.longValue());
+		else if(left.isLongValue() && right.isBoolValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
+        else if(left.isLongValue() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() % right.longValue()); 
+        else if(left.isLongValue() && right.isByteValue()) return new LongVal(left.longValue() % right.longValue());
+		else if(left.isLongValue() && right.isUnsignedIntValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
+        else if(left.isLongValue() && right.isIntValue()) return new LongVal(left.longValue() % right.longValue());
+		else if(left.isLongValue() && right.isUnsignedShortValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
+		else if(left.isLongValue() && right.isShortValue()) return new LongVal(left.longValue() % right.longValue());
+		else if(left.isLongValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
+		else if(left.isLongValue() && right.isLongValue()) return new LongVal(left.longValue() % right.longValue());
+		else if(left.isLongValue() && right.isRegister()) return new UnsignedLongVal(left.longValue() % right.longValue());
+		else if(left.isLongValue() && right.isVector()) return new UnsignedLongVal(left.longValue() % right.longValue());
 
-		else if(left.isRegister() && right.isBool()) return new UnsignedByteVal(left.byteValue() % right.byteValue());
+		else if(left.isRegister() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() % right.byteValue());
         else if(left.isRegister() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() % right.byteValue()); 
-        else if(left.isRegister() && right.isByte()) return new UnsignedByteVal(left.byteValue() % right.byteValue());
-		else if(left.isRegister() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() % right.intValue());
-        else if(left.isRegister() && right.isInt()) return new UnsignedIntVal(left.intValue() % right.intValue());
-		else if(left.isRegister() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
-		else if(left.isRegister() && right.isShort()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
-		else if(left.isRegister() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() % right.longValue());
-		else if(left.isRegister() && right.isLong()) return new UnsignedLongVal(left.longValue() % right.longValue());
+        else if(left.isRegister() && right.isByteValue()) return new UnsignedByteVal(left.byteValue() % right.byteValue());
+		else if(left.isRegister() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() % right.intValue());
+        else if(left.isRegister() && right.isIntValue()) return new UnsignedIntVal(left.intValue() % right.intValue());
+		else if(left.isRegister() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
+		else if(left.isRegister() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
+		else if(left.isRegister() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
+		else if(left.isRegister() && right.isLongValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
 		else if(left.isRegister() && right.isRegister()) return new UnsignedByteVal(left.byteValue() % right.byteValue());
 		else if(left.isRegister() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -1348,15 +1348,15 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() % right.longValue());
 		}
 
-		else if(left.isVector() && right.isBool()) return new UnsignedByteVal(left.byteValue() % right.byteValue());
+		else if(left.isVector() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() % right.byteValue());
         else if(left.isVector() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() % right.byteValue()); 
-        else if(left.isVector() && right.isByte()) return new UnsignedByteVal(left.byteValue() % right.byteValue());
-		else if(left.isVector() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() % right.intValue());
-        else if(left.isVector() && right.isInt()) return new UnsignedIntVal(left.intValue() % right.intValue());
-		else if(left.isVector() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
-		else if(left.isVector() && right.isShort()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
-		else if(left.isVector() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() % right.longValue());
-		else if(left.isVector() && right.isLong()) return new UnsignedLongVal(left.longValue() % right.longValue());
+        else if(left.isVector() && right.isByteValue()) return new UnsignedByteVal(left.byteValue() % right.byteValue());
+		else if(left.isVector() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() % right.intValue());
+        else if(left.isVector() && right.isIntValue()) return new UnsignedIntVal(left.intValue() % right.intValue());
+		else if(left.isVector() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
+		else if(left.isVector() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() % right.shortValue());
+		else if(left.isVector() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
+		else if(left.isVector() && right.isLongValue()) return new UnsignedLongVal(left.longValue() % right.longValue());
 		else if(left.isVector() && right.isRegister()) return new UnsignedByteVal(left.byteValue() % right.byteValue());
 		else if(left.isVector() && right.isVector()) return new UnsignedLongVal(left.longValue() % right.longValue());
 		else {
@@ -1366,32 +1366,32 @@ public class Utils {
 
     }
 
-    public static Value azyEquality(Value left, Value right) throws Exception{
-        if(left.isReal() && right.isReal()) return new BoolVal(left.realValue() == right.realValue());
-		else if(left.isReal() && right.isBool()) return new BoolVal(left.realValue() == right.realValue());
-        else if(left.isReal() && right.isUnsignedByteValue()) return new BoolVal(left.realValue() == right.realValue()); 
-        else if(left.isReal() && right.isByte()) return new BoolVal(left.realValue() == right.realValue());
-		else if(left.isReal() && right.isUnsignedInt()) return new BoolVal(left.realValue() == right.realValue());
-        else if(left.isReal() && right.isInt()) return new BoolVal(left.realValue() == right.realValue());
-		else if(left.isReal() && right.isUnsignedShort()) return new BoolVal(left.realValue() == right.realValue());
-		else if(left.isReal() && right.isShort()) return new BoolVal(left.realValue() == right.realValue());
-		else if(left.isReal() && right.isUnsignedLong()) return new BoolVal(left.realValue() == right.realValue());
-		else if(left.isReal() && right.isLong()) return new BoolVal(left.realValue() == right.realValue());
-		else if(left.isReal() && right.isRegister()) return new BoolVal(left.realValue() == right.realValue());
-		else if(left.isReal() && right.isVector()) return new BoolVal(left.realValue() == right.realValue());
+    public static Value lazyEquality(Value left, Value right) throws Exception{
+        if(left.isRealValue() && right.isRealValue()) return new BoolVal(left.realValue() == right.realValue());
+		else if(left.isRealValue() && right.isBoolValue()) return new BoolVal(left.realValue() == right.realValue());
+        else if(left.isRealValue() && right.isUnsignedByteValue()) return new BoolVal(left.realValue() == right.realValue()); 
+        else if(left.isRealValue() && right.isByteValue()) return new BoolVal(left.realValue() == right.realValue());
+		else if(left.isRealValue() && right.isUnsignedIntValue()) return new BoolVal(left.realValue() == right.realValue());
+        else if(left.isRealValue() && right.isIntValue()) return new BoolVal(left.realValue() == right.realValue());
+		else if(left.isRealValue() && right.isUnsignedShortValue()) return new BoolVal(left.realValue() == right.realValue());
+		else if(left.isRealValue() && right.isShortValue()) return new BoolVal(left.realValue() == right.realValue());
+		else if(left.isRealValue() && right.isUnsignedLongValue()) return new BoolVal(left.realValue() == right.realValue());
+		else if(left.isRealValue() && right.isLongValue()) return new BoolVal(left.realValue() == right.realValue());
+		else if(left.isRealValue() && right.isRegister()) return new BoolVal(left.realValue() == right.realValue());
+		else if(left.isRealValue() && right.isVector()) return new BoolVal(left.realValue() == right.realValue());
 		
-		else if(left.isBool() && right.isReal()) return new BoolVal(left.realValue() == right.realValue());
-		else if(left.isBool() && right.isBool()) return new BoolVal(left.byteValue() == right.byteValue());
-        else if(left.isBool() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() == right.byteValue()); 
-        else if(left.isBool() && right.isByte()) return new BoolVal(left.byteValue() == right.byteValue());
-		else if(left.isBool() && right.isUnsignedInt()) return new BoolVal(left.intValue() == right.intValue());
-        else if(left.isBool() && right.isInt()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isBool() && right.isUnsignedShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isBool() && right.isShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isBool() && right.isUnsignedLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isBool() && right.isLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isBool() && right.isRegister()) return new BoolVal(left.byteValue() == right.byteValue());
-		else if(left.isBool() && right.isVector()) {
+		else if(left.isBoolValue() && right.isRealValue()) return new BoolVal(left.realValue() == right.realValue());
+		else if(left.isBoolValue() && right.isBoolValue()) return new BoolVal(left.byteValue() == right.byteValue());
+        else if(left.isBoolValue() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() == right.byteValue()); 
+        else if(left.isBoolValue() && right.isByteValue()) return new BoolVal(left.byteValue() == right.byteValue());
+		else if(left.isBoolValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() == right.intValue());
+        else if(left.isBoolValue() && right.isIntValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isBoolValue() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isBoolValue() && right.isShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isBoolValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isBoolValue() && right.isLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isBoolValue() && right.isRegister()) return new BoolVal(left.byteValue() == right.byteValue());
+		else if(left.isBoolValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new BoolVal(left.byteValue() == right.byteValue());
@@ -1400,16 +1400,16 @@ public class Utils {
 			else return new BoolVal(left.longValue() == right.longValue());
 		}
 
-		else if(left.isUnsignedByteValue() && right.isReal()) return new BoolVal(left.realValue() == right.realValue());
-		else if(left.isUnsignedByteValue() && right.isBool()) return new BoolVal(left.byteValue() == right.byteValue());
+		else if(left.isUnsignedByteValue() && right.isRealValue()) return new BoolVal(left.realValue() == right.realValue());
+		else if(left.isUnsignedByteValue() && right.isBoolValue()) return new BoolVal(left.byteValue() == right.byteValue());
         else if(left.isUnsignedByteValue() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() == right.byteValue()); 
-        else if(left.isUnsignedByteValue() && right.isByte()) return new BoolVal(left.byteValue() == right.byteValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedInt()) return new BoolVal(left.intValue() == right.intValue());
-        else if(left.isUnsignedByteValue() && right.isInt()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedByteValue() && right.isLong()) return new BoolVal(left.longValue() == right.longValue());
+        else if(left.isUnsignedByteValue() && right.isByteValue()) return new BoolVal(left.byteValue() == right.byteValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() == right.intValue());
+        else if(left.isUnsignedByteValue() && right.isIntValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedByteValue() && right.isLongValue()) return new BoolVal(left.longValue() == right.longValue());
 		else if(left.isUnsignedByteValue() && right.isRegister()) return new BoolVal(left.byteValue() == right.byteValue());
 		else if(left.isUnsignedByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -1420,18 +1420,18 @@ public class Utils {
 			else return new BoolVal(left.longValue() == right.longValue());
 		}
 
-		else if(left.isByte() && right.isReal()) return new BoolVal(left.realValue() == right.realValue());
-		else if(left.isByte() && right.isBool()) return new BoolVal(left.byteValue() == right.byteValue());
-        else if(left.isByte() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() == right.byteValue()); 
-        else if(left.isByte() && right.isByte()) return new BoolVal(left.byteValue() == right.byteValue());
-		else if(left.isByte() && right.isUnsignedInt()) return new BoolVal(left.intValue() == right.intValue());
-        else if(left.isByte() && right.isInt()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isByte() && right.isUnsignedShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isByte() && right.isShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isByte() && right.isUnsignedLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isByte() && right.isLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isByte() && right.isRegister()) return new BoolVal(left.byteValue() == right.byteValue());
-		else if(left.isByte() && right.isVector()) {
+		else if(left.isByteValue() && right.isRealValue()) return new BoolVal(left.realValue() == right.realValue());
+		else if(left.isByteValue() && right.isBoolValue()) return new BoolVal(left.byteValue() == right.byteValue());
+        else if(left.isByteValue() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() == right.byteValue()); 
+        else if(left.isByteValue() && right.isByteValue()) return new BoolVal(left.byteValue() == right.byteValue());
+		else if(left.isByteValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() == right.intValue());
+        else if(left.isByteValue() && right.isIntValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isByteValue() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isByteValue() && right.isShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isByteValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isByteValue() && right.isLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isByteValue() && right.isRegister()) return new BoolVal(left.byteValue() == right.byteValue());
+		else if(left.isByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new BoolVal(left.byteValue() == right.byteValue());
@@ -1440,18 +1440,18 @@ public class Utils {
 			else return new BoolVal(left.longValue() == right.longValue());
 		}
 
-		else if(left.isUnsignedShort() && right.isReal()) return new BoolVal(left.realValue() == right.realValue());
-		else if(left.isUnsignedShort() && right.isBool()) return new BoolVal(left.shortValue() == right.shortValue());
-        else if(left.isUnsignedShort() && right.isUnsignedByteValue()) return new BoolVal(left.shortValue() == right.shortValue()); 
-        else if(left.isUnsignedShort() && right.isByte()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedInt()) return new BoolVal(left.intValue() == right.intValue());
-        else if(left.isUnsignedShort() && right.isInt()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isUnsignedShort() && right.isUnsignedShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isUnsignedShort() && right.isShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedShort() && right.isLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedShort() && right.isRegister()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isUnsignedShort() && right.isVector()) {
+		else if(left.isUnsignedShortValue() && right.isRealValue()) return new BoolVal(left.realValue() == right.realValue());
+		else if(left.isUnsignedShortValue() && right.isBoolValue()) return new BoolVal(left.shortValue() == right.shortValue());
+        else if(left.isUnsignedShortValue() && right.isUnsignedByteValue()) return new BoolVal(left.shortValue() == right.shortValue()); 
+        else if(left.isUnsignedShortValue() && right.isByteValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() == right.intValue());
+        else if(left.isUnsignedShortValue() && right.isIntValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedShortValue() && right.isLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedShortValue() && right.isRegister()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new BoolVal(left.shortValue() == right.shortValue());
@@ -1459,18 +1459,18 @@ public class Utils {
 			else return new BoolVal(left.longValue() == right.longValue());
 		}
 
-		else if(left.isShort() && right.isReal()) return new BoolVal(left.realValue() == right.realValue());
-		else if(left.isShort() && right.isBool()) return new BoolVal(left.shortValue() == right.shortValue());
-        else if(left.isShort() && right.isUnsignedByteValue()) return new BoolVal(left.shortValue() == right.shortValue()); 
-        else if(left.isShort() && right.isByte()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isShort() && right.isUnsignedInt()) return new BoolVal(left.intValue() == right.intValue());
-        else if(left.isShort() && right.isInt()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isShort() && right.isUnsignedShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isShort() && right.isShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isShort() && right.isUnsignedLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isShort() && right.isLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isShort() && right.isRegister()) return new BoolVal(left.byteValue() == right.byteValue());
-		else if(left.isShort() && right.isVector()) {
+		else if(left.isShortValue() && right.isRealValue()) return new BoolVal(left.realValue() == right.realValue());
+		else if(left.isShortValue() && right.isBoolValue()) return new BoolVal(left.shortValue() == right.shortValue());
+        else if(left.isShortValue() && right.isUnsignedByteValue()) return new BoolVal(left.shortValue() == right.shortValue()); 
+        else if(left.isShortValue() && right.isByteValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() == right.intValue());
+        else if(left.isShortValue() && right.isIntValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isShortValue() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isShortValue() && right.isShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isShortValue() && right.isLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isShortValue() && right.isRegister()) return new BoolVal(left.byteValue() == right.byteValue());
+		else if(left.isShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new BoolVal(left.shortValue() == right.shortValue());
@@ -1478,78 +1478,78 @@ public class Utils {
 			else return new BoolVal(left.longValue() == right.longValue());
 		}
 
-		else if(left.isUnsignedInt() && right.isReal()) return new BoolVal(left.realValue() == right.realValue());
-		else if(left.isUnsignedInt() && right.isBool()) return new BoolVal(left.intValue() == right.intValue());
-        else if(left.isUnsignedInt() && right.isUnsignedByteValue()) return new BoolVal(left.intValue() == right.intValue()); 
-        else if(left.isUnsignedInt() && right.isByte()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isUnsignedInt() && right.isUnsignedInt()) return new BoolVal(left.intValue() == right.intValue());
-        else if(left.isUnsignedInt() && right.isInt()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedShort()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isUnsignedInt() && right.isShort()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedInt() && right.isLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedInt() && right.isRegister()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isUnsignedInt() && right.isVector()) {
+		else if(left.isUnsignedIntValue() && right.isRealValue()) return new BoolVal(left.realValue() == right.realValue());
+		else if(left.isUnsignedIntValue() && right.isBoolValue()) return new BoolVal(left.intValue() == right.intValue());
+        else if(left.isUnsignedIntValue() && right.isUnsignedByteValue()) return new BoolVal(left.intValue() == right.intValue()); 
+        else if(left.isUnsignedIntValue() && right.isByteValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() == right.intValue());
+        else if(left.isUnsignedIntValue() && right.isIntValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedShortValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isUnsignedIntValue() && right.isShortValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedIntValue() && right.isLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedIntValue() && right.isRegister()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isUnsignedIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new BoolVal(left.intValue() == right.intValue());
 			else return new BoolVal(left.longValue() == right.longValue());
 		}
 
-		else if(left.isInt() && right.isReal()) return new BoolVal(left.realValue() == right.realValue());
-		else if(left.isInt() && right.isBool()) return new BoolVal(left.intValue() == right.intValue());
-        else if(left.isInt() && right.isUnsignedByteValue()) return new BoolVal(left.intValue() == right.intValue()); 
-        else if(left.isInt() && right.isByte()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isInt() && right.isUnsignedInt()) return new BoolVal(left.intValue() == right.intValue());
-        else if(left.isInt() && right.isInt()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isInt() && right.isUnsignedShort()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isInt() && right.isShort()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isInt() && right.isUnsignedLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isInt() && right.isLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isInt() && right.isRegister()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isInt() && right.isVector()) {
+		else if(left.isIntValue() && right.isRealValue()) return new BoolVal(left.realValue() == right.realValue());
+		else if(left.isIntValue() && right.isBoolValue()) return new BoolVal(left.intValue() == right.intValue());
+        else if(left.isIntValue() && right.isUnsignedByteValue()) return new BoolVal(left.intValue() == right.intValue()); 
+        else if(left.isIntValue() && right.isByteValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isIntValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() == right.intValue());
+        else if(left.isIntValue() && right.isIntValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isIntValue() && right.isUnsignedShortValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isIntValue() && right.isShortValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isIntValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isIntValue() && right.isLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isIntValue() && right.isRegister()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new BoolVal(left.intValue() == right.intValue());
 			else return new BoolVal(left.longValue() == right.longValue());
 		}
 
-		else if(left.isUnsignedLong() && right.isReal()) return new BoolVal(left.realValue() == right.realValue());
-		else if(left.isUnsignedLong() && right.isBool()) return new BoolVal(left.longValue() == right.longValue());
-        else if(left.isUnsignedLong() && right.isUnsignedByteValue()) return new BoolVal(left.longValue() == right.longValue()); 
-        else if(left.isUnsignedLong() && right.isByte()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedInt()) return new BoolVal(left.longValue() == right.longValue());
-        else if(left.isUnsignedLong() && right.isInt()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedShort()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedLong() && right.isShort()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedLong() && right.isLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedLong() && right.isRegister()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedLong() && right.isVector()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedLongValue() && right.isRealValue()) return new BoolVal(left.realValue() == right.realValue());
+		else if(left.isUnsignedLongValue() && right.isBoolValue()) return new BoolVal(left.longValue() == right.longValue());
+        else if(left.isUnsignedLongValue() && right.isUnsignedByteValue()) return new BoolVal(left.longValue() == right.longValue()); 
+        else if(left.isUnsignedLongValue() && right.isByteValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedIntValue()) return new BoolVal(left.longValue() == right.longValue());
+        else if(left.isUnsignedLongValue() && right.isIntValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedShortValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedLongValue() && right.isShortValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedLongValue() && right.isLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedLongValue() && right.isRegister()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedLongValue() && right.isVector()) return new BoolVal(left.longValue() == right.longValue());
 
-		else if(left.isLong() && right.isReal()) return new BoolVal(left.realValue() == right.realValue());
-		else if(left.isLong() && right.isBool()) return new BoolVal(left.longValue() == right.longValue());
-        else if(left.isLong() && right.isUnsignedByteValue()) return new BoolVal(left.longValue() == right.longValue()); 
-        else if(left.isLong() && right.isByte()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isLong() && right.isUnsignedInt()) return new BoolVal(left.longValue() == right.longValue());
-        else if(left.isLong() && right.isInt()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isLong() && right.isUnsignedShort()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isLong() && right.isShort()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isLong() && right.isUnsignedLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isLong() && right.isLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isLong() && right.isRegister()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isLong() && right.isVector()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isLongValue() && right.isRealValue()) return new BoolVal(left.realValue() == right.realValue());
+		else if(left.isLongValue() && right.isBoolValue()) return new BoolVal(left.longValue() == right.longValue());
+        else if(left.isLongValue() && right.isUnsignedByteValue()) return new BoolVal(left.longValue() == right.longValue()); 
+        else if(left.isLongValue() && right.isByteValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isLongValue() && right.isUnsignedIntValue()) return new BoolVal(left.longValue() == right.longValue());
+        else if(left.isLongValue() && right.isIntValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isLongValue() && right.isUnsignedShortValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isLongValue() && right.isShortValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isLongValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isLongValue() && right.isLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isLongValue() && right.isRegister()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isLongValue() && right.isVector()) return new BoolVal(left.longValue() == right.longValue());
 
-		else if(left.isRegister() && right.isReal()) return new BoolVal(left.realValue() == right.realValue());
-		else if(left.isRegister() && right.isBool()) return new BoolVal(left.byteValue() == right.byteValue());
+		else if(left.isRegister() && right.isRealValue()) return new BoolVal(left.realValue() == right.realValue());
+		else if(left.isRegister() && right.isBoolValue()) return new BoolVal(left.byteValue() == right.byteValue());
         else if(left.isRegister() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() == right.byteValue()); 
-        else if(left.isRegister() && right.isByte()) return new BoolVal(left.byteValue() == right.byteValue());
-		else if(left.isRegister() && right.isUnsignedInt()) return new BoolVal(left.intValue() == right.intValue());
-        else if(left.isRegister() && right.isInt()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isRegister() && right.isUnsignedShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isRegister() && right.isShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isRegister() && right.isUnsignedLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isRegister() && right.isLong()) return new BoolVal(left.longValue() == right.longValue());
+        else if(left.isRegister() && right.isByteValue()) return new BoolVal(left.byteValue() == right.byteValue());
+		else if(left.isRegister() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() == right.intValue());
+        else if(left.isRegister() && right.isIntValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isRegister() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isRegister() && right.isShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isRegister() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isRegister() && right.isLongValue()) return new BoolVal(left.longValue() == right.longValue());
 		else if(left.isRegister() && right.isRegister()) return new BoolVal(left.byteValue() == right.byteValue());
 		else if(left.isRegister() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -1560,16 +1560,16 @@ public class Utils {
 			else return new BoolVal(left.longValue() == right.longValue());
 		}
 
-		else if(left.isVector() && right.isReal()) return new BoolVal(left.realValue() == right.realValue());
-		else if(left.isVector() && right.isBool()) return new BoolVal(left.byteValue() == right.byteValue());
+		else if(left.isVector() && right.isRealValue()) return new BoolVal(left.realValue() == right.realValue());
+		else if(left.isVector() && right.isBoolValue()) return new BoolVal(left.byteValue() == right.byteValue());
         else if(left.isVector() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() == right.byteValue()); 
-        else if(left.isVector() && right.isByte()) return new BoolVal(left.byteValue() == right.byteValue());
-		else if(left.isVector() && right.isUnsignedInt()) return new BoolVal(left.intValue() == right.intValue());
-        else if(left.isVector() && right.isInt()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isVector() && right.isUnsignedShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isVector() && right.isShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isVector() && right.isUnsignedLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isVector() && right.isLong()) return new BoolVal(left.longValue() == right.longValue());
+        else if(left.isVector() && right.isByteValue()) return new BoolVal(left.byteValue() == right.byteValue());
+		else if(left.isVector() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() == right.intValue());
+        else if(left.isVector() && right.isIntValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isVector() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isVector() && right.isShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isVector() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isVector() && right.isLongValue()) return new BoolVal(left.longValue() == right.longValue());
 		else if(left.isVector() && right.isRegister()) return new BoolVal(left.byteValue() == right.byteValue());
 		else if(left.isVector() && right.isVector()) return new BoolVal(left.longValue() == right.longValue());
 		else {
@@ -1579,19 +1579,19 @@ public class Utils {
 
     }
 
-    public static Value trictEquality(Value left, Value right) throws Exception{
-        if(left.isReal() && right.isReal()) return new BoolVal(left.realValue() == right.realValue());
+    public static Value strictEquality(Value left, Value right) throws Exception{
+        if(left.isRealValue() && right.isRealValue()) return new BoolVal(left.realValue() == right.realValue());
 		
-		else if(left.isBool() && right.isBool()) return new BoolVal(left.byteValue() == right.byteValue());
+		else if(left.isBoolValue() && right.isBoolValue()) return new BoolVal(left.byteValue() == right.byteValue());
 
         else if(left.isUnsignedByteValue() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() == right.byteValue()); 
-        else if(left.isUnsignedByteValue() && right.isByte()) return new BoolVal(left.byteValue() == right.byteValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedInt()) return new BoolVal(left.intValue() == right.intValue());
-        else if(left.isUnsignedByteValue() && right.isInt()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedByteValue() && right.isLong()) return new BoolVal(left.longValue() == right.longValue());
+        else if(left.isUnsignedByteValue() && right.isByteValue()) return new BoolVal(left.byteValue() == right.byteValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() == right.intValue());
+        else if(left.isUnsignedByteValue() && right.isIntValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedByteValue() && right.isLongValue()) return new BoolVal(left.longValue() == right.longValue());
 		else if(left.isUnsignedByteValue() && right.isRegister()) return new BoolVal(left.byteValue() == right.byteValue());
 		else if(left.isUnsignedByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -1602,16 +1602,16 @@ public class Utils {
 			else return new BoolVal(left.longValue() == right.longValue());
 		}
 
-        else if(left.isByte() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() == right.byteValue()); 
-        else if(left.isByte() && right.isByte()) return new BoolVal(left.byteValue() == right.byteValue());
-		else if(left.isByte() && right.isUnsignedInt()) return new BoolVal(left.intValue() == right.intValue());
-        else if(left.isByte() && right.isInt()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isByte() && right.isUnsignedShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isByte() && right.isShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isByte() && right.isUnsignedLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isByte() && right.isLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isByte() && right.isRegister()) return new BoolVal(left.byteValue() == right.byteValue());
-		else if(left.isByte() && right.isVector()) {
+        else if(left.isByteValue() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() == right.byteValue()); 
+        else if(left.isByteValue() && right.isByteValue()) return new BoolVal(left.byteValue() == right.byteValue());
+		else if(left.isByteValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() == right.intValue());
+        else if(left.isByteValue() && right.isIntValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isByteValue() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isByteValue() && right.isShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isByteValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isByteValue() && right.isLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isByteValue() && right.isRegister()) return new BoolVal(left.byteValue() == right.byteValue());
+		else if(left.isByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new BoolVal(left.byteValue() == right.byteValue());
@@ -1620,16 +1620,16 @@ public class Utils {
 			else return new BoolVal(left.longValue() == right.longValue());
 		}
 
-        else if(left.isUnsignedShort() && right.isUnsignedByteValue()) return new BoolVal(left.shortValue() == right.shortValue()); 
-        else if(left.isUnsignedShort() && right.isByte()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedInt()) return new BoolVal(left.intValue() == right.intValue());
-        else if(left.isUnsignedShort() && right.isInt()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isUnsignedShort() && right.isUnsignedShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isUnsignedShort() && right.isShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedShort() && right.isLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedShort() && right.isRegister()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isUnsignedShort() && right.isVector()) {
+        else if(left.isUnsignedShortValue() && right.isUnsignedByteValue()) return new BoolVal(left.shortValue() == right.shortValue()); 
+        else if(left.isUnsignedShortValue() && right.isByteValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() == right.intValue());
+        else if(left.isUnsignedShortValue() && right.isIntValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedShortValue() && right.isLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedShortValue() && right.isRegister()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new BoolVal(left.shortValue() == right.shortValue());
@@ -1637,16 +1637,16 @@ public class Utils {
 			else return new BoolVal(left.longValue() == right.longValue());
 		}
 
-        else if(left.isShort() && right.isUnsignedByteValue()) return new BoolVal(left.shortValue() == right.shortValue()); 
-        else if(left.isShort() && right.isByte()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isShort() && right.isUnsignedInt()) return new BoolVal(left.intValue() == right.intValue());
-        else if(left.isShort() && right.isInt()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isShort() && right.isUnsignedShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isShort() && right.isShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isShort() && right.isUnsignedLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isShort() && right.isLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isShort() && right.isRegister()) return new BoolVal(left.byteValue() == right.byteValue());
-		else if(left.isShort() && right.isVector()) {
+        else if(left.isShortValue() && right.isUnsignedByteValue()) return new BoolVal(left.shortValue() == right.shortValue()); 
+        else if(left.isShortValue() && right.isByteValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() == right.intValue());
+        else if(left.isShortValue() && right.isIntValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isShortValue() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isShortValue() && right.isShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isShortValue() && right.isLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isShortValue() && right.isRegister()) return new BoolVal(left.byteValue() == right.byteValue());
+		else if(left.isShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new BoolVal(left.shortValue() == right.shortValue());
@@ -1654,68 +1654,68 @@ public class Utils {
 			else return new BoolVal(left.longValue() == right.longValue());
 		}
 
-        else if(left.isUnsignedInt() && right.isUnsignedByteValue()) return new BoolVal(left.intValue() == right.intValue()); 
-        else if(left.isUnsignedInt() && right.isByte()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isUnsignedInt() && right.isUnsignedInt()) return new BoolVal(left.intValue() == right.intValue());
-        else if(left.isUnsignedInt() && right.isInt()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedShort()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isUnsignedInt() && right.isShort()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedInt() && right.isLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedInt() && right.isRegister()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isUnsignedInt() && right.isVector()) {
+        else if(left.isUnsignedIntValue() && right.isUnsignedByteValue()) return new BoolVal(left.intValue() == right.intValue()); 
+        else if(left.isUnsignedIntValue() && right.isByteValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() == right.intValue());
+        else if(left.isUnsignedIntValue() && right.isIntValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedShortValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isUnsignedIntValue() && right.isShortValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedIntValue() && right.isLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedIntValue() && right.isRegister()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isUnsignedIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new BoolVal(left.intValue() == right.intValue());
 			else return new BoolVal(left.longValue() == right.longValue());
 		}
 
-        else if(left.isInt() && right.isUnsignedByteValue()) return new BoolVal(left.intValue() == right.intValue()); 
-        else if(left.isInt() && right.isByte()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isInt() && right.isUnsignedInt()) return new BoolVal(left.intValue() == right.intValue());
-        else if(left.isInt() && right.isInt()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isInt() && right.isUnsignedShort()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isInt() && right.isShort()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isInt() && right.isUnsignedLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isInt() && right.isLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isInt() && right.isRegister()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isInt() && right.isVector()) {
+        else if(left.isIntValue() && right.isUnsignedByteValue()) return new BoolVal(left.intValue() == right.intValue()); 
+        else if(left.isIntValue() && right.isByteValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isIntValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() == right.intValue());
+        else if(left.isIntValue() && right.isIntValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isIntValue() && right.isUnsignedShortValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isIntValue() && right.isShortValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isIntValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isIntValue() && right.isLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isIntValue() && right.isRegister()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new BoolVal(left.intValue() == right.intValue());
 			else return new BoolVal(left.longValue() == right.longValue());
 		}
 
-        else if(left.isUnsignedLong() && right.isUnsignedByteValue()) return new BoolVal(left.longValue() == right.longValue()); 
-        else if(left.isUnsignedLong() && right.isByte()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedInt()) return new BoolVal(left.longValue() == right.longValue());
-        else if(left.isUnsignedLong() && right.isInt()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedShort()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedLong() && right.isShort()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedLong() && right.isLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedLong() && right.isRegister()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isUnsignedLong() && right.isVector()) return new BoolVal(left.longValue() == right.longValue());
+        else if(left.isUnsignedLongValue() && right.isUnsignedByteValue()) return new BoolVal(left.longValue() == right.longValue()); 
+        else if(left.isUnsignedLongValue() && right.isByteValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedIntValue()) return new BoolVal(left.longValue() == right.longValue());
+        else if(left.isUnsignedLongValue() && right.isIntValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedShortValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedLongValue() && right.isShortValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedLongValue() && right.isLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedLongValue() && right.isRegister()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isUnsignedLongValue() && right.isVector()) return new BoolVal(left.longValue() == right.longValue());
 
-        else if(left.isLong() && right.isUnsignedByteValue()) return new BoolVal(left.longValue() == right.longValue()); 
-        else if(left.isLong() && right.isByte()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isLong() && right.isUnsignedInt()) return new BoolVal(left.longValue() == right.longValue());
-        else if(left.isLong() && right.isInt()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isLong() && right.isUnsignedShort()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isLong() && right.isShort()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isLong() && right.isUnsignedLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isLong() && right.isLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isLong() && right.isRegister()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isLong() && right.isVector()) return new BoolVal(left.longValue() == right.longValue());
+        else if(left.isLongValue() && right.isUnsignedByteValue()) return new BoolVal(left.longValue() == right.longValue()); 
+        else if(left.isLongValue() && right.isByteValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isLongValue() && right.isUnsignedIntValue()) return new BoolVal(left.longValue() == right.longValue());
+        else if(left.isLongValue() && right.isIntValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isLongValue() && right.isUnsignedShortValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isLongValue() && right.isShortValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isLongValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isLongValue() && right.isLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isLongValue() && right.isRegister()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isLongValue() && right.isVector()) return new BoolVal(left.longValue() == right.longValue());
 
         else if(left.isRegister() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() == right.byteValue()); 
-        else if(left.isRegister() && right.isByte()) return new BoolVal(left.byteValue() == right.byteValue());
-		else if(left.isRegister() && right.isUnsignedInt()) return new BoolVal(left.intValue() == right.intValue());
-        else if(left.isRegister() && right.isInt()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isRegister() && right.isUnsignedShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isRegister() && right.isShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isRegister() && right.isUnsignedLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isRegister() && right.isLong()) return new BoolVal(left.longValue() == right.longValue());
+        else if(left.isRegister() && right.isByteValue()) return new BoolVal(left.byteValue() == right.byteValue());
+		else if(left.isRegister() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() == right.intValue());
+        else if(left.isRegister() && right.isIntValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isRegister() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isRegister() && right.isShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isRegister() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isRegister() && right.isLongValue()) return new BoolVal(left.longValue() == right.longValue());
 		else if(left.isRegister() && right.isRegister()) return new BoolVal(left.byteValue() == right.byteValue());
 		else if(left.isRegister() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -1727,13 +1727,13 @@ public class Utils {
 		}
 
         else if(left.isVector() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() == right.byteValue()); 
-        else if(left.isVector() && right.isByte()) return new BoolVal(left.byteValue() == right.byteValue());
-		else if(left.isVector() && right.isUnsignedInt()) return new BoolVal(left.intValue() == right.intValue());
-        else if(left.isVector() && right.isInt()) return new BoolVal(left.intValue() == right.intValue());
-		else if(left.isVector() && right.isUnsignedShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isVector() && right.isShort()) return new BoolVal(left.shortValue() == right.shortValue());
-		else if(left.isVector() && right.isUnsignedLong()) return new BoolVal(left.longValue() == right.longValue());
-		else if(left.isVector() && right.isLong()) return new BoolVal(left.longValue() == right.longValue());
+        else if(left.isVector() && right.isByteValue()) return new BoolVal(left.byteValue() == right.byteValue());
+		else if(left.isVector() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() == right.intValue());
+        else if(left.isVector() && right.isIntValue()) return new BoolVal(left.intValue() == right.intValue());
+		else if(left.isVector() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isVector() && right.isShortValue()) return new BoolVal(left.shortValue() == right.shortValue());
+		else if(left.isVector() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() == right.longValue());
+		else if(left.isVector() && right.isLongValue()) return new BoolVal(left.longValue() == right.longValue());
 		else if(left.isVector() && right.isRegister()) return new BoolVal(left.byteValue() == right.byteValue());
 		else if(left.isVector() && right.isVector()) return new BoolVal(left.longValue() == right.longValue());
 		else {
@@ -1743,32 +1743,32 @@ public class Utils {
 
     }
 
-	public static Value azyInequality(Value left, Value right) throws Exception{
-        if(left.isReal() && right.isReal()) return new BoolVal(left.realValue() != right.realValue());
-		else if(left.isReal() && right.isBool()) return new BoolVal(left.realValue() != right.realValue());
-        else if(left.isReal() && right.isUnsignedByteValue()) return new BoolVal(left.realValue() != right.realValue()); 
-        else if(left.isReal() && right.isByte()) return new BoolVal(left.realValue() != right.realValue());
-		else if(left.isReal() && right.isUnsignedInt()) return new BoolVal(left.realValue() != right.realValue());
-        else if(left.isReal() && right.isInt()) return new BoolVal(left.realValue() != right.realValue());
-		else if(left.isReal() && right.isUnsignedShort()) return new BoolVal(left.realValue() != right.realValue());
-		else if(left.isReal() && right.isShort()) return new BoolVal(left.realValue() != right.realValue());
-		else if(left.isReal() && right.isUnsignedLong()) return new BoolVal(left.realValue() != right.realValue());
-		else if(left.isReal() && right.isLong()) return new BoolVal(left.realValue() != right.realValue());
-		else if(left.isReal() && right.isRegister()) return new BoolVal(left.realValue() != right.realValue());
-		else if(left.isReal() && right.isVector()) return new BoolVal(left.realValue() != right.realValue());
+	public static Value lazyInequality(Value left, Value right) throws Exception{
+        if(left.isRealValue() && right.isRealValue()) return new BoolVal(left.realValue() != right.realValue());
+		else if(left.isRealValue() && right.isBoolValue()) return new BoolVal(left.realValue() != right.realValue());
+        else if(left.isRealValue() && right.isUnsignedByteValue()) return new BoolVal(left.realValue() != right.realValue()); 
+        else if(left.isRealValue() && right.isByteValue()) return new BoolVal(left.realValue() != right.realValue());
+		else if(left.isRealValue() && right.isUnsignedIntValue()) return new BoolVal(left.realValue() != right.realValue());
+        else if(left.isRealValue() && right.isIntValue()) return new BoolVal(left.realValue() != right.realValue());
+		else if(left.isRealValue() && right.isUnsignedShortValue()) return new BoolVal(left.realValue() != right.realValue());
+		else if(left.isRealValue() && right.isShortValue()) return new BoolVal(left.realValue() != right.realValue());
+		else if(left.isRealValue() && right.isUnsignedLongValue()) return new BoolVal(left.realValue() != right.realValue());
+		else if(left.isRealValue() && right.isLongValue()) return new BoolVal(left.realValue() != right.realValue());
+		else if(left.isRealValue() && right.isRegister()) return new BoolVal(left.realValue() != right.realValue());
+		else if(left.isRealValue() && right.isVector()) return new BoolVal(left.realValue() != right.realValue());
 		
-		else if(left.isBool() && right.isReal()) return new BoolVal(left.realValue() != right.realValue());
-		else if(left.isBool() && right.isBool()) return new BoolVal(left.byteValue() != right.byteValue());
-        else if(left.isBool() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() != right.byteValue()); 
-        else if(left.isBool() && right.isByte()) return new BoolVal(left.byteValue() != right.byteValue());
-		else if(left.isBool() && right.isUnsignedInt()) return new BoolVal(left.intValue() != right.intValue());
-        else if(left.isBool() && right.isInt()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isBool() && right.isUnsignedShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isBool() && right.isShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isBool() && right.isUnsignedLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isBool() && right.isLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isBool() && right.isRegister()) return new BoolVal(left.byteValue() != right.byteValue());
-		else if(left.isBool() && right.isVector()) {
+		else if(left.isBoolValue() && right.isRealValue()) return new BoolVal(left.realValue() != right.realValue());
+		else if(left.isBoolValue() && right.isBoolValue()) return new BoolVal(left.byteValue() != right.byteValue());
+        else if(left.isBoolValue() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() != right.byteValue()); 
+        else if(left.isBoolValue() && right.isByteValue()) return new BoolVal(left.byteValue() != right.byteValue());
+		else if(left.isBoolValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() != right.intValue());
+        else if(left.isBoolValue() && right.isIntValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isBoolValue() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isBoolValue() && right.isShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isBoolValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isBoolValue() && right.isLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isBoolValue() && right.isRegister()) return new BoolVal(left.byteValue() != right.byteValue());
+		else if(left.isBoolValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new BoolVal(left.byteValue() != right.byteValue());
@@ -1777,16 +1777,16 @@ public class Utils {
 			else return new BoolVal(left.longValue() != right.longValue());
 		}
 
-		else if(left.isUnsignedByteValue() && right.isReal()) return new BoolVal(left.realValue() != right.realValue());
-		else if(left.isUnsignedByteValue() && right.isBool()) return new BoolVal(left.byteValue() != right.byteValue());
+		else if(left.isUnsignedByteValue() && right.isRealValue()) return new BoolVal(left.realValue() != right.realValue());
+		else if(left.isUnsignedByteValue() && right.isBoolValue()) return new BoolVal(left.byteValue() != right.byteValue());
         else if(left.isUnsignedByteValue() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() != right.byteValue()); 
-        else if(left.isUnsignedByteValue() && right.isByte()) return new BoolVal(left.byteValue() != right.byteValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedInt()) return new BoolVal(left.intValue() != right.intValue());
-        else if(left.isUnsignedByteValue() && right.isInt()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedByteValue() && right.isLong()) return new BoolVal(left.longValue() != right.longValue());
+        else if(left.isUnsignedByteValue() && right.isByteValue()) return new BoolVal(left.byteValue() != right.byteValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() != right.intValue());
+        else if(left.isUnsignedByteValue() && right.isIntValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedByteValue() && right.isLongValue()) return new BoolVal(left.longValue() != right.longValue());
 		else if(left.isUnsignedByteValue() && right.isRegister()) return new BoolVal(left.byteValue() != right.byteValue());
 		else if(left.isUnsignedByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -1797,18 +1797,18 @@ public class Utils {
 			else return new BoolVal(left.longValue() != right.longValue());
 		}
 
-		else if(left.isByte() && right.isReal()) return new BoolVal(left.realValue() != right.realValue());
-		else if(left.isByte() && right.isBool()) return new BoolVal(left.byteValue() != right.byteValue());
-        else if(left.isByte() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() != right.byteValue()); 
-        else if(left.isByte() && right.isByte()) return new BoolVal(left.byteValue() != right.byteValue());
-		else if(left.isByte() && right.isUnsignedInt()) return new BoolVal(left.intValue() != right.intValue());
-        else if(left.isByte() && right.isInt()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isByte() && right.isUnsignedShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isByte() && right.isShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isByte() && right.isUnsignedLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isByte() && right.isLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isByte() && right.isRegister()) return new BoolVal(left.byteValue() != right.byteValue());
-		else if(left.isByte() && right.isVector()) {
+		else if(left.isByteValue() && right.isRealValue()) return new BoolVal(left.realValue() != right.realValue());
+		else if(left.isByteValue() && right.isBoolValue()) return new BoolVal(left.byteValue() != right.byteValue());
+        else if(left.isByteValue() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() != right.byteValue()); 
+        else if(left.isByteValue() && right.isByteValue()) return new BoolVal(left.byteValue() != right.byteValue());
+		else if(left.isByteValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() != right.intValue());
+        else if(left.isByteValue() && right.isIntValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isByteValue() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isByteValue() && right.isShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isByteValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isByteValue() && right.isLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isByteValue() && right.isRegister()) return new BoolVal(left.byteValue() != right.byteValue());
+		else if(left.isByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new BoolVal(left.byteValue() != right.byteValue());
@@ -1817,18 +1817,18 @@ public class Utils {
 			else return new BoolVal(left.longValue() != right.longValue());
 		}
 
-		else if(left.isUnsignedShort() && right.isReal()) return new BoolVal(left.realValue() != right.realValue());
-		else if(left.isUnsignedShort() && right.isBool()) return new BoolVal(left.shortValue() != right.shortValue());
-        else if(left.isUnsignedShort() && right.isUnsignedByteValue()) return new BoolVal(left.shortValue() != right.shortValue()); 
-        else if(left.isUnsignedShort() && right.isByte()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedInt()) return new BoolVal(left.intValue() != right.intValue());
-        else if(left.isUnsignedShort() && right.isInt()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isUnsignedShort() && right.isUnsignedShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isUnsignedShort() && right.isShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedShort() && right.isLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedShort() && right.isRegister()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isUnsignedShort() && right.isVector()) {
+		else if(left.isUnsignedShortValue() && right.isRealValue()) return new BoolVal(left.realValue() != right.realValue());
+		else if(left.isUnsignedShortValue() && right.isBoolValue()) return new BoolVal(left.shortValue() != right.shortValue());
+        else if(left.isUnsignedShortValue() && right.isUnsignedByteValue()) return new BoolVal(left.shortValue() != right.shortValue()); 
+        else if(left.isUnsignedShortValue() && right.isByteValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() != right.intValue());
+        else if(left.isUnsignedShortValue() && right.isIntValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedShortValue() && right.isLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedShortValue() && right.isRegister()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new BoolVal(left.shortValue() != right.shortValue());
@@ -1836,18 +1836,18 @@ public class Utils {
 			else return new BoolVal(left.longValue() != right.longValue());
 		}
 
-		else if(left.isShort() && right.isReal()) return new BoolVal(left.realValue() != right.realValue());
-		else if(left.isShort() && right.isBool()) return new BoolVal(left.shortValue() != right.shortValue());
-        else if(left.isShort() && right.isUnsignedByteValue()) return new BoolVal(left.shortValue() != right.shortValue()); 
-        else if(left.isShort() && right.isByte()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isShort() && right.isUnsignedInt()) return new BoolVal(left.intValue() != right.intValue());
-        else if(left.isShort() && right.isInt()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isShort() && right.isUnsignedShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isShort() && right.isShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isShort() && right.isUnsignedLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isShort() && right.isLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isShort() && right.isRegister()) return new BoolVal(left.byteValue() != right.byteValue());
-		else if(left.isShort() && right.isVector()) {
+		else if(left.isShortValue() && right.isRealValue()) return new BoolVal(left.realValue() != right.realValue());
+		else if(left.isShortValue() && right.isBoolValue()) return new BoolVal(left.shortValue() != right.shortValue());
+        else if(left.isShortValue() && right.isUnsignedByteValue()) return new BoolVal(left.shortValue() != right.shortValue()); 
+        else if(left.isShortValue() && right.isByteValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() != right.intValue());
+        else if(left.isShortValue() && right.isIntValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isShortValue() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isShortValue() && right.isShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isShortValue() && right.isLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isShortValue() && right.isRegister()) return new BoolVal(left.byteValue() != right.byteValue());
+		else if(left.isShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new BoolVal(left.shortValue() != right.shortValue());
@@ -1855,78 +1855,78 @@ public class Utils {
 			else return new BoolVal(left.longValue() != right.longValue());
 		}
 
-		else if(left.isUnsignedInt() && right.isReal()) return new BoolVal(left.realValue() != right.realValue());
-		else if(left.isUnsignedInt() && right.isBool()) return new BoolVal(left.intValue() != right.intValue());
-        else if(left.isUnsignedInt() && right.isUnsignedByteValue()) return new BoolVal(left.intValue() != right.intValue()); 
-        else if(left.isUnsignedInt() && right.isByte()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isUnsignedInt() && right.isUnsignedInt()) return new BoolVal(left.intValue() != right.intValue());
-        else if(left.isUnsignedInt() && right.isInt()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedShort()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isUnsignedInt() && right.isShort()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedInt() && right.isLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedInt() && right.isRegister()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isUnsignedInt() && right.isVector()) {
+		else if(left.isUnsignedIntValue() && right.isRealValue()) return new BoolVal(left.realValue() != right.realValue());
+		else if(left.isUnsignedIntValue() && right.isBoolValue()) return new BoolVal(left.intValue() != right.intValue());
+        else if(left.isUnsignedIntValue() && right.isUnsignedByteValue()) return new BoolVal(left.intValue() != right.intValue()); 
+        else if(left.isUnsignedIntValue() && right.isByteValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() != right.intValue());
+        else if(left.isUnsignedIntValue() && right.isIntValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedShortValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isUnsignedIntValue() && right.isShortValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedIntValue() && right.isLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedIntValue() && right.isRegister()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isUnsignedIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new BoolVal(left.intValue() != right.intValue());
 			else return new BoolVal(left.longValue() != right.longValue());
 		}
 
-		else if(left.isInt() && right.isReal()) return new BoolVal(left.realValue() != right.realValue());
-		else if(left.isInt() && right.isBool()) return new BoolVal(left.intValue() != right.intValue());
-        else if(left.isInt() && right.isUnsignedByteValue()) return new BoolVal(left.intValue() != right.intValue()); 
-        else if(left.isInt() && right.isByte()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isInt() && right.isUnsignedInt()) return new BoolVal(left.intValue() != right.intValue());
-        else if(left.isInt() && right.isInt()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isInt() && right.isUnsignedShort()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isInt() && right.isShort()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isInt() && right.isUnsignedLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isInt() && right.isLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isInt() && right.isRegister()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isInt() && right.isVector()) {
+		else if(left.isIntValue() && right.isRealValue()) return new BoolVal(left.realValue() != right.realValue());
+		else if(left.isIntValue() && right.isBoolValue()) return new BoolVal(left.intValue() != right.intValue());
+        else if(left.isIntValue() && right.isUnsignedByteValue()) return new BoolVal(left.intValue() != right.intValue()); 
+        else if(left.isIntValue() && right.isByteValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isIntValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() != right.intValue());
+        else if(left.isIntValue() && right.isIntValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isIntValue() && right.isUnsignedShortValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isIntValue() && right.isShortValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isIntValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isIntValue() && right.isLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isIntValue() && right.isRegister()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new BoolVal(left.intValue() != right.intValue());
 			else return new BoolVal(left.longValue() != right.longValue());
 		}
 
-		else if(left.isUnsignedLong() && right.isReal()) return new BoolVal(left.realValue() != right.realValue());
-		else if(left.isUnsignedLong() && right.isBool()) return new BoolVal(left.longValue() != right.longValue());
-        else if(left.isUnsignedLong() && right.isUnsignedByteValue()) return new BoolVal(left.longValue() != right.longValue()); 
-        else if(left.isUnsignedLong() && right.isByte()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedInt()) return new BoolVal(left.longValue() != right.longValue());
-        else if(left.isUnsignedLong() && right.isInt()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedShort()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedLong() && right.isShort()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedLong() && right.isLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedLong() && right.isRegister()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedLong() && right.isVector()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedLongValue() && right.isRealValue()) return new BoolVal(left.realValue() != right.realValue());
+		else if(left.isUnsignedLongValue() && right.isBoolValue()) return new BoolVal(left.longValue() != right.longValue());
+        else if(left.isUnsignedLongValue() && right.isUnsignedByteValue()) return new BoolVal(left.longValue() != right.longValue()); 
+        else if(left.isUnsignedLongValue() && right.isByteValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedIntValue()) return new BoolVal(left.longValue() != right.longValue());
+        else if(left.isUnsignedLongValue() && right.isIntValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedShortValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedLongValue() && right.isShortValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedLongValue() && right.isLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedLongValue() && right.isRegister()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedLongValue() && right.isVector()) return new BoolVal(left.longValue() != right.longValue());
 
-		else if(left.isLong() && right.isReal()) return new BoolVal(left.realValue() != right.realValue());
-		else if(left.isLong() && right.isBool()) return new BoolVal(left.longValue() != right.longValue());
-        else if(left.isLong() && right.isUnsignedByteValue()) return new BoolVal(left.longValue() != right.longValue()); 
-        else if(left.isLong() && right.isByte()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isLong() && right.isUnsignedInt()) return new BoolVal(left.longValue() != right.longValue());
-        else if(left.isLong() && right.isInt()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isLong() && right.isUnsignedShort()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isLong() && right.isShort()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isLong() && right.isUnsignedLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isLong() && right.isLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isLong() && right.isRegister()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isLong() && right.isVector()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isLongValue() && right.isRealValue()) return new BoolVal(left.realValue() != right.realValue());
+		else if(left.isLongValue() && right.isBoolValue()) return new BoolVal(left.longValue() != right.longValue());
+        else if(left.isLongValue() && right.isUnsignedByteValue()) return new BoolVal(left.longValue() != right.longValue()); 
+        else if(left.isLongValue() && right.isByteValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isLongValue() && right.isUnsignedIntValue()) return new BoolVal(left.longValue() != right.longValue());
+        else if(left.isLongValue() && right.isIntValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isLongValue() && right.isUnsignedShortValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isLongValue() && right.isShortValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isLongValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isLongValue() && right.isLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isLongValue() && right.isRegister()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isLongValue() && right.isVector()) return new BoolVal(left.longValue() != right.longValue());
 
-		else if(left.isRegister() && right.isReal()) return new BoolVal(left.realValue() != right.realValue());
-		else if(left.isRegister() && right.isBool()) return new BoolVal(left.byteValue() != right.byteValue());
+		else if(left.isRegister() && right.isRealValue()) return new BoolVal(left.realValue() != right.realValue());
+		else if(left.isRegister() && right.isBoolValue()) return new BoolVal(left.byteValue() != right.byteValue());
         else if(left.isRegister() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() != right.byteValue()); 
-        else if(left.isRegister() && right.isByte()) return new BoolVal(left.byteValue() != right.byteValue());
-		else if(left.isRegister() && right.isUnsignedInt()) return new BoolVal(left.intValue() != right.intValue());
-        else if(left.isRegister() && right.isInt()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isRegister() && right.isUnsignedShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isRegister() && right.isShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isRegister() && right.isUnsignedLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isRegister() && right.isLong()) return new BoolVal(left.longValue() != right.longValue());
+        else if(left.isRegister() && right.isByteValue()) return new BoolVal(left.byteValue() != right.byteValue());
+		else if(left.isRegister() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() != right.intValue());
+        else if(left.isRegister() && right.isIntValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isRegister() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isRegister() && right.isShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isRegister() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isRegister() && right.isLongValue()) return new BoolVal(left.longValue() != right.longValue());
 		else if(left.isRegister() && right.isRegister()) return new BoolVal(left.byteValue() != right.byteValue());
 		else if(left.isRegister() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -1937,16 +1937,16 @@ public class Utils {
 			else return new BoolVal(left.longValue() != right.longValue());
 		}
 
-		else if(left.isVector() && right.isReal()) return new BoolVal(left.realValue() != right.realValue());
-		else if(left.isVector() && right.isBool()) return new BoolVal(left.byteValue() != right.byteValue());
+		else if(left.isVector() && right.isRealValue()) return new BoolVal(left.realValue() != right.realValue());
+		else if(left.isVector() && right.isBoolValue()) return new BoolVal(left.byteValue() != right.byteValue());
         else if(left.isVector() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() != right.byteValue()); 
-        else if(left.isVector() && right.isByte()) return new BoolVal(left.byteValue() != right.byteValue());
-		else if(left.isVector() && right.isUnsignedInt()) return new BoolVal(left.intValue() != right.intValue());
-        else if(left.isVector() && right.isInt()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isVector() && right.isUnsignedShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isVector() && right.isShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isVector() && right.isUnsignedLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isVector() && right.isLong()) return new BoolVal(left.longValue() != right.longValue());
+        else if(left.isVector() && right.isByteValue()) return new BoolVal(left.byteValue() != right.byteValue());
+		else if(left.isVector() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() != right.intValue());
+        else if(left.isVector() && right.isIntValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isVector() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isVector() && right.isShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isVector() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isVector() && right.isLongValue()) return new BoolVal(left.longValue() != right.longValue());
 		else if(left.isVector() && right.isRegister()) return new BoolVal(left.byteValue() != right.byteValue());
 		else if(left.isVector() && right.isVector()) return new BoolVal(left.longValue() != right.longValue());
 		else {
@@ -1956,19 +1956,19 @@ public class Utils {
 
     }
 
-    public static Value trictInequality(Value left, Value right) throws Exception{
-        if(left.isReal() && right.isReal()) return new BoolVal(left.realValue() != right.realValue());
+    public static Value strictInequality(Value left, Value right) throws Exception{
+        if(left.isRealValue() && right.isRealValue()) return new BoolVal(left.realValue() != right.realValue());
 		
-		else if(left.isBool() && right.isBool()) return new BoolVal(left.byteValue() != right.byteValue());
+		else if(left.isBoolValue() && right.isBoolValue()) return new BoolVal(left.byteValue() != right.byteValue());
 
         else if(left.isUnsignedByteValue() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() != right.byteValue()); 
-        else if(left.isUnsignedByteValue() && right.isByte()) return new BoolVal(left.byteValue() != right.byteValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedInt()) return new BoolVal(left.intValue() != right.intValue());
-        else if(left.isUnsignedByteValue() && right.isInt()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedByteValue() && right.isLong()) return new BoolVal(left.longValue() != right.longValue());
+        else if(left.isUnsignedByteValue() && right.isByteValue()) return new BoolVal(left.byteValue() != right.byteValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() != right.intValue());
+        else if(left.isUnsignedByteValue() && right.isIntValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedByteValue() && right.isLongValue()) return new BoolVal(left.longValue() != right.longValue());
 		else if(left.isUnsignedByteValue() && right.isRegister()) return new BoolVal(left.byteValue() != right.byteValue());
 		else if(left.isUnsignedByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -1979,16 +1979,16 @@ public class Utils {
 			else return new BoolVal(left.longValue() != right.longValue());
 		}
 
-        else if(left.isByte() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() != right.byteValue()); 
-        else if(left.isByte() && right.isByte()) return new BoolVal(left.byteValue() != right.byteValue());
-		else if(left.isByte() && right.isUnsignedInt()) return new BoolVal(left.intValue() != right.intValue());
-        else if(left.isByte() && right.isInt()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isByte() && right.isUnsignedShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isByte() && right.isShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isByte() && right.isUnsignedLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isByte() && right.isLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isByte() && right.isRegister()) return new BoolVal(left.byteValue() != right.byteValue());
-		else if(left.isByte() && right.isVector()) {
+        else if(left.isByteValue() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() != right.byteValue()); 
+        else if(left.isByteValue() && right.isByteValue()) return new BoolVal(left.byteValue() != right.byteValue());
+		else if(left.isByteValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() != right.intValue());
+        else if(left.isByteValue() && right.isIntValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isByteValue() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isByteValue() && right.isShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isByteValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isByteValue() && right.isLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isByteValue() && right.isRegister()) return new BoolVal(left.byteValue() != right.byteValue());
+		else if(left.isByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new BoolVal(left.byteValue() != right.byteValue());
@@ -1997,16 +1997,16 @@ public class Utils {
 			else return new BoolVal(left.longValue() != right.longValue());
 		}
 
-        else if(left.isUnsignedShort() && right.isUnsignedByteValue()) return new BoolVal(left.shortValue() != right.shortValue()); 
-        else if(left.isUnsignedShort() && right.isByte()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedInt()) return new BoolVal(left.intValue() != right.intValue());
-        else if(left.isUnsignedShort() && right.isInt()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isUnsignedShort() && right.isUnsignedShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isUnsignedShort() && right.isShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedShort() && right.isLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedShort() && right.isRegister()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isUnsignedShort() && right.isVector()) {
+        else if(left.isUnsignedShortValue() && right.isUnsignedByteValue()) return new BoolVal(left.shortValue() != right.shortValue()); 
+        else if(left.isUnsignedShortValue() && right.isByteValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() != right.intValue());
+        else if(left.isUnsignedShortValue() && right.isIntValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedShortValue() && right.isLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedShortValue() && right.isRegister()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new BoolVal(left.shortValue() != right.shortValue());
@@ -2014,16 +2014,16 @@ public class Utils {
 			else return new BoolVal(left.longValue() != right.longValue());
 		}
 
-        else if(left.isShort() && right.isUnsignedByteValue()) return new BoolVal(left.shortValue() != right.shortValue()); 
-        else if(left.isShort() && right.isByte()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isShort() && right.isUnsignedInt()) return new BoolVal(left.intValue() != right.intValue());
-        else if(left.isShort() && right.isInt()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isShort() && right.isUnsignedShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isShort() && right.isShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isShort() && right.isUnsignedLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isShort() && right.isLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isShort() && right.isRegister()) return new BoolVal(left.byteValue() != right.byteValue());
-		else if(left.isShort() && right.isVector()) {
+        else if(left.isShortValue() && right.isUnsignedByteValue()) return new BoolVal(left.shortValue() != right.shortValue()); 
+        else if(left.isShortValue() && right.isByteValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() != right.intValue());
+        else if(left.isShortValue() && right.isIntValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isShortValue() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isShortValue() && right.isShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isShortValue() && right.isLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isShortValue() && right.isRegister()) return new BoolVal(left.byteValue() != right.byteValue());
+		else if(left.isShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new BoolVal(left.shortValue() != right.shortValue());
@@ -2031,68 +2031,68 @@ public class Utils {
 			else return new BoolVal(left.longValue() != right.longValue());
 		}
 
-        else if(left.isUnsignedInt() && right.isUnsignedByteValue()) return new BoolVal(left.intValue() != right.intValue()); 
-        else if(left.isUnsignedInt() && right.isByte()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isUnsignedInt() && right.isUnsignedInt()) return new BoolVal(left.intValue() != right.intValue());
-        else if(left.isUnsignedInt() && right.isInt()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedShort()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isUnsignedInt() && right.isShort()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedInt() && right.isLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedInt() && right.isRegister()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isUnsignedInt() && right.isVector()) {
+        else if(left.isUnsignedIntValue() && right.isUnsignedByteValue()) return new BoolVal(left.intValue() != right.intValue()); 
+        else if(left.isUnsignedIntValue() && right.isByteValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() != right.intValue());
+        else if(left.isUnsignedIntValue() && right.isIntValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedShortValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isUnsignedIntValue() && right.isShortValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedIntValue() && right.isLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedIntValue() && right.isRegister()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isUnsignedIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new BoolVal(left.intValue() != right.intValue());
 			else return new BoolVal(left.longValue() != right.longValue());
 		}
 
-        else if(left.isInt() && right.isUnsignedByteValue()) return new BoolVal(left.intValue() != right.intValue()); 
-        else if(left.isInt() && right.isByte()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isInt() && right.isUnsignedInt()) return new BoolVal(left.intValue() != right.intValue());
-        else if(left.isInt() && right.isInt()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isInt() && right.isUnsignedShort()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isInt() && right.isShort()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isInt() && right.isUnsignedLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isInt() && right.isLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isInt() && right.isRegister()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isInt() && right.isVector()) {
+        else if(left.isIntValue() && right.isUnsignedByteValue()) return new BoolVal(left.intValue() != right.intValue()); 
+        else if(left.isIntValue() && right.isByteValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isIntValue() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() != right.intValue());
+        else if(left.isIntValue() && right.isIntValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isIntValue() && right.isUnsignedShortValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isIntValue() && right.isShortValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isIntValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isIntValue() && right.isLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isIntValue() && right.isRegister()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new BoolVal(left.intValue() != right.intValue());
 			else return new BoolVal(left.longValue() != right.longValue());
 		}
 
-        else if(left.isUnsignedLong() && right.isUnsignedByteValue()) return new BoolVal(left.longValue() != right.longValue()); 
-        else if(left.isUnsignedLong() && right.isByte()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedInt()) return new BoolVal(left.longValue() != right.longValue());
-        else if(left.isUnsignedLong() && right.isInt()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedShort()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedLong() && right.isShort()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedLong() && right.isLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedLong() && right.isRegister()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isUnsignedLong() && right.isVector()) return new BoolVal(left.longValue() != right.longValue());
+        else if(left.isUnsignedLongValue() && right.isUnsignedByteValue()) return new BoolVal(left.longValue() != right.longValue()); 
+        else if(left.isUnsignedLongValue() && right.isByteValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedIntValue()) return new BoolVal(left.longValue() != right.longValue());
+        else if(left.isUnsignedLongValue() && right.isIntValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedShortValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedLongValue() && right.isShortValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedLongValue() && right.isLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedLongValue() && right.isRegister()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isUnsignedLongValue() && right.isVector()) return new BoolVal(left.longValue() != right.longValue());
 
-        else if(left.isLong() && right.isUnsignedByteValue()) return new BoolVal(left.longValue() != right.longValue()); 
-        else if(left.isLong() && right.isByte()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isLong() && right.isUnsignedInt()) return new BoolVal(left.longValue() != right.longValue());
-        else if(left.isLong() && right.isInt()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isLong() && right.isUnsignedShort()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isLong() && right.isShort()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isLong() && right.isUnsignedLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isLong() && right.isLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isLong() && right.isRegister()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isLong() && right.isVector()) return new BoolVal(left.longValue() != right.longValue());
+        else if(left.isLongValue() && right.isUnsignedByteValue()) return new BoolVal(left.longValue() != right.longValue()); 
+        else if(left.isLongValue() && right.isByteValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isLongValue() && right.isUnsignedIntValue()) return new BoolVal(left.longValue() != right.longValue());
+        else if(left.isLongValue() && right.isIntValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isLongValue() && right.isUnsignedShortValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isLongValue() && right.isShortValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isLongValue() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isLongValue() && right.isLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isLongValue() && right.isRegister()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isLongValue() && right.isVector()) return new BoolVal(left.longValue() != right.longValue());
 
         else if(left.isRegister() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() != right.byteValue()); 
-        else if(left.isRegister() && right.isByte()) return new BoolVal(left.byteValue() != right.byteValue());
-		else if(left.isRegister() && right.isUnsignedInt()) return new BoolVal(left.intValue() != right.intValue());
-        else if(left.isRegister() && right.isInt()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isRegister() && right.isUnsignedShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isRegister() && right.isShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isRegister() && right.isUnsignedLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isRegister() && right.isLong()) return new BoolVal(left.longValue() != right.longValue());
+        else if(left.isRegister() && right.isByteValue()) return new BoolVal(left.byteValue() != right.byteValue());
+		else if(left.isRegister() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() != right.intValue());
+        else if(left.isRegister() && right.isIntValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isRegister() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isRegister() && right.isShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isRegister() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isRegister() && right.isLongValue()) return new BoolVal(left.longValue() != right.longValue());
 		else if(left.isRegister() && right.isRegister()) return new BoolVal(left.byteValue() != right.byteValue());
 		else if(left.isRegister() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -2104,13 +2104,13 @@ public class Utils {
 		}
 
         else if(left.isVector() && right.isUnsignedByteValue()) return new BoolVal(left.byteValue() != right.byteValue()); 
-        else if(left.isVector() && right.isByte()) return new BoolVal(left.byteValue() != right.byteValue());
-		else if(left.isVector() && right.isUnsignedInt()) return new BoolVal(left.intValue() != right.intValue());
-        else if(left.isVector() && right.isInt()) return new BoolVal(left.intValue() != right.intValue());
-		else if(left.isVector() && right.isUnsignedShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isVector() && right.isShort()) return new BoolVal(left.shortValue() != right.shortValue());
-		else if(left.isVector() && right.isUnsignedLong()) return new BoolVal(left.longValue() != right.longValue());
-		else if(left.isVector() && right.isLong()) return new BoolVal(left.longValue() != right.longValue());
+        else if(left.isVector() && right.isByteValue()) return new BoolVal(left.byteValue() != right.byteValue());
+		else if(left.isVector() && right.isUnsignedIntValue()) return new BoolVal(left.intValue() != right.intValue());
+        else if(left.isVector() && right.isIntValue()) return new BoolVal(left.intValue() != right.intValue());
+		else if(left.isVector() && right.isUnsignedShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isVector() && right.isShortValue()) return new BoolVal(left.shortValue() != right.shortValue());
+		else if(left.isVector() && right.isUnsignedLongValue()) return new BoolVal(left.longValue() != right.longValue());
+		else if(left.isVector() && right.isLongValue()) return new BoolVal(left.longValue() != right.longValue());
 		else if(left.isVector() && right.isRegister()) return new BoolVal(left.byteValue() != right.byteValue());
 		else if(left.isVector() && right.isVector()) return new BoolVal(left.longValue() != right.longValue());
 		else {
@@ -2120,32 +2120,32 @@ public class Utils {
 
     }
 
-    public static Value ogicalAnd(Value left, Value right){
+    public static Value logicalAnd(Value left, Value right){
         return new BoolVal(left.boolValue() && right.boolValue());
     }
 
-    public static Value ogicalOr(Value left, Value right){
+    public static Value logicalOr(Value left, Value right){
         return new BoolVal(left.boolValue() || right.boolValue());
     }
 
-    public static Value essThanOrEqualTo(Value left, Value right) throws Exception{
-        if(left.isReal() && right.isReal()) return new BoolVal(left.realValue() <= right.realValue());
-        else if(left.isReal() && right.isUnsignedByteValue()) return new BoolVal(left.realValue() <= right.realValue()); 
-        else if(left.isReal() && right.isByte()) return new BoolVal(left.realValue() <= right.realValue());
-		else if(left.isReal() && right.isUnsignedInt()) return new BoolVal(left.realValue() <= right.realValue());
-        else if(left.isReal() && right.isInt()) return new BoolVal(left.realValue() <= right.realValue());
-		else if(left.isReal() && right.isUnsignedShort()) return new BoolVal(left.realValue() <= right.realValue());
-		else if(left.isReal() && right.isShort()) return new BoolVal(left.realValue() <= right.realValue());
-		else if(left.isReal() && right.isUnsignedLong()) return new BoolVal(left.realValue() <= right.realValue());
-		else if(left.isReal() && right.isLong()) return new BoolVal(left.realValue() <= right.realValue());
-		else if(left.isReal() && right.isRegister()) return new BoolVal(left.realValue() <= right.realValue());
-		else if(left.isReal() && right.isVector()) return new BoolVal(left.realValue() <= right.realValue());
+    public static Value lessThanOrEqualTo(Value left, Value right) throws Exception{
+        if(left.isRealValue() && right.isRealValue()) return new BoolVal(left.realValue() <= right.realValue());
+        else if(left.isRealValue() && right.isUnsignedByteValue()) return new BoolVal(left.realValue() <= right.realValue()); 
+        else if(left.isRealValue() && right.isByteValue()) return new BoolVal(left.realValue() <= right.realValue());
+		else if(left.isRealValue() && right.isUnsignedIntValue()) return new BoolVal(left.realValue() <= right.realValue());
+        else if(left.isRealValue() && right.isIntValue()) return new BoolVal(left.realValue() <= right.realValue());
+		else if(left.isRealValue() && right.isUnsignedShortValue()) return new BoolVal(left.realValue() <= right.realValue());
+		else if(left.isRealValue() && right.isShortValue()) return new BoolVal(left.realValue() <= right.realValue());
+		else if(left.isRealValue() && right.isUnsignedLongValue()) return new BoolVal(left.realValue() <= right.realValue());
+		else if(left.isRealValue() && right.isLongValue()) return new BoolVal(left.realValue() <= right.realValue());
+		else if(left.isRealValue() && right.isRegister()) return new BoolVal(left.realValue() <= right.realValue());
+		else if(left.isRealValue() && right.isVector()) return new BoolVal(left.realValue() <= right.realValue());
 
-		else if(left.isUnsignedByteValue() && right.isReal()) return new BoolVal(left.realValue() <= right.realValue());
+		else if(left.isUnsignedByteValue() && right.isRealValue()) return new BoolVal(left.realValue() <= right.realValue());
 		else if(left.isUnsignedByteValue() && right.isUnsignedByteValue()) return new BoolVal(Byte.compareUnsigned(left.byteValue(), right.byteValue()) <= 0); 
-        else if(left.isUnsignedByteValue() && right.isUnsignedInt()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) <= 0);
-        else if(left.isUnsignedByteValue() && right.isUnsignedShort()) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) <= 0);
-		else if(left.isUnsignedByteValue() && right.isUnsignedLong()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) <= 0);
+        else if(left.isUnsignedByteValue() && right.isUnsignedIntValue()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) <= 0);
+        else if(left.isUnsignedByteValue() && right.isUnsignedShortValue()) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) <= 0);
+		else if(left.isUnsignedByteValue() && right.isUnsignedLongValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) <= 0);
 		else if(left.isUnsignedByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
@@ -2155,19 +2155,19 @@ public class Utils {
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) <= 0);
 		}
 
-		else if(left.isByte() && right.isReal()) return new BoolVal(left.realValue() <= right.realValue());
-		else if(left.isByte() && right.isByte()) return new BoolVal(left.byteValue() <= right.byteValue());
-		else if(left.isByte() && right.isInt()) return new BoolVal(left.intValue() <= right.intValue());
-		else if(left.isByte() && right.isShort()) return new BoolVal(left.shortValue() <= right.shortValue());
-		else if(left.isByte() && right.isLong()) return new BoolVal(left.longValue() <= right.longValue());
+		else if(left.isByteValue() && right.isRealValue()) return new BoolVal(left.realValue() <= right.realValue());
+		else if(left.isByteValue() && right.isByteValue()) return new BoolVal(left.byteValue() <= right.byteValue());
+		else if(left.isByteValue() && right.isIntValue()) return new BoolVal(left.intValue() <= right.intValue());
+		else if(left.isByteValue() && right.isShortValue()) return new BoolVal(left.shortValue() <= right.shortValue());
+		else if(left.isByteValue() && right.isLongValue()) return new BoolVal(left.longValue() <= right.longValue());
 
-		else if(left.isUnsignedShort() && right.isReal()) return new BoolVal(left.realValue() <= right.realValue());
-		else if(left.isUnsignedShort() && right.isUnsignedByteValue()) return new BoolVal(Short.compareUnsigned(left.shortValue(),  right.shortValue()) <= 0); 
-        else if(left.isUnsignedShort() && right.isUnsignedInt()) return new BoolVal(Integer.compareUnsigned(left.intValue() , right.intValue()) <= 0);
-        else if(left.isUnsignedShort() && right.isUnsignedShort()) return new BoolVal(Short.compareUnsigned(left.shortValue() , right.shortValue()) <= 0);
-		else if(left.isUnsignedShort() && right.isUnsignedLong()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) <= 0);
-		else if(left.isUnsignedShort() && right.isRegister()) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) <= 0);
-		else if(left.isUnsignedShort() && right.isVector()) {
+		else if(left.isUnsignedShortValue() && right.isRealValue()) return new BoolVal(left.realValue() <= right.realValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedByteValue()) return new BoolVal(Short.compareUnsigned(left.shortValue(),  right.shortValue()) <= 0); 
+        else if(left.isUnsignedShortValue() && right.isUnsignedIntValue()) return new BoolVal(Integer.compareUnsigned(left.intValue() , right.intValue()) <= 0);
+        else if(left.isUnsignedShortValue() && right.isUnsignedShortValue()) return new BoolVal(Short.compareUnsigned(left.shortValue() , right.shortValue()) <= 0);
+		else if(left.isUnsignedShortValue() && right.isUnsignedLongValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) <= 0);
+		else if(left.isUnsignedShortValue() && right.isRegister()) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) <= 0);
+		else if(left.isUnsignedShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) <= 0);
@@ -2175,44 +2175,44 @@ public class Utils {
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) <= 0);
 		}
 
-		else if(left.isShort() && right.isReal()) return new BoolVal(left.realValue() <= right.realValue());
-        else if(left.isShort() && right.isByte()) return new BoolVal(left.shortValue() <= right.shortValue());
-        else if(left.isShort() && right.isInt()) return new BoolVal(left.intValue() <= right.intValue());
-		else if(left.isShort() && right.isShort()) return new BoolVal(left.shortValue() <= right.shortValue());
-		else if(left.isShort() && right.isLong()) return new BoolVal(left.longValue() <= right.longValue());
+		else if(left.isShortValue() && right.isRealValue()) return new BoolVal(left.realValue() <= right.realValue());
+        else if(left.isShortValue() && right.isByteValue()) return new BoolVal(left.shortValue() <= right.shortValue());
+        else if(left.isShortValue() && right.isIntValue()) return new BoolVal(left.intValue() <= right.intValue());
+		else if(left.isShortValue() && right.isShortValue()) return new BoolVal(left.shortValue() <= right.shortValue());
+		else if(left.isShortValue() && right.isLongValue()) return new BoolVal(left.longValue() <= right.longValue());
 
-		else if(left.isUnsignedInt() && right.isReal()) return new BoolVal(left.realValue() <= right.realValue());
-        else if(left.isUnsignedInt() && right.isUnsignedByteValue()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) <= 0); 
-        else if(left.isUnsignedInt() && right.isUnsignedInt()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) <= 0);
-        else if(left.isUnsignedInt() && right.isUnsignedShort()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) <= 0);
-		else if(left.isUnsignedInt() && right.isUnsignedLong()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) <= 0);
-		else if(left.isUnsignedInt() && right.isVector()) {
+		else if(left.isUnsignedIntValue() && right.isRealValue()) return new BoolVal(left.realValue() <= right.realValue());
+        else if(left.isUnsignedIntValue() && right.isUnsignedByteValue()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) <= 0); 
+        else if(left.isUnsignedIntValue() && right.isUnsignedIntValue()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) <= 0);
+        else if(left.isUnsignedIntValue() && right.isUnsignedShortValue()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) <= 0);
+		else if(left.isUnsignedIntValue() && right.isUnsignedLongValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) <= 0);
+		else if(left.isUnsignedIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) <= 0);
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) <= 0);
 		}
 
-		else if(left.isInt() && right.isReal()) return new BoolVal(left.realValue() <= right.realValue());
-		else if(left.isInt() && right.isByte()) return new BoolVal(left.intValue() <= right.intValue());
-		else if(left.isInt() && right.isInt()) return new BoolVal(left.intValue() <= right.intValue());
-		else if(left.isInt() && right.isShort()) return new BoolVal(left.intValue() <= right.intValue());
-		else if(left.isInt() && right.isLong()) return new BoolVal(left.longValue() <= right.longValue());
+		else if(left.isIntValue() && right.isRealValue()) return new BoolVal(left.realValue() <= right.realValue());
+		else if(left.isIntValue() && right.isByteValue()) return new BoolVal(left.intValue() <= right.intValue());
+		else if(left.isIntValue() && right.isIntValue()) return new BoolVal(left.intValue() <= right.intValue());
+		else if(left.isIntValue() && right.isShortValue()) return new BoolVal(left.intValue() <= right.intValue());
+		else if(left.isIntValue() && right.isLongValue()) return new BoolVal(left.longValue() <= right.longValue());
 
-		else if(left.isUnsignedLong() && right.isReal()) return new BoolVal(left.realValue() <= right.realValue());
-		else if(left.isUnsignedLong() && right.isUnsignedByteValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) <= 0); 
-        else if(left.isUnsignedLong() && right.isUnsignedInt()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) <= 0);
-        else if(left.isUnsignedLong() && right.isUnsignedShort()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) <= 0);
-		else if(left.isUnsignedLong() && right.isUnsignedLong()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) <= 0);
-		else if(left.isUnsignedLong() && right.isVector()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) <= 0);
+		else if(left.isUnsignedLongValue() && right.isRealValue()) return new BoolVal(left.realValue() <= right.realValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedByteValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) <= 0); 
+        else if(left.isUnsignedLongValue() && right.isUnsignedIntValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) <= 0);
+        else if(left.isUnsignedLongValue() && right.isUnsignedShortValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) <= 0);
+		else if(left.isUnsignedLongValue() && right.isUnsignedLongValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) <= 0);
+		else if(left.isUnsignedLongValue() && right.isVector()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) <= 0);
 
-		else if(left.isLong() && right.isReal()) return new BoolVal(left.realValue() <= right.realValue());
-		else if(left.isLong() && right.isByte()) return new BoolVal(left.longValue() <= right.longValue());
-		else if(left.isLong() && right.isInt()) return new BoolVal(left.longValue() <= right.longValue());
-		else if(left.isLong() && right.isShort()) return new BoolVal(left.longValue() <= right.longValue());
-		else if(left.isLong() && right.isLong()) return new BoolVal(left.longValue() <= right.longValue());
+		else if(left.isLongValue() && right.isRealValue()) return new BoolVal(left.realValue() <= right.realValue());
+		else if(left.isLongValue() && right.isByteValue()) return new BoolVal(left.longValue() <= right.longValue());
+		else if(left.isLongValue() && right.isIntValue()) return new BoolVal(left.longValue() <= right.longValue());
+		else if(left.isLongValue() && right.isShortValue()) return new BoolVal(left.longValue() <= right.longValue());
+		else if(left.isLongValue() && right.isLongValue()) return new BoolVal(left.longValue() <= right.longValue());
 		
-		else if(left.isVector() && right.isReal()) return new BoolVal(left.realValue() <= right.realValue());
+		else if(left.isVector() && right.isRealValue()) return new BoolVal(left.realValue() <= right.realValue());
 		else if(left.isVector() && right.isUnsignedByteValue()){
 			VectorVal vec = (VectorVal)left;
 			int size = vec.getSize();
@@ -2221,20 +2221,20 @@ public class Utils {
 			else if(size <= 32) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) <= 0);
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) <= 0);	
 		}
-        else if(left.isVector() && right.isUnsignedInt()){
+        else if(left.isVector() && right.isUnsignedIntValue()){
 			VectorVal vec = (VectorVal)left;
 			int size = vec.getSize();
 			if(size <= 32) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) <= 0);
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) <= 0);	
 		}
-        else if(left.isVector() && right.isUnsignedShort()){
+        else if(left.isVector() && right.isUnsignedShortValue()){
 			VectorVal vec = (VectorVal)left;
 			int size = vec.getSize();
 			if(size <= 16) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) <= 0);
 			else if(size <= 32) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) <= 0);
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) <= 0);	
 		}
-		else if(left.isVector() && right.isUnsignedLong()){
+		else if(left.isVector() && right.isUnsignedLongValue()){
 			return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) <= 0);	
 		}
 		else if(left.isVector() && right.isVector()) {
@@ -2245,24 +2245,24 @@ public class Utils {
 		}
     }
 
-    public static Value essThan(Value left, Value right) throws Exception{
-        if(left.isReal() && right.isReal()) return new BoolVal(left.realValue() < right.realValue());
-        else if(left.isReal() && right.isUnsignedByteValue()) return new BoolVal(left.realValue() < right.realValue()); 
-        else if(left.isReal() && right.isByte()) return new BoolVal(left.realValue() < right.realValue());
-		else if(left.isReal() && right.isUnsignedInt()) return new BoolVal(left.realValue() < right.realValue());
-        else if(left.isReal() && right.isInt()) return new BoolVal(left.realValue() < right.realValue());
-		else if(left.isReal() && right.isUnsignedShort()) return new BoolVal(left.realValue() < right.realValue());
-		else if(left.isReal() && right.isShort()) return new BoolVal(left.realValue() < right.realValue());
-		else if(left.isReal() && right.isUnsignedLong()) return new BoolVal(left.realValue() < right.realValue());
-		else if(left.isReal() && right.isLong()) return new BoolVal(left.realValue() < right.realValue());
-		else if(left.isReal() && right.isRegister()) return new BoolVal(left.realValue() < right.realValue());
-		else if(left.isReal() && right.isVector()) return new BoolVal(left.realValue() < right.realValue());
+    public static Value lessThan(Value left, Value right) throws Exception{
+        if(left.isRealValue() && right.isRealValue()) return new BoolVal(left.realValue() < right.realValue());
+        else if(left.isRealValue() && right.isUnsignedByteValue()) return new BoolVal(left.realValue() < right.realValue()); 
+        else if(left.isRealValue() && right.isByteValue()) return new BoolVal(left.realValue() < right.realValue());
+		else if(left.isRealValue() && right.isUnsignedIntValue()) return new BoolVal(left.realValue() < right.realValue());
+        else if(left.isRealValue() && right.isIntValue()) return new BoolVal(left.realValue() < right.realValue());
+		else if(left.isRealValue() && right.isUnsignedShortValue()) return new BoolVal(left.realValue() < right.realValue());
+		else if(left.isRealValue() && right.isShortValue()) return new BoolVal(left.realValue() < right.realValue());
+		else if(left.isRealValue() && right.isUnsignedLongValue()) return new BoolVal(left.realValue() < right.realValue());
+		else if(left.isRealValue() && right.isLongValue()) return new BoolVal(left.realValue() < right.realValue());
+		else if(left.isRealValue() && right.isRegister()) return new BoolVal(left.realValue() < right.realValue());
+		else if(left.isRealValue() && right.isVector()) return new BoolVal(left.realValue() < right.realValue());
 
-		else if(left.isUnsignedByteValue() && right.isReal()) return new BoolVal(left.realValue() < right.realValue());
+		else if(left.isUnsignedByteValue() && right.isRealValue()) return new BoolVal(left.realValue() < right.realValue());
 		else if(left.isUnsignedByteValue() && right.isUnsignedByteValue()) return new BoolVal(Byte.compareUnsigned(left.byteValue(), right.byteValue()) < 0); 
-        else if(left.isUnsignedByteValue() && right.isUnsignedInt()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) < 0);
-        else if(left.isUnsignedByteValue() && right.isUnsignedShort()) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) < 0);
-		else if(left.isUnsignedByteValue() && right.isUnsignedLong()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) < 0);
+        else if(left.isUnsignedByteValue() && right.isUnsignedIntValue()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) < 0);
+        else if(left.isUnsignedByteValue() && right.isUnsignedShortValue()) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) < 0);
+		else if(left.isUnsignedByteValue() && right.isUnsignedLongValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) < 0);
 		else if(left.isUnsignedByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
@@ -2272,19 +2272,19 @@ public class Utils {
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) < 0);
 		}
 
-		else if(left.isByte() && right.isReal()) return new BoolVal(left.realValue() < right.realValue());
-		else if(left.isByte() && right.isByte()) return new BoolVal(left.byteValue() < right.byteValue());
-		else if(left.isByte() && right.isInt()) return new BoolVal(left.intValue() < right.intValue());
-		else if(left.isByte() && right.isShort()) return new BoolVal(left.shortValue() < right.shortValue());
-		else if(left.isByte() && right.isLong()) return new BoolVal(left.longValue() < right.longValue());
+		else if(left.isByteValue() && right.isRealValue()) return new BoolVal(left.realValue() < right.realValue());
+		else if(left.isByteValue() && right.isByteValue()) return new BoolVal(left.byteValue() < right.byteValue());
+		else if(left.isByteValue() && right.isIntValue()) return new BoolVal(left.intValue() < right.intValue());
+		else if(left.isByteValue() && right.isShortValue()) return new BoolVal(left.shortValue() < right.shortValue());
+		else if(left.isByteValue() && right.isLongValue()) return new BoolVal(left.longValue() < right.longValue());
 
-		else if(left.isUnsignedShort() && right.isReal()) return new BoolVal(left.realValue() < right.realValue());
-		else if(left.isUnsignedShort() && right.isUnsignedByteValue()) return new BoolVal(Short.compareUnsigned(left.shortValue(),  right.shortValue()) < 0); 
-        else if(left.isUnsignedShort() && right.isUnsignedInt()) return new BoolVal(Integer.compareUnsigned(left.intValue() , right.intValue()) < 0);
-        else if(left.isUnsignedShort() && right.isUnsignedShort()) return new BoolVal(Short.compareUnsigned(left.shortValue() , right.shortValue()) < 0);
-		else if(left.isUnsignedShort() && right.isUnsignedLong()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) < 0);
-		else if(left.isUnsignedShort() && right.isRegister()) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) < 0);
-		else if(left.isUnsignedShort() && right.isVector()) {
+		else if(left.isUnsignedShortValue() && right.isRealValue()) return new BoolVal(left.realValue() < right.realValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedByteValue()) return new BoolVal(Short.compareUnsigned(left.shortValue(),  right.shortValue()) < 0); 
+        else if(left.isUnsignedShortValue() && right.isUnsignedIntValue()) return new BoolVal(Integer.compareUnsigned(left.intValue() , right.intValue()) < 0);
+        else if(left.isUnsignedShortValue() && right.isUnsignedShortValue()) return new BoolVal(Short.compareUnsigned(left.shortValue() , right.shortValue()) < 0);
+		else if(left.isUnsignedShortValue() && right.isUnsignedLongValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) < 0);
+		else if(left.isUnsignedShortValue() && right.isRegister()) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) < 0);
+		else if(left.isUnsignedShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) < 0);
@@ -2292,44 +2292,44 @@ public class Utils {
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) < 0);
 		}
 
-		else if(left.isShort() && right.isReal()) return new BoolVal(left.realValue() < right.realValue());
-        else if(left.isShort() && right.isByte()) return new BoolVal(left.shortValue() < right.shortValue());
-        else if(left.isShort() && right.isInt()) return new BoolVal(left.intValue() < right.intValue());
-		else if(left.isShort() && right.isShort()) return new BoolVal(left.shortValue() < right.shortValue());
-		else if(left.isShort() && right.isLong()) return new BoolVal(left.longValue() < right.longValue());
+		else if(left.isShortValue() && right.isRealValue()) return new BoolVal(left.realValue() < right.realValue());
+        else if(left.isShortValue() && right.isByteValue()) return new BoolVal(left.shortValue() < right.shortValue());
+        else if(left.isShortValue() && right.isIntValue()) return new BoolVal(left.intValue() < right.intValue());
+		else if(left.isShortValue() && right.isShortValue()) return new BoolVal(left.shortValue() < right.shortValue());
+		else if(left.isShortValue() && right.isLongValue()) return new BoolVal(left.longValue() < right.longValue());
 
-		else if(left.isUnsignedInt() && right.isReal()) return new BoolVal(left.realValue() < right.realValue());
-        else if(left.isUnsignedInt() && right.isUnsignedByteValue()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) < 0); 
-        else if(left.isUnsignedInt() && right.isUnsignedInt()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) < 0);
-        else if(left.isUnsignedInt() && right.isUnsignedShort()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) < 0);
-		else if(left.isUnsignedInt() && right.isUnsignedLong()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) < 0);
-		else if(left.isUnsignedInt() && right.isVector()) {
+		else if(left.isUnsignedIntValue() && right.isRealValue()) return new BoolVal(left.realValue() < right.realValue());
+        else if(left.isUnsignedIntValue() && right.isUnsignedByteValue()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) < 0); 
+        else if(left.isUnsignedIntValue() && right.isUnsignedIntValue()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) < 0);
+        else if(left.isUnsignedIntValue() && right.isUnsignedShortValue()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) < 0);
+		else if(left.isUnsignedIntValue() && right.isUnsignedLongValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) < 0);
+		else if(left.isUnsignedIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) < 0);
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) < 0);
 		}
 
-		else if(left.isInt() && right.isReal()) return new BoolVal(left.realValue() < right.realValue());
-		else if(left.isInt() && right.isByte()) return new BoolVal(left.intValue() < right.intValue());
-		else if(left.isInt() && right.isInt()) return new BoolVal(left.intValue() < right.intValue());
-		else if(left.isInt() && right.isShort()) return new BoolVal(left.intValue() < right.intValue());
-		else if(left.isInt() && right.isLong()) return new BoolVal(left.longValue() < right.longValue());
+		else if(left.isIntValue() && right.isRealValue()) return new BoolVal(left.realValue() < right.realValue());
+		else if(left.isIntValue() && right.isByteValue()) return new BoolVal(left.intValue() < right.intValue());
+		else if(left.isIntValue() && right.isIntValue()) return new BoolVal(left.intValue() < right.intValue());
+		else if(left.isIntValue() && right.isShortValue()) return new BoolVal(left.intValue() < right.intValue());
+		else if(left.isIntValue() && right.isLongValue()) return new BoolVal(left.longValue() < right.longValue());
 
-		else if(left.isUnsignedLong() && right.isReal()) return new BoolVal(left.realValue() < right.realValue());
-		else if(left.isUnsignedLong() && right.isUnsignedByteValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) < 0); 
-        else if(left.isUnsignedLong() && right.isUnsignedInt()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) < 0);
-        else if(left.isUnsignedLong() && right.isUnsignedShort()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) < 0);
-		else if(left.isUnsignedLong() && right.isUnsignedLong()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) < 0);
-		else if(left.isUnsignedLong() && right.isVector()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) < 0);
+		else if(left.isUnsignedLongValue() && right.isRealValue()) return new BoolVal(left.realValue() < right.realValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedByteValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) < 0); 
+        else if(left.isUnsignedLongValue() && right.isUnsignedIntValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) < 0);
+        else if(left.isUnsignedLongValue() && right.isUnsignedShortValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) < 0);
+		else if(left.isUnsignedLongValue() && right.isUnsignedLongValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) < 0);
+		else if(left.isUnsignedLongValue() && right.isVector()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) < 0);
 
-		else if(left.isLong() && right.isReal()) return new BoolVal(left.realValue() < right.realValue());
-		else if(left.isLong() && right.isByte()) return new BoolVal(left.longValue() < right.longValue());
-		else if(left.isLong() && right.isInt()) return new BoolVal(left.longValue() < right.longValue());
-		else if(left.isLong() && right.isShort()) return new BoolVal(left.longValue() < right.longValue());
-		else if(left.isLong() && right.isLong()) return new BoolVal(left.longValue() < right.longValue());
+		else if(left.isLongValue() && right.isRealValue()) return new BoolVal(left.realValue() < right.realValue());
+		else if(left.isLongValue() && right.isByteValue()) return new BoolVal(left.longValue() < right.longValue());
+		else if(left.isLongValue() && right.isIntValue()) return new BoolVal(left.longValue() < right.longValue());
+		else if(left.isLongValue() && right.isShortValue()) return new BoolVal(left.longValue() < right.longValue());
+		else if(left.isLongValue() && right.isLongValue()) return new BoolVal(left.longValue() < right.longValue());
 		
-		else if(left.isVector() && right.isReal()) return new BoolVal(left.realValue() < right.realValue());
+		else if(left.isVector() && right.isRealValue()) return new BoolVal(left.realValue() < right.realValue());
 		else if(left.isVector() && right.isUnsignedByteValue()){
 			VectorVal vec = (VectorVal)left;
 			int size = vec.getSize();
@@ -2338,20 +2338,20 @@ public class Utils {
 			else if(size <= 32) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) < 0);
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) < 0);	
 		}
-        else if(left.isVector() && right.isUnsignedInt()){
+        else if(left.isVector() && right.isUnsignedIntValue()){
 			VectorVal vec = (VectorVal)left;
 			int size = vec.getSize();
 			if(size <= 32) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) < 0);
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) < 0);	
 		}
-        else if(left.isVector() && right.isUnsignedShort()){
+        else if(left.isVector() && right.isUnsignedShortValue()){
 			VectorVal vec = (VectorVal)left;
 			int size = vec.getSize();
 			if(size <= 16) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) < 0);
 			else if(size <= 32) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) < 0);
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) < 0);	
 		}
-		else if(left.isVector() && right.isUnsignedLong()){
+		else if(left.isVector() && right.isUnsignedLongValue()){
 			return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) < 0);	
 		}
 		else if(left.isVector() && right.isVector()) {
@@ -2362,24 +2362,24 @@ public class Utils {
 		}
     }
 
-    public static Value reaterThanOrEqualTo(Value left, Value right) throws Exception{
-        if(left.isReal() && right.isReal()) return new BoolVal(left.realValue() >= right.realValue());
-        else if(left.isReal() && right.isUnsignedByteValue()) return new BoolVal(left.realValue() >= right.realValue()); 
-        else if(left.isReal() && right.isByte()) return new BoolVal(left.realValue() >= right.realValue());
-		else if(left.isReal() && right.isUnsignedInt()) return new BoolVal(left.realValue() >= right.realValue());
-        else if(left.isReal() && right.isInt()) return new BoolVal(left.realValue() >= right.realValue());
-		else if(left.isReal() && right.isUnsignedShort()) return new BoolVal(left.realValue() >= right.realValue());
-		else if(left.isReal() && right.isShort()) return new BoolVal(left.realValue() >= right.realValue());
-		else if(left.isReal() && right.isUnsignedLong()) return new BoolVal(left.realValue() >= right.realValue());
-		else if(left.isReal() && right.isLong()) return new BoolVal(left.realValue() >= right.realValue());
-		else if(left.isReal() && right.isRegister()) return new BoolVal(left.realValue() >= right.realValue());
-		else if(left.isReal() && right.isVector()) return new BoolVal(left.realValue() >= right.realValue());
+    public static Value greaterThanOrEqualTo(Value left, Value right) throws Exception{
+        if(left.isRealValue() && right.isRealValue()) return new BoolVal(left.realValue() >= right.realValue());
+        else if(left.isRealValue() && right.isUnsignedByteValue()) return new BoolVal(left.realValue() >= right.realValue()); 
+        else if(left.isRealValue() && right.isByteValue()) return new BoolVal(left.realValue() >= right.realValue());
+		else if(left.isRealValue() && right.isUnsignedIntValue()) return new BoolVal(left.realValue() >= right.realValue());
+        else if(left.isRealValue() && right.isIntValue()) return new BoolVal(left.realValue() >= right.realValue());
+		else if(left.isRealValue() && right.isUnsignedShortValue()) return new BoolVal(left.realValue() >= right.realValue());
+		else if(left.isRealValue() && right.isShortValue()) return new BoolVal(left.realValue() >= right.realValue());
+		else if(left.isRealValue() && right.isUnsignedLongValue()) return new BoolVal(left.realValue() >= right.realValue());
+		else if(left.isRealValue() && right.isLongValue()) return new BoolVal(left.realValue() >= right.realValue());
+		else if(left.isRealValue() && right.isRegister()) return new BoolVal(left.realValue() >= right.realValue());
+		else if(left.isRealValue() && right.isVector()) return new BoolVal(left.realValue() >= right.realValue());
 
-		else if(left.isUnsignedByteValue() && right.isReal()) return new BoolVal(left.realValue() >= right.realValue());
+		else if(left.isUnsignedByteValue() && right.isRealValue()) return new BoolVal(left.realValue() >= right.realValue());
 		else if(left.isUnsignedByteValue() && right.isUnsignedByteValue()) return new BoolVal(Byte.compareUnsigned(left.byteValue(), right.byteValue()) >= 0); 
-        else if(left.isUnsignedByteValue() && right.isUnsignedInt()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) >= 0);
-        else if(left.isUnsignedByteValue() && right.isUnsignedShort()) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) >= 0);
-		else if(left.isUnsignedByteValue() && right.isUnsignedLong()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) >= 0);
+        else if(left.isUnsignedByteValue() && right.isUnsignedIntValue()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) >= 0);
+        else if(left.isUnsignedByteValue() && right.isUnsignedShortValue()) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) >= 0);
+		else if(left.isUnsignedByteValue() && right.isUnsignedLongValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) >= 0);
 		else if(left.isUnsignedByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
@@ -2389,19 +2389,19 @@ public class Utils {
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) >= 0);
 		}
 
-		else if(left.isByte() && right.isReal()) return new BoolVal(left.realValue() >= right.realValue());
-		else if(left.isByte() && right.isByte()) return new BoolVal(left.byteValue() >= right.byteValue());
-		else if(left.isByte() && right.isInt()) return new BoolVal(left.intValue() >= right.intValue());
-		else if(left.isByte() && right.isShort()) return new BoolVal(left.shortValue() >= right.shortValue());
-		else if(left.isByte() && right.isLong()) return new BoolVal(left.longValue() >= right.longValue());
+		else if(left.isByteValue() && right.isRealValue()) return new BoolVal(left.realValue() >= right.realValue());
+		else if(left.isByteValue() && right.isByteValue()) return new BoolVal(left.byteValue() >= right.byteValue());
+		else if(left.isByteValue() && right.isIntValue()) return new BoolVal(left.intValue() >= right.intValue());
+		else if(left.isByteValue() && right.isShortValue()) return new BoolVal(left.shortValue() >= right.shortValue());
+		else if(left.isByteValue() && right.isLongValue()) return new BoolVal(left.longValue() >= right.longValue());
 
-		else if(left.isUnsignedShort() && right.isReal()) return new BoolVal(left.realValue() >= right.realValue());
-		else if(left.isUnsignedShort() && right.isUnsignedByteValue()) return new BoolVal(Short.compareUnsigned(left.shortValue(),  right.shortValue()) >= 0); 
-        else if(left.isUnsignedShort() && right.isUnsignedInt()) return new BoolVal(Integer.compareUnsigned(left.intValue() , right.intValue()) >= 0);
-        else if(left.isUnsignedShort() && right.isUnsignedShort()) return new BoolVal(Short.compareUnsigned(left.shortValue() , right.shortValue()) >= 0);
-		else if(left.isUnsignedShort() && right.isUnsignedLong()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) >= 0);
-		else if(left.isUnsignedShort() && right.isRegister()) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) >= 0);
-		else if(left.isUnsignedShort() && right.isVector()) {
+		else if(left.isUnsignedShortValue() && right.isRealValue()) return new BoolVal(left.realValue() >= right.realValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedByteValue()) return new BoolVal(Short.compareUnsigned(left.shortValue(),  right.shortValue()) >= 0); 
+        else if(left.isUnsignedShortValue() && right.isUnsignedIntValue()) return new BoolVal(Integer.compareUnsigned(left.intValue() , right.intValue()) >= 0);
+        else if(left.isUnsignedShortValue() && right.isUnsignedShortValue()) return new BoolVal(Short.compareUnsigned(left.shortValue() , right.shortValue()) >= 0);
+		else if(left.isUnsignedShortValue() && right.isUnsignedLongValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) >= 0);
+		else if(left.isUnsignedShortValue() && right.isRegister()) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) >= 0);
+		else if(left.isUnsignedShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) >= 0);
@@ -2409,44 +2409,44 @@ public class Utils {
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) >= 0);
 		}
 
-		else if(left.isShort() && right.isReal()) return new BoolVal(left.realValue() >= right.realValue());
-        else if(left.isShort() && right.isByte()) return new BoolVal(left.shortValue() >= right.shortValue());
-        else if(left.isShort() && right.isInt()) return new BoolVal(left.intValue() >= right.intValue());
-		else if(left.isShort() && right.isShort()) return new BoolVal(left.shortValue() >= right.shortValue());
-		else if(left.isShort() && right.isLong()) return new BoolVal(left.longValue() >= right.longValue());
+		else if(left.isShortValue() && right.isRealValue()) return new BoolVal(left.realValue() >= right.realValue());
+        else if(left.isShortValue() && right.isByteValue()) return new BoolVal(left.shortValue() >= right.shortValue());
+        else if(left.isShortValue() && right.isIntValue()) return new BoolVal(left.intValue() >= right.intValue());
+		else if(left.isShortValue() && right.isShortValue()) return new BoolVal(left.shortValue() >= right.shortValue());
+		else if(left.isShortValue() && right.isLongValue()) return new BoolVal(left.longValue() >= right.longValue());
 
-		else if(left.isUnsignedInt() && right.isReal()) return new BoolVal(left.realValue() >= right.realValue());
-        else if(left.isUnsignedInt() && right.isUnsignedByteValue()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) >= 0); 
-        else if(left.isUnsignedInt() && right.isUnsignedInt()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) >= 0);
-        else if(left.isUnsignedInt() && right.isUnsignedShort()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) >= 0);
-		else if(left.isUnsignedInt() && right.isUnsignedLong()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) >= 0);
-		else if(left.isUnsignedInt() && right.isVector()) {
+		else if(left.isUnsignedIntValue() && right.isRealValue()) return new BoolVal(left.realValue() >= right.realValue());
+        else if(left.isUnsignedIntValue() && right.isUnsignedByteValue()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) >= 0); 
+        else if(left.isUnsignedIntValue() && right.isUnsignedIntValue()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) >= 0);
+        else if(left.isUnsignedIntValue() && right.isUnsignedShortValue()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) >= 0);
+		else if(left.isUnsignedIntValue() && right.isUnsignedLongValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) >= 0);
+		else if(left.isUnsignedIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) >= 0);
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) >= 0);
 		}
 
-		else if(left.isInt() && right.isReal()) return new BoolVal(left.realValue() >= right.realValue());
-		else if(left.isInt() && right.isByte()) return new BoolVal(left.intValue() >= right.intValue());
-		else if(left.isInt() && right.isInt()) return new BoolVal(left.intValue() >= right.intValue());
-		else if(left.isInt() && right.isShort()) return new BoolVal(left.intValue() >= right.intValue());
-		else if(left.isInt() && right.isLong()) return new BoolVal(left.longValue() >= right.longValue());
+		else if(left.isIntValue() && right.isRealValue()) return new BoolVal(left.realValue() >= right.realValue());
+		else if(left.isIntValue() && right.isByteValue()) return new BoolVal(left.intValue() >= right.intValue());
+		else if(left.isIntValue() && right.isIntValue()) return new BoolVal(left.intValue() >= right.intValue());
+		else if(left.isIntValue() && right.isShortValue()) return new BoolVal(left.intValue() >= right.intValue());
+		else if(left.isIntValue() && right.isLongValue()) return new BoolVal(left.longValue() >= right.longValue());
 
-		else if(left.isUnsignedLong() && right.isReal()) return new BoolVal(left.realValue() >= right.realValue());
-		else if(left.isUnsignedLong() && right.isUnsignedByteValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) >= 0); 
-        else if(left.isUnsignedLong() && right.isUnsignedInt()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) >= 0);
-        else if(left.isUnsignedLong() && right.isUnsignedShort()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) >= 0);
-		else if(left.isUnsignedLong() && right.isUnsignedLong()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) >= 0);
-		else if(left.isUnsignedLong() && right.isVector()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) >= 0);
+		else if(left.isUnsignedLongValue() && right.isRealValue()) return new BoolVal(left.realValue() >= right.realValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedByteValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) >= 0); 
+        else if(left.isUnsignedLongValue() && right.isUnsignedIntValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) >= 0);
+        else if(left.isUnsignedLongValue() && right.isUnsignedShortValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) >= 0);
+		else if(left.isUnsignedLongValue() && right.isUnsignedLongValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) >= 0);
+		else if(left.isUnsignedLongValue() && right.isVector()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) >= 0);
 
-		else if(left.isLong() && right.isReal()) return new BoolVal(left.realValue() >= right.realValue());
-		else if(left.isLong() && right.isByte()) return new BoolVal(left.longValue() >= right.longValue());
-		else if(left.isLong() && right.isInt()) return new BoolVal(left.longValue() >= right.longValue());
-		else if(left.isLong() && right.isShort()) return new BoolVal(left.longValue() >= right.longValue());
-		else if(left.isLong() && right.isLong()) return new BoolVal(left.longValue() >= right.longValue());
+		else if(left.isLongValue() && right.isRealValue()) return new BoolVal(left.realValue() >= right.realValue());
+		else if(left.isLongValue() && right.isByteValue()) return new BoolVal(left.longValue() >= right.longValue());
+		else if(left.isLongValue() && right.isIntValue()) return new BoolVal(left.longValue() >= right.longValue());
+		else if(left.isLongValue() && right.isShortValue()) return new BoolVal(left.longValue() >= right.longValue());
+		else if(left.isLongValue() && right.isLongValue()) return new BoolVal(left.longValue() >= right.longValue());
 		
-		else if(left.isVector() && right.isReal()) return new BoolVal(left.realValue() >= right.realValue());
+		else if(left.isVector() && right.isRealValue()) return new BoolVal(left.realValue() >= right.realValue());
 		else if(left.isVector() && right.isUnsignedByteValue()){
 			VectorVal vec = (VectorVal)left;
 			int size = vec.getSize();
@@ -2455,20 +2455,20 @@ public class Utils {
 			else if(size <= 32) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) >= 0);
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) >= 0);	
 		}
-        else if(left.isVector() && right.isUnsignedInt()){
+        else if(left.isVector() && right.isUnsignedIntValue()){
 			VectorVal vec = (VectorVal)left;
 			int size = vec.getSize();
 			if(size <= 32) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) >= 0);
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) >= 0);	
 		}
-        else if(left.isVector() && right.isUnsignedShort()){
+        else if(left.isVector() && right.isUnsignedShortValue()){
 			VectorVal vec = (VectorVal)left;
 			int size = vec.getSize();
 			if(size <= 16) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) >= 0);
 			else if(size <= 32) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) >= 0);
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) >= 0);	
 		}
-		else if(left.isVector() && right.isUnsignedLong()){
+		else if(left.isVector() && right.isUnsignedLongValue()){
 			return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) >= 0);	
 		}
 		else if(left.isVector() && right.isVector()) {
@@ -2478,24 +2478,24 @@ public class Utils {
 			return null;
 		}
     }
-    public static Value reaterThan(Value left, Value right) throws Exception{
-        if(left.isReal() && right.isReal()) return new BoolVal(left.realValue() > right.realValue());
-        else if(left.isReal() && right.isUnsignedByteValue()) return new BoolVal(left.realValue() > right.realValue()); 
-        else if(left.isReal() && right.isByte()) return new BoolVal(left.realValue() > right.realValue());
-		else if(left.isReal() && right.isUnsignedInt()) return new BoolVal(left.realValue() > right.realValue());
-        else if(left.isReal() && right.isInt()) return new BoolVal(left.realValue() > right.realValue());
-		else if(left.isReal() && right.isUnsignedShort()) return new BoolVal(left.realValue() > right.realValue());
-		else if(left.isReal() && right.isShort()) return new BoolVal(left.realValue() > right.realValue());
-		else if(left.isReal() && right.isUnsignedLong()) return new BoolVal(left.realValue() > right.realValue());
-		else if(left.isReal() && right.isLong()) return new BoolVal(left.realValue() > right.realValue());
-		else if(left.isReal() && right.isRegister()) return new BoolVal(left.realValue() > right.realValue());
-		else if(left.isReal() && right.isVector()) return new BoolVal(left.realValue() > right.realValue());
+    public static Value greaterThan(Value left, Value right) throws Exception{
+        if(left.isRealValue() && right.isRealValue()) return new BoolVal(left.realValue() > right.realValue());
+        else if(left.isRealValue() && right.isUnsignedByteValue()) return new BoolVal(left.realValue() > right.realValue()); 
+        else if(left.isRealValue() && right.isByteValue()) return new BoolVal(left.realValue() > right.realValue());
+		else if(left.isRealValue() && right.isUnsignedIntValue()) return new BoolVal(left.realValue() > right.realValue());
+        else if(left.isRealValue() && right.isIntValue()) return new BoolVal(left.realValue() > right.realValue());
+		else if(left.isRealValue() && right.isUnsignedShortValue()) return new BoolVal(left.realValue() > right.realValue());
+		else if(left.isRealValue() && right.isShortValue()) return new BoolVal(left.realValue() > right.realValue());
+		else if(left.isRealValue() && right.isUnsignedLongValue()) return new BoolVal(left.realValue() > right.realValue());
+		else if(left.isRealValue() && right.isLongValue()) return new BoolVal(left.realValue() > right.realValue());
+		else if(left.isRealValue() && right.isRegister()) return new BoolVal(left.realValue() > right.realValue());
+		else if(left.isRealValue() && right.isVector()) return new BoolVal(left.realValue() > right.realValue());
 
-		else if(left.isUnsignedByteValue() && right.isReal()) return new BoolVal(left.realValue() > right.realValue());
+		else if(left.isUnsignedByteValue() && right.isRealValue()) return new BoolVal(left.realValue() > right.realValue());
 		else if(left.isUnsignedByteValue() && right.isUnsignedByteValue()) return new BoolVal(Byte.compareUnsigned(left.byteValue(), right.byteValue()) > 0); 
-        else if(left.isUnsignedByteValue() && right.isUnsignedInt()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) > 0);
-        else if(left.isUnsignedByteValue() && right.isUnsignedShort()) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) > 0);
-		else if(left.isUnsignedByteValue() && right.isUnsignedLong()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) > 0);
+        else if(left.isUnsignedByteValue() && right.isUnsignedIntValue()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) > 0);
+        else if(left.isUnsignedByteValue() && right.isUnsignedShortValue()) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) > 0);
+		else if(left.isUnsignedByteValue() && right.isUnsignedLongValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) > 0);
 		else if(left.isUnsignedByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
@@ -2505,19 +2505,19 @@ public class Utils {
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) > 0);
 		}
 
-		else if(left.isByte() && right.isReal()) return new BoolVal(left.realValue() > right.realValue());
-		else if(left.isByte() && right.isByte()) return new BoolVal(left.byteValue() > right.byteValue());
-		else if(left.isByte() && right.isInt()) return new BoolVal(left.intValue() > right.intValue());
-		else if(left.isByte() && right.isShort()) return new BoolVal(left.shortValue() > right.shortValue());
-		else if(left.isByte() && right.isLong()) return new BoolVal(left.longValue() > right.longValue());
+		else if(left.isByteValue() && right.isRealValue()) return new BoolVal(left.realValue() > right.realValue());
+		else if(left.isByteValue() && right.isByteValue()) return new BoolVal(left.byteValue() > right.byteValue());
+		else if(left.isByteValue() && right.isIntValue()) return new BoolVal(left.intValue() > right.intValue());
+		else if(left.isByteValue() && right.isShortValue()) return new BoolVal(left.shortValue() > right.shortValue());
+		else if(left.isByteValue() && right.isLongValue()) return new BoolVal(left.longValue() > right.longValue());
 
-		else if(left.isUnsignedShort() && right.isReal()) return new BoolVal(left.realValue() > right.realValue());
-		else if(left.isUnsignedShort() && right.isUnsignedByteValue()) return new BoolVal(Short.compareUnsigned(left.shortValue(),  right.shortValue()) > 0); 
-        else if(left.isUnsignedShort() && right.isUnsignedInt()) return new BoolVal(Integer.compareUnsigned(left.intValue() , right.intValue()) > 0);
-        else if(left.isUnsignedShort() && right.isUnsignedShort()) return new BoolVal(Short.compareUnsigned(left.shortValue() , right.shortValue()) > 0);
-		else if(left.isUnsignedShort() && right.isUnsignedLong()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) > 0);
-		else if(left.isUnsignedShort() && right.isRegister()) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) > 0);
-		else if(left.isUnsignedShort() && right.isVector()) {
+		else if(left.isUnsignedShortValue() && right.isRealValue()) return new BoolVal(left.realValue() > right.realValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedByteValue()) return new BoolVal(Short.compareUnsigned(left.shortValue(),  right.shortValue()) > 0); 
+        else if(left.isUnsignedShortValue() && right.isUnsignedIntValue()) return new BoolVal(Integer.compareUnsigned(left.intValue() , right.intValue()) > 0);
+        else if(left.isUnsignedShortValue() && right.isUnsignedShortValue()) return new BoolVal(Short.compareUnsigned(left.shortValue() , right.shortValue()) > 0);
+		else if(left.isUnsignedShortValue() && right.isUnsignedLongValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) > 0);
+		else if(left.isUnsignedShortValue() && right.isRegister()) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) > 0);
+		else if(left.isUnsignedShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) > 0);
@@ -2525,44 +2525,44 @@ public class Utils {
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) > 0);
 		}
 
-		else if(left.isShort() && right.isReal()) return new BoolVal(left.realValue() > right.realValue());
-        else if(left.isShort() && right.isByte()) return new BoolVal(left.shortValue() > right.shortValue());
-        else if(left.isShort() && right.isInt()) return new BoolVal(left.intValue() > right.intValue());
-		else if(left.isShort() && right.isShort()) return new BoolVal(left.shortValue() > right.shortValue());
-		else if(left.isShort() && right.isLong()) return new BoolVal(left.longValue() > right.longValue());
+		else if(left.isShortValue() && right.isRealValue()) return new BoolVal(left.realValue() > right.realValue());
+        else if(left.isShortValue() && right.isByteValue()) return new BoolVal(left.shortValue() > right.shortValue());
+        else if(left.isShortValue() && right.isIntValue()) return new BoolVal(left.intValue() > right.intValue());
+		else if(left.isShortValue() && right.isShortValue()) return new BoolVal(left.shortValue() > right.shortValue());
+		else if(left.isShortValue() && right.isLongValue()) return new BoolVal(left.longValue() > right.longValue());
 
-		else if(left.isUnsignedInt() && right.isReal()) return new BoolVal(left.realValue() > right.realValue());
-        else if(left.isUnsignedInt() && right.isUnsignedByteValue()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) > 0); 
-        else if(left.isUnsignedInt() && right.isUnsignedInt()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) > 0);
-        else if(left.isUnsignedInt() && right.isUnsignedShort()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) > 0);
-		else if(left.isUnsignedInt() && right.isUnsignedLong()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) > 0);
-		else if(left.isUnsignedInt() && right.isVector()) {
+		else if(left.isUnsignedIntValue() && right.isRealValue()) return new BoolVal(left.realValue() > right.realValue());
+        else if(left.isUnsignedIntValue() && right.isUnsignedByteValue()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) > 0); 
+        else if(left.isUnsignedIntValue() && right.isUnsignedIntValue()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) > 0);
+        else if(left.isUnsignedIntValue() && right.isUnsignedShortValue()) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) > 0);
+		else if(left.isUnsignedIntValue() && right.isUnsignedLongValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) > 0);
+		else if(left.isUnsignedIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) > 0);
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) > 0);
 		}
 
-		else if(left.isInt() && right.isReal()) return new BoolVal(left.realValue() > right.realValue());
-		else if(left.isInt() && right.isByte()) return new BoolVal(left.intValue() > right.intValue());
-		else if(left.isInt() && right.isInt()) return new BoolVal(left.intValue() > right.intValue());
-		else if(left.isInt() && right.isShort()) return new BoolVal(left.intValue() > right.intValue());
-		else if(left.isInt() && right.isLong()) return new BoolVal(left.longValue() > right.longValue());
+		else if(left.isIntValue() && right.isRealValue()) return new BoolVal(left.realValue() > right.realValue());
+		else if(left.isIntValue() && right.isByteValue()) return new BoolVal(left.intValue() > right.intValue());
+		else if(left.isIntValue() && right.isIntValue()) return new BoolVal(left.intValue() > right.intValue());
+		else if(left.isIntValue() && right.isShortValue()) return new BoolVal(left.intValue() > right.intValue());
+		else if(left.isIntValue() && right.isLongValue()) return new BoolVal(left.longValue() > right.longValue());
 
-		else if(left.isUnsignedLong() && right.isReal()) return new BoolVal(left.realValue() > right.realValue());
-		else if(left.isUnsignedLong() && right.isUnsignedByteValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) > 0); 
-        else if(left.isUnsignedLong() && right.isUnsignedInt()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) > 0);
-        else if(left.isUnsignedLong() && right.isUnsignedShort()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) > 0);
-		else if(left.isUnsignedLong() && right.isUnsignedLong()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) > 0);
-		else if(left.isUnsignedLong() && right.isVector()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) > 0);
+		else if(left.isUnsignedLongValue() && right.isRealValue()) return new BoolVal(left.realValue() > right.realValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedByteValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) > 0); 
+        else if(left.isUnsignedLongValue() && right.isUnsignedIntValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) > 0);
+        else if(left.isUnsignedLongValue() && right.isUnsignedShortValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) > 0);
+		else if(left.isUnsignedLongValue() && right.isUnsignedLongValue()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) > 0);
+		else if(left.isUnsignedLongValue() && right.isVector()) return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) > 0);
 
-		else if(left.isLong() && right.isReal()) return new BoolVal(left.realValue() > right.realValue());
-		else if(left.isLong() && right.isByte()) return new BoolVal(left.longValue() > right.longValue());
-		else if(left.isLong() && right.isInt()) return new BoolVal(left.longValue() > right.longValue());
-		else if(left.isLong() && right.isShort()) return new BoolVal(left.longValue() > right.longValue());
-		else if(left.isLong() && right.isLong()) return new BoolVal(left.longValue() > right.longValue());
+		else if(left.isLongValue() && right.isRealValue()) return new BoolVal(left.realValue() > right.realValue());
+		else if(left.isLongValue() && right.isByteValue()) return new BoolVal(left.longValue() > right.longValue());
+		else if(left.isLongValue() && right.isIntValue()) return new BoolVal(left.longValue() > right.longValue());
+		else if(left.isLongValue() && right.isShortValue()) return new BoolVal(left.longValue() > right.longValue());
+		else if(left.isLongValue() && right.isLongValue()) return new BoolVal(left.longValue() > right.longValue());
 		
-		else if(left.isVector() && right.isReal()) return new BoolVal(left.realValue() > right.realValue());
+		else if(left.isVector() && right.isRealValue()) return new BoolVal(left.realValue() > right.realValue());
 		else if(left.isVector() && right.isUnsignedByteValue()){
 			VectorVal vec = (VectorVal)left;
 			int size = vec.getSize();
@@ -2571,20 +2571,20 @@ public class Utils {
 			else if(size <= 32) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) > 0);
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) > 0);	
 		}
-        else if(left.isVector() && right.isUnsignedInt()){
+        else if(left.isVector() && right.isUnsignedIntValue()){
 			VectorVal vec = (VectorVal)left;
 			int size = vec.getSize();
 			if(size <= 32) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) > 0);
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) > 0);	
 		}
-        else if(left.isVector() && right.isUnsignedShort()){
+        else if(left.isVector() && right.isUnsignedShortValue()){
 			VectorVal vec = (VectorVal)left;
 			int size = vec.getSize();
 			if(size <= 16) return new BoolVal(Short.compareUnsigned(left.shortValue(), right.shortValue()) > 0);
 			else if(size <= 32) return new BoolVal(Integer.compareUnsigned(left.intValue(), right.intValue()) > 0);
 			else return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) > 0);	
 		}
-		else if(left.isVector() && right.isUnsignedLong()){
+		else if(left.isVector() && right.isUnsignedLongValue()){
 			return new BoolVal(Long.compareUnsigned(left.longValue(), right.longValue()) > 0);	
 		}
 		else if(left.isVector() && right.isVector()) {
@@ -2595,18 +2595,18 @@ public class Utils {
 		}
     }
 
-	public static Value itwiseAnd(Value left, Value right) throws Exception{
-        if(left.isBool() && right.isBool()) return new UnsignedByteVal(left.byteValue() & right.byteValue());
-        else if(left.isBool() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() & right.byteValue()); 
-        else if(left.isBool() && right.isByte()) return new ByteVal(left.byteValue() & right.byteValue());
-		else if(left.isBool() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() & right.intValue());
-        else if(left.isBool() && right.isInt()) return new IntVal(left.intValue() & right.intValue());
-		else if(left.isBool() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
-		else if(left.isBool() && right.isShort()) return new ShortVal(left.shortValue() & right.shortValue());
-		else if(left.isBool() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() & right.longValue());
-		else if(left.isBool() && right.isLong()) return new LongVal(left.longValue() & right.longValue());
-		else if(left.isBool() && right.isRegister()) return new UnsignedByteVal(left.byteValue() & right.byteValue());
-		else if(left.isBool() && right.isVector()) {
+	public static Value bitwiseAnd(Value left, Value right) throws Exception{
+        if(left.isBoolValue() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() & right.byteValue());
+        else if(left.isBoolValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() & right.byteValue()); 
+        else if(left.isBoolValue() && right.isByteValue()) return new ByteVal(left.byteValue() & right.byteValue());
+		else if(left.isBoolValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() & right.intValue());
+        else if(left.isBoolValue() && right.isIntValue()) return new IntVal(left.intValue() & right.intValue());
+		else if(left.isBoolValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
+		else if(left.isBoolValue() && right.isShortValue()) return new ShortVal(left.shortValue() & right.shortValue());
+		else if(left.isBoolValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
+		else if(left.isBoolValue() && right.isLongValue()) return new LongVal(left.longValue() & right.longValue());
+		else if(left.isBoolValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() & right.byteValue());
+		else if(left.isBoolValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new UnsignedByteVal(left.byteValue() & right.byteValue());
@@ -2615,15 +2615,15 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() & right.longValue());
 		}
 
-		if(left.isUnsignedByteValue() && right.isBool()) return new UnsignedByteVal(left.byteValue() & right.byteValue());
+		if(left.isUnsignedByteValue() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() & right.byteValue());
         else if(left.isUnsignedByteValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() & right.byteValue()); 
-        else if(left.isUnsignedByteValue() && right.isByte()) return new UnsignedByteVal(left.byteValue() & right.byteValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() & right.intValue());
-        else if(left.isUnsignedByteValue() && right.isInt()) return new UnsignedIntVal(left.intValue() & right.intValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isShort()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() & right.longValue());
-		else if(left.isUnsignedByteValue() && right.isLong()) return new UnsignedLongVal(left.longValue() & right.longValue());
+        else if(left.isUnsignedByteValue() && right.isByteValue()) return new UnsignedByteVal(left.byteValue() & right.byteValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() & right.intValue());
+        else if(left.isUnsignedByteValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() & right.intValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
+		else if(left.isUnsignedByteValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
 		else if(left.isUnsignedByteValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() & right.byteValue());
 		else if(left.isUnsignedByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -2634,17 +2634,17 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() & right.longValue());
 		}
 
-		if(left.isByte() && right.isBool()) return new ByteVal(left.byteValue() & right.byteValue());
-        else if(left.isByte() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() & right.byteValue()); 
-        else if(left.isByte() && right.isByte()) return new ByteVal(left.byteValue() & right.byteValue());
-		else if(left.isByte() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() & right.intValue());
-        else if(left.isByte() && right.isInt()) return new IntVal(left.intValue() & right.intValue());
-		else if(left.isByte() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
-		else if(left.isByte() && right.isShort()) return new ShortVal(left.shortValue() & right.shortValue());
-		else if(left.isByte() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() & right.longValue());
-		else if(left.isByte() && right.isLong()) return new LongVal(left.longValue() & right.longValue());
-		else if(left.isByte() && right.isRegister()) return new UnsignedByteVal(left.byteValue() & right.byteValue());
-		else if(left.isByte() && right.isVector()) {
+		if(left.isByteValue() && right.isBoolValue()) return new ByteVal(left.byteValue() & right.byteValue());
+        else if(left.isByteValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() & right.byteValue()); 
+        else if(left.isByteValue() && right.isByteValue()) return new ByteVal(left.byteValue() & right.byteValue());
+		else if(left.isByteValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() & right.intValue());
+        else if(left.isByteValue() && right.isIntValue()) return new IntVal(left.intValue() & right.intValue());
+		else if(left.isByteValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
+		else if(left.isByteValue() && right.isShortValue()) return new ShortVal(left.shortValue() & right.shortValue());
+		else if(left.isByteValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
+		else if(left.isByteValue() && right.isLongValue()) return new LongVal(left.longValue() & right.longValue());
+		else if(left.isByteValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() & right.byteValue());
+		else if(left.isByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new UnsignedByteVal(left.byteValue() & right.byteValue());
@@ -2653,17 +2653,17 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() & right.longValue());
 		}
 
-		else if(left.isUnsignedShort() && right.isBool()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
-        else if(left.isUnsignedShort() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() & right.shortValue()); 
-        else if(left.isUnsignedShort() && right.isByte()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() & right.intValue());
-        else if(left.isUnsignedShort() && right.isInt()) return new UnsignedIntVal(left.intValue() & right.intValue());
-		else if(left.isUnsignedShort() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
-		else if(left.isUnsignedShort() && right.isShort()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() & right.longValue());
-		else if(left.isUnsignedShort() && right.isLong()) return new UnsignedLongVal(left.longValue() & right.longValue());
-		else if(left.isUnsignedShort() && right.isRegister()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
-		else if(left.isUnsignedShort() && right.isVector()) {
+		else if(left.isUnsignedShortValue() && right.isBoolValue()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
+        else if(left.isUnsignedShortValue() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() & right.shortValue()); 
+        else if(left.isUnsignedShortValue() && right.isByteValue()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() & right.intValue());
+        else if(left.isUnsignedShortValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() & right.intValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
+		else if(left.isUnsignedShortValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
+		else if(left.isUnsignedShortValue() && right.isRegister()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new UnsignedShortVal(left.shortValue() & right.shortValue());
@@ -2671,17 +2671,17 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() & right.longValue());
 		}
 
-		else if(left.isShort() && right.isBool()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
-        else if(left.isShort() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() & right.shortValue()); 
-        else if(left.isShort() && right.isByte()) return new ShortVal(left.shortValue() & right.shortValue());
-		else if(left.isShort() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() & right.intValue());
-        else if(left.isShort() && right.isInt()) return new IntVal(left.intValue() & right.intValue());
-		else if(left.isShort() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
-		else if(left.isShort() && right.isShort()) return new ShortVal(left.shortValue() & right.shortValue());
-		else if(left.isShort() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() & right.longValue());
-		else if(left.isShort() && right.isLong()) return new LongVal(left.longValue() & right.longValue());
-		else if(left.isShort() && right.isRegister()) return new UnsignedShortVal(left.byteValue() & right.byteValue());
-		else if(left.isShort() && right.isVector()) {
+		else if(left.isShortValue() && right.isBoolValue()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
+        else if(left.isShortValue() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() & right.shortValue()); 
+        else if(left.isShortValue() && right.isByteValue()) return new ShortVal(left.shortValue() & right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() & right.intValue());
+        else if(left.isShortValue() && right.isIntValue()) return new IntVal(left.intValue() & right.intValue());
+		else if(left.isShortValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
+		else if(left.isShortValue() && right.isShortValue()) return new ShortVal(left.shortValue() & right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
+		else if(left.isShortValue() && right.isLongValue()) return new LongVal(left.longValue() & right.longValue());
+		else if(left.isShortValue() && right.isRegister()) return new UnsignedShortVal(left.byteValue() & right.byteValue());
+		else if(left.isShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new UnsignedShortVal(left.shortValue() & right.shortValue());
@@ -2689,73 +2689,73 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() & right.longValue());
 		}
 
-		else if(left.isUnsignedInt() && right.isBool()) return new UnsignedIntVal(left.intValue() & right.intValue());
-        else if(left.isUnsignedInt() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() & right.intValue()); 
-        else if(left.isUnsignedInt() && right.isByte()) return new UnsignedIntVal(left.shortValue() & right.shortValue());
-		else if(left.isUnsignedInt() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() & right.intValue());
-        else if(left.isUnsignedInt() && right.isInt()) return new UnsignedIntVal(left.intValue() & right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedShort()) return new UnsignedIntVal(left.intValue() & right.intValue());
-		else if(left.isUnsignedInt() && right.isShort()) return new UnsignedIntVal(left.intValue() & right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() & right.longValue());
-		else if(left.isUnsignedInt() && right.isLong()) return new UnsignedLongVal(left.longValue() & right.longValue());
-		else if(left.isUnsignedInt() && right.isRegister()) return new UnsignedIntVal(left.intValue() & right.intValue());
-		else if(left.isUnsignedInt() && right.isVector()) {
+		else if(left.isUnsignedIntValue() && right.isBoolValue()) return new UnsignedIntVal(left.intValue() & right.intValue());
+        else if(left.isUnsignedIntValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() & right.intValue()); 
+        else if(left.isUnsignedIntValue() && right.isByteValue()) return new UnsignedIntVal(left.shortValue() & right.shortValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() & right.intValue());
+        else if(left.isUnsignedIntValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() & right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.intValue() & right.intValue());
+		else if(left.isUnsignedIntValue() && right.isShortValue()) return new UnsignedIntVal(left.intValue() & right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
+		else if(left.isUnsignedIntValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
+		else if(left.isUnsignedIntValue() && right.isRegister()) return new UnsignedIntVal(left.intValue() & right.intValue());
+		else if(left.isUnsignedIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new UnsignedIntVal(left.intValue() & right.intValue());
 			else return new UnsignedLongVal(left.longValue() & right.longValue());
 		}
 
-		else if(left.isInt() && right.isBool()) return new UnsignedIntVal(left.intValue() & right.intValue());
-        else if(left.isInt() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() & right.intValue()); 
-        else if(left.isInt() && right.isByte()) return new IntVal(left.intValue() & right.intValue());
-		else if(left.isInt() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() & right.intValue());
-        else if(left.isInt() && right.isInt()) return new IntVal(left.intValue() & right.intValue());
-		else if(left.isInt() && right.isUnsignedShort()) return new UnsignedIntVal(left.intValue() & right.intValue());
-		else if(left.isInt() && right.isShort()) return new IntVal(left.intValue() & right.intValue());
-		else if(left.isInt() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() & right.longValue());
-		else if(left.isInt() && right.isLong()) return new LongVal(left.longValue() & right.longValue());
-		else if(left.isInt() && right.isRegister()) return new UnsignedIntVal(left.intValue() & right.intValue());
-		else if(left.isInt() && right.isVector()) {
+		else if(left.isIntValue() && right.isBoolValue()) return new UnsignedIntVal(left.intValue() & right.intValue());
+        else if(left.isIntValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() & right.intValue()); 
+        else if(left.isIntValue() && right.isByteValue()) return new IntVal(left.intValue() & right.intValue());
+		else if(left.isIntValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() & right.intValue());
+        else if(left.isIntValue() && right.isIntValue()) return new IntVal(left.intValue() & right.intValue());
+		else if(left.isIntValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.intValue() & right.intValue());
+		else if(left.isIntValue() && right.isShortValue()) return new IntVal(left.intValue() & right.intValue());
+		else if(left.isIntValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
+		else if(left.isIntValue() && right.isLongValue()) return new LongVal(left.longValue() & right.longValue());
+		else if(left.isIntValue() && right.isRegister()) return new UnsignedIntVal(left.intValue() & right.intValue());
+		else if(left.isIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new UnsignedIntVal(left.intValue() & right.intValue());
 			else return new UnsignedLongVal(left.longValue() & right.longValue());
 		}
 
-		else if(left.isUnsignedLong() && right.isBool()) return new UnsignedLongVal(left.longValue() & right.longValue());
-        else if(left.isUnsignedLong() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() & right.longValue()); 
-        else if(left.isUnsignedLong() && right.isByte()) return new UnsignedLongVal(left.longValue() & right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedInt()) return new UnsignedLongVal(left.longValue() & right.longValue());
-        else if(left.isUnsignedLong() && right.isInt()) return new UnsignedLongVal(left.longValue() & right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedShort()) return new UnsignedLongVal(left.longValue() & right.longValue());
-		else if(left.isUnsignedLong() && right.isShort()) return new UnsignedLongVal(left.longValue() & right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() & right.longValue());
-		else if(left.isUnsignedLong() && right.isLong()) return new UnsignedLongVal(left.longValue() & right.longValue());
-		else if(left.isUnsignedLong() && right.isRegister()) return new UnsignedLongVal(left.longValue() & right.longValue());
-		else if(left.isUnsignedLong() && right.isVector()) return new UnsignedLongVal(left.longValue() & right.longValue());
+		else if(left.isUnsignedLongValue() && right.isBoolValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
+        else if(left.isUnsignedLongValue() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() & right.longValue()); 
+        else if(left.isUnsignedLongValue() && right.isByteValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedIntValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
+        else if(left.isUnsignedLongValue() && right.isIntValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedShortValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
+		else if(left.isUnsignedLongValue() && right.isShortValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
+		else if(left.isUnsignedLongValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
+		else if(left.isUnsignedLongValue() && right.isRegister()) return new UnsignedLongVal(left.longValue() & right.longValue());
+		else if(left.isUnsignedLongValue() && right.isVector()) return new UnsignedLongVal(left.longValue() & right.longValue());
 
-		else if(left.isLong() && right.isBool()) return new UnsignedLongVal(left.longValue() & right.longValue());
-        else if(left.isLong() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() & right.longValue()); 
-        else if(left.isLong() && right.isByte()) return new LongVal(left.longValue() & right.longValue());
-		else if(left.isLong() && right.isUnsignedInt()) return new UnsignedLongVal(left.longValue() & right.longValue());
-        else if(left.isLong() && right.isInt()) return new LongVal(left.longValue() & right.longValue());
-		else if(left.isLong() && right.isUnsignedShort()) return new UnsignedLongVal(left.longValue() & right.longValue());
-		else if(left.isLong() && right.isShort()) return new LongVal(left.longValue() & right.longValue());
-		else if(left.isLong() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() & right.longValue());
-		else if(left.isLong() && right.isLong()) return new LongVal(left.longValue() & right.longValue());
-		else if(left.isLong() && right.isRegister()) return new UnsignedLongVal(left.longValue() & right.longValue());
-		else if(left.isLong() && right.isVector()) return new UnsignedLongVal(left.longValue() & right.longValue());
+		else if(left.isLongValue() && right.isBoolValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
+        else if(left.isLongValue() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() & right.longValue()); 
+        else if(left.isLongValue() && right.isByteValue()) return new LongVal(left.longValue() & right.longValue());
+		else if(left.isLongValue() && right.isUnsignedIntValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
+        else if(left.isLongValue() && right.isIntValue()) return new LongVal(left.longValue() & right.longValue());
+		else if(left.isLongValue() && right.isUnsignedShortValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
+		else if(left.isLongValue() && right.isShortValue()) return new LongVal(left.longValue() & right.longValue());
+		else if(left.isLongValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
+		else if(left.isLongValue() && right.isLongValue()) return new LongVal(left.longValue() & right.longValue());
+		else if(left.isLongValue() && right.isRegister()) return new UnsignedLongVal(left.longValue() & right.longValue());
+		else if(left.isLongValue() && right.isVector()) return new UnsignedLongVal(left.longValue() & right.longValue());
 
-		else if(left.isRegister() && right.isBool()) return new UnsignedByteVal(left.byteValue() & right.byteValue());
+		else if(left.isRegister() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() & right.byteValue());
         else if(left.isRegister() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() & right.byteValue()); 
-        else if(left.isRegister() && right.isByte()) return new UnsignedByteVal(left.byteValue() & right.byteValue());
-		else if(left.isRegister() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() & right.intValue());
-        else if(left.isRegister() && right.isInt()) return new UnsignedIntVal(left.intValue() & right.intValue());
-		else if(left.isRegister() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
-		else if(left.isRegister() && right.isShort()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
-		else if(left.isRegister() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() & right.longValue());
-		else if(left.isRegister() && right.isLong()) return new UnsignedLongVal(left.longValue() & right.longValue());
+        else if(left.isRegister() && right.isByteValue()) return new UnsignedByteVal(left.byteValue() & right.byteValue());
+		else if(left.isRegister() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() & right.intValue());
+        else if(left.isRegister() && right.isIntValue()) return new UnsignedIntVal(left.intValue() & right.intValue());
+		else if(left.isRegister() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
+		else if(left.isRegister() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
+		else if(left.isRegister() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
+		else if(left.isRegister() && right.isLongValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
 		else if(left.isRegister() && right.isRegister()) return new UnsignedByteVal(left.byteValue() & right.byteValue());
 		else if(left.isRegister() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -2766,15 +2766,15 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() & right.longValue());
 		}
 
-		else if(left.isVector() && right.isBool()) return new UnsignedByteVal(left.byteValue() & right.byteValue());
+		else if(left.isVector() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() & right.byteValue());
         else if(left.isVector() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() & right.byteValue()); 
-        else if(left.isVector() && right.isByte()) return new UnsignedByteVal(left.byteValue() & right.byteValue());
-		else if(left.isVector() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() & right.intValue());
-        else if(left.isVector() && right.isInt()) return new UnsignedIntVal(left.intValue() & right.intValue());
-		else if(left.isVector() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
-		else if(left.isVector() && right.isShort()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
-		else if(left.isVector() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() & right.longValue());
-		else if(left.isVector() && right.isLong()) return new UnsignedLongVal(left.longValue() & right.longValue());
+        else if(left.isVector() && right.isByteValue()) return new UnsignedByteVal(left.byteValue() & right.byteValue());
+		else if(left.isVector() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() & right.intValue());
+        else if(left.isVector() && right.isIntValue()) return new UnsignedIntVal(left.intValue() & right.intValue());
+		else if(left.isVector() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
+		else if(left.isVector() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() & right.shortValue());
+		else if(left.isVector() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
+		else if(left.isVector() && right.isLongValue()) return new UnsignedLongVal(left.longValue() & right.longValue());
 		else if(left.isVector() && right.isRegister()) return new UnsignedByteVal(left.byteValue() & right.byteValue());
 		else if(left.isVector() && right.isVector()) return new UnsignedLongVal(left.longValue() & right.longValue());
 		else {
@@ -2829,18 +2829,18 @@ public class Utils {
 		return null;
 	}
 
-    public static Value itwiseOr(Value left, Value right) throws Exception{
-        if(left.isBool() && right.isBool()) return new UnsignedByteVal(left.byteValue() | right.byteValue());
-        else if(left.isBool() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() | right.byteValue()); 
-        else if(left.isBool() && right.isByte()) return new ByteVal(left.byteValue() | right.byteValue());
-		else if(left.isBool() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() | right.intValue());
-        else if(left.isBool() && right.isInt()) return new IntVal(left.intValue() | right.intValue());
-		else if(left.isBool() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
-		else if(left.isBool() && right.isShort()) return new ShortVal(left.shortValue() | right.shortValue());
-		else if(left.isBool() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() | right.longValue());
-		else if(left.isBool() && right.isLong()) return new LongVal(left.longValue() | right.longValue());
-		else if(left.isBool() && right.isRegister()) return new UnsignedByteVal(left.byteValue() | right.byteValue());
-		else if(left.isBool() && right.isVector()) {
+    public static Value bitwiseOr(Value left, Value right) throws Exception{
+        if(left.isBoolValue() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() | right.byteValue());
+        else if(left.isBoolValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() | right.byteValue()); 
+        else if(left.isBoolValue() && right.isByteValue()) return new ByteVal(left.byteValue() | right.byteValue());
+		else if(left.isBoolValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() | right.intValue());
+        else if(left.isBoolValue() && right.isIntValue()) return new IntVal(left.intValue() | right.intValue());
+		else if(left.isBoolValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
+		else if(left.isBoolValue() && right.isShortValue()) return new ShortVal(left.shortValue() | right.shortValue());
+		else if(left.isBoolValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
+		else if(left.isBoolValue() && right.isLongValue()) return new LongVal(left.longValue() | right.longValue());
+		else if(left.isBoolValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() | right.byteValue());
+		else if(left.isBoolValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new UnsignedByteVal(left.byteValue() | right.byteValue());
@@ -2849,15 +2849,15 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() | right.longValue());
 		}
 
-		if(left.isUnsignedByteValue() && right.isBool()) return new UnsignedByteVal(left.byteValue() | right.byteValue());
+		if(left.isUnsignedByteValue() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() | right.byteValue());
         else if(left.isUnsignedByteValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() | right.byteValue()); 
-        else if(left.isUnsignedByteValue() && right.isByte()) return new UnsignedByteVal(left.byteValue() | right.byteValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() | right.intValue());
-        else if(left.isUnsignedByteValue() && right.isInt()) return new UnsignedIntVal(left.intValue() | right.intValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isShort()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() | right.longValue());
-		else if(left.isUnsignedByteValue() && right.isLong()) return new UnsignedLongVal(left.longValue() | right.longValue());
+        else if(left.isUnsignedByteValue() && right.isByteValue()) return new UnsignedByteVal(left.byteValue() | right.byteValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() | right.intValue());
+        else if(left.isUnsignedByteValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() | right.intValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
+		else if(left.isUnsignedByteValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
 		else if(left.isUnsignedByteValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() | right.byteValue());
 		else if(left.isUnsignedByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -2868,17 +2868,17 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() | right.longValue());
 		}
 
-		if(left.isByte() && right.isBool()) return new ByteVal(left.byteValue() | right.byteValue());
-        else if(left.isByte() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() | right.byteValue()); 
-        else if(left.isByte() && right.isByte()) return new ByteVal(left.byteValue() | right.byteValue());
-		else if(left.isByte() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() | right.intValue());
-        else if(left.isByte() && right.isInt()) return new IntVal(left.intValue() | right.intValue());
-		else if(left.isByte() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
-		else if(left.isByte() && right.isShort()) return new ShortVal(left.shortValue() | right.shortValue());
-		else if(left.isByte() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() | right.longValue());
-		else if(left.isByte() && right.isLong()) return new LongVal(left.longValue() | right.longValue());
-		else if(left.isByte() && right.isRegister()) return new UnsignedByteVal(left.byteValue() | right.byteValue());
-		else if(left.isByte() && right.isVector()) {
+		if(left.isByteValue() && right.isBoolValue()) return new ByteVal(left.byteValue() | right.byteValue());
+        else if(left.isByteValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() | right.byteValue()); 
+        else if(left.isByteValue() && right.isByteValue()) return new ByteVal(left.byteValue() | right.byteValue());
+		else if(left.isByteValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() | right.intValue());
+        else if(left.isByteValue() && right.isIntValue()) return new IntVal(left.intValue() | right.intValue());
+		else if(left.isByteValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
+		else if(left.isByteValue() && right.isShortValue()) return new ShortVal(left.shortValue() | right.shortValue());
+		else if(left.isByteValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
+		else if(left.isByteValue() && right.isLongValue()) return new LongVal(left.longValue() | right.longValue());
+		else if(left.isByteValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() | right.byteValue());
+		else if(left.isByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new UnsignedByteVal(left.byteValue() | right.byteValue());
@@ -2887,17 +2887,17 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() | right.longValue());
 		}
 
-		else if(left.isUnsignedShort() && right.isBool()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
-        else if(left.isUnsignedShort() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() | right.shortValue()); 
-        else if(left.isUnsignedShort() && right.isByte()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() | right.intValue());
-        else if(left.isUnsignedShort() && right.isInt()) return new UnsignedIntVal(left.intValue() | right.intValue());
-		else if(left.isUnsignedShort() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
-		else if(left.isUnsignedShort() && right.isShort()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() | right.longValue());
-		else if(left.isUnsignedShort() && right.isLong()) return new UnsignedLongVal(left.longValue() | right.longValue());
-		else if(left.isUnsignedShort() && right.isRegister()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
-		else if(left.isUnsignedShort() && right.isVector()) {
+		else if(left.isUnsignedShortValue() && right.isBoolValue()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
+        else if(left.isUnsignedShortValue() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() | right.shortValue()); 
+        else if(left.isUnsignedShortValue() && right.isByteValue()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() | right.intValue());
+        else if(left.isUnsignedShortValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() | right.intValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
+		else if(left.isUnsignedShortValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
+		else if(left.isUnsignedShortValue() && right.isRegister()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new UnsignedShortVal(left.shortValue() | right.shortValue());
@@ -2905,17 +2905,17 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() | right.longValue());
 		}
 
-		else if(left.isShort() && right.isBool()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
-        else if(left.isShort() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() | right.shortValue()); 
-        else if(left.isShort() && right.isByte()) return new ShortVal(left.shortValue() | right.shortValue());
-		else if(left.isShort() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() | right.intValue());
-        else if(left.isShort() && right.isInt()) return new IntVal(left.intValue() | right.intValue());
-		else if(left.isShort() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
-		else if(left.isShort() && right.isShort()) return new ShortVal(left.shortValue() | right.shortValue());
-		else if(left.isShort() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() | right.longValue());
-		else if(left.isShort() && right.isLong()) return new LongVal(left.longValue() | right.longValue());
-		else if(left.isShort() && right.isRegister()) return new UnsignedShortVal(left.byteValue() | right.byteValue());
-		else if(left.isShort() && right.isVector()) {
+		else if(left.isShortValue() && right.isBoolValue()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
+        else if(left.isShortValue() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() | right.shortValue()); 
+        else if(left.isShortValue() && right.isByteValue()) return new ShortVal(left.shortValue() | right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() | right.intValue());
+        else if(left.isShortValue() && right.isIntValue()) return new IntVal(left.intValue() | right.intValue());
+		else if(left.isShortValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
+		else if(left.isShortValue() && right.isShortValue()) return new ShortVal(left.shortValue() | right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
+		else if(left.isShortValue() && right.isLongValue()) return new LongVal(left.longValue() | right.longValue());
+		else if(left.isShortValue() && right.isRegister()) return new UnsignedShortVal(left.byteValue() | right.byteValue());
+		else if(left.isShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new UnsignedShortVal(left.shortValue() | right.shortValue());
@@ -2923,73 +2923,73 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() | right.longValue());
 		}
 
-		else if(left.isUnsignedInt() && right.isBool()) return new UnsignedIntVal(left.intValue() | right.intValue());
-        else if(left.isUnsignedInt() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() | right.intValue()); 
-        else if(left.isUnsignedInt() && right.isByte()) return new UnsignedIntVal(left.shortValue() | right.shortValue());
-		else if(left.isUnsignedInt() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() | right.intValue());
-        else if(left.isUnsignedInt() && right.isInt()) return new UnsignedIntVal(left.intValue() | right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedShort()) return new UnsignedIntVal(left.intValue() | right.intValue());
-		else if(left.isUnsignedInt() && right.isShort()) return new UnsignedIntVal(left.intValue() | right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() | right.longValue());
-		else if(left.isUnsignedInt() && right.isLong()) return new UnsignedLongVal(left.longValue() | right.longValue());
-		else if(left.isUnsignedInt() && right.isRegister()) return new UnsignedIntVal(left.intValue() | right.intValue());
-		else if(left.isUnsignedInt() && right.isVector()) {
+		else if(left.isUnsignedIntValue() && right.isBoolValue()) return new UnsignedIntVal(left.intValue() | right.intValue());
+        else if(left.isUnsignedIntValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() | right.intValue()); 
+        else if(left.isUnsignedIntValue() && right.isByteValue()) return new UnsignedIntVal(left.shortValue() | right.shortValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() | right.intValue());
+        else if(left.isUnsignedIntValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() | right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.intValue() | right.intValue());
+		else if(left.isUnsignedIntValue() && right.isShortValue()) return new UnsignedIntVal(left.intValue() | right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
+		else if(left.isUnsignedIntValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
+		else if(left.isUnsignedIntValue() && right.isRegister()) return new UnsignedIntVal(left.intValue() | right.intValue());
+		else if(left.isUnsignedIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new UnsignedIntVal(left.intValue() | right.intValue());
 			else return new UnsignedLongVal(left.longValue() | right.longValue());
 		}
 
-		else if(left.isInt() && right.isBool()) return new UnsignedIntVal(left.intValue() | right.intValue());
-        else if(left.isInt() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() | right.intValue()); 
-        else if(left.isInt() && right.isByte()) return new IntVal(left.intValue() | right.intValue());
-		else if(left.isInt() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() | right.intValue());
-        else if(left.isInt() && right.isInt()) return new IntVal(left.intValue() | right.intValue());
-		else if(left.isInt() && right.isUnsignedShort()) return new UnsignedIntVal(left.intValue() | right.intValue());
-		else if(left.isInt() && right.isShort()) return new IntVal(left.intValue() | right.intValue());
-		else if(left.isInt() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() | right.longValue());
-		else if(left.isInt() && right.isLong()) return new LongVal(left.longValue() | right.longValue());
-		else if(left.isInt() && right.isRegister()) return new UnsignedIntVal(left.intValue() | right.intValue());
-		else if(left.isInt() && right.isVector()) {
+		else if(left.isIntValue() && right.isBoolValue()) return new UnsignedIntVal(left.intValue() | right.intValue());
+        else if(left.isIntValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() | right.intValue()); 
+        else if(left.isIntValue() && right.isByteValue()) return new IntVal(left.intValue() | right.intValue());
+		else if(left.isIntValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() | right.intValue());
+        else if(left.isIntValue() && right.isIntValue()) return new IntVal(left.intValue() | right.intValue());
+		else if(left.isIntValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.intValue() | right.intValue());
+		else if(left.isIntValue() && right.isShortValue()) return new IntVal(left.intValue() | right.intValue());
+		else if(left.isIntValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
+		else if(left.isIntValue() && right.isLongValue()) return new LongVal(left.longValue() | right.longValue());
+		else if(left.isIntValue() && right.isRegister()) return new UnsignedIntVal(left.intValue() | right.intValue());
+		else if(left.isIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new UnsignedIntVal(left.intValue() | right.intValue());
 			else return new UnsignedLongVal(left.longValue() | right.longValue());
 		}
 
-		else if(left.isUnsignedLong() && right.isBool()) return new UnsignedLongVal(left.longValue() | right.longValue());
-        else if(left.isUnsignedLong() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() | right.longValue()); 
-        else if(left.isUnsignedLong() && right.isByte()) return new UnsignedLongVal(left.longValue() | right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedInt()) return new UnsignedLongVal(left.longValue() | right.longValue());
-        else if(left.isUnsignedLong() && right.isInt()) return new UnsignedLongVal(left.longValue() | right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedShort()) return new UnsignedLongVal(left.longValue() | right.longValue());
-		else if(left.isUnsignedLong() && right.isShort()) return new UnsignedLongVal(left.longValue() | right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() | right.longValue());
-		else if(left.isUnsignedLong() && right.isLong()) return new UnsignedLongVal(left.longValue() | right.longValue());
-		else if(left.isUnsignedLong() && right.isRegister()) return new UnsignedLongVal(left.longValue() | right.longValue());
-		else if(left.isUnsignedLong() && right.isVector()) return new UnsignedLongVal(left.longValue() | right.longValue());
+		else if(left.isUnsignedLongValue() && right.isBoolValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
+        else if(left.isUnsignedLongValue() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() | right.longValue()); 
+        else if(left.isUnsignedLongValue() && right.isByteValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedIntValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
+        else if(left.isUnsignedLongValue() && right.isIntValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedShortValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
+		else if(left.isUnsignedLongValue() && right.isShortValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
+		else if(left.isUnsignedLongValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
+		else if(left.isUnsignedLongValue() && right.isRegister()) return new UnsignedLongVal(left.longValue() | right.longValue());
+		else if(left.isUnsignedLongValue() && right.isVector()) return new UnsignedLongVal(left.longValue() | right.longValue());
 
-		else if(left.isLong() && right.isBool()) return new UnsignedLongVal(left.longValue() | right.longValue());
-        else if(left.isLong() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() | right.longValue()); 
-        else if(left.isLong() && right.isByte()) return new LongVal(left.longValue() | right.longValue());
-		else if(left.isLong() && right.isUnsignedInt()) return new UnsignedLongVal(left.longValue() | right.longValue());
-        else if(left.isLong() && right.isInt()) return new LongVal(left.longValue() | right.longValue());
-		else if(left.isLong() && right.isUnsignedShort()) return new UnsignedLongVal(left.longValue() | right.longValue());
-		else if(left.isLong() && right.isShort()) return new LongVal(left.longValue() | right.longValue());
-		else if(left.isLong() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() | right.longValue());
-		else if(left.isLong() && right.isLong()) return new LongVal(left.longValue() | right.longValue());
-		else if(left.isLong() && right.isRegister()) return new UnsignedLongVal(left.longValue() | right.longValue());
-		else if(left.isLong() && right.isVector()) return new UnsignedLongVal(left.longValue() | right.longValue());
+		else if(left.isLongValue() && right.isBoolValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
+        else if(left.isLongValue() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() | right.longValue()); 
+        else if(left.isLongValue() && right.isByteValue()) return new LongVal(left.longValue() | right.longValue());
+		else if(left.isLongValue() && right.isUnsignedIntValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
+        else if(left.isLongValue() && right.isIntValue()) return new LongVal(left.longValue() | right.longValue());
+		else if(left.isLongValue() && right.isUnsignedShortValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
+		else if(left.isLongValue() && right.isShortValue()) return new LongVal(left.longValue() | right.longValue());
+		else if(left.isLongValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
+		else if(left.isLongValue() && right.isLongValue()) return new LongVal(left.longValue() | right.longValue());
+		else if(left.isLongValue() && right.isRegister()) return new UnsignedLongVal(left.longValue() | right.longValue());
+		else if(left.isLongValue() && right.isVector()) return new UnsignedLongVal(left.longValue() | right.longValue());
 
-		else if(left.isRegister() && right.isBool()) return new UnsignedByteVal(left.byteValue() | right.byteValue());
+		else if(left.isRegister() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() | right.byteValue());
         else if(left.isRegister() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() | right.byteValue()); 
-        else if(left.isRegister() && right.isByte()) return new UnsignedByteVal(left.byteValue() | right.byteValue());
-		else if(left.isRegister() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() | right.intValue());
-        else if(left.isRegister() && right.isInt()) return new UnsignedIntVal(left.intValue() | right.intValue());
-		else if(left.isRegister() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
-		else if(left.isRegister() && right.isShort()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
-		else if(left.isRegister() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() | right.longValue());
-		else if(left.isRegister() && right.isLong()) return new UnsignedLongVal(left.longValue() | right.longValue());
+        else if(left.isRegister() && right.isByteValue()) return new UnsignedByteVal(left.byteValue() | right.byteValue());
+		else if(left.isRegister() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() | right.intValue());
+        else if(left.isRegister() && right.isIntValue()) return new UnsignedIntVal(left.intValue() | right.intValue());
+		else if(left.isRegister() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
+		else if(left.isRegister() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
+		else if(left.isRegister() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
+		else if(left.isRegister() && right.isLongValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
 		else if(left.isRegister() && right.isRegister()) return new UnsignedByteVal(left.byteValue() | right.byteValue());
 		else if(left.isRegister() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -3000,15 +3000,15 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() | right.longValue());
 		}
 
-		else if(left.isVector() && right.isBool()) return new UnsignedByteVal(left.byteValue() | right.byteValue());
+		else if(left.isVector() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() | right.byteValue());
         else if(left.isVector() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() | right.byteValue()); 
-        else if(left.isVector() && right.isByte()) return new UnsignedByteVal(left.byteValue() | right.byteValue());
-		else if(left.isVector() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() | right.intValue());
-        else if(left.isVector() && right.isInt()) return new UnsignedIntVal(left.intValue() | right.intValue());
-		else if(left.isVector() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
-		else if(left.isVector() && right.isShort()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
-		else if(left.isVector() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() | right.longValue());
-		else if(left.isVector() && right.isLong()) return new UnsignedLongVal(left.longValue() | right.longValue());
+        else if(left.isVector() && right.isByteValue()) return new UnsignedByteVal(left.byteValue() | right.byteValue());
+		else if(left.isVector() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() | right.intValue());
+        else if(left.isVector() && right.isIntValue()) return new UnsignedIntVal(left.intValue() | right.intValue());
+		else if(left.isVector() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
+		else if(left.isVector() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() | right.shortValue());
+		else if(left.isVector() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
+		else if(left.isVector() && right.isLongValue()) return new UnsignedLongVal(left.longValue() | right.longValue());
 		else if(left.isVector() && right.isRegister()) return new UnsignedByteVal(left.byteValue() | right.byteValue());
 		else if(left.isVector() && right.isVector()) return new UnsignedLongVal(left.longValue() | right.longValue());
 		else {
@@ -3018,7 +3018,7 @@ public class Utils {
 
     }
 
-	public static Value itwiseOrCircuit(Value left, Value right) throws Exception{
+	public static Value bitwiseOrCircuit(Value left, Value right) throws Exception{
 		if(left.isWire() && right.isWire()){
 			WireVal Output = new WireVal();
 			new OrGate(Output, (WireVal)left, (WireVal)right);
@@ -3063,18 +3063,18 @@ public class Utils {
 		return null;
 	}
 
-    public static Value xclusiveOr(Value left, Value right) throws Exception{
-        if(left.isBool() && right.isBool()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue());
-        else if(left.isBool() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue()); 
-        else if(left.isBool() && right.isByte()) return new ByteVal(left.byteValue() ^ right.byteValue());
-		else if(left.isBool() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
-        else if(left.isBool() && right.isInt()) return new IntVal(left.intValue() ^ right.intValue());
-		else if(left.isBool() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
-		else if(left.isBool() && right.isShort()) return new ShortVal(left.shortValue() ^ right.shortValue());
-		else if(left.isBool() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-		else if(left.isBool() && right.isLong()) return new LongVal(left.longValue() ^ right.longValue());
-		else if(left.isBool() && right.isRegister()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue());
-		else if(left.isBool() && right.isVector()) {
+    public static Value exclusiveOr(Value left, Value right) throws Exception{
+        if(left.isBoolValue() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue());
+        else if(left.isBoolValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue()); 
+        else if(left.isBoolValue() && right.isByteValue()) return new ByteVal(left.byteValue() ^ right.byteValue());
+		else if(left.isBoolValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
+        else if(left.isBoolValue() && right.isIntValue()) return new IntVal(left.intValue() ^ right.intValue());
+		else if(left.isBoolValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
+		else if(left.isBoolValue() && right.isShortValue()) return new ShortVal(left.shortValue() ^ right.shortValue());
+		else if(left.isBoolValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+		else if(left.isBoolValue() && right.isLongValue()) return new LongVal(left.longValue() ^ right.longValue());
+		else if(left.isBoolValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue());
+		else if(left.isBoolValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new UnsignedByteVal(left.byteValue() ^ right.byteValue());
@@ -3083,15 +3083,15 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() ^ right.longValue());
 		}
 
-		if(left.isUnsignedByteValue() && right.isBool()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue());
+		if(left.isUnsignedByteValue() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue());
         else if(left.isUnsignedByteValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue()); 
-        else if(left.isUnsignedByteValue() && right.isByte()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
-        else if(left.isUnsignedByteValue() && right.isInt()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isShort()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-		else if(left.isUnsignedByteValue() && right.isLong()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+        else if(left.isUnsignedByteValue() && right.isByteValue()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
+        else if(left.isUnsignedByteValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+		else if(left.isUnsignedByteValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
 		else if(left.isUnsignedByteValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue());
 		else if(left.isUnsignedByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -3102,17 +3102,17 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() ^ right.longValue());
 		}
 
-		if(left.isByte() && right.isBool()) return new ByteVal(left.byteValue() ^ right.byteValue());
-        else if(left.isByte() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue()); 
-        else if(left.isByte() && right.isByte()) return new ByteVal(left.byteValue() ^ right.byteValue());
-		else if(left.isByte() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
-        else if(left.isByte() && right.isInt()) return new IntVal(left.intValue() ^ right.intValue());
-		else if(left.isByte() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
-		else if(left.isByte() && right.isShort()) return new ShortVal(left.shortValue() ^ right.shortValue());
-		else if(left.isByte() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-		else if(left.isByte() && right.isLong()) return new LongVal(left.longValue() ^ right.longValue());
-		else if(left.isByte() && right.isRegister()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue());
-		else if(left.isByte() && right.isVector()) {
+		if(left.isByteValue() && right.isBoolValue()) return new ByteVal(left.byteValue() ^ right.byteValue());
+        else if(left.isByteValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue()); 
+        else if(left.isByteValue() && right.isByteValue()) return new ByteVal(left.byteValue() ^ right.byteValue());
+		else if(left.isByteValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
+        else if(left.isByteValue() && right.isIntValue()) return new IntVal(left.intValue() ^ right.intValue());
+		else if(left.isByteValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
+		else if(left.isByteValue() && right.isShortValue()) return new ShortVal(left.shortValue() ^ right.shortValue());
+		else if(left.isByteValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+		else if(left.isByteValue() && right.isLongValue()) return new LongVal(left.longValue() ^ right.longValue());
+		else if(left.isByteValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue());
+		else if(left.isByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new UnsignedByteVal(left.byteValue() ^ right.byteValue());
@@ -3121,17 +3121,17 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() ^ right.longValue());
 		}
 
-		else if(left.isUnsignedShort() && right.isBool()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
-        else if(left.isUnsignedShort() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue()); 
-        else if(left.isUnsignedShort() && right.isByte()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
-        else if(left.isUnsignedShort() && right.isInt()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
-		else if(left.isUnsignedShort() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
-		else if(left.isUnsignedShort() && right.isShort()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-		else if(left.isUnsignedShort() && right.isLong()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-		else if(left.isUnsignedShort() && right.isRegister()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
-		else if(left.isUnsignedShort() && right.isVector()) {
+		else if(left.isUnsignedShortValue() && right.isBoolValue()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
+        else if(left.isUnsignedShortValue() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue()); 
+        else if(left.isUnsignedShortValue() && right.isByteValue()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
+        else if(left.isUnsignedShortValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+		else if(left.isUnsignedShortValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+		else if(left.isUnsignedShortValue() && right.isRegister()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
@@ -3139,17 +3139,17 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() ^ right.longValue());
 		}
 
-		else if(left.isShort() && right.isBool()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
-        else if(left.isShort() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue()); 
-        else if(left.isShort() && right.isByte()) return new ShortVal(left.shortValue() ^ right.shortValue());
-		else if(left.isShort() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
-        else if(left.isShort() && right.isInt()) return new IntVal(left.intValue() ^ right.intValue());
-		else if(left.isShort() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
-		else if(left.isShort() && right.isShort()) return new ShortVal(left.shortValue() ^ right.shortValue());
-		else if(left.isShort() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-		else if(left.isShort() && right.isLong()) return new LongVal(left.longValue() ^ right.longValue());
-		else if(left.isShort() && right.isRegister()) return new UnsignedShortVal(left.byteValue() ^ right.byteValue());
-		else if(left.isShort() && right.isVector()) {
+		else if(left.isShortValue() && right.isBoolValue()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
+        else if(left.isShortValue() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue()); 
+        else if(left.isShortValue() && right.isByteValue()) return new ShortVal(left.shortValue() ^ right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
+        else if(left.isShortValue() && right.isIntValue()) return new IntVal(left.intValue() ^ right.intValue());
+		else if(left.isShortValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
+		else if(left.isShortValue() && right.isShortValue()) return new ShortVal(left.shortValue() ^ right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+		else if(left.isShortValue() && right.isLongValue()) return new LongVal(left.longValue() ^ right.longValue());
+		else if(left.isShortValue() && right.isRegister()) return new UnsignedShortVal(left.byteValue() ^ right.byteValue());
+		else if(left.isShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
@@ -3157,73 +3157,73 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() ^ right.longValue());
 		}
 
-		else if(left.isUnsignedInt() && right.isBool()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
-        else if(left.isUnsignedInt() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() ^ right.intValue()); 
-        else if(left.isUnsignedInt() && right.isByte()) return new UnsignedIntVal(left.shortValue() ^ right.shortValue());
-		else if(left.isUnsignedInt() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
-        else if(left.isUnsignedInt() && right.isInt()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedShort()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
-		else if(left.isUnsignedInt() && right.isShort()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-		else if(left.isUnsignedInt() && right.isLong()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-		else if(left.isUnsignedInt() && right.isRegister()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
-		else if(left.isUnsignedInt() && right.isVector()) {
+		else if(left.isUnsignedIntValue() && right.isBoolValue()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
+        else if(left.isUnsignedIntValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() ^ right.intValue()); 
+        else if(left.isUnsignedIntValue() && right.isByteValue()) return new UnsignedIntVal(left.shortValue() ^ right.shortValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
+        else if(left.isUnsignedIntValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
+		else if(left.isUnsignedIntValue() && right.isShortValue()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+		else if(left.isUnsignedIntValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+		else if(left.isUnsignedIntValue() && right.isRegister()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
+		else if(left.isUnsignedIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new UnsignedIntVal(left.intValue() ^ right.intValue());
 			else return new UnsignedLongVal(left.longValue() ^ right.longValue());
 		}
 
-		else if(left.isInt() && right.isBool()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
-        else if(left.isInt() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() ^ right.intValue()); 
-        else if(left.isInt() && right.isByte()) return new IntVal(left.intValue() ^ right.intValue());
-		else if(left.isInt() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
-        else if(left.isInt() && right.isInt()) return new IntVal(left.intValue() ^ right.intValue());
-		else if(left.isInt() && right.isUnsignedShort()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
-		else if(left.isInt() && right.isShort()) return new IntVal(left.intValue() ^ right.intValue());
-		else if(left.isInt() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-		else if(left.isInt() && right.isLong()) return new LongVal(left.longValue() ^ right.longValue());
-		else if(left.isInt() && right.isRegister()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
-		else if(left.isInt() && right.isVector()) {
+		else if(left.isIntValue() && right.isBoolValue()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
+        else if(left.isIntValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() ^ right.intValue()); 
+        else if(left.isIntValue() && right.isByteValue()) return new IntVal(left.intValue() ^ right.intValue());
+		else if(left.isIntValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
+        else if(left.isIntValue() && right.isIntValue()) return new IntVal(left.intValue() ^ right.intValue());
+		else if(left.isIntValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
+		else if(left.isIntValue() && right.isShortValue()) return new IntVal(left.intValue() ^ right.intValue());
+		else if(left.isIntValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+		else if(left.isIntValue() && right.isLongValue()) return new LongVal(left.longValue() ^ right.longValue());
+		else if(left.isIntValue() && right.isRegister()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
+		else if(left.isIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new UnsignedIntVal(left.intValue() ^ right.intValue());
 			else return new UnsignedLongVal(left.longValue() ^ right.longValue());
 		}
 
-		else if(left.isUnsignedLong() && right.isBool()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-        else if(left.isUnsignedLong() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue()); 
-        else if(left.isUnsignedLong() && right.isByte()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedInt()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-        else if(left.isUnsignedLong() && right.isInt()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedShort()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-		else if(left.isUnsignedLong() && right.isShort()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-		else if(left.isUnsignedLong() && right.isLong()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-		else if(left.isUnsignedLong() && right.isRegister()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-		else if(left.isUnsignedLong() && right.isVector()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+		else if(left.isUnsignedLongValue() && right.isBoolValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+        else if(left.isUnsignedLongValue() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue()); 
+        else if(left.isUnsignedLongValue() && right.isByteValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedIntValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+        else if(left.isUnsignedLongValue() && right.isIntValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedShortValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+		else if(left.isUnsignedLongValue() && right.isShortValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+		else if(left.isUnsignedLongValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+		else if(left.isUnsignedLongValue() && right.isRegister()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+		else if(left.isUnsignedLongValue() && right.isVector()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
 
-		else if(left.isLong() && right.isBool()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-        else if(left.isLong() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue()); 
-        else if(left.isLong() && right.isByte()) return new LongVal(left.longValue() ^ right.longValue());
-		else if(left.isLong() && right.isUnsignedInt()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-        else if(left.isLong() && right.isInt()) return new LongVal(left.longValue() ^ right.longValue());
-		else if(left.isLong() && right.isUnsignedShort()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-		else if(left.isLong() && right.isShort()) return new LongVal(left.longValue() ^ right.longValue());
-		else if(left.isLong() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-		else if(left.isLong() && right.isLong()) return new LongVal(left.longValue() ^ right.longValue());
-		else if(left.isLong() && right.isRegister()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-		else if(left.isLong() && right.isVector()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+		else if(left.isLongValue() && right.isBoolValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+        else if(left.isLongValue() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue()); 
+        else if(left.isLongValue() && right.isByteValue()) return new LongVal(left.longValue() ^ right.longValue());
+		else if(left.isLongValue() && right.isUnsignedIntValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+        else if(left.isLongValue() && right.isIntValue()) return new LongVal(left.longValue() ^ right.longValue());
+		else if(left.isLongValue() && right.isUnsignedShortValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+		else if(left.isLongValue() && right.isShortValue()) return new LongVal(left.longValue() ^ right.longValue());
+		else if(left.isLongValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+		else if(left.isLongValue() && right.isLongValue()) return new LongVal(left.longValue() ^ right.longValue());
+		else if(left.isLongValue() && right.isRegister()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+		else if(left.isLongValue() && right.isVector()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
 
-		else if(left.isRegister() && right.isBool()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue());
+		else if(left.isRegister() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue());
         else if(left.isRegister() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue()); 
-        else if(left.isRegister() && right.isByte()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue());
-		else if(left.isRegister() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
-        else if(left.isRegister() && right.isInt()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
-		else if(left.isRegister() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
-		else if(left.isRegister() && right.isShort()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
-		else if(left.isRegister() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-		else if(left.isRegister() && right.isLong()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+        else if(left.isRegister() && right.isByteValue()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue());
+		else if(left.isRegister() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
+        else if(left.isRegister() && right.isIntValue()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
+		else if(left.isRegister() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
+		else if(left.isRegister() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
+		else if(left.isRegister() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+		else if(left.isRegister() && right.isLongValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
 		else if(left.isRegister() && right.isRegister()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue());
 		else if(left.isRegister() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -3234,15 +3234,15 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() ^ right.longValue());
 		}
 
-		else if(left.isVector() && right.isBool()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue());
+		else if(left.isVector() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue());
         else if(left.isVector() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue()); 
-        else if(left.isVector() && right.isByte()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue());
-		else if(left.isVector() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
-        else if(left.isVector() && right.isInt()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
-		else if(left.isVector() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
-		else if(left.isVector() && right.isShort()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
-		else if(left.isVector() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
-		else if(left.isVector() && right.isLong()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+        else if(left.isVector() && right.isByteValue()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue());
+		else if(left.isVector() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
+        else if(left.isVector() && right.isIntValue()) return new UnsignedIntVal(left.intValue() ^ right.intValue());
+		else if(left.isVector() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
+		else if(left.isVector() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() ^ right.shortValue());
+		else if(left.isVector() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
+		else if(left.isVector() && right.isLongValue()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
 		else if(left.isVector() && right.isRegister()) return new UnsignedByteVal(left.byteValue() ^ right.byteValue());
 		else if(left.isVector() && right.isVector()) return new UnsignedLongVal(left.longValue() ^ right.longValue());
 		else {
@@ -3252,7 +3252,7 @@ public class Utils {
 
     }
 
-	public static Value itwiseXorCircuit(Value left, Value right) throws Exception{
+	public static Value bitwiseXorCircuit(Value left, Value right) throws Exception{
 		if(left.isWire() && right.isWire()){
 			WireVal Output = new WireVal();
 			new XorGate(Output, (WireVal)left, (WireVal)right);
@@ -3297,18 +3297,18 @@ public class Utils {
 		return null;
 	}
 
-    public static Value xclusiveNor(Value left, Value right) throws Exception{
-        if(left.isBool() && right.isBool()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue()));
-        else if(left.isBool() && right.isUnsignedByteValue()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue())); 
-        else if(left.isBool() && right.isByte()) return new ByteVal(~(left.byteValue() ^ right.byteValue()));
-		else if(left.isBool() && right.isUnsignedInt()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
-        else if(left.isBool() && right.isInt()) return new IntVal(~(left.intValue() ^ right.intValue()));
-		else if(left.isBool() && right.isUnsignedShort()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
-		else if(left.isBool() && right.isShort()) return new ShortVal(~(left.shortValue() ^ right.shortValue()));
-		else if(left.isBool() && right.isUnsignedLong()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isBool() && right.isLong()) return new LongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isBool() && right.isRegister()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue()));
-		else if(left.isBool() && right.isVector()) {
+    public static Value exclusiveNor(Value left, Value right) throws Exception{
+        if(left.isBoolValue() && right.isBoolValue()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue()));
+        else if(left.isBoolValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue())); 
+        else if(left.isBoolValue() && right.isByteValue()) return new ByteVal(~(left.byteValue() ^ right.byteValue()));
+		else if(left.isBoolValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
+        else if(left.isBoolValue() && right.isIntValue()) return new IntVal(~(left.intValue() ^ right.intValue()));
+		else if(left.isBoolValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
+		else if(left.isBoolValue() && right.isShortValue()) return new ShortVal(~(left.shortValue() ^ right.shortValue()));
+		else if(left.isBoolValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isBoolValue() && right.isLongValue()) return new LongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isBoolValue() && right.isRegister()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue()));
+		else if(left.isBoolValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue()));
@@ -3317,15 +3317,15 @@ public class Utils {
 			else return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
 		}
 
-		if(left.isUnsignedByteValue() && right.isBool()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue()));
+		if(left.isUnsignedByteValue() && right.isBoolValue()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue()));
         else if(left.isUnsignedByteValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue())); 
-        else if(left.isUnsignedByteValue() && right.isByte()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue()));
-		else if(left.isUnsignedByteValue() && right.isUnsignedInt()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
-        else if(left.isUnsignedByteValue() && right.isInt()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
-		else if(left.isUnsignedByteValue() && right.isUnsignedShort()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
-		else if(left.isUnsignedByteValue() && right.isShort()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
-		else if(left.isUnsignedByteValue() && right.isUnsignedLong()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isUnsignedByteValue() && right.isLong()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+        else if(left.isUnsignedByteValue() && right.isByteValue()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue()));
+		else if(left.isUnsignedByteValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
+        else if(left.isUnsignedByteValue() && right.isIntValue()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
+		else if(left.isUnsignedByteValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
+		else if(left.isUnsignedByteValue() && right.isShortValue()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
+		else if(left.isUnsignedByteValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isUnsignedByteValue() && right.isLongValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
 		else if(left.isUnsignedByteValue() && right.isRegister()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue()));
 		else if(left.isUnsignedByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -3336,17 +3336,17 @@ public class Utils {
 			else return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
 		}
 
-		if(left.isByte() && right.isBool()) return new ByteVal(~(left.byteValue() ^ right.byteValue()));
-        else if(left.isByte() && right.isUnsignedByteValue()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue())); 
-        else if(left.isByte() && right.isByte()) return new ByteVal(~(left.byteValue() ^ right.byteValue()));
-		else if(left.isByte() && right.isUnsignedInt()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
-        else if(left.isByte() && right.isInt()) return new IntVal(~(left.intValue() ^ right.intValue()));
-		else if(left.isByte() && right.isUnsignedShort()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
-		else if(left.isByte() && right.isShort()) return new ShortVal(~(left.shortValue() ^ right.shortValue()));
-		else if(left.isByte() && right.isUnsignedLong()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isByte() && right.isLong()) return new LongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isByte() && right.isRegister()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue()));
-		else if(left.isByte() && right.isVector()) {
+		if(left.isByteValue() && right.isBoolValue()) return new ByteVal(~(left.byteValue() ^ right.byteValue()));
+        else if(left.isByteValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue())); 
+        else if(left.isByteValue() && right.isByteValue()) return new ByteVal(~(left.byteValue() ^ right.byteValue()));
+		else if(left.isByteValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
+        else if(left.isByteValue() && right.isIntValue()) return new IntVal(~(left.intValue() ^ right.intValue()));
+		else if(left.isByteValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
+		else if(left.isByteValue() && right.isShortValue()) return new ShortVal(~(left.shortValue() ^ right.shortValue()));
+		else if(left.isByteValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isByteValue() && right.isLongValue()) return new LongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isByteValue() && right.isRegister()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue()));
+		else if(left.isByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue()));
@@ -3355,17 +3355,17 @@ public class Utils {
 			else return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
 		}
 
-		else if(left.isUnsignedShort() && right.isBool()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
-        else if(left.isUnsignedShort() && right.isUnsignedByteValue()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue())); 
-        else if(left.isUnsignedShort() && right.isByte()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
-		else if(left.isUnsignedShort() && right.isUnsignedInt()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
-        else if(left.isUnsignedShort() && right.isInt()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
-		else if(left.isUnsignedShort() && right.isUnsignedShort()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
-		else if(left.isUnsignedShort() && right.isShort()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
-		else if(left.isUnsignedShort() && right.isUnsignedLong()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isUnsignedShort() && right.isLong()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isUnsignedShort() && right.isRegister()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
-		else if(left.isUnsignedShort() && right.isVector()) {
+		else if(left.isUnsignedShortValue() && right.isBoolValue()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
+        else if(left.isUnsignedShortValue() && right.isUnsignedByteValue()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue())); 
+        else if(left.isUnsignedShortValue() && right.isByteValue()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
+		else if(left.isUnsignedShortValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
+        else if(left.isUnsignedShortValue() && right.isIntValue()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
+		else if(left.isUnsignedShortValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
+		else if(left.isUnsignedShortValue() && right.isShortValue()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
+		else if(left.isUnsignedShortValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isUnsignedShortValue() && right.isLongValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isUnsignedShortValue() && right.isRegister()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
+		else if(left.isUnsignedShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
@@ -3373,17 +3373,17 @@ public class Utils {
 			else return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
 		}
 
-		else if(left.isShort() && right.isBool()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
-        else if(left.isShort() && right.isUnsignedByteValue()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue())); 
-        else if(left.isShort() && right.isByte()) return new ShortVal(~(left.shortValue() ^ right.shortValue()));
-		else if(left.isShort() && right.isUnsignedInt()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
-        else if(left.isShort() && right.isInt()) return new IntVal(~(left.intValue() ^ right.intValue()));
-		else if(left.isShort() && right.isUnsignedShort()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
-		else if(left.isShort() && right.isShort()) return new ShortVal(~(left.shortValue() ^ right.shortValue()));
-		else if(left.isShort() && right.isUnsignedLong()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isShort() && right.isLong()) return new LongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isShort() && right.isRegister()) return new UnsignedShortVal(~(left.byteValue() ^ right.byteValue()));
-		else if(left.isShort() && right.isVector()) {
+		else if(left.isShortValue() && right.isBoolValue()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
+        else if(left.isShortValue() && right.isUnsignedByteValue()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue())); 
+        else if(left.isShortValue() && right.isByteValue()) return new ShortVal(~(left.shortValue() ^ right.shortValue()));
+		else if(left.isShortValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
+        else if(left.isShortValue() && right.isIntValue()) return new IntVal(~(left.intValue() ^ right.intValue()));
+		else if(left.isShortValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
+		else if(left.isShortValue() && right.isShortValue()) return new ShortVal(~(left.shortValue() ^ right.shortValue()));
+		else if(left.isShortValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isShortValue() && right.isLongValue()) return new LongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isShortValue() && right.isRegister()) return new UnsignedShortVal(~(left.byteValue() ^ right.byteValue()));
+		else if(left.isShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
@@ -3391,73 +3391,73 @@ public class Utils {
 			else return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
 		}
 
-		else if(left.isUnsignedInt() && right.isBool()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
-        else if(left.isUnsignedInt() && right.isUnsignedByteValue()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue())); 
-        else if(left.isUnsignedInt() && right.isByte()) return new UnsignedIntVal(~(left.shortValue() ^ right.shortValue()));
-		else if(left.isUnsignedInt() && right.isUnsignedInt()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
-        else if(left.isUnsignedInt() && right.isInt()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
-		else if(left.isUnsignedInt() && right.isUnsignedShort()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
-		else if(left.isUnsignedInt() && right.isShort()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
-		else if(left.isUnsignedInt() && right.isUnsignedLong()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isUnsignedInt() && right.isLong()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isUnsignedInt() && right.isRegister()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
-		else if(left.isUnsignedInt() && right.isVector()) {
+		else if(left.isUnsignedIntValue() && right.isBoolValue()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
+        else if(left.isUnsignedIntValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue())); 
+        else if(left.isUnsignedIntValue() && right.isByteValue()) return new UnsignedIntVal(~(left.shortValue() ^ right.shortValue()));
+		else if(left.isUnsignedIntValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
+        else if(left.isUnsignedIntValue() && right.isIntValue()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
+		else if(left.isUnsignedIntValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
+		else if(left.isUnsignedIntValue() && right.isShortValue()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
+		else if(left.isUnsignedIntValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isUnsignedIntValue() && right.isLongValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isUnsignedIntValue() && right.isRegister()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
+		else if(left.isUnsignedIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
 			else return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
 		}
 
-		else if(left.isInt() && right.isBool()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
-        else if(left.isInt() && right.isUnsignedByteValue()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue())); 
-        else if(left.isInt() && right.isByte()) return new IntVal(~(left.intValue() ^ right.intValue()));
-		else if(left.isInt() && right.isUnsignedInt()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
-        else if(left.isInt() && right.isInt()) return new IntVal(~(left.intValue() ^ right.intValue()));
-		else if(left.isInt() && right.isUnsignedShort()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
-		else if(left.isInt() && right.isShort()) return new IntVal(~(left.intValue() ^ right.intValue()));
-		else if(left.isInt() && right.isUnsignedLong()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isInt() && right.isLong()) return new LongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isInt() && right.isRegister()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
-		else if(left.isInt() && right.isVector()) {
+		else if(left.isIntValue() && right.isBoolValue()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
+        else if(left.isIntValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue())); 
+        else if(left.isIntValue() && right.isByteValue()) return new IntVal(~(left.intValue() ^ right.intValue()));
+		else if(left.isIntValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
+        else if(left.isIntValue() && right.isIntValue()) return new IntVal(~(left.intValue() ^ right.intValue()));
+		else if(left.isIntValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
+		else if(left.isIntValue() && right.isShortValue()) return new IntVal(~(left.intValue() ^ right.intValue()));
+		else if(left.isIntValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isIntValue() && right.isLongValue()) return new LongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isIntValue() && right.isRegister()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
+		else if(left.isIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
 			else return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
 		}
 
-		else if(left.isUnsignedLong() && right.isBool()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-        else if(left.isUnsignedLong() && right.isUnsignedByteValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue())); 
-        else if(left.isUnsignedLong() && right.isByte()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isUnsignedLong() && right.isUnsignedInt()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-        else if(left.isUnsignedLong() && right.isInt()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isUnsignedLong() && right.isUnsignedShort()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isUnsignedLong() && right.isShort()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isUnsignedLong() && right.isUnsignedLong()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isUnsignedLong() && right.isLong()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isUnsignedLong() && right.isRegister()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isUnsignedLong() && right.isVector()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isUnsignedLongValue() && right.isBoolValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+        else if(left.isUnsignedLongValue() && right.isUnsignedByteValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue())); 
+        else if(left.isUnsignedLongValue() && right.isByteValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isUnsignedLongValue() && right.isUnsignedIntValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+        else if(left.isUnsignedLongValue() && right.isIntValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isUnsignedLongValue() && right.isUnsignedShortValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isUnsignedLongValue() && right.isShortValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isUnsignedLongValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isUnsignedLongValue() && right.isLongValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isUnsignedLongValue() && right.isRegister()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isUnsignedLongValue() && right.isVector()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
 
-		else if(left.isLong() && right.isBool()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-        else if(left.isLong() && right.isUnsignedByteValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue())); 
-        else if(left.isLong() && right.isByte()) return new LongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isLong() && right.isUnsignedInt()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-        else if(left.isLong() && right.isInt()) return new LongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isLong() && right.isUnsignedShort()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isLong() && right.isShort()) return new LongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isLong() && right.isUnsignedLong()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isLong() && right.isLong()) return new LongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isLong() && right.isRegister()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isLong() && right.isVector()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isLongValue() && right.isBoolValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+        else if(left.isLongValue() && right.isUnsignedByteValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue())); 
+        else if(left.isLongValue() && right.isByteValue()) return new LongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isLongValue() && right.isUnsignedIntValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+        else if(left.isLongValue() && right.isIntValue()) return new LongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isLongValue() && right.isUnsignedShortValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isLongValue() && right.isShortValue()) return new LongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isLongValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isLongValue() && right.isLongValue()) return new LongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isLongValue() && right.isRegister()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isLongValue() && right.isVector()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
 
-		else if(left.isRegister() && right.isBool()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue()));
+		else if(left.isRegister() && right.isBoolValue()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue()));
         else if(left.isRegister() && right.isUnsignedByteValue()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue())); 
-        else if(left.isRegister() && right.isByte()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue()));
-		else if(left.isRegister() && right.isUnsignedInt()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
-        else if(left.isRegister() && right.isInt()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
-		else if(left.isRegister() && right.isUnsignedShort()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
-		else if(left.isRegister() && right.isShort()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
-		else if(left.isRegister() && right.isUnsignedLong()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isRegister() && right.isLong()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+        else if(left.isRegister() && right.isByteValue()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue()));
+		else if(left.isRegister() && right.isUnsignedIntValue()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
+        else if(left.isRegister() && right.isIntValue()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
+		else if(left.isRegister() && right.isUnsignedShortValue()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
+		else if(left.isRegister() && right.isShortValue()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
+		else if(left.isRegister() && right.isUnsignedLongValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isRegister() && right.isLongValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
 		else if(left.isRegister() && right.isRegister()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue()));
 		else if(left.isRegister() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -3468,15 +3468,15 @@ public class Utils {
 			else return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
 		}
 
-		else if(left.isVector() && right.isBool()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue()));
+		else if(left.isVector() && right.isBoolValue()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue()));
         else if(left.isVector() && right.isUnsignedByteValue()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue())); 
-        else if(left.isVector() && right.isByte()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue()));
-		else if(left.isVector() && right.isUnsignedInt()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
-        else if(left.isVector() && right.isInt()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
-		else if(left.isVector() && right.isUnsignedShort()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
-		else if(left.isVector() && right.isShort()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
-		else if(left.isVector() && right.isUnsignedLong()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
-		else if(left.isVector() && right.isLong()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+        else if(left.isVector() && right.isByteValue()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue()));
+		else if(left.isVector() && right.isUnsignedIntValue()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
+        else if(left.isVector() && right.isIntValue()) return new UnsignedIntVal(~(left.intValue() ^ right.intValue()));
+		else if(left.isVector() && right.isUnsignedShortValue()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
+		else if(left.isVector() && right.isShortValue()) return new UnsignedShortVal(~(left.shortValue() ^ right.shortValue()));
+		else if(left.isVector() && right.isUnsignedLongValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
+		else if(left.isVector() && right.isLongValue()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
 		else if(left.isVector() && right.isRegister()) return new UnsignedByteVal(~(left.byteValue() ^ right.byteValue()));
 		else if(left.isVector() && right.isVector()) return new UnsignedLongVal(~(left.longValue() ^ right.longValue()));
 		else {
@@ -3485,7 +3485,7 @@ public class Utils {
 		}
     }
 
-	public static Value itwiseXnorCircuit(Value left, Value right) throws Exception{
+	public static Value bitwiseXnorCircuit(Value left, Value right) throws Exception{
 		if(left.isWire() && right.isWire()){
 			WireVal Output = new WireVal();
 			new XnorGate(Output, (WireVal)left, (WireVal)right);
@@ -3530,18 +3530,18 @@ public class Utils {
 		return null;
 	}
 
-    public static Value eftShift(Value left, Value right) throws Exception{
-        if(left.isBool() && right.isBool()) return new UnsignedByteVal(left.byteValue() << right.byteValue());
-        else if(left.isBool() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() << right.byteValue()); 
-        else if(left.isBool() && right.isByte()) return new ByteVal(left.byteValue() << right.byteValue());
-		else if(left.isBool() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() << right.intValue());
-        else if(left.isBool() && right.isInt()) return new IntVal(left.intValue() << right.intValue());
-		else if(left.isBool() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
-		else if(left.isBool() && right.isShort()) return new ShortVal(left.shortValue() << right.shortValue());
-		else if(left.isBool() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() << right.longValue());
-		else if(left.isBool() && right.isLong()) return new LongVal(left.longValue() << right.longValue());
-		else if(left.isBool() && right.isRegister()) return new UnsignedByteVal(left.byteValue() << right.byteValue());
-		else if(left.isBool() && right.isVector()) {
+    public static Value leftShift(Value left, Value right) throws Exception{
+        if(left.isBoolValue() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() << right.byteValue());
+        else if(left.isBoolValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() << right.byteValue()); 
+        else if(left.isBoolValue() && right.isByteValue()) return new ByteVal(left.byteValue() << right.byteValue());
+		else if(left.isBoolValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() << right.intValue());
+        else if(left.isBoolValue() && right.isIntValue()) return new IntVal(left.intValue() << right.intValue());
+		else if(left.isBoolValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
+		else if(left.isBoolValue() && right.isShortValue()) return new ShortVal(left.shortValue() << right.shortValue());
+		else if(left.isBoolValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
+		else if(left.isBoolValue() && right.isLongValue()) return new LongVal(left.longValue() << right.longValue());
+		else if(left.isBoolValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() << right.byteValue());
+		else if(left.isBoolValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new UnsignedByteVal(left.byteValue() << right.byteValue());
@@ -3550,15 +3550,15 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() << right.longValue());
 		}
 
-		if(left.isUnsignedByteValue() && right.isBool()) return new UnsignedByteVal(left.byteValue() << right.byteValue());
+		if(left.isUnsignedByteValue() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() << right.byteValue());
         else if(left.isUnsignedByteValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() << right.byteValue()); 
-        else if(left.isUnsignedByteValue() && right.isByte()) return new UnsignedByteVal(left.byteValue() << right.byteValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() << right.intValue());
-        else if(left.isUnsignedByteValue() && right.isInt()) return new UnsignedIntVal(left.intValue() << right.intValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isShort()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() << right.longValue());
-		else if(left.isUnsignedByteValue() && right.isLong()) return new UnsignedLongVal(left.longValue() << right.longValue());
+        else if(left.isUnsignedByteValue() && right.isByteValue()) return new UnsignedByteVal(left.byteValue() << right.byteValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() << right.intValue());
+        else if(left.isUnsignedByteValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() << right.intValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
+		else if(left.isUnsignedByteValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
 		else if(left.isUnsignedByteValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() << right.byteValue());
 		else if(left.isUnsignedByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -3569,17 +3569,17 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() << right.longValue());
 		}
 
-		if(left.isByte() && right.isBool()) return new ByteVal(left.byteValue() << right.byteValue());
-        else if(left.isByte() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() << right.byteValue()); 
-        else if(left.isByte() && right.isByte()) return new ByteVal(left.byteValue() << right.byteValue());
-		else if(left.isByte() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() << right.intValue());
-        else if(left.isByte() && right.isInt()) return new IntVal(left.intValue() << right.intValue());
-		else if(left.isByte() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
-		else if(left.isByte() && right.isShort()) return new ShortVal(left.shortValue() << right.shortValue());
-		else if(left.isByte() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() << right.longValue());
-		else if(left.isByte() && right.isLong()) return new LongVal(left.longValue() << right.longValue());
-		else if(left.isByte() && right.isRegister()) return new UnsignedByteVal(left.byteValue() << right.byteValue());
-		else if(left.isByte() && right.isVector()) {
+		if(left.isByteValue() && right.isBoolValue()) return new ByteVal(left.byteValue() << right.byteValue());
+        else if(left.isByteValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() << right.byteValue()); 
+        else if(left.isByteValue() && right.isByteValue()) return new ByteVal(left.byteValue() << right.byteValue());
+		else if(left.isByteValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() << right.intValue());
+        else if(left.isByteValue() && right.isIntValue()) return new IntVal(left.intValue() << right.intValue());
+		else if(left.isByteValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
+		else if(left.isByteValue() && right.isShortValue()) return new ShortVal(left.shortValue() << right.shortValue());
+		else if(left.isByteValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
+		else if(left.isByteValue() && right.isLongValue()) return new LongVal(left.longValue() << right.longValue());
+		else if(left.isByteValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() << right.byteValue());
+		else if(left.isByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new UnsignedByteVal(left.byteValue() << right.byteValue());
@@ -3588,17 +3588,17 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() << right.longValue());
 		}
 
-		else if(left.isUnsignedShort() && right.isBool()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
-        else if(left.isUnsignedShort() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() << right.shortValue()); 
-        else if(left.isUnsignedShort() && right.isByte()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() << right.intValue());
-        else if(left.isUnsignedShort() && right.isInt()) return new UnsignedIntVal(left.intValue() << right.intValue());
-		else if(left.isUnsignedShort() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
-		else if(left.isUnsignedShort() && right.isShort()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() << right.longValue());
-		else if(left.isUnsignedShort() && right.isLong()) return new UnsignedLongVal(left.longValue() << right.longValue());
-		else if(left.isUnsignedShort() && right.isRegister()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
-		else if(left.isUnsignedShort() && right.isVector()) {
+		else if(left.isUnsignedShortValue() && right.isBoolValue()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
+        else if(left.isUnsignedShortValue() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() << right.shortValue()); 
+        else if(left.isUnsignedShortValue() && right.isByteValue()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() << right.intValue());
+        else if(left.isUnsignedShortValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() << right.intValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
+		else if(left.isUnsignedShortValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
+		else if(left.isUnsignedShortValue() && right.isRegister()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new UnsignedShortVal(left.shortValue() << right.shortValue());
@@ -3606,17 +3606,17 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() << right.longValue());
 		}
 
-		else if(left.isShort() && right.isBool()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
-        else if(left.isShort() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() << right.shortValue()); 
-        else if(left.isShort() && right.isByte()) return new ShortVal(left.shortValue() << right.shortValue());
-		else if(left.isShort() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() << right.intValue());
-        else if(left.isShort() && right.isInt()) return new IntVal(left.intValue() << right.intValue());
-		else if(left.isShort() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
-		else if(left.isShort() && right.isShort()) return new ShortVal(left.shortValue() << right.shortValue());
-		else if(left.isShort() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() << right.longValue());
-		else if(left.isShort() && right.isLong()) return new LongVal(left.longValue() << right.longValue());
-		else if(left.isShort() && right.isRegister()) return new UnsignedShortVal(left.byteValue() << right.byteValue());
-		else if(left.isShort() && right.isVector()) {
+		else if(left.isShortValue() && right.isBoolValue()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
+        else if(left.isShortValue() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() << right.shortValue()); 
+        else if(left.isShortValue() && right.isByteValue()) return new ShortVal(left.shortValue() << right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() << right.intValue());
+        else if(left.isShortValue() && right.isIntValue()) return new IntVal(left.intValue() << right.intValue());
+		else if(left.isShortValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
+		else if(left.isShortValue() && right.isShortValue()) return new ShortVal(left.shortValue() << right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
+		else if(left.isShortValue() && right.isLongValue()) return new LongVal(left.longValue() << right.longValue());
+		else if(left.isShortValue() && right.isRegister()) return new UnsignedShortVal(left.byteValue() << right.byteValue());
+		else if(left.isShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new UnsignedShortVal(left.shortValue() << right.shortValue());
@@ -3624,73 +3624,73 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() << right.longValue());
 		}
 
-		else if(left.isUnsignedInt() && right.isBool()) return new UnsignedIntVal(left.intValue() << right.intValue());
-        else if(left.isUnsignedInt() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() << right.intValue()); 
-        else if(left.isUnsignedInt() && right.isByte()) return new UnsignedIntVal(left.shortValue() << right.shortValue());
-		else if(left.isUnsignedInt() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() << right.intValue());
-        else if(left.isUnsignedInt() && right.isInt()) return new UnsignedIntVal(left.intValue() << right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedShort()) return new UnsignedIntVal(left.intValue() << right.intValue());
-		else if(left.isUnsignedInt() && right.isShort()) return new UnsignedIntVal(left.intValue() << right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() << right.longValue());
-		else if(left.isUnsignedInt() && right.isLong()) return new UnsignedLongVal(left.longValue() << right.longValue());
-		else if(left.isUnsignedInt() && right.isRegister()) return new UnsignedIntVal(left.intValue() << right.intValue());
-		else if(left.isUnsignedInt() && right.isVector()) {
+		else if(left.isUnsignedIntValue() && right.isBoolValue()) return new UnsignedIntVal(left.intValue() << right.intValue());
+        else if(left.isUnsignedIntValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() << right.intValue()); 
+        else if(left.isUnsignedIntValue() && right.isByteValue()) return new UnsignedIntVal(left.shortValue() << right.shortValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() << right.intValue());
+        else if(left.isUnsignedIntValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() << right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.intValue() << right.intValue());
+		else if(left.isUnsignedIntValue() && right.isShortValue()) return new UnsignedIntVal(left.intValue() << right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
+		else if(left.isUnsignedIntValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
+		else if(left.isUnsignedIntValue() && right.isRegister()) return new UnsignedIntVal(left.intValue() << right.intValue());
+		else if(left.isUnsignedIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new UnsignedIntVal(left.intValue() << right.intValue());
 			else return new UnsignedLongVal(left.longValue() << right.longValue());
 		}
 
-		else if(left.isInt() && right.isBool()) return new UnsignedIntVal(left.intValue() << right.intValue());
-        else if(left.isInt() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() << right.intValue()); 
-        else if(left.isInt() && right.isByte()) return new IntVal(left.intValue() << right.intValue());
-		else if(left.isInt() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() << right.intValue());
-        else if(left.isInt() && right.isInt()) return new IntVal(left.intValue() << right.intValue());
-		else if(left.isInt() && right.isUnsignedShort()) return new UnsignedIntVal(left.intValue() << right.intValue());
-		else if(left.isInt() && right.isShort()) return new IntVal(left.intValue() << right.intValue());
-		else if(left.isInt() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() << right.longValue());
-		else if(left.isInt() && right.isLong()) return new LongVal(left.longValue() << right.longValue());
-		else if(left.isInt() && right.isRegister()) return new UnsignedIntVal(left.intValue() << right.intValue());
-		else if(left.isInt() && right.isVector()) {
+		else if(left.isIntValue() && right.isBoolValue()) return new UnsignedIntVal(left.intValue() << right.intValue());
+        else if(left.isIntValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() << right.intValue()); 
+        else if(left.isIntValue() && right.isByteValue()) return new IntVal(left.intValue() << right.intValue());
+		else if(left.isIntValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() << right.intValue());
+        else if(left.isIntValue() && right.isIntValue()) return new IntVal(left.intValue() << right.intValue());
+		else if(left.isIntValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.intValue() << right.intValue());
+		else if(left.isIntValue() && right.isShortValue()) return new IntVal(left.intValue() << right.intValue());
+		else if(left.isIntValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
+		else if(left.isIntValue() && right.isLongValue()) return new LongVal(left.longValue() << right.longValue());
+		else if(left.isIntValue() && right.isRegister()) return new UnsignedIntVal(left.intValue() << right.intValue());
+		else if(left.isIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new UnsignedIntVal(left.intValue() << right.intValue());
 			else return new UnsignedLongVal(left.longValue() << right.longValue());
 		}
 
-		else if(left.isUnsignedLong() && right.isBool()) return new UnsignedLongVal(left.longValue() << right.longValue());
-        else if(left.isUnsignedLong() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() << right.longValue()); 
-        else if(left.isUnsignedLong() && right.isByte()) return new UnsignedLongVal(left.longValue() << right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedInt()) return new UnsignedLongVal(left.longValue() << right.longValue());
-        else if(left.isUnsignedLong() && right.isInt()) return new UnsignedLongVal(left.longValue() << right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedShort()) return new UnsignedLongVal(left.longValue() << right.longValue());
-		else if(left.isUnsignedLong() && right.isShort()) return new UnsignedLongVal(left.longValue() << right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() << right.longValue());
-		else if(left.isUnsignedLong() && right.isLong()) return new UnsignedLongVal(left.longValue() << right.longValue());
-		else if(left.isUnsignedLong() && right.isRegister()) return new UnsignedLongVal(left.longValue() << right.longValue());
-		else if(left.isUnsignedLong() && right.isVector()) return new UnsignedLongVal(left.longValue() << right.longValue());
+		else if(left.isUnsignedLongValue() && right.isBoolValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
+        else if(left.isUnsignedLongValue() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() << right.longValue()); 
+        else if(left.isUnsignedLongValue() && right.isByteValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedIntValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
+        else if(left.isUnsignedLongValue() && right.isIntValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedShortValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
+		else if(left.isUnsignedLongValue() && right.isShortValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
+		else if(left.isUnsignedLongValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
+		else if(left.isUnsignedLongValue() && right.isRegister()) return new UnsignedLongVal(left.longValue() << right.longValue());
+		else if(left.isUnsignedLongValue() && right.isVector()) return new UnsignedLongVal(left.longValue() << right.longValue());
 
-		else if(left.isLong() && right.isBool()) return new UnsignedLongVal(left.longValue() << right.longValue());
-        else if(left.isLong() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() << right.longValue()); 
-        else if(left.isLong() && right.isByte()) return new LongVal(left.longValue() << right.longValue());
-		else if(left.isLong() && right.isUnsignedInt()) return new UnsignedLongVal(left.longValue() << right.longValue());
-        else if(left.isLong() && right.isInt()) return new LongVal(left.longValue() << right.longValue());
-		else if(left.isLong() && right.isUnsignedShort()) return new UnsignedLongVal(left.longValue() << right.longValue());
-		else if(left.isLong() && right.isShort()) return new LongVal(left.longValue() << right.longValue());
-		else if(left.isLong() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() << right.longValue());
-		else if(left.isLong() && right.isLong()) return new LongVal(left.longValue() << right.longValue());
-		else if(left.isLong() && right.isRegister()) return new UnsignedLongVal(left.longValue() << right.longValue());
-		else if(left.isLong() && right.isVector()) return new UnsignedLongVal(left.longValue() << right.longValue());
+		else if(left.isLongValue() && right.isBoolValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
+        else if(left.isLongValue() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() << right.longValue()); 
+        else if(left.isLongValue() && right.isByteValue()) return new LongVal(left.longValue() << right.longValue());
+		else if(left.isLongValue() && right.isUnsignedIntValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
+        else if(left.isLongValue() && right.isIntValue()) return new LongVal(left.longValue() << right.longValue());
+		else if(left.isLongValue() && right.isUnsignedShortValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
+		else if(left.isLongValue() && right.isShortValue()) return new LongVal(left.longValue() << right.longValue());
+		else if(left.isLongValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
+		else if(left.isLongValue() && right.isLongValue()) return new LongVal(left.longValue() << right.longValue());
+		else if(left.isLongValue() && right.isRegister()) return new UnsignedLongVal(left.longValue() << right.longValue());
+		else if(left.isLongValue() && right.isVector()) return new UnsignedLongVal(left.longValue() << right.longValue());
 
-		else if(left.isRegister() && right.isBool()) return new UnsignedByteVal(left.byteValue() << right.byteValue());
+		else if(left.isRegister() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() << right.byteValue());
         else if(left.isRegister() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() << right.byteValue()); 
-        else if(left.isRegister() && right.isByte()) return new UnsignedByteVal(left.byteValue() << right.byteValue());
-		else if(left.isRegister() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() << right.intValue());
-        else if(left.isRegister() && right.isInt()) return new UnsignedIntVal(left.intValue() << right.intValue());
-		else if(left.isRegister() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
-		else if(left.isRegister() && right.isShort()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
-		else if(left.isRegister() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() << right.longValue());
-		else if(left.isRegister() && right.isLong()) return new UnsignedLongVal(left.longValue() << right.longValue());
+        else if(left.isRegister() && right.isByteValue()) return new UnsignedByteVal(left.byteValue() << right.byteValue());
+		else if(left.isRegister() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() << right.intValue());
+        else if(left.isRegister() && right.isIntValue()) return new UnsignedIntVal(left.intValue() << right.intValue());
+		else if(left.isRegister() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
+		else if(left.isRegister() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
+		else if(left.isRegister() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
+		else if(left.isRegister() && right.isLongValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
 		else if(left.isRegister() && right.isRegister()) return new UnsignedByteVal(left.byteValue() << right.byteValue());
 		else if(left.isRegister() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -3701,15 +3701,15 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() << right.longValue());
 		}
 
-		else if(left.isVector() && right.isBool()) return new UnsignedByteVal(left.byteValue() << right.byteValue());
+		else if(left.isVector() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() << right.byteValue());
         else if(left.isVector() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() << right.byteValue()); 
-        else if(left.isVector() && right.isByte()) return new UnsignedByteVal(left.byteValue() << right.byteValue());
-		else if(left.isVector() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() << right.intValue());
-        else if(left.isVector() && right.isInt()) return new UnsignedIntVal(left.intValue() << right.intValue());
-		else if(left.isVector() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
-		else if(left.isVector() && right.isShort()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
-		else if(left.isVector() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() << right.longValue());
-		else if(left.isVector() && right.isLong()) return new UnsignedLongVal(left.longValue() << right.longValue());
+        else if(left.isVector() && right.isByteValue()) return new UnsignedByteVal(left.byteValue() << right.byteValue());
+		else if(left.isVector() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() << right.intValue());
+        else if(left.isVector() && right.isIntValue()) return new UnsignedIntVal(left.intValue() << right.intValue());
+		else if(left.isVector() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
+		else if(left.isVector() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() << right.shortValue());
+		else if(left.isVector() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
+		else if(left.isVector() && right.isLongValue()) return new UnsignedLongVal(left.longValue() << right.longValue());
 		else if(left.isVector() && right.isRegister()) return new UnsignedByteVal(left.byteValue() << right.byteValue());
 		else if(left.isVector() && right.isVector()) return new UnsignedLongVal(left.longValue() << right.longValue());
 		else {
@@ -3719,18 +3719,18 @@ public class Utils {
 
     }
 
-    public static Value ightShift(Value left, Value right) throws Exception{
-        if(left.isBool() && right.isBool()) return new UnsignedByteVal(left.byteValue() >> right.byteValue());
-        else if(left.isBool() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() >> right.byteValue()); 
-        else if(left.isBool() && right.isByte()) return new ByteVal(left.byteValue() >> right.byteValue());
-		else if(left.isBool() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() >> right.intValue());
-        else if(left.isBool() && right.isInt()) return new IntVal(left.intValue() >> right.intValue());
-		else if(left.isBool() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
-		else if(left.isBool() && right.isShort()) return new ShortVal(left.shortValue() >> right.shortValue());
-		else if(left.isBool() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-		else if(left.isBool() && right.isLong()) return new LongVal(left.longValue() >> right.longValue());
-		else if(left.isBool() && right.isRegister()) return new UnsignedByteVal(left.byteValue() >> right.byteValue());
-		else if(left.isBool() && right.isVector()) {
+    public static Value rightShift(Value left, Value right) throws Exception{
+        if(left.isBoolValue() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() >> right.byteValue());
+        else if(left.isBoolValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() >> right.byteValue()); 
+        else if(left.isBoolValue() && right.isByteValue()) return new ByteVal(left.byteValue() >> right.byteValue());
+		else if(left.isBoolValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() >> right.intValue());
+        else if(left.isBoolValue() && right.isIntValue()) return new IntVal(left.intValue() >> right.intValue());
+		else if(left.isBoolValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
+		else if(left.isBoolValue() && right.isShortValue()) return new ShortVal(left.shortValue() >> right.shortValue());
+		else if(left.isBoolValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+		else if(left.isBoolValue() && right.isLongValue()) return new LongVal(left.longValue() >> right.longValue());
+		else if(left.isBoolValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() >> right.byteValue());
+		else if(left.isBoolValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new UnsignedByteVal(left.byteValue() >> right.byteValue());
@@ -3739,15 +3739,15 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() >> right.longValue());
 		}
 
-		if(left.isUnsignedByteValue() && right.isBool()) return new UnsignedByteVal(left.byteValue() >> right.byteValue());
+		if(left.isUnsignedByteValue() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() >> right.byteValue());
         else if(left.isUnsignedByteValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() >> right.byteValue()); 
-        else if(left.isUnsignedByteValue() && right.isByte()) return new UnsignedByteVal(left.byteValue() >> right.byteValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() >> right.intValue());
-        else if(left.isUnsignedByteValue() && right.isInt()) return new UnsignedIntVal(left.intValue() >> right.intValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isShort()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
-		else if(left.isUnsignedByteValue() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-		else if(left.isUnsignedByteValue() && right.isLong()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+        else if(left.isUnsignedByteValue() && right.isByteValue()) return new UnsignedByteVal(left.byteValue() >> right.byteValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() >> right.intValue());
+        else if(left.isUnsignedByteValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() >> right.intValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
+		else if(left.isUnsignedByteValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+		else if(left.isUnsignedByteValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
 		else if(left.isUnsignedByteValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() >> right.byteValue());
 		else if(left.isUnsignedByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -3758,17 +3758,17 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() >> right.longValue());
 		}
 
-		if(left.isByte() && right.isBool()) return new ByteVal(left.byteValue() >> right.byteValue());
-        else if(left.isByte() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() >> right.byteValue()); 
-        else if(left.isByte() && right.isByte()) return new ByteVal(left.byteValue() >> right.byteValue());
-		else if(left.isByte() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() >> right.intValue());
-        else if(left.isByte() && right.isInt()) return new IntVal(left.intValue() >> right.intValue());
-		else if(left.isByte() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
-		else if(left.isByte() && right.isShort()) return new ShortVal(left.shortValue() >> right.shortValue());
-		else if(left.isByte() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-		else if(left.isByte() && right.isLong()) return new LongVal(left.longValue() >> right.longValue());
-		else if(left.isByte() && right.isRegister()) return new UnsignedByteVal(left.byteValue() >> right.byteValue());
-		else if(left.isByte() && right.isVector()) {
+		if(left.isByteValue() && right.isBoolValue()) return new ByteVal(left.byteValue() >> right.byteValue());
+        else if(left.isByteValue() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() >> right.byteValue()); 
+        else if(left.isByteValue() && right.isByteValue()) return new ByteVal(left.byteValue() >> right.byteValue());
+		else if(left.isByteValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() >> right.intValue());
+        else if(left.isByteValue() && right.isIntValue()) return new IntVal(left.intValue() >> right.intValue());
+		else if(left.isByteValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
+		else if(left.isByteValue() && right.isShortValue()) return new ShortVal(left.shortValue() >> right.shortValue());
+		else if(left.isByteValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+		else if(left.isByteValue() && right.isLongValue()) return new LongVal(left.longValue() >> right.longValue());
+		else if(left.isByteValue() && right.isRegister()) return new UnsignedByteVal(left.byteValue() >> right.byteValue());
+		else if(left.isByteValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 8) return new UnsignedByteVal(left.byteValue() >> right.byteValue());
@@ -3777,17 +3777,17 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() >> right.longValue());
 		}
 
-		else if(left.isUnsignedShort() && right.isBool()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
-        else if(left.isUnsignedShort() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() >> right.shortValue()); 
-        else if(left.isUnsignedShort() && right.isByte()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() >> right.intValue());
-        else if(left.isUnsignedShort() && right.isInt()) return new UnsignedIntVal(left.intValue() >> right.intValue());
-		else if(left.isUnsignedShort() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
-		else if(left.isUnsignedShort() && right.isShort()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
-		else if(left.isUnsignedShort() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-		else if(left.isUnsignedShort() && right.isLong()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-		else if(left.isUnsignedShort() && right.isRegister()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
-		else if(left.isUnsignedShort() && right.isVector()) {
+		else if(left.isUnsignedShortValue() && right.isBoolValue()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
+        else if(left.isUnsignedShortValue() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() >> right.shortValue()); 
+        else if(left.isUnsignedShortValue() && right.isByteValue()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() >> right.intValue());
+        else if(left.isUnsignedShortValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() >> right.intValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+		else if(left.isUnsignedShortValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+		else if(left.isUnsignedShortValue() && right.isRegister()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
+		else if(left.isUnsignedShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
@@ -3795,17 +3795,17 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() >> right.longValue());
 		}
 
-		else if(left.isShort() && right.isBool()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
-        else if(left.isShort() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() >> right.shortValue()); 
-        else if(left.isShort() && right.isByte()) return new ShortVal(left.shortValue() >> right.shortValue());
-		else if(left.isShort() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() >> right.intValue());
-        else if(left.isShort() && right.isInt()) return new IntVal(left.intValue() >> right.intValue());
-		else if(left.isShort() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
-		else if(left.isShort() && right.isShort()) return new ShortVal(left.shortValue() >> right.shortValue());
-		else if(left.isShort() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-		else if(left.isShort() && right.isLong()) return new LongVal(left.longValue() >> right.longValue());
-		else if(left.isShort() && right.isRegister()) return new UnsignedShortVal(left.byteValue() >> right.byteValue());
-		else if(left.isShort() && right.isVector()) {
+		else if(left.isShortValue() && right.isBoolValue()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
+        else if(left.isShortValue() && right.isUnsignedByteValue()) return new UnsignedShortVal(left.shortValue() >> right.shortValue()); 
+        else if(left.isShortValue() && right.isByteValue()) return new ShortVal(left.shortValue() >> right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() >> right.intValue());
+        else if(left.isShortValue() && right.isIntValue()) return new IntVal(left.intValue() >> right.intValue());
+		else if(left.isShortValue() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
+		else if(left.isShortValue() && right.isShortValue()) return new ShortVal(left.shortValue() >> right.shortValue());
+		else if(left.isShortValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+		else if(left.isShortValue() && right.isLongValue()) return new LongVal(left.longValue() >> right.longValue());
+		else if(left.isShortValue() && right.isRegister()) return new UnsignedShortVal(left.byteValue() >> right.byteValue());
+		else if(left.isShortValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 16) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
@@ -3813,73 +3813,73 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() >> right.longValue());
 		}
 
-		else if(left.isUnsignedInt() && right.isBool()) return new UnsignedIntVal(left.intValue() >> right.intValue());
-        else if(left.isUnsignedInt() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() >> right.intValue()); 
-        else if(left.isUnsignedInt() && right.isByte()) return new UnsignedIntVal(left.shortValue() >> right.shortValue());
-		else if(left.isUnsignedInt() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() >> right.intValue());
-        else if(left.isUnsignedInt() && right.isInt()) return new UnsignedIntVal(left.intValue() >> right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedShort()) return new UnsignedIntVal(left.intValue() >> right.intValue());
-		else if(left.isUnsignedInt() && right.isShort()) return new UnsignedIntVal(left.intValue() >> right.intValue());
-		else if(left.isUnsignedInt() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-		else if(left.isUnsignedInt() && right.isLong()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-		else if(left.isUnsignedInt() && right.isRegister()) return new UnsignedIntVal(left.intValue() >> right.intValue());
-		else if(left.isUnsignedInt() && right.isVector()) {
+		else if(left.isUnsignedIntValue() && right.isBoolValue()) return new UnsignedIntVal(left.intValue() >> right.intValue());
+        else if(left.isUnsignedIntValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() >> right.intValue()); 
+        else if(left.isUnsignedIntValue() && right.isByteValue()) return new UnsignedIntVal(left.shortValue() >> right.shortValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() >> right.intValue());
+        else if(left.isUnsignedIntValue() && right.isIntValue()) return new UnsignedIntVal(left.intValue() >> right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.intValue() >> right.intValue());
+		else if(left.isUnsignedIntValue() && right.isShortValue()) return new UnsignedIntVal(left.intValue() >> right.intValue());
+		else if(left.isUnsignedIntValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+		else if(left.isUnsignedIntValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+		else if(left.isUnsignedIntValue() && right.isRegister()) return new UnsignedIntVal(left.intValue() >> right.intValue());
+		else if(left.isUnsignedIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new UnsignedIntVal(left.intValue() >> right.intValue());
 			else return new UnsignedLongVal(left.longValue() >> right.longValue());
 		}
 
-		else if(left.isInt() && right.isBool()) return new UnsignedIntVal(left.intValue() >> right.intValue());
-        else if(left.isInt() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() >> right.intValue()); 
-        else if(left.isInt() && right.isByte()) return new IntVal(left.intValue() >> right.intValue());
-		else if(left.isInt() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() >> right.intValue());
-        else if(left.isInt() && right.isInt()) return new IntVal(left.intValue() >> right.intValue());
-		else if(left.isInt() && right.isUnsignedShort()) return new UnsignedIntVal(left.intValue() >> right.intValue());
-		else if(left.isInt() && right.isShort()) return new IntVal(left.intValue() >> right.intValue());
-		else if(left.isInt() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-		else if(left.isInt() && right.isLong()) return new LongVal(left.longValue() >> right.longValue());
-		else if(left.isInt() && right.isRegister()) return new UnsignedIntVal(left.intValue() >> right.intValue());
-		else if(left.isInt() && right.isVector()) {
+		else if(left.isIntValue() && right.isBoolValue()) return new UnsignedIntVal(left.intValue() >> right.intValue());
+        else if(left.isIntValue() && right.isUnsignedByteValue()) return new UnsignedIntVal(left.intValue() >> right.intValue()); 
+        else if(left.isIntValue() && right.isByteValue()) return new IntVal(left.intValue() >> right.intValue());
+		else if(left.isIntValue() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() >> right.intValue());
+        else if(left.isIntValue() && right.isIntValue()) return new IntVal(left.intValue() >> right.intValue());
+		else if(left.isIntValue() && right.isUnsignedShortValue()) return new UnsignedIntVal(left.intValue() >> right.intValue());
+		else if(left.isIntValue() && right.isShortValue()) return new IntVal(left.intValue() >> right.intValue());
+		else if(left.isIntValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+		else if(left.isIntValue() && right.isLongValue()) return new LongVal(left.longValue() >> right.longValue());
+		else if(left.isIntValue() && right.isRegister()) return new UnsignedIntVal(left.intValue() >> right.intValue());
+		else if(left.isIntValue() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
 			if(size <= 32) return new UnsignedIntVal(left.intValue() >> right.intValue());
 			else return new UnsignedLongVal(left.longValue() >> right.longValue());
 		}
 
-		else if(left.isUnsignedLong() && right.isBool()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-        else if(left.isUnsignedLong() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() >> right.longValue()); 
-        else if(left.isUnsignedLong() && right.isByte()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedInt()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-        else if(left.isUnsignedLong() && right.isInt()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedShort()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-		else if(left.isUnsignedLong() && right.isShort()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-		else if(left.isUnsignedLong() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-		else if(left.isUnsignedLong() && right.isLong()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-		else if(left.isUnsignedLong() && right.isRegister()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-		else if(left.isUnsignedLong() && right.isVector()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+		else if(left.isUnsignedLongValue() && right.isBoolValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+        else if(left.isUnsignedLongValue() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() >> right.longValue()); 
+        else if(left.isUnsignedLongValue() && right.isByteValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedIntValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+        else if(left.isUnsignedLongValue() && right.isIntValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedShortValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+		else if(left.isUnsignedLongValue() && right.isShortValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+		else if(left.isUnsignedLongValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+		else if(left.isUnsignedLongValue() && right.isLongValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+		else if(left.isUnsignedLongValue() && right.isRegister()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+		else if(left.isUnsignedLongValue() && right.isVector()) return new UnsignedLongVal(left.longValue() >> right.longValue());
 
-		else if(left.isLong() && right.isBool()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-        else if(left.isLong() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() >> right.longValue()); 
-        else if(left.isLong() && right.isByte()) return new LongVal(left.longValue() >> right.longValue());
-		else if(left.isLong() && right.isUnsignedInt()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-        else if(left.isLong() && right.isInt()) return new LongVal(left.longValue() >> right.longValue());
-		else if(left.isLong() && right.isUnsignedShort()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-		else if(left.isLong() && right.isShort()) return new LongVal(left.longValue() >> right.longValue());
-		else if(left.isLong() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-		else if(left.isLong() && right.isLong()) return new LongVal(left.longValue() >> right.longValue());
-		else if(left.isLong() && right.isRegister()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-		else if(left.isLong() && right.isVector()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+		else if(left.isLongValue() && right.isBoolValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+        else if(left.isLongValue() && right.isUnsignedByteValue()) return new UnsignedLongVal(left.longValue() >> right.longValue()); 
+        else if(left.isLongValue() && right.isByteValue()) return new LongVal(left.longValue() >> right.longValue());
+		else if(left.isLongValue() && right.isUnsignedIntValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+        else if(left.isLongValue() && right.isIntValue()) return new LongVal(left.longValue() >> right.longValue());
+		else if(left.isLongValue() && right.isUnsignedShortValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+		else if(left.isLongValue() && right.isShortValue()) return new LongVal(left.longValue() >> right.longValue());
+		else if(left.isLongValue() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+		else if(left.isLongValue() && right.isLongValue()) return new LongVal(left.longValue() >> right.longValue());
+		else if(left.isLongValue() && right.isRegister()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+		else if(left.isLongValue() && right.isVector()) return new UnsignedLongVal(left.longValue() >> right.longValue());
 
-		else if(left.isRegister() && right.isBool()) return new UnsignedByteVal(left.byteValue() >> right.byteValue());
+		else if(left.isRegister() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() >> right.byteValue());
         else if(left.isRegister() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() >> right.byteValue()); 
-        else if(left.isRegister() && right.isByte()) return new UnsignedByteVal(left.byteValue() >> right.byteValue());
-		else if(left.isRegister() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() >> right.intValue());
-        else if(left.isRegister() && right.isInt()) return new UnsignedIntVal(left.intValue() >> right.intValue());
-		else if(left.isRegister() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
-		else if(left.isRegister() && right.isShort()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
-		else if(left.isRegister() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-		else if(left.isRegister() && right.isLong()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+        else if(left.isRegister() && right.isByteValue()) return new UnsignedByteVal(left.byteValue() >> right.byteValue());
+		else if(left.isRegister() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() >> right.intValue());
+        else if(left.isRegister() && right.isIntValue()) return new UnsignedIntVal(left.intValue() >> right.intValue());
+		else if(left.isRegister() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
+		else if(left.isRegister() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
+		else if(left.isRegister() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+		else if(left.isRegister() && right.isLongValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
 		else if(left.isRegister() && right.isRegister()) return new UnsignedByteVal(left.byteValue() >> right.byteValue());
 		else if(left.isRegister() && right.isVector()) {
 			VectorVal vec = (VectorVal)right;
@@ -3890,15 +3890,15 @@ public class Utils {
 			else return new UnsignedLongVal(left.longValue() >> right.longValue());
 		}
 
-		else if(left.isVector() && right.isBool()) return new UnsignedByteVal(left.byteValue() >> right.byteValue());
+		else if(left.isVector() && right.isBoolValue()) return new UnsignedByteVal(left.byteValue() >> right.byteValue());
         else if(left.isVector() && right.isUnsignedByteValue()) return new UnsignedByteVal(left.byteValue() >> right.byteValue()); 
-        else if(left.isVector() && right.isByte()) return new UnsignedByteVal(left.byteValue() >> right.byteValue());
-		else if(left.isVector() && right.isUnsignedInt()) return new UnsignedIntVal(left.intValue() >> right.intValue());
-        else if(left.isVector() && right.isInt()) return new UnsignedIntVal(left.intValue() >> right.intValue());
-		else if(left.isVector() && right.isUnsignedShort()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
-		else if(left.isVector() && right.isShort()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
-		else if(left.isVector() && right.isUnsignedLong()) return new UnsignedLongVal(left.longValue() >> right.longValue());
-		else if(left.isVector() && right.isLong()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+        else if(left.isVector() && right.isByteValue()) return new UnsignedByteVal(left.byteValue() >> right.byteValue());
+		else if(left.isVector() && right.isUnsignedIntValue()) return new UnsignedIntVal(left.intValue() >> right.intValue());
+        else if(left.isVector() && right.isIntValue()) return new UnsignedIntVal(left.intValue() >> right.intValue());
+		else if(left.isVector() && right.isUnsignedShortValue()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
+		else if(left.isVector() && right.isShortValue()) return new UnsignedShortVal(left.shortValue() >> right.shortValue());
+		else if(left.isVector() && right.isUnsignedLongValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
+		else if(left.isVector() && right.isLongValue()) return new UnsignedLongVal(left.longValue() >> right.longValue());
 		else if(left.isVector() && right.isRegister()) return new UnsignedByteVal(left.byteValue() >> right.byteValue());
 		else if(left.isVector() && right.isVector()) return new UnsignedLongVal(left.longValue() >> right.longValue());
 		else {
@@ -3908,22 +3908,22 @@ public class Utils {
 
     }
 
-    public static Value egation Value right) throws Exception{
-        if (right.isReal()) return new RealVal(-right.realValue());
+    public static Value negation(Value right) throws Exception{
+        if (right.isRealValue()) return new RealVal(-right.realValue());
         else if(right.isUnsignedByteValue()) return new ShortVal(-right.byteValue());
-		else if(right.isUnsignedShort()) return new UnsignedShortVal(-right.shortValue());
-		else if(right.isUnsignedInt()) return new LongVal(-right.intValue());
-		else if(right.isUnsignedLong()) return new LongVal(-right.longValue());
-		else if(right.isByte()) return new ShortVal(-right.byteValue());
-		else if(right.isShort()) return new IntVal(-right.shortValue());
-		else if(right.isInt()) return new LongVal(-right.intValue());
-		else if(right.isLong()) return new LongVal(-right.longValue());
+		else if(right.isUnsignedShortValue()) return new UnsignedShortVal(-right.shortValue());
+		else if(right.isUnsignedIntValue()) return new LongVal(-right.intValue());
+		else if(right.isUnsignedLongValue()) return new LongVal(-right.longValue());
+		else if(right.isByteValue()) return new ShortVal(-right.byteValue());
+		else if(right.isShortValue()) return new IntVal(-right.shortValue());
+		else if(right.isIntValue()) return new LongVal(-right.intValue());
+		else if(right.isLongValue()) return new LongVal(-right.longValue());
 		else if(right.isVector()){
 			VectorVal vec = (VectorVal)right;
 			int size = vec.getSize();
-			if(size <= 8) return new ShortVal(-vec.byt.Value .));
-			else if(size <= 16) return new IntVal(-vec.shor.Value .));
-			else if(size <= 32) return new LongVal(-vec.in.Value .));
+			if(size <= 8) return new ShortVal(-vec.byteValue());
+			else if(size <= 16) return new IntVal(-vec.shortValue());
+			else if(size <= 32) return new LongVal(-vec.intValue());
 			else return new LongVal(-vec.longValue());
 		} else {
 			errorAndExit("Error invalid paramater type for negation operation of type " + right.getClass().getSimpleName());
@@ -3931,7 +3931,7 @@ public class Utils {
 		}
     }
 
-	public static Value otGateCircuit Value right) throws Exception{
+	public static Value notGateCircuit(Value right) throws Exception{
 		if(right.isWire()){
 			WireVal Output = new WireVal();
 			WireVal rightW = (WireVal)right;
@@ -3968,21 +3968,21 @@ public class Utils {
 		}
 	}
 
-    public static Value ogicalNegation Value right){
+    public static Value logicalNegation(Value right){
         return new BoolVal(!right.boolValue());
     }
 
-    public static Value itwiseNegation Value right) throws Exception{
+    public static Value bitwiseNegation(Value right) throws Exception{
 		if(right.isVector()) return bitwiseNegation((VectorVal)right);
 		else if(right.isRegister()) return bitwiseNegation((RegVal)right);
 		else if(right.isUnsignedByteValue()) return new UnsignedByteVal(~right.byteValue());
-		else if(right.isUnsignedShort()) return new UnsignedShortVal(~right.shortValue());
-		else if(right.isUnsignedInt()) return new UnsignedIntVal(~right.intValue());
-		else if(right.isUnsignedLong()) return new UnsignedLongVal(~right.longValue());
-		else if(right.isByte()) return new ByteVal(~right.byteValue());
-		else if(right.isShort()) return new ShortVal(~right.shortValue());
-		else if(right.isInt()) return new IntVal(~right.intValue());
-		else if(right.isLong()) return new LongVal(~right.longValue());
+		else if(right.isUnsignedShortValue()) return new UnsignedShortVal(~right.shortValue());
+		else if(right.isUnsignedIntValue()) return new UnsignedIntVal(~right.intValue());
+		else if(right.isUnsignedLongValue()) return new UnsignedLongVal(~right.longValue());
+		else if(right.isByteValue()) return new ByteVal(~right.byteValue());
+		else if(right.isShortValue()) return new ShortVal(~right.shortValue());
+		else if(right.isIntValue()) return new IntVal(~right.intValue());
+		else if(right.isLongValue()) return new LongVal(~right.longValue());
 		else {
 			errorAndExit("Error Unknown type for bitwise negation " + right.getClass().getSimpleName());
 			return null;
@@ -4014,7 +4014,7 @@ public class Utils {
 	 * @throws Exception
 	 */
 
-	public static boolean caseBoolean.Value .target,.Value .Val) throws Exception{
+	public static boolean caseBoolean(Value target, Value Val) throws Exception{
 		if (Val instanceof Pattern) {
 			Pattern pat = (Pattern)Val;
 			return pat.match(target);
@@ -4043,13 +4043,13 @@ public class Utils {
 
     /**
 	 * I created two types of assignments for verilog and the difference breaks down to how
-	 * registers are assigned to one another In a shallow assignment the.Value .is coppied
-	 * over from one register to another a register can hold a True or a False.Value .
+	 * registers are assigned to one another In a shallow assignment the value is coppied
+	 * over from one register to another a register can hold a True or a False value
 	 * representing whether the output from that register is high or low So the assignment
-	 * works by assigning the.Value .from one register to the.Value .of the current register.
+	 * works by assigning the value from one register to the value of the current register.
 	 * This is different then actually changing the literal register object in a deep
 	 * assignment. After a shallow assignent if a signal change occours in the register that
-	 * was assigned it will not affect the register that the.Value .was assigned to. In other
+	 * was assigned it will not affect the register that the value was assigned to. In other
 	 * words it makes a copy.
 	 */
 
@@ -4117,13 +4117,13 @@ public class Utils {
 
 	/**
 	 * I created two types of assignments for verilog and the difference breaks down to how
-	 * registers are assigned to one another In a shallow assignment the.Value .is coppied
-	 * over from one register to another a register can hold a True or a False.Value .
+	 * registers are assigned to one another In a shallow assignment the value is coppied
+	 * over from one register to another a register can hold a True or a False value
 	 * representing whether the output from that register is high or low So the assignment
-	 * works by assigning the.Value .from one register to the.Value .of the current register.
+	 * works by assigning the value from one register to the value of the current register.
 	 * This is different then actually changing the literal register object in a deep
 	 * assignment. After a shallow assignent if a signal change occours in the register that
-	 * was assigned it will not affect the register that the.Value .was assigned to. In other
+	 * was assigned it will not affect the register that the value was assigned to. In other
 	 * words it makes a copy.
 	 */
 	public static void shallowAssign(VectorVal vec1, int index, VectorVal vec2){
@@ -4229,13 +4229,13 @@ public class Utils {
 
 	/**
 	 * I created two types of assignments for verilog and the difference breaks down to how
-	 * registers are assigned to one another In a shallow assignment the.Value .is coppied
-	 * over from one register to another a register can hold a True or a False.Value .
+	 * registers are assigned to one another In a shallow assignment the value is coppied
+	 * over from one register to another a register can hold a True or a False value
 	 * representing whether the output from that register is high or low So the assignment
-	 * works by assigning the.Value .from one register to the.Value .of the current register.
+	 * works by assigning the value from one register to the value of the current register.
 	 * This is different then actually changing the literal register object in a deep
 	 * assignment. After a shallow assignent if a signal change occours in the register that
-	 * was assigned it will not affect the register that the.Value .was assigned to. In other
+	 * was assigned it will not affect the register that the value was assigned to. In other
 	 * words it makes a copy.
 	 */
 	public static void shallowAssign(VectorVal vec1, int index1, int index2, VectorVal vec2){
@@ -4304,7 +4304,7 @@ public class Utils {
 	}
 	
 	/**
-	 * In a deep assignment the.Value .is assigned by reference. So the assignment works by
+	 * In a deep assignment the value is assigned by reference. So the assignment works by
 	 * literally replacing a register that is in their with another register. This is useful
 	 * for a continuous assignment in verilog. As opposed to observing the expression on the
 	 * right hand side with a loop and copying changes to the left hand side I am actually
@@ -4315,17 +4315,17 @@ public class Utils {
 	 * @throws Exception
 	 */
 
-	public static void deepAssign(VectorVal vec1, int index,.Value .vec2) throws Exception{
+	public static void deepAssign(VectorVal vec1, int index, Value vec2) throws Exception{
 		CircuitElem assignTo = vec1.getValue(index);
 		Utils.deepAssign(assignTo, vec2);
 	}
 
-	public static void deepAssign(ArrayVal.Value . arr1, int index,.Value .vec2) throws Exception{
-	.Value .arrVal = arr1.ElemAtIndex(index);
+	public static void deepAssign(ArrayVal<Value> arr1, int index, Value vec2) throws Exception{
+		Value arrVal = arr1.ElemAtIndex(index);
 		Utils.deepAssign((CircuitElem)arrVal, vec2);
 	}
 
-	public static void deepAssign(VectorVal vec1, int index1, int index2,.Value .elem2) throws Exception{
+	public static void deepAssign(VectorVal vec1, int index1, int index2, Value elem2) throws Exception{
 		int start = vec1.getStart();
 		int end = vec1.getEnd();
 		Utils.deepAssign(vec1, start, elem2);
@@ -4350,12 +4350,12 @@ public class Utils {
 	}
 
 	public static void deepAssign(VectorVal vec1, int index1, CircuitElem elem2){ 
-		WireVal vec.Value .= new WireVal();
-		vec.Value .addOutput(vec1.getValue(index1));
-		vec.Value .assignInput(elem2);
+		WireVal vec1Value = new WireVal();
+		vec1Value.addOutput(vec1.getValue(index1));
+		vec1Value.assignInput(elem2);
 	}
 
-	public static void deepAssign(CircuitElem elemTo,.Value .vec2) throws Exception{
+	public static void deepAssign(CircuitElem elemTo, Value vec2) throws Exception{
 		if(vec2.isWire()){
 			WireVal connector = new WireVal();
 			WireVal vec2Wire = (WireVal)vec2;
@@ -4634,21 +4634,21 @@ public class Utils {
 		return Number.contains("x") || Number.contains("X") || Number.contains("z") || Number.contains("Z");
 	}
 
-	public static Object getRa.Value .Value val){
-		if(val.isBool()) return val.in.Value .);
-		else if(val.isReal()) return val.rea.Value .);
-		else if(val.isString()) return val.toString();
-		else if(val.isUnsignedByteValue()) return val.shor.Value .);
-		else if(val.isByte()) return val.byt.Value .);
-		else if(val.isUnsignedShort()) return val.in.Value .);
-		else if(val.isShort()) return val.shor.Value .);
-		else if(val.isUnsignedInt()) return val.longValue();
-		else if(val.isInt()) return val.in.Value .);
+	public static Object getRawValue(Value val){
+		if(val.isBoolValue()) return val.intValue();
+		else if(val.isRealValue()) return val.realValue();
+		else if(val.isStringValue()) return val.toString();
+		else if(val.isUnsignedByteValue()) return val.shortValue();
+		else if(val.isByteValue()) return val.byteValue();
+		else if(val.isUnsignedShortValue()) return val.intValue();
+		else if(val.isShortValue()) return val.shortValue();
+		else if(val.isUnsignedIntValue()) return val.longValue();
+		else if(val.isIntValue()) return val.intValue();
 		else return val.longValue();
 	}
 
-	public static String formatString(StrVal valString, List.Value ..Value .
-		int.Value .ndex = 0;
+	public static String formatString(StrVal valString, List<Value> values){
+		int valueIndex = 0;
 		int valStrIndex = 0;
 		int valStrSize = valString.length();
 
@@ -4659,15 +4659,15 @@ public class Utils {
 				if(valStrIndex + 1 < valStrSize){
 					char nextChar = valString.charAt(valStrIndex + 1);
 					if(nextChar == 'd'){
-					.Value .nextVal =.Value .et.Value .ndex);
-						result.append(nextVal.in.Value .));
+						Value nextVal = values.get(valueIndex);
+						result.append(nextVal.intValue());
 						valStrIndex += 2;
-					.Value .ndex++;
+						valueIndex++;
 					} else if(nextChar == 'f'){
-					.Value .nextVal =.Value .et.Value .ndex);
-						result.append(nextVal.rea.Value .));
+						Value nextVal = values.get(valueIndex);
+						result.append(nextVal.realValue());
 						valStrIndex +=2;
-					.Value .ndex++;
+						valueIndex++;
 					} else {
 						result.append(currentChar);
 						valStrIndex++;
@@ -4685,7 +4685,7 @@ public class Utils {
 		return result.toString();
 	}
 
-	public static Value onvertToRa.Value .Object obj){
+	public static Value convertToRawValue(Object obj){
 		if(obj instanceof Integer) return new IntVal((int)obj);
 		else if(obj instanceof Boolean) return new BoolVal((boolean)obj);
 		else if(obj instanceof Long) return new LongVal((long)obj);
@@ -4694,40 +4694,40 @@ public class Utils {
 		else return new StrVal((String)obj);
 	}
 
-	public static Value etOptimalForm(VectorVal vec){
+	public static Value getOptimalForm(VectorVal vec){
 		if(vec.getSize() == 1) return new RegVal(vec.getValue(vec.getStart()).getStateSignal());
-		else if(vec.getSize() == 8) return new UnsignedByteVal(vec.byt.Value .));
-		else if(vec.getSize() == 16) return new UnsignedShortVal(vec.shor.Value .));
-		else if(vec.getSize() == 32) return new UnsignedIntVal(vec.in.Value .));
+		else if(vec.getSize() == 8) return new UnsignedByteVal(vec.byteValue());
+		else if(vec.getSize() == 16) return new UnsignedShortVal(vec.shortValue());
+		else if(vec.getSize() == 32) return new UnsignedIntVal(vec.intValue());
 		else if(vec.getSize() == 64) return new UnsignedLongVal(vec.longValue());
 		else return vec;
 	}
 
-	public static Value etOptimalUnsignedForm(long.Value .{
-		if.Value .<= 255) return new UnsignedByteVal((byte.Value .;
-		else if.Value .<= 65535) return new UnsignedShortVal((short.Value .;
-		else if.Value .<= 16777215) return new UnsignedIntVal((int.Value .;
-		else return new UnsignedLongVal.Value .;
+	public static Value getOptimalUnsignedForm(long value){
+		if(value <= 255) return new UnsignedByteVal((byte)value);
+		else if(value <= 65535) return new UnsignedShortVal((short)value);
+		else if(value <= 16777215) return new UnsignedIntVal((int)value);
+		else return new UnsignedLongVal(value);
 	}
 
-	public static void shallowAssignElem(Value leftHandDeref,(Value leftHandIndex,.Value .expVal) throws Exception{
+	public static void shallowAssignElem(Value leftHandDeref, Value leftHandIndex, Value expVal) throws Exception{
 		if(leftHandDeref instanceof ArrayVectorVal){
 			ArrayVectorVal leftHandArray = (ArrayVectorVal)leftHandDeref;
-			VectorVal vec = leftHandArray.ElemAtIndex(leftHandIndex.in.Value .));
+			VectorVal vec = leftHandArray.ElemAtIndex(leftHandIndex.intValue());
 			Utils.shallowAssign(vec, expVal.longValue());
 		} else if(leftHandDeref instanceof ArrayRegVal){
 			ArrayRegVal leftHandArray = (ArrayRegVal)leftHandDeref;
-			RegVal vec = leftHandArray.ElemAtIndex(leftHandIndex.in.Value .));
-			vec.setSignal(expVal.boo.Value .));	
+			RegVal vec = leftHandArray.ElemAtIndex(leftHandIndex.intValue());
+			vec.setSignal(expVal.boolValue());	
 		} else if(leftHandDeref instanceof ArrayIntVal){
 			ArrayIntVal leftHandArray = (ArrayIntVal)leftHandDeref;
-			leftHandArray.SetElemAtIndex(leftHandIndex.in.Value .), new UnsignedIntVal(expVal.in.Value .)));
+			leftHandArray.SetElemAtIndex(leftHandIndex.intValue(), new UnsignedIntVal(expVal.intValue()));
 		} else if(leftHandDeref instanceof VectorVal){
 			VectorVal leftHandVector = (VectorVal)leftHandDeref;
-			CircuitElem elem = leftHandVector.getValue(leftHandIndex.in.Value .));
+			CircuitElem elem = leftHandVector.getValue(leftHandIndex.intValue());
 			if(elem instanceof RegVal){
 				RegVal elemReg = (RegVal)elem;
-				elemReg.setSignal(expVal.boo.Value .));
+				elemReg.setSignal(expVal.boolValue());
 			} else {
 				Utils.errorAndExit("Error: Invalid Type for soft assignment " + elem.getClass().getName());
 			}
@@ -4736,44 +4736,44 @@ public class Utils {
 		}
 	 }
 
-	public static void shallowAssignSlice(Value leftHandDeref,(Value leftHandStartIndex,(Value leftHandEndIndex,.Value .expVal) throws Exception{
+	public static void shallowAssignSlice(Value leftHandDeref, Value leftHandStartIndex, Value leftHandEndIndex, Value expVal) throws Exception{
 		if (leftHandDeref instanceof VectorVal) {
 			VectorVal leftHandVector = (VectorVal)leftHandDeref;
 
-			Utils.shallowAssign(leftHandVector, leftHandStartIndex.in.Value .), leftHandEndIndex.in.Value .), expVal.longValue());
+			Utils.shallowAssign(leftHandVector, leftHandStartIndex.intValue(), leftHandEndIndex.intValue(), expVal.longValue());
 		} else {
 			Utils.errorAndExit("Invalid Type for the left hand side of the slice assingment " + leftHandDeref.getClass().getName());
 		}
 	}
 	
-	public static void shallowAssignIdent(Pointer.Value . leftHandPtr,.Value .expVal) {
-	(Value leftHandDeref = leftHandPtr.deRefrence();
+	public static void shallowAssignIdent(Pointer<Value> leftHandPtr, Value expVal) {
+		Value leftHandDeref = leftHandPtr.deRefrence();
 		if (leftHandDeref instanceof VectorVal) {
 			// If it is a vector then we need to use the OpUtil.shallowAssign on the Vector
 			VectorVal Vec = (VectorVal)leftHandDeref;
 			Utils.shallowAssign(Vec, expVal.longValue());
 		} else if (leftHandDeref instanceof RegVal) {
 			RegVal reg = (RegVal)leftHandDeref;
-			Utils.shallowAssign(reg, expVal.boo.Value .));
+			Utils.shallowAssign(reg, expVal.boolValue());
 		} else {
-			// If it is not a vector then just replace the.Value .with whatever is on the Right Hand
+			// If it is not a vector then just replace the value with whatever is on the Right Hand
 			// Side
 			leftHandPtr.assign(expVal);
 		}
 	}
 
-	public static void fClose.Value .fileDescriptor, Environment environment) throws Exception{
-		FormattedScanner Scanner = environment.getFileReader(fileDescriptor.in.Value .));
+	public static void fClose(Value fileDescriptor, Environment environment) throws Exception{
+		FormattedScanner Scanner = environment.getFileReader(fileDescriptor.intValue());
 
 		try {
 			Scanner.close();
-			environment.clearFileReader(fileDescriptor.in.Value .));
+			environment.clearFileReader(fileDescriptor.intValue());
 		} catch (Exception exp) {
 			Utils.errorAndExit(exp.toString());
 		}
 	}
 
-	public static int addVecSize.Value .res, int size){ // TODO Auto-generated method stub
+	public static int addVecSize(Value res, int size){ // TODO Auto-generated method stub
 		if (res.isVector()) {
 			return size + ((VectorVal)res).getSize();
 		} else {
@@ -4781,7 +4781,7 @@ public class Utils {
 		} 
 	}
 
-	public static int assignVectorInConcatenation(VectorVal newVec,.Value .valExp, int total){ // TODO Auto-generated method stub
+	public static int assignVectorInConcatenation(VectorVal newVec, Value valExp, int total){ // TODO Auto-generated method stub
 		if (valExp.isVector()) {
 			VectorVal vec = (VectorVal)valExp;
 
@@ -4807,28 +4807,28 @@ public class Utils {
 		return total;
 	}
 
-	public static Value etShallowElemFromIndex.Value .expr,.Value .dataObject, String ident) throws Exception{ // TODO Auto-generated method stub
+	public static Value getShallowElemFromIndex(Value expr, Value dataObject, String ident) throws Exception{ // TODO Auto-generated method stub
 		if (dataObject instanceof ArrayVectorVal) {
 			ArrayVectorVal arr = (ArrayVectorVal)dataObject;
-			VectorVal vec = arr.ElemAtIndex(expr.in.Value .));
+			VectorVal vec = arr.ElemAtIndex(expr.intValue());
 			return Utils.getOptimalForm(vec);
 		} else if (dataObject instanceof ArrayRegVal) {
 			ArrayRegVal arr = (ArrayRegVal)dataObject;
-			return arr.ElemAtIndex(expr.in.Value .));
+			return arr.ElemAtIndex(expr.intValue());
 		} else if (dataObject instanceof ArrayIntVal) {
 			ArrayIntVal arr = (ArrayIntVal)dataObject;
-			return arr.ElemAtIndex(expr.in.Value .));
+			return arr.ElemAtIndex(expr.intValue());
 		} else if (dataObject instanceof VectorVal) {
-			return ((VectorVal)dataObject).getValue(expr.in.Value .));
+			return ((VectorVal)dataObject).getValue(expr.intValue());
 		} else {
 			Utils.errorAndExit("Unkown array type for " + ident + " [ Type -> " + dataObject.getClass() + " ]");
 			return Utils.errorOccured();
 		}
 	}
 
-	public static Value etShallowSliceFromFromIndices.Value .startIndex,.Value .endIndex,.Value .dataObject, String ident) throws Exception{ // TODO Auto-generated method stub
+	public static Value getShallowSliceFromFromIndices(Value startIndex, Value endIndex, Value dataObject, String ident) throws Exception{ // TODO Auto-generated method stub
 		if(dataObject instanceof VectorVal) {
-			VectorVal toRet = ((VectorVal)dataObject).getShallowSlice(startIndex.in.Value .), endIndex.in.Value .));
+			VectorVal toRet = ((VectorVal)dataObject).getShallowSlice(startIndex.intValue(), endIndex.intValue());
 			return toRet;
 		} else {
 			Utils.errorAndExit("Unkown slice type for " + ident + " [ Type -> " + dataObject.getClass() + " ]");
@@ -4836,81 +4836,23 @@ public class Utils {
 		}
 	}
 
-	public static void assignDeepElem.Value .deRefrence,.Value .in.Value ..Value .expressionResult) throws Exception{
+	public static void assignDeepElem(Value deRefrence, Value intValue, Value expressionResult) throws Exception{
 		if (deRefrence instanceof VectorVal) {
-			Utils.deepAssign((VectorVal)deRefrence, in.Value .in.Value .), expressionResult);
+			Utils.deepAssign((VectorVal)deRefrence, intValue.intValue(), expressionResult);
 		} else if (deRefrence instanceof ArrayVal) {
-			Utils.deepAssign((ArrayVal.Value .)deRefrence, in.Value .in.Value .), expressionResult);
+			Utils.deepAssign((ArrayVal<Value>)deRefrence, intValue.intValue(), expressionResult);
 		} else {
 			Utils.errorAndExit("Error: Could not exit the program because the right side is of an invalid type "
 				+ expressionResult.getClass().getName());
 		}
 	}
 
-	public static void assignDeepSlice.Value .vector,.Value .begin,.Value .end,.Value .vector2) throws Exception{
+	public static void assignDeepSlice(Value vector, Value begin, Value end, Value vector2) throws Exception{
 		if (vector instanceof VectorVal){
 			VectorVal Elems = (VectorVal)vector;
-			Utils.deepAssign(Elems, begin.in.Value .), end.in.Value .), vector2);
+			Utils.deepAssign(Elems, begin.intValue(), end.intValue(), vector2);
 		} else {
 			Utils.errorAndExit("Error: Invalid Type for slice expression");
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

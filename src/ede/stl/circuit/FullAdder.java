@@ -3,7 +3,7 @@ package ede.stl.circuit;
 import ede.stl.circuit.AndGate;
 import ede.stl.circuit.OrGate;
 import ede.stl.circuit.XorGate;
-import ede.stl.Value .WireVal;
+
 
 public class FullAdder {
     public FullAdder(WireVal CarryOut, WireVal Output, WireVal InputA, WireVal InputB, WireVal CarryIn){

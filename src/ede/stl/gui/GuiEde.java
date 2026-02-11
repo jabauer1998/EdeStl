@@ -7,7 +7,7 @@ import ede.stl.gui.GuiJob.TextAreaType;
 import ede.stl.gui.GuiMachine;
 import ede.stl.gui.GuiRam;
 import ede.stl.gui.GuiRegister;
-import ede.stl.Value .alue;
+import ede.stl.Value.Value;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -46,7 +46,7 @@ public class GuiEde extends VBox implements Machine{
         clearStatus.setOnMouseClicked(new EventHandler<Event>(){
             @Override
             public void handle(Event event){
-                Machine.clearStatu.Value .;
+                Machine.clearStatusValues();
             }
         });
 
@@ -87,8 +87,8 @@ public class GuiEde extends VBox implements Machine{
         this.Machine.AddIoSection(TabTitle, PaneTitles);
     }
     
-    public void AddRegister(String title,.Value .start,.Value .end, GuiRegister.Format Format) {
-    	int len = Math.abs(start.in.Value .) - end.in.Value .));
+    public void AddRegister(String title, Value start, Value end, GuiRegister.Format Format) {
+    	int len = Math.abs(start.intValue() - end.intValue());
     	this.Machine.AddGuiRegister(title, len, Format);
     }
 
@@ -96,37 +96,37 @@ public class GuiEde extends VBox implements Machine{
         this.Machine.AddGuiRegister(Title, Length, Format);
     }
 
-    public void setRegiste.Value .String registerName, long registe.Value .{
-        this.Machine.setRegiste.Value .registerName, registe.Value .;
+    public void setRegisterValue(String registerName, long registerValue){
+        this.Machine.setRegisterValue(registerName, registerValue);
     }
 
-    public void setMemor.Value .int memoryAddress, long registe.Value .{
-        this.Machine.setMemor.Value .memoryAddress, registe.Value .;
+    public void setMemoryValue(int memoryAddress, long registerValue){
+        this.Machine.setMemoryValue(memoryAddress, registerValue);
     }
 
-    public void setStatu.Value .String statusName, long registerName){
-        this.Machine.setStatu.Value .statusName, registerName);
+    public void setStatusValue(String statusName, long registerName){
+        this.Machine.setStatusValue(statusName, registerName);
     }
 
-    public long getRegiste.Value .String regName){
-        return this.Machine.getRegiste.Value .regName);
+    public long getRegisterValue(String regName){
+        return this.Machine.getRegisterValue(regName);
     }
 
-    public long getRegiste.Value .int RegNumber){
-        return this.Machine.getRegiste.Value .RegNumber);
+    public long getRegisterValue(int RegNumber){
+        return this.Machine.getRegisterValue(RegNumber);
     }
 
-    public long getMemor.Value .int memoryAddress){
-        return this.Machine.getMemor.Value .memoryAddress);
+    public long getMemoryValue(int memoryAddress){
+        return this.Machine.getMemoryValue(memoryAddress);
     }
 
-    public long getStatu.Value .String statusName){
-        return this.Machine.getStatu.Value .statusName);
+    public long getStatusValue(String statusName){
+        return this.Machine.getStatusValue(statusName);
     }
 
     @Override
-    public void setRegiste.Value .int regNumber, long re.Value .{
-        this.Machine.setRegiste.Value .regNumber, re.Value .;
+    public void setRegisterValue(int regNumber, long regValue){
+        this.Machine.setRegisterValue(regNumber, regValue);
     }
 
     public void writeIoText(String textAreaName, String textToWrite){
@@ -141,61 +141,3 @@ public class GuiEde extends VBox implements Machine{
         return this.Machine.readIoText(textAreaName);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

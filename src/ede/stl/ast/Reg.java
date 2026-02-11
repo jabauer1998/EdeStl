@@ -24,8 +24,8 @@ public class Reg{
                 this.annotationLexeme = null;
             }
     
-            public <ModItemVisitType> ModItemVisitType accept(ModuleVisitor<ModItemVisitType> re.Value .isitor, Object... argv){
-                return re.Value .isitor.visit(this, argv);
+            public <ModItemVisitType> ModItemVisitType accept(ModuleVisitor<ModItemVisitType> regValueVisitor, Object... argv){
+                return regValueVisitor.visit(this, argv);
             }
 
             @Override
@@ -63,8 +63,8 @@ public class Reg{
                 this.annotationLexeme = annotationLexeme;
             }
     
-            public <ModItemVisitType> ModItemVisitType accept(ModuleVisitor<ModItemVisitType> re.Value .isitor, Object... argv){
-                return re.Value .isitor.visit(this, argv);
+            public <ModItemVisitType> ModItemVisitType accept(ModuleVisitor<ModItemVisitType> regValueVisitor, Object... argv){
+                return regValueVisitor.visit(this, argv);
             }
 
             @Override
@@ -103,8 +103,8 @@ public class Reg{
                 this.annotationLexeme = annotationLexeme;
             }
     
-            public <ModItemVisitType> ModItemVisitType accept(ModuleVisitor<ModItemVisitType> re.Value .isitor, Object... argv){
-                return re.Value .isitor.visit(this, argv);
+            public <ModItemVisitType> ModItemVisitType accept(ModuleVisitor<ModItemVisitType> regValueVisitor, Object... argv){
+                return regValueVisitor.visit(this, argv);
             }
 
             @Override
@@ -128,8 +128,8 @@ public class Reg{
                 this.annotationLexeme = annotationLexeme;
             }
     
-            public <ModItemVisitType> ModItemVisitType accept(ModuleVisitor<ModItemVisitType> re.Value .isitor, Object... argv){
-                return re.Value .isitor.visit(this, argv);
+            public <ModItemVisitType> ModItemVisitType accept(ModuleVisitor<ModItemVisitType> regValueVisitor, Object... argv){
+                return regValueVisitor.visit(this, argv);
             }
 
             @Override
@@ -142,61 +142,3 @@ public class Reg{
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

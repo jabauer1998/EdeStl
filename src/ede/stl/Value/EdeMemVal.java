@@ -1,10 +1,10 @@
-package ede.stl.Value ;
+package ede.stl.Value;
 
 import ede.stl.gui.Machine;
 import ede.stl.gui.GuiEde;
-import ede.stl.Value .Value;
+import ede.stl.Value.Value;
 
-public class EdeMemVal implements Value {
+public class EdeMemVal implements Value{
     private Machine gui;
 
     public EdeMemVal(Machine edeInstance){
@@ -12,55 +12,55 @@ public class EdeMemVal implements Value {
     }
 
     public long elemAtIndex(int index){
-        return this.gui.getMemor.Value .index);
+        return this.gui.getMemoryValue(index);
     }
 
-    public void setElemAtIndex(int index, int.Value .{
-        this.gui.setMemor.Value .index,.Value .;
+    public void setElemAtIndex(int index, int value){
+        this.gui.setMemoryValue(index, value);
     }
 
     @Override
-    public double rea.Value .){
+    public double realValue(){
         return -1;    
     }
 
     @Override
-    public long lon.Value .){
+    public long longValue(){
         return -1;
     }
     @Override
-    public int in.Value .){
+    public int intValue(){
         return -1;
     }
     @Override
-    public short shor.Value .){
+    public short shortValue(){
         return -1;
     }
 
     @Override
-    public byte byt.Value .){
+    public byte byteValue(){
         return -1;
     }
     
     @Override
-    public boolean boo.Value .){
+    public boolean boolValue(){
         return false;
     }
 
     @Override
-    public boolean isBool(){
+    public boolean isBoolValue(){
         return false;
     }
     @Override
-    public boolean isShort(){
+    public boolean isShortValue(){
         return false;
     }
     @Override
-    public boolean isUnsignedShort(){
+    public boolean isUnsignedShortValue(){
         return false;
     }
     @Override
-    public boolean isByte(){
+    public boolean isByteValue(){
         return false;
     }
     @Override
@@ -68,27 +68,27 @@ public class EdeMemVal implements Value {
         return false;
     }
     @Override
-    public boolean isInt(){
+    public boolean isIntValue(){
         return false;
     }
     @Override
-    public boolean isUnsignedInt(){
+    public boolean isUnsignedIntValue(){
         return false;
     }
     @Override
-    public boolean isLong(){
+    public boolean isLongValue(){
         return false;
     }
     @Override
-    public boolean isUnsignedLong(){
+    public boolean isUnsignedLongValue(){
         return false;
     }
     @Override
-    public boolean isReal(){
+    public boolean isRealValue(){
         return false;
     }
     @Override
-    public boolean isString(){
+    public boolean isStringValue(){
         return false;
     }
     @Override
@@ -105,67 +105,9 @@ public class EdeMemVal implements Value {
     }
 
     @Override
-    public.Value .getShallowSlice(int startIndex, int endIndex) throws Exception{ // TODO Auto-generated method stub
+    public Value getShallowSlice(int startIndex, int endIndex) throws Exception{ // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getShallowSlice'"); 
     }
 
     
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

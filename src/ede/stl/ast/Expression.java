@@ -1,7 +1,7 @@
 package ede.stl.ast;
 import ede.stl.common.ErrorLog;
 import ede.stl.interpreter.Environment;
-import ede.stl.Value .Value;
+import ede.stl.Value.Value;
 import ede.stl.passes.ExpressionVisitor;
 
 /**
@@ -21,61 +21,3 @@ public interface Expression {
     public <ExprVisitType> ExprVisitType accept(ExpressionVisitor<ExprVisitType> exprVisitor, Object... argv);
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

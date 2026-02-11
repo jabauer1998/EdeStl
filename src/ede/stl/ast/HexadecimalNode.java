@@ -1,5 +1,6 @@
 package ede.stl.ast;
 
+
 import ede.stl.common.Position;
 import ede.stl.ast.AstNode;
 import ede.stl.ast.Expression;
@@ -7,16 +8,16 @@ import ede.stl.passes.ExpressionVisitor;
 import java.lang.String;
 
 /**
- * The Nu.Value .class is used to par.E different numbers in verilog
+ * The NumValue class is used to par.E different numbers in verilog
  * 
  * @author Jacob Bauer
  */
 public class HexadecimalNode extends AstNode implements Expression{
-    public final String lexeme;// The token to use for the number.Value .
+    public final String lexeme;// The token to use for the number value
 
     /**
-     * The Nu.Value .constructor takes in a token representing the number and generates the
-     * cor.Esponding num.Value .for that token
+     * The NumValue constructor takes in a token representing the number and generates the
+     * cor.Esponding num value for that token
      * 
      * @param number the token to convert into a number
      */
@@ -40,61 +41,3 @@ public class HexadecimalNode extends AstNode implements Expression{
         return lexeme;
      }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

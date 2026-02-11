@@ -1,64 +1,64 @@
-package ede.stl.Value ;
+package ede.stl.Value;
 
 import ede.stl.common.Utils;
 
-public class ShortVal implements Value {
+public class ShortVal implements Value{
     
-    private short.Value .
+    private short value;
 
-    public ShortVal(short.Value .{
-        this.Value .=.Value .
+    public ShortVal(short value){
+        this.value = value;
     }
 
-    public ShortVal(int.Value .{
-        this.Value .= (short.Value .
+    public ShortVal(int value){
+        this.value = (short)value;
     }
 
-    public double rea.Value .){
-        return (double.Value .
+    public double realValue(){
+        return (double)value;
     }
 
-    public long lon.Value .){
-        return (long.Value .
+    public long longValue(){
+        return (long)value;
     }
 
-    public int in.Value .){
-        return (int.Value .
+    public int intValue(){
+        return (int)value;
     }
 
-    public short shor.Value .){
-        return (short.Value .
+    public short shortValue(){
+        return (short)value;
     }
 
-    public byte byt.Value .){
-        return (byte.Value .
+    public byte byteValue(){
+        return (byte)value;
     }
 
-    public boolean boo.Value .){
-        return.Value .!= 0;
+    public boolean boolValue(){
+        return value != 0;
     }
 
     public String toString(){
-        return Short.toString.Value .;
+        return Short.toString(value);
     }
 
     @Override
-    public boolean isBool(){ // TODO Auto-generated method stub
+    public boolean isBoolValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
     @Override
-    public boolean isShort(){ // TODO Auto-generated method stub
+    public boolean isShortValue(){ // TODO Auto-generated method stub
         return true; 
     }
 
     @Override
-    public boolean isUnsignedShort(){ // TODO Auto-generated method stub
+    public boolean isUnsignedShortValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
     @Override
-    public boolean isByte(){ // TODO Auto-generated method stub
+    public boolean isByteValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
@@ -68,32 +68,32 @@ public class ShortVal implements Value {
     }
 
     @Override
-    public boolean isInt(){ // TODO Auto-generated method stub
+    public boolean isIntValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
     @Override
-    public boolean isUnsignedInt(){ // TODO Auto-generated method stub
+    public boolean isUnsignedIntValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
     @Override
-    public boolean isLong(){ // TODO Auto-generated method stub
+    public boolean isLongValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
     @Override
-    public boolean isUnsignedLong(){ // TODO Auto-generated method stub
+    public boolean isUnsignedLongValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
     @Override
-    public boolean isReal(){ // TODO Auto-generated method stub
+    public boolean isRealValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
     @Override
-    public boolean isString(){ // TODO Auto-generated method stub
+    public boolean isStringValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
@@ -110,7 +110,7 @@ public class ShortVal implements Value {
     return false; }
 
     @Override
-    public.Value .getShallowSlice(int startIndex, int endIndex) throws Exception{ // TODO Auto-generated method stub
+    public Value getShallowSlice(int startIndex, int endIndex) throws Exception{ // TODO Auto-generated method stub
         if(startIndex > 16 || startIndex < 0){
             throw new UnsupportedOperationException("Error startIndex is out of bounds at " +startIndex);
         }
@@ -124,68 +124,10 @@ public class ShortVal implements Value {
 
         int size = end - start + 1;
 
-        long val = .Value .>> start);
+        long val = (value >> start);
         long toKeepMask = ((1 << size) - 1);
 
         return Utils.getOptimalUnsignedForm(val & toKeepMask);
     }
     
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

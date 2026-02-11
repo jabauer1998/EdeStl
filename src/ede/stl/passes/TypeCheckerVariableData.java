@@ -1,7 +1,7 @@
-package io.github.h20man13.emulator_ide.verilog_interpreter.visitor_passes.type_checker;
+package ede.stl.passes;
 
 
-import io.github.h20man13.emulator_ide.common.Position;
+import ede.stl.common.Position;
 
 public class TypeCheckerVariableData {
 

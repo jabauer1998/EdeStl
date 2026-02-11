@@ -1,5 +1,6 @@
 package ede.stl.passes;
 
+
 import ede.stl.common.Position;
 import ede.stl.common.SymbolTable;
 import ede.stl.common.ErrorLog;
@@ -1646,7 +1647,7 @@ public class TypeChecker implements ExpressionVisitor<TypeCheckerVariableData.Ty
 
 		if (right == TypeCheckerVariableData.Type.UNDEFINED) {
 			errorLog
-				.addItem(new ErrorItem("Cant have an undefined.Value .in expression [Type -> " + right + "]", op.position));
+				.addItem(new ErrorItem("Cant have an undefined value in expression [Type -> " + right + "]", op.position));
 		}
 
 		if (op.Op == UnaryOperation.Operator.PLUS
@@ -2011,61 +2012,3 @@ public class TypeChecker implements ExpressionVisitor<TypeCheckerVariableData.Ty
 	public Type visit(OctalNode number, Object... argv){ // TODO Auto-generated method stub
 	return null; }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
