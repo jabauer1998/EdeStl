@@ -12,16 +12,16 @@ import ede.stl.passes.StatementVisitor;
  * @author Jacob Bauer
  */
 
-public class BlockingAssignment extends Assignment<.Value . Expression> {
+public class BlockingAssignment extends Assignment<LValue, Expression> {
 
     /**
      * The BlockAssign constuctor takes in two expressions:
      * 
-     * @param .Value .the.Value .to be assigned to
+     * @param lvalue the lvalue to be assigned to
      * @param exp    the expression on the right hand side of the equals
      */
-    public BlockingAssignment(Position start, .Value ..Value . Expression exp) {
-        super(start, .Value . exp);
+    public BlockingAssignment(Position start, LValue lvalue, Expression exp) {
+        super(start, lvalue, exp);
     }
 
     /**

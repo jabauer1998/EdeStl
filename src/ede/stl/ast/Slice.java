@@ -30,7 +30,7 @@ public class Slice extends Label {
         this.index2 = index2;
     }
 
-    public <DataType> Pointer<DataType> get.Value .SymbolTable<Pointer<DataType>> table){
+    public <DataType> Pointer<DataType> getLValue(SymbolTable<Pointer<DataType>> table){
         return null;
     }
 

@@ -30,7 +30,7 @@ public class Element extends Label {
         this.index1 = index1;
     }
 
-    public <DataType> Pointer<DataType> get.Value .SymbolTable<Pointer<DataType>> table){
+    public <DataType> Pointer<DataType> getLValue(SymbolTable<Pointer<DataType>> table){
         return null;
     }
 

@@ -6,10 +6,10 @@ import ede.stl.ast.Expression;
 import ede.stl.ast.LValue;
 import ede.stl.passes.StatementVisitor;
 
-public class NonBlockingAssignment extends Assignment<List<.Value ., List<Expression>> {
+public class NonBlockingAssignment extends Assignment<List<LValue>, List<Expression>> {
 
-    public NonBlockingAssignment(Position start, List<.Value . .Value . List<Expression> exp) {
-        super(start, .Value . exp);
+    public NonBlockingAssignment(Position start, List<LValue> lvalues, List<Expression> exp) {
+        super(start, lvalues, exp);
     }
 
     /**
@@ -27,12 +27,12 @@ public class NonBlockingAssignment extends Assignment<List<.Value ., List<Expres
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        List<.Value . lList = leftHandSide;
+        List<LValue> lList = leftHandSide;
         List<Expression> rExp = rightHandSide;
 
         int size = lList.size();
         for(int i = 0; i < size; i++){
-            (Value left = lList.get(i);
+            LValue left = lList.get(i);
             Expression right = rExp.get(i);
 
             sb.append(left.toString());

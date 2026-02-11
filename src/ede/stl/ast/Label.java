@@ -13,7 +13,7 @@ import ede.stl.passes.ExpressionVisitor;
  * @author Jacob Bauer
  */
 
-public abstract class Label extends AstNode implements Expression, .Value .{
+public abstract class Label extends AstNode implements Expression, LValue {
 
     public final String     labelIdentifier;  // name of the array
 
@@ -31,7 +31,7 @@ public abstract class Label extends AstNode implements Expression, .Value .{
         this.labelIdentifier = labelIdentifier;
     }
 
-    public <DataType> Pointer<DataType> get.Value .SymbolTable<Pointer<DataType>> table){
+    public <DataType> Pointer<DataType> getLValue(SymbolTable<Pointer<DataType>> table){
         return null;
     }
 

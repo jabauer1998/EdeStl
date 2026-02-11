@@ -15,7 +15,7 @@ import ede.stl.passes.ExpressionVisitor;
  * 
  * @author Jacob Bauer
  */
-public class Concatenation extends AstNode implements Expression, .Value .
+public class Concatenation extends AstNode implements Expression, LValue {
     public final List<Expression> circuitElementExpressionList; // list of Expressions to concatenate
 
     /**
@@ -39,7 +39,7 @@ public class Concatenation extends AstNode implements Expression, .Value .
     }
 
     @Override
-    public <DataType> Pointer<DataType> get.Value .SymbolTable<Pointer<DataType>> environment){ // TODO Auto-generated method stub
+    public <DataType> Pointer<DataType> getLValue(SymbolTable<Pointer<DataType>> environment){ // TODO Auto-generated method stub
     return null; }
 
     @Override
