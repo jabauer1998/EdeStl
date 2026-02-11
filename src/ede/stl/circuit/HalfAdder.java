@@ -2,7 +2,7 @@ package ede.stl.circuit;
 
 import ede.stl.circuit.AndGate;
 import ede.stl.circuit.XorGate;
-import ede.stl.Value .WireVal;
+
 
 public class HalfAdder {
     public HalfAdder(WireVal Output, WireVal Carry, WireVal Input1, WireVal Input2){

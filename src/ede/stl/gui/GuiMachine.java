@@ -43,37 +43,37 @@ public class GuiMachine extends HBox implements Machine{
         this.Io.AddIoSection(TabTitle, PaneTitles);
     }
 
-    public void setMemor.Value .int Address, long dat.Value .{
-        this.Mem.setMemor.Value .Address, dat.Value .;
+    public void setMemoryValue(int Address, long dataValue){
+        this.Mem.setMemoryValue(Address, dataValue);
     }
 
-    public void setRegiste.Value .String regName, long re.Value .{
-        this.RegFile.setRegiste.Value .regName, re.Value .;
+    public void setRegisterValue(String regName, long regValue){
+        this.RegFile.setRegisterValue(regName, regValue);
     }
 
-    public void setStatu.Value .String statusName, long statu.Value .{
-        this.Flags.setStatu.Value .statusName, statu.Value .;
+    public void setStatusValue(String statusName, long statusValue){
+        this.Flags.setStatusValue(statusName, statusValue);
     }
 
-    public long getRegiste.Value .String regName){
-        return this.RegFile.getRegiste.Value .regName);
+    public long getRegisterValue(String regName){
+        return this.RegFile.getRegisterValue(regName);
     }
 
-    public long getRegiste.Value .int RegNumber){
-        return this.RegFile.getRegiste.Value .RegNumber);
+    public long getRegisterValue(int RegNumber){
+        return this.RegFile.getRegisterValue(RegNumber);
     }
 
-    public long getMemor.Value .int address){
-        return this.Mem.getMemor.Value .address);
+    public long getMemoryValue(int address){
+        return this.Mem.getMemoryValue(address);
     }
 
-    public long getStatu.Value .String statusName){
-        return this.Flags.getStatu.Value .statusName);
+    public long getStatusValue(String statusName){
+        return this.Flags.getStatusValue(statusName);
     }
 
     @Override
-    public void setRegiste.Value .int regNumber, long re.Value .{
-        this.RegFile.setRegiste.Value .regNumber, re.Value .;
+    public void setRegisterValue(int regNumber, long regValue){
+        this.RegFile.setRegisterValue(regNumber, regValue);
     }
 
     public void appendIoText(String Name, String textToAppend){
@@ -88,8 +88,8 @@ public class GuiMachine extends HBox implements Machine{
         return this.Io.readIoText(Name);
     }
 
-    public void clearStatu.Value .{
-        this.Flags.clearStatu.Value .;
+    public void clearStatusValues(){
+        this.Flags.clearStatusValues();
     }
 
     public void clearMemory(){
@@ -100,61 +100,3 @@ public class GuiMachine extends HBox implements Machine{
         this.RegFile.clearRegisters();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

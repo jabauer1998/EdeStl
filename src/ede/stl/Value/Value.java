@@ -1,41 +1,41 @@
-package ede.stl.Value ;
+package ede.stl.Value;
 
-public interface.Value .{
+public interface Value {
     public String toString();
 
-    public double rea.Value .);
+    public double realValue();
 
-    public long lon.Value .);
+    public long longValue();
 
-    public int in.Value .);
+    public int intValue();
 
-    public short shor.Value .);
+    public short shortValue();
 
-    public byte byt.Value .);
+    public byte byteValue();
 
-    public boolean boo.Value .);
+    public boolean boolValue();
 
-    public boolean isBool();
+    public boolean isBoolValue();
 
-    public boolean isShort();
+    public boolean isShortValue();
 
-    public boolean isUnsignedShort();
+    public boolean isUnsignedShortValue();
 
-    public boolean isByte();
+    public boolean isByteValue();
 
     public boolean isUnsignedByteValue();
 
-    public boolean isInt();
+    public boolean isIntValue();
 
-    public boolean isUnsignedInt();
+    public boolean isUnsignedIntValue();
 
-    public boolean isLong();
+    public boolean isLongValue();
 
-    public boolean isUnsignedLong();
+    public boolean isUnsignedLongValue();
 
-    public boolean isReal();
+    public boolean isRealValue();
 
-    public boolean isString();
+    public boolean isStringValue();
 
     public boolean isVector();
 
@@ -43,63 +43,5 @@ public interface.Value .{
 
     public boolean isWire();
 
-    public.Value .getShallowSlice(int startIndex, int endIndex) throws Exception;
+    public Value getShallowSlice(int startIndex, int endIndex) throws Exception;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

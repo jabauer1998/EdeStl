@@ -6,7 +6,7 @@ import javafx.scene.layout.HBox;
 
 public class GuiRegister extends HBox{
     private Label TitleReg; //Name of the Register
-    private Label Registe.Value . //Hold some Current.Value .
+    private Label RegisterValue; //Hold some Current Value
     private int RegisterDecimalLength;
     private double Width;
     private double Height;
@@ -30,11 +30,11 @@ public class GuiRegister extends HBox{
         RegisterDecimalLength = Length;
         this.regFormat = Format;
         
-        Registe.Value .= new Label(GenZeros());
-        Registe.Value .setPrefHeight(Height);
-        Registe.Value .setPrefWidth(Width*5/6);
+        RegisterValue = new Label(GenZeros());
+        RegisterValue.setPrefHeight(Height);
+        RegisterValue.setPrefWidth(Width*5/6);
 
-        this.getChildren().addAll(TitleReg, Registe.Value .;
+        this.getChildren().addAll(TitleReg, RegisterValue);
         this.setAlignment(Pos.CENTER_LEFT);
     }
 
@@ -50,9 +50,9 @@ public class GuiRegister extends HBox{
         return Sb.toString();
     }
 
-    public void SetRegiste.Value .long.Value .{
+    public void SetRegisterValue(long Value){
         if(this.regFormat == Format.BINARY){
-            String strVal = Long.toBinaryString.Value .;
+            String strVal = Long.toBinaryString(Value);
             if(strVal.length() > this.RegisterDecimalLength){
                 strVal = strVal.substring(strVal.length() - RegisterDecimalLength);
             } else if(strVal.length() < this.RegisterDecimalLength){
@@ -64,9 +64,9 @@ public class GuiRegister extends HBox{
                 padder.append(strVal);
                 strVal = padder.toString();
             }
-            this.Registe.Value .setText(strVal);
+            this.RegisterValue.setText(strVal);
         } else {
-            String strVal = Long.toHexString.Value .;
+            String strVal = Long.toHexString(Value);
             int HexDecimalLength = this.RegisterDecimalLength/4;
             if(strVal.length() > HexDecimalLength){
                 strVal = strVal.substring(strVal.length() - HexDecimalLength);
@@ -82,8 +82,8 @@ public class GuiRegister extends HBox{
         }
     }
 
-    public long GetRegiste.Value .){
-        String RegisterText = this.Registe.Value .getText();
+    public long GetRegisterValue(){
+        String RegisterText = this.RegisterValue.getText();
         if(this.regFormat == Format.BINARY){
             return Long.parseLong(RegisterText, 2);
         } else {
@@ -91,61 +91,3 @@ public class GuiRegister extends HBox{
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

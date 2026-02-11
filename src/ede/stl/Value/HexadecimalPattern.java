@@ -1,15 +1,16 @@
-package ede.stl.Value ;
+package ede.stl.Value;
+
 
 import java.lang.Integer;
-import ede.stl.Value .ByteVal;
-import ede.stl.Value .IntVal;
-import ede.stl.Value .LongVal;
-import ede.stl.Value .ShortVal;
-import ede.stl.Value .UnsignedByteVal;
-import ede.stl.Value .UnsignedIntVal;
-import ede.stl.Value .UnsignedLongVal;
-import ede.stl.Value .UnsignedShortVal;
-import ede.stl.Value .VectorVal;
+import ede.stl.Value.ByteVal;
+import ede.stl.Value.IntVal;
+import ede.stl.Value.LongVal;
+import ede.stl.Value.ShortVal;
+import ede.stl.Value.UnsignedByteVal;
+import ede.stl.Value.UnsignedIntVal;
+import ede.stl.Value.UnsignedLongVal;
+import ede.stl.Value.UnsignedShortVal;
+import ede.stl.Value.VectorVal;
 import ede.stl.circuit.CircuitElem;
 
 /**
@@ -22,16 +23,16 @@ public class HexadecimalPattern extends Pattern{
 
     public HexadecimalPattern(String pattern) { super(pattern); }
 
-    public boolean match(LongVal.Value .{
+    public boolean match(LongVal value){
 
         String pattern = super.getPattern();
-        long val =.Value .longValue();
+        long val = value.longValue();
 
         int patternLength = pattern.length();
 
         if(patternLength * 4 < Long.toBinaryString(val).length()){
-            long shifte.Value .= val >> (patternLength * 4);
-            if(shifte.Value .!= 0){
+            long shiftedValue = val >> (patternLength * 4);
+            if(shiftedValue != 0){
                 return false;
             }
         }
@@ -52,15 +53,15 @@ public class HexadecimalPattern extends Pattern{
         return true;
     }
 
-    public boolean match(UnsignedLongVal.Value .{
+    public boolean match(UnsignedLongVal value){
         String pattern = super.getPattern();
-        long val =.Value .longValue();
+        long val = value.longValue();
 
         int patternLength = pattern.length();
 
         if(patternLength * 4 < Long.toBinaryString(val).length()){
-            long shifte.Value .= val >> (patternLength * 4);
-            if(shifte.Value .!= 0){
+            long shiftedValue = val >> (patternLength * 4);
+            if(shiftedValue != 0){
                 return false;
             }
         }
@@ -81,22 +82,22 @@ public class HexadecimalPattern extends Pattern{
         return true;
     }
 
-    public boolean match(IntVal.Value .{
+    public boolean match(IntVal value){
 
         String pattern = super.getPattern();
-        int val =.Value .in.Value .);
+        int val = value.intValue();
 
         int patternLength = pattern.length();
 
         if(patternLength > 8){
-            int num =.Value .in.Value .);
+            int num = value.intValue();
             LongVal newVal = new LongVal((long)num);
             return match(newVal);
         }
 
         if(patternLength * 4 < Integer.toBinaryString(val).length()){
-            int shifte.Value .= val >> (patternLength * 4);
-            if(shifte.Value .!= 0){
+            int shiftedValue = val >> (patternLength * 4);
+            if(shiftedValue != 0){
                 return false;
             }
         }
@@ -117,21 +118,21 @@ public class HexadecimalPattern extends Pattern{
         return true;
     }
 
-    public boolean match(UnsignedIntVal.Value .{
+    public boolean match(UnsignedIntVal value){
         String pattern = super.getPattern();
-        int val =.Value .in.Value .);
+        int val = value.intValue();
 
         int patternLength = pattern.length();
 
         if(patternLength > 8){
-            int num =.Value .in.Value .);
+            int num = value.intValue();
             LongVal newVal = new LongVal((long)num);
             return match(newVal);
         }
 
         if(patternLength * 4 < Integer.toBinaryString(val).length()){
-            int shifte.Value .= val >> (patternLength * 4);
-            if(shifte.Value .!= 0){
+            int shiftedValue = val >> (patternLength * 4);
+            if(shiftedValue != 0){
                 return false;
             }
         }
@@ -152,22 +153,22 @@ public class HexadecimalPattern extends Pattern{
         return true;
     }
 
-    public boolean match(ShortVal.Value .{
+    public boolean match(ShortVal value){
 
         String pattern = super.getPattern();
-        short val =.Value .shor.Value .);
+        short val = value.shortValue();
 
         int patternLength = pattern.length();
 
         if(patternLength > 4){
-            short num =.Value .shor.Value .);
+            short num = value.shortValue();
             IntVal newVal = new IntVal(num);
             return match(newVal);
         }
 
         if(patternLength * 4 < Integer.toBinaryString(val).length()){
-            short shifte.Value .= (short)(val >> (patternLength * 4));
-            if(shifte.Value .!= 0){
+            short shiftedValue = (short)(val >> (patternLength * 4));
+            if(shiftedValue != 0){
                 return false;
             }
         }
@@ -188,21 +189,21 @@ public class HexadecimalPattern extends Pattern{
         return true;
     }
 
-    public boolean match(UnsignedShortVal.Value .{
+    public boolean match(UnsignedShortVal value){
         String pattern = super.getPattern();
-        short val =.Value .shor.Value .);
+        short val = value.shortValue();
 
         int patternLength = pattern.length();
 
         if(patternLength > 4){
-            short num =.Value .shor.Value .);
+            short num = value.shortValue();
             IntVal newVal = new IntVal(num);
             return match(newVal);
         }
 
         if(patternLength * 4 < Integer.toBinaryString(val).length()){
-            short shifte.Value .= (short)(val >> (patternLength * 4));
-            if(shifte.Value .!= 0){
+            short shiftedValue = (short)(val >> (patternLength * 4));
+            if(shiftedValue != 0){
                 return false;
             }
         }
@@ -223,22 +224,22 @@ public class HexadecimalPattern extends Pattern{
         return true;
     }
 
-    public boolean match(ByteVal.Value .{
+    public boolean match(ByteVal value){
 
         String pattern = super.getPattern();
-        byte val =.Value .byt.Value .);
+        byte val = value.byteValue();
 
         int patternLength = pattern.length();
 
         if(patternLength > 2){
-            byte num =.Value .byt.Value .);
+            byte num = value.byteValue();
             ShortVal newVal = new ShortVal(num);
             return match(newVal);
         }
 
         if(patternLength * 4 < Integer.toBinaryString(val).length()){
-            byte shifte.Value .= (byte)(val >> (patternLength * 4));
-            if(shifte.Value .!= 0){
+            byte shiftedValue = (byte)(val >> (patternLength * 4));
+            if(shiftedValue != 0){
                 return false;
             }
         }
@@ -259,21 +260,21 @@ public class HexadecimalPattern extends Pattern{
         return true;
     }
 
-    public boolean match(UnsignedByteVal.Value .{
+    public boolean match(UnsignedByteVal value){
         String pattern = super.getPattern();
-        byte val =.Value .byt.Value .);
+        byte val = value.byteValue();
 
         int patternLength = pattern.length();
 
         if(patternLength > 2){
-            byte num =.Value .byt.Value .);
+            byte num = value.byteValue();
             ShortVal newVal = new ShortVal(num);
             return match(newVal);
         }
 
         if(patternLength * 4 < Integer.toBinaryString(val).length()){
-            byte shifte.Value .= (byte)(val >> (patternLength * 4));
-            if(shifte.Value .!= 0){
+            byte shiftedValue = (byte)(val >> (patternLength * 4));
+            if(shiftedValue != 0){
                 return false;
             }
         }
@@ -300,20 +301,20 @@ public class HexadecimalPattern extends Pattern{
         return match(retByte);
     }
 
-    public boolean match(VectorVal.Value .{
+    public boolean match(VectorVal value){
 
         String pattern = super.getPattern();
         int patternLength = pattern.length();
 
-        int bitIncr = .Value .getIndex1() <.Value .getIndex2()) ? 1 : -1;
+        int bitIncr = (value.getIndex1() < value.getIndex2()) ? 1 : -1;
         int hexIncr = bitIncr * 4;
-        int endOverflow =.Value .getIndex2() + (.Value .getIndex1() >.Value .getIndex2())? patternLength - 1 : -patternLength + 1);
+        int endOverflow = value.getIndex2() + ((value.getIndex1() > value.getIndex2())? patternLength - 1 : -patternLength + 1);
 
-        if(patternLength * 4 <.Value .getSize()){
-            for(int i =.Value .getIndex1(); i != endOverflow; i+=bitIncr){
+        if(patternLength * 4 < value.getSize()){
+            for(int i = value.getIndex1(); i != endOverflow; i+=bitIncr){
                 //If the vector length is grater then the pattern length * 4 then all of the signals need to be set to false
                 //The reasoning is that if one of them is set true then it is impossible for the two elements to match because the one on the right is a bigger number
-                if.Value .getValue(i).getStateSignal()){
+                if(value.getValue(i).getStateSignal()){
                     return false;
                 }
             }
@@ -330,7 +331,7 @@ public class HexadecimalPattern extends Pattern{
                 byte matchBit = (byte)(patternPieceAsByte >> (3 - j));
                 boolean matchSignal = matchBit != 0;
 
-                if(matchSignal !=.Value .getValue(vi + j * bitIncr).getStateSignal()){
+                if(matchSignal != value.getValue(vi + j * bitIncr).getStateSignal()){
                     return false;
                 }
             }   
@@ -341,19 +342,19 @@ public class HexadecimalPattern extends Pattern{
     }
 
     @Override
-    public boolean isBool(){ // TODO Auto-generated method stub
+    public boolean isBoolValue(){ // TODO Auto-generated method stub
     return false; }
 
     @Override
-    public boolean isShort(){ // TODO Auto-generated method stub
+    public boolean isShortValue(){ // TODO Auto-generated method stub
     return false; }
 
     @Override
-    public boolean isUnsignedShort(){ // TODO Auto-generated method stub
+    public boolean isUnsignedShortValue(){ // TODO Auto-generated method stub
     return false; }
 
     @Override
-    public boolean isByte(){ // TODO Auto-generated method stub
+    public boolean isByteValue(){ // TODO Auto-generated method stub
     return false; }
 
     @Override
@@ -361,27 +362,27 @@ public class HexadecimalPattern extends Pattern{
     return false; }
 
     @Override
-    public boolean isInt(){ // TODO Auto-generated method stub
+    public boolean isIntValue(){ // TODO Auto-generated method stub
     return false; }
 
     @Override
-    public boolean isUnsignedInt(){ // TODO Auto-generated method stub
+    public boolean isUnsignedIntValue(){ // TODO Auto-generated method stub
     return false; }
 
     @Override
-    public boolean isLong(){ // TODO Auto-generated method stub
+    public boolean isLongValue(){ // TODO Auto-generated method stub
     return false; }
 
     @Override
-    public boolean isUnsignedLong(){ // TODO Auto-generated method stub
+    public boolean isUnsignedLongValue(){ // TODO Auto-generated method stub
     return false; }
 
     @Override
-    public boolean isReal(){ // TODO Auto-generated method stub
+    public boolean isRealValue(){ // TODO Auto-generated method stub
     return false; }
 
     @Override
-    public boolean isString(){ // TODO Auto-generated method stub
+    public boolean isStringValue(){ // TODO Auto-generated method stub
     return false; }
 
     @Override
@@ -396,61 +397,3 @@ public class HexadecimalPattern extends Pattern{
     public boolean isWire(){ // TODO Auto-generated method stub
     return false; }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

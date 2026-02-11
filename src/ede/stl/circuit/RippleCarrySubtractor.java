@@ -1,9 +1,9 @@
 package ede.stl.circuit;
 
 import ede.stl.common.Utils;
-import ede.stl.Value .VectorVal;
+import ede.stl.Value.VectorVal;
 import ede.stl.circuit.NotGate;
-import ede.stl.Value .WireVal;
+
 
 public class RippleCarrySubtractor {
     public RippleCarrySubtractor(WireVal CarryOut, VectorVal Output, VectorVal Input1, VectorVal Input2) throws Exception{

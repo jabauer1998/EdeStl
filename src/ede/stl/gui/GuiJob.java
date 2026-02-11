@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 import org.fxmisc.richtext.InlineCssTextArea;
 import ede.stl.common.Search;
-import ede.stl.common.SearchDirection;
+import ede.stl.common.Search.SearchDirection;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;

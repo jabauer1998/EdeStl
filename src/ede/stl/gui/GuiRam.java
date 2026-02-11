@@ -91,14 +91,14 @@ public class GuiRam extends VBox implements Memory{
 
             if(this.MemFormat == MemoryFormat.HEXADECIMAL){
                 Bytes.add(new Label("00"));
-                Bytes.getLast().setPrefWidth(this.screenWidth/(this.BytesPerRow * 2));
-                Bytes.getLast().setTextAlignment(TextAlignment.RIGHT);
+                Bytes.get(Bytes.size()-1).setPrefWidth(this.screenWidth/(this.BytesPerRow * 2));
+                Bytes.get(Bytes.size()-1).setTextAlignment(TextAlignment.RIGHT);
             } else {
                 Bytes.add(new Label("00000000"));
-                Bytes.getLast().setPrefWidth(screenWidth/(this.BytesPerRow * 3));
-                Bytes.getLast().setTextAlignment(TextAlignment.RIGHT);
+                Bytes.get(Bytes.size()-1).setPrefWidth(screenWidth/(this.BytesPerRow * 3));
+                Bytes.get(Bytes.size()-1).setTextAlignment(TextAlignment.RIGHT);
             }
-            RowOfMemory.getChildren().add(Bytes.getLast());
+            RowOfMemory.getChildren().add(Bytes.get(Bytes.size()-1));
             RowOfMemory.setAlignment(Pos.CENTER_RIGHT);
         }
         Addresses.get(Row).setTextAlignment(TextAlignment.LEFT);
@@ -129,10 +129,10 @@ public class GuiRam extends VBox implements Memory{
     }
 
     @Override
-    public void setMemor.Value .int address, long dat.Value .{
+    public void setMemoryValue(int address, long dataValue){
         Label Byte = Bytes.get(address);
         if(MemFormat == MemoryFormat.BINARY){
-            String asString = Long.toBinaryString(dat.Value .;
+            String asString = Long.toBinaryString(dataValue);
             if(asString.length() > 8){
                 asString = asString.substring(asString.length() - 8);
             } else if(asString.length() < 8){
@@ -146,7 +146,7 @@ public class GuiRam extends VBox implements Memory{
             }
             Byte.setText(asString);
         } else {
-            String asString = Long.toHexString(dat.Value .;
+            String asString = Long.toHexString(dataValue);
             if(asString.length() > 2){
                 asString = asString.substring(asString.length() - 2);
             } else if(asString.length() < 2){
@@ -163,7 +163,7 @@ public class GuiRam extends VBox implements Memory{
     }
 
     @Override
-    public long getMemor.Value .int address){ // TODO Auto-generated method stub
+    public long getMemoryValue(int address){ // TODO Auto-generated method stub
         Label Byte = Bytes.get(address);
         String text = Byte.getText();
         
@@ -176,65 +176,7 @@ public class GuiRam extends VBox implements Memory{
 
     public void clearMemory(){
         for(int i = 0; i < NumberOfBytes; i++){
-            this.setMemor.Value .i, 0);
+            this.setMemoryValue(i, 0);
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

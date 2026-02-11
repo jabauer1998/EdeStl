@@ -29,14 +29,28 @@ if [ -n "$javaExists" ]; then
                 rm -f build/BuildList.txt
             fi
             touch build/BuildList.txt
-            find "$srcRoot/src" -type f ! -name "#*" ! -name "*~" > build/BuildList.txt
+            find "$srcRoot/src" -type f -name "*.java" ! -name "#*" ! -name "*~" > build/BuildList.txt
             for line in $(cat build/BuildList.txt); do
                 if [ -f "$line" ]; then
                     sed -i '1s/^\xEF\xBB\xBF//' "$line"
                 fi
             done
             cat "build/BuildList.txt"
-            javac "@build/BuildList.txt" -sourcepath "./src" --module-path "$OPENJFX_DIR/modules" --add-modules javafx.controls,javafx.fxml,javafx.graphics,javafx.base -encoding "UTF-8"
+            JAVAFX_CP=""
+            for mod in "$OPENJFX_DIR/modules"/javafx.*; do
+                if [ -d "$mod" ]; then
+                    if [ -n "$JAVAFX_CP" ]; then
+                        JAVAFX_CP="$JAVAFX_CP:"
+                    fi
+                    JAVAFX_CP="$JAVAFX_CP$mod"
+                fi
+            done
+            for jar in lib/*.jar; do
+                if [ -f "$jar" ]; then
+                    JAVAFX_CP="$JAVAFX_CP:$jar"
+                fi
+            done
+            javac "@build/BuildList.txt" -sourcepath "./src" -classpath "$JAVAFX_CP" -encoding "UTF-8"
         elif [ "$command" = "clean" ]; then
             rm -rf bin/*
         elif [ "$command" = "publish" ]; then

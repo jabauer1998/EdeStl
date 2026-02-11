@@ -1,5 +1,6 @@
 package ede.stl.common;
 
+
 import java.util.Stack;
 import java.util.HashMap;
 import java.lang.String;
@@ -118,7 +119,7 @@ public class SymbolTable<TableType> {
             HashMap<String, TableType> list = table.get(i);
 
             for (String key : list.keySet()) {
-                mystring.append("KEY: " + key + ".Value . ");
+                mystring.append("KEY: " + key + " VALUE: ");
                 mystring.append(list.get(key).toString());
                 mystring.append('\n');
             }
@@ -128,61 +129,3 @@ public class SymbolTable<TableType> {
         return mystring.toString();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,70 +1,70 @@
-package ede.stl.Value ;
+package ede.stl.Value;
 
 import ede.stl.gui.Machine;
 import ede.stl.gui.GuiEde;
-import ede.stl.Value .Value;
+import ede.stl.Value.Value;
 
-public class EdeRegVal implements Value {
+public class EdeRegVal implements Value{
     private String regString;
     private Machine gui;
 
-    public EdeRegVal(String re.Value .ing, Machine edeInstance){
+    public EdeRegVal(String regValueString, Machine edeInstance){
         this.gui = edeInstance;
-        this.regString = re.Value .ing;
+        this.regString = regValueString;
     }
 
-    public void setAllBits(int.Value .{
-        gui.setRegiste.Value .regString,.Value .;
+    public void setAllBits(int value){
+        gui.setRegisterValue(regString, value);
     }
 
-    public void setBitAtIndex(int index, int.Value .{
-        long re.Value .= gui.getRegiste.Value .regString);
-        boolean bitSet =.Value .!= 0;
+    public void setBitAtIndex(int index, int value){
+        long regValue = gui.getRegisterValue(regString);
+        boolean bitSet = value != 0;
         if(!bitSet){
-            re.Value .&= ~(1 << index);
+            regValue &= ~(1 << index);
         } else {
-            re.Value .|= (1 << index);
+            regValue |= (1 << index);
         }
-        gui.setRegiste.Value .regString, re.Value .;
+        gui.setRegisterValue(regString, regValue);
     }
 
     public long getBitAtIndex(int index){
-        long re.Value .= gui.getRegiste.Value .regString);
-        return (re.Value .>> index) & 1;
+        long regValue = gui.getRegisterValue(regString);
+        return (regValue >> index) & 1;
     }
 
-    public void setBitsAtIndex(int maxIndex, int minIndex, int.Value .{
-        long re.Value .= gui.getRegiste.Value .regString);
+    public void setBitsAtIndex(int maxIndex, int minIndex, int value){
+        long regValue = gui.getRegisterValue(regString);
         if(minIndex < maxIndex){
             int index = minIndex;
             int size = maxIndex - minIndex;
             int numIndex = 0;
             while(index <= maxIndex && numIndex < size){
-                boolean isSet = (.Value .>> numIndex) & 1) != 0;
+                boolean isSet = ((value >> numIndex) & 1) != 0;
                 if(isSet){
-                    re.Value .|= (1 << index);
+                    regValue |= (1 << index);
                 } else {
-                    re.Value .&= ~(1 << index);
+                    regValue &= ~(1 << index);
                 }
                 index++;
                 numIndex++;
             }
-            gui.setRegiste.Value .regString, re.Value .;
+            gui.setRegisterValue(regString, regValue);
         } else {
             int index = minIndex;
             int size = minIndex - maxIndex;
             int numIndex = 0;
             while(index >= maxIndex && numIndex < size){
-                boolean isSet = (.Value .>> numIndex) & 1) != 0;
+                boolean isSet = ((value >> numIndex) & 1) != 0;
                 if(isSet){
-                    re.Value .|= (1 << index);
+                    regValue |= (1 << index);
                 } else {
-                    re.Value .&= ~(1 << index);
+                    regValue &= ~(1 << index);
                 }
                 index--;
                 numIndex++;
             }
-            gui.setRegiste.Value .regString, re.Value .;
+            gui.setRegisterValue(regString, regValue);
         }
     }
 
@@ -82,47 +82,47 @@ public class EdeRegVal implements Value {
     }
 
     @Override
-    public double rea.Value .){
-        return (double)gui.getRegiste.Value .regString);    
+    public double realValue(){
+        return (double)gui.getRegisterValue(regString);    
     }
 
     @Override
-    public long lon.Value .){
-        return (long)gui.getRegiste.Value .regString);
+    public long longValue(){
+        return (long)gui.getRegisterValue(regString);
     }
     @Override
-    public int in.Value .){
-        return (int)gui.getRegiste.Value .regString);
+    public int intValue(){
+        return (int)gui.getRegisterValue(regString);
     }
     @Override
-    public short shor.Value .){
-        return (short)gui.getRegiste.Value .regString);
+    public short shortValue(){
+        return (short)gui.getRegisterValue(regString);
     }
 
     @Override
-    public byte byt.Value .){
-        return (byte)gui.getRegiste.Value .regString);
+    public byte byteValue(){
+        return (byte)gui.getRegisterValue(regString);
     }
     
     @Override
-    public boolean boo.Value .){
-        return gui.getRegiste.Value .regString) != 0;
+    public boolean boolValue(){
+        return gui.getRegisterValue(regString) != 0;
     }
 
     @Override
-    public boolean isBool(){
+    public boolean isBoolValue(){
         return false;
     }
     @Override
-    public boolean isShort(){
+    public boolean isShortValue(){
         return false;
     }
     @Override
-    public boolean isUnsignedShort(){
+    public boolean isUnsignedShortValue(){
         return false;
     }
     @Override
-    public boolean isByte(){
+    public boolean isByteValue(){
         return false;
     }
     @Override
@@ -130,27 +130,27 @@ public class EdeRegVal implements Value {
         return false;
     }
     @Override
-    public boolean isInt(){
+    public boolean isIntValue(){
         return false;
     }
     @Override
-    public boolean isUnsignedInt(){
+    public boolean isUnsignedIntValue(){
         return false;
     }
     @Override
-    public boolean isLong(){
+    public boolean isLongValue(){
         return false;
     }
     @Override
-    public boolean isUnsignedLong(){
+    public boolean isUnsignedLongValue(){
         return false;
     }
     @Override
-    public boolean isReal(){
+    public boolean isRealValue(){
         return false;
     }
     @Override
-    public boolean isString(){
+    public boolean isStringValue(){
         return false;
     }
     @Override
@@ -167,66 +167,8 @@ public class EdeRegVal implements Value {
     }
 
     @Override
-    public.Value .getShallowSlice(int startIndex, int endIndex) throws Exception{ // TODO Auto-generated method stub
+    public Value getShallowSlice(int startIndex, int endIndex) throws Exception{ // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'getShallowSlice'"); }
 
     
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

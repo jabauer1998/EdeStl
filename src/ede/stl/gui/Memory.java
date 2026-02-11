@@ -1,65 +1,7 @@
 package ede.stl.gui;
 
 public interface Memory {
-    public void setMemor.Value .int address, long dat.Value .;
+    public void setMemoryValue(int address, long dataValue);
 
-    public long getMemor.Value .int adress);
+    public long getMemoryValue(int adress);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

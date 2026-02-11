@@ -1,5 +1,6 @@
 package ede.stl.ast;
 
+
 import ede.stl.common.Position;
 import ede.stl.ast.AstNode;
 import ede.stl.ast.Expression;
@@ -7,18 +8,18 @@ import ede.stl.passes.ExpressionVisitor;
 import java.lang.String;
 
 /**
- * The St.Value .Ast node class is used to Par.E Strings
+ * The StrValue Ast node class is used to Par.E Strings
  * 
  * @author Jacob Bauer
  */
 public class StringNode extends AstNode implements Expression {
-    public final String lexeme; // token to hold the string.Value .
+    public final String lexeme; // token to hold the string value
 
     /**
-     * The St.Value .constructor when provided a token produces the exprVisitorected string
-     *.Value .ast node
+     * The StrValue constructor when provided a token produces the exprVisitorected string
+     * value ast node
      * 
-     * @param string token representing the string.Value .to be created
+     * @param string token representing the string value to be created
      */
     public StringNode(Position start, String lexeme) {
         super(start);
@@ -40,61 +41,3 @@ public class StringNode extends AstNode implements Expression {
         return lexeme;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

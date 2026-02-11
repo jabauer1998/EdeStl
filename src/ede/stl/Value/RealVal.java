@@ -1,59 +1,59 @@
-package ede.stl.Value ;
+package ede.stl.Value;
 
-public class RealVal implements Value {
+public class RealVal implements Value{
     
-    private double.Value .
+    private double value;
 
-    public RealVal(double.Value .{
-        this.Value .=.Value .
+    public RealVal(double value){
+        this.value = value;
     }
 
-    public double rea.Value .){
-        return (double.Value .
+    public double realValue(){
+        return (double)value;
     }
 
-    public long lon.Value .){
-        return (long.Value .
+    public long longValue(){
+        return (long)value;
     }
 
-    public int in.Value .){
-        return (int.Value .
+    public int intValue(){
+        return (int)value;
     }
 
-    public short shor.Value .){
-        return (short.Value .
+    public short shortValue(){
+        return (short)value;
     }
 
-    public byte byt.Value .){
-        return (byte.Value .
+    public byte byteValue(){
+        return (byte)value;
     }
 
-    public boolean boo.Value .){
-        return.Value .!= 0;
+    public boolean boolValue(){
+        return value != 0;
     }
 
 
     public String toString(){
-        return Double.toString.Value .;
+        return Double.toString(value);
     }
 
     @Override
-    public boolean isBool(){ // TODO Auto-generated method stub
+    public boolean isBoolValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
     @Override
-    public boolean isShort(){ // TODO Auto-generated method stub
+    public boolean isShortValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
     @Override
-    public boolean isUnsignedShort(){ // TODO Auto-generated method stub
+    public boolean isUnsignedShortValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
     @Override
-    public boolean isByte(){ // TODO Auto-generated method stub
+    public boolean isByteValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
@@ -63,32 +63,32 @@ public class RealVal implements Value {
     }
 
     @Override
-    public boolean isInt(){ // TODO Auto-generated method stub
+    public boolean isIntValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
     @Override
-    public boolean isUnsignedInt(){ // TODO Auto-generated method stub
+    public boolean isUnsignedIntValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
     @Override
-    public boolean isLong(){ // TODO Auto-generated method stub
+    public boolean isLongValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
     @Override
-    public boolean isUnsignedLong(){ // TODO Auto-generated method stub
+    public boolean isUnsignedLongValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
     @Override
-    public boolean isReal(){ // TODO Auto-generated method stub
+    public boolean isRealValue(){ // TODO Auto-generated method stub
         return true; 
     }
 
     @Override
-    public boolean isString(){ // TODO Auto-generated method stub
+    public boolean isStringValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
@@ -105,65 +105,7 @@ public class RealVal implements Value {
     return false; }
 
     @Override
-    public.Value .getShallowSlice(int startIndex, int endIndex) throws Exception{ // TODO Auto-generated method stub
+    public Value getShallowSlice(int startIndex, int endIndex) throws Exception{ // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getShallowSlice'"); 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

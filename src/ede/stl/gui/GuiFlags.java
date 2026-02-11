@@ -41,80 +41,22 @@ public class GuiFlags extends HBox implements Flags {
     }
 
     @Override
-    public long getStatu.Value .String statusName){
+    public long getStatusValue(String statusName){
         GuiFlag Flag = flagMap.get(statusName);
         return Flag.isSet() ? 1 : 0;
     }
 
     @Override
-    public void setStatu.Value .String statusName, long statu.Value .{
+    public void setStatusValue(String statusName, long statusValue){
         GuiFlag Flag = flagMap.get(statusName);
-        Flag.Set(statu.Value .!= 0);
+        Flag.Set(statusValue != 0);
     }
 
     
-    public void clearStatu.Value .{
-        Collection<GuiFlag>.Value . flagMap.Value .;
-        for(GuiFlag.Value .:.Value .
-           .Value .Set(false);
+    public void clearStatusValues(){
+        Collection<GuiFlag> values = flagMap.values();
+        for(GuiFlag value : values){
+            value.Set(false);
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

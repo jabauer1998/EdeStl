@@ -1,63 +1,63 @@
-package ede.stl.Value ;
+package ede.stl.Value;
 
 import ede.stl.gui.Machine;
-import ede.stl.Value .Value;
+import ede.stl.Value.Value;
 
-public class EdeStatVal implements Value {
+public class EdeStatVal implements Value{
     private String statString;
     private Machine gui;
 
-    public EdeStatVal(String re.Value .ing, Machine edeInstance){
+    public EdeStatVal(String regValueString, Machine edeInstance){
         this.gui = edeInstance;
-        this.statString = re.Value .ing;
+        this.statString = regValueString;
     }
 
-    public void setStatu.Value .int.Value .{
-        gui.setStatu.Value .statString,.Value .;
-    }
-
-    @Override
-    public double rea.Value .){
-        return (double)gui.getStatu.Value .statString); 
+    public void setStatusValue(int value){
+        gui.setStatusValue(statString, value);
     }
 
     @Override
-    public long lon.Value .){
-        return (long)gui.getStatu.Value .statString);
-    }
-    @Override
-    public int in.Value .){
-        return (int)gui.getStatu.Value .statString);
-    }
-    @Override
-    public short shor.Value .){
-        return (short)gui.getStatu.Value .statString);
+    public double realValue(){
+        return (double)gui.getStatusValue(statString); 
     }
 
     @Override
-    public byte byt.Value .){
-        return (byte)gui.getStatu.Value .statString);
+    public long longValue(){
+        return (long)gui.getStatusValue(statString);
+    }
+    @Override
+    public int intValue(){
+        return (int)gui.getStatusValue(statString);
+    }
+    @Override
+    public short shortValue(){
+        return (short)gui.getStatusValue(statString);
+    }
+
+    @Override
+    public byte byteValue(){
+        return (byte)gui.getStatusValue(statString);
     }
     
     @Override
-    public boolean boo.Value .){
-        return gui.getStatu.Value .statString) != 0;
+    public boolean boolValue(){
+        return gui.getStatusValue(statString) != 0;
     }
 
     @Override
-    public boolean isBool(){
+    public boolean isBoolValue(){
         return false;
     }
     @Override
-    public boolean isShort(){
+    public boolean isShortValue(){
         return false;
     }
     @Override
-    public boolean isUnsignedShort(){
+    public boolean isUnsignedShortValue(){
         return false;
     }
     @Override
-    public boolean isByte(){
+    public boolean isByteValue(){
         return false;
     }
     @Override
@@ -65,27 +65,27 @@ public class EdeStatVal implements Value {
         return false;
     }
     @Override
-    public boolean isInt(){
+    public boolean isIntValue(){
         return false;
     }
     @Override
-    public boolean isUnsignedInt(){
+    public boolean isUnsignedIntValue(){
         return false;
     }
     @Override
-    public boolean isLong(){
+    public boolean isLongValue(){
         return false;
     }
     @Override
-    public boolean isUnsignedLong(){
+    public boolean isUnsignedLongValue(){
         return false;
     }
     @Override
-    public boolean isReal(){
+    public boolean isRealValue(){
         return false;
     }
     @Override
-    public boolean isString(){
+    public boolean isStringValue(){
         return false;
     }
     @Override
@@ -102,64 +102,6 @@ public class EdeStatVal implements Value {
     }
 
     @Override
-    public.Value .getShallowSlice(int startIndex, int endIndex) throws Exception{ // TODO Auto-generated method stub
+    public Value getShallowSlice(int startIndex, int endIndex) throws Exception{ // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'getShallowSlice'"); }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

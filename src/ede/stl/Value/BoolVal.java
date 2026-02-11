@@ -1,59 +1,59 @@
-package ede.stl.Value ;
+package ede.stl.Value;
 
-public class BoolVal implements Value {
+public class BoolVal implements Value{
     
-    private boolean.Value .
+    private boolean value;
 
-    public BoolVal(boolean.Value .{
-        this.Value .=.Value .
+    public BoolVal(boolean value){
+        this.value = value;
     }
 
-    public double rea.Value .){
-        return (double).Value .? 1 : 0);
+    public double realValue(){
+        return (double)(value ? 1 : 0);
     }
 
-    public long lon.Value .){
-        return.Value .? 1 : 0;
+    public long longValue(){
+        return value ? 1 : 0;
     }
 
-    public int in.Value .){
-        return.Value .? 1 : 0;
+    public int intValue(){
+        return value ? 1 : 0;
     }
 
-    public short shor.Value .){
-        return (short).Value .? 1 : 0);
+    public short shortValue(){
+        return (short)(value ? 1 : 0);
     }
 
-    public byte byt.Value .){
-        return (byte).Value .? 1 : 0);
+    public byte byteValue(){
+        return (byte)(value ? 1 : 0);
     }
 
-    public boolean boo.Value .){
-        return.Value .
+    public boolean boolValue(){
+        return value;
     }
 
 
     public String toString(){
-        return Boolean.toString.Value .;
+        return Boolean.toString(value);
     }
 
     @Override
-    public boolean isBool(){ 
+    public boolean isBoolValue(){ 
         return true;// TODO Auto-generated method stub
     }
 
     @Override
-    public boolean isShort(){ // TODO Auto-generated method stub
+    public boolean isShortValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
     @Override
-    public boolean isUnsignedShort(){ // TODO Auto-generated method stub
+    public boolean isUnsignedShortValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
     @Override
-    public boolean isByte(){ // TODO Auto-generated method stub
+    public boolean isByteValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
@@ -63,32 +63,32 @@ public class BoolVal implements Value {
     }
 
     @Override
-    public boolean isInt(){ // TODO Auto-generated method stub
+    public boolean isIntValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
     @Override
-    public boolean isUnsignedInt(){ // TODO Auto-generated method stub
+    public boolean isUnsignedIntValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
     @Override
-    public boolean isLong(){ // TODO Auto-generated method stub
+    public boolean isLongValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
     @Override
-    public boolean isUnsignedLong(){ // TODO Auto-generated method stub
+    public boolean isUnsignedLongValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
     @Override
-    public boolean isReal(){ // TODO Auto-generated method stub
+    public boolean isRealValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
     @Override
-    public boolean isString(){ // TODO Auto-generated method stub
+    public boolean isStringValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
@@ -105,66 +105,8 @@ public class BoolVal implements Value {
     return false; }
 
     @Override
-    public.Value .getShallowSlice(int startIndex, int endIndex) throws Exception{ // TODO Auto-generated method stub
+    public Value getShallowSlice(int startIndex, int endIndex) throws Exception{ // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getShallowSlice'"); 
     }
     
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

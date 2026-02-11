@@ -1,16 +1,16 @@
-package ede.stl.Value ;
+package ede.stl.Value;
 
 import java.util.ArrayList;
 import ede.stl.common.Utils;
-import ede.stl.Value .Value;
+import ede.stl.Value.Value;
 
 public class ArrayVal<ArrayType extends Value> implements Value {
     private final ArrayList<ArrayType> ArrList;
 
-    public ArrayVal.Value .begin,.Value .end){
-        int intVal = begin.in.Value .);
-                        int intVal2 = end.in.Value .);
-                        int size = (intVal > intVal2 ? (intVal - intVal2) : (intVal2 - intVal));
+    public ArrayVal(Value begin, Value end){
+    	int intVal = begin.intValue();
+			int intVal2 = end.intValue();
+			int size = (intVal > intVal2 ? (intVal - intVal2) : (intVal2 - intVal));
       this.ArrList = new ArrayList<ArrayType>(size);
     }
 
@@ -27,56 +27,56 @@ public class ArrayVal<ArrayType extends Value> implements Value {
     }
 
     @Override
-    public double rea.Value .){
+    public double realValue(){
         // TODO Auto-generated method stub
         return -1; 
     }
 
     @Override
-    public long lon.Value .){
+    public long longValue(){
          // TODO Auto-generated method stub
         return -1; 
     }
 
     @Override
-    public int in.Value .){
+    public int intValue(){
         // TODO Auto-generated method stub
         return -1; 
     }
 
     @Override
-    public short shor.Value .){ 
+    public short shortValue(){ 
         // TODO Auto-generated method stub
         return -1; 
     }
 
     @Override
-    public byte byt.Value .){ // TODO Auto-generated method stub
+    public byte byteValue(){ // TODO Auto-generated method stub
         return -1; 
     }
 
     @Override
-    public boolean boo.Value .){ // TODO Auto-generated method stub
+    public boolean boolValue(){ // TODO Auto-generated method stub
         return false; 
     }
 
     @Override
-    public boolean isBool(){ // TODO Auto-generated method stub
+    public boolean isBoolValue(){ // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public boolean isShort(){ // TODO Auto-generated method stub
+    public boolean isShortValue(){ // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public boolean isUnsignedShort(){ // TODO Auto-generated method stub
+    public boolean isUnsignedShortValue(){ // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public boolean isByte(){ // TODO Auto-generated method stub
+    public boolean isByteValue(){ // TODO Auto-generated method stub
         return false;
     }
 
@@ -86,32 +86,32 @@ public class ArrayVal<ArrayType extends Value> implements Value {
     }
 
     @Override
-    public boolean isInt(){ // TODO Auto-generated method stub
+    public boolean isIntValue(){ // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public boolean isUnsignedInt(){ // TODO Auto-generated method stub
+    public boolean isUnsignedIntValue(){ // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public boolean isLong(){ // TODO Auto-generated method stub
+    public boolean isLongValue(){ // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public boolean isUnsignedLong(){ // TODO Auto-generated method stub
+    public boolean isUnsignedLongValue(){ // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public boolean isReal(){ // TODO Auto-generated method stub
+    public boolean isRealValue(){ // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    public boolean isString(){ // TODO Auto-generated method stub
+    public boolean isStringValue(){ // TODO Auto-generated method stub
         return false;
     }
 
@@ -132,65 +132,7 @@ public class ArrayVal<ArrayType extends Value> implements Value {
     }
 
     @Override
-    public.Value .getShallowSlice(int startIndex, int endIndex){ // TODO Auto-generated method stub
+    public Value getShallowSlice(int startIndex, int endIndex){ // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getShallowSlice'"); 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

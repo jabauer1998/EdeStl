@@ -1,16 +1,16 @@
 package ede.stl.ast;
 
+
 import java.lang.management.OperatingSystemMXBean;
 import ede.stl.common.Position;
 import ede.stl.common.ErrorLog;
 import ede.stl.common.ErrorItem;
 import ede.stl.common.Utils;
 import ede.stl.interpreter.Environment;
-import ede.stl.Value .Value;
+import ede.stl.Value.Value;
 import ede.stl.ast.AstNode;
 import ede.stl.ast.Expression;
 import ede.stl.passes.ExpressionVisitor;
-
 /**
  * The Unary Operation class is used to par.E unary operations unary operations are
  * operations with one operator and an.expression ex: - (1 + 5) the.expression is 1 + 5
@@ -66,61 +66,3 @@ public class UnaryOperation extends AstNode implements Expression {
         return sb.toString();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,60 +1,60 @@
-package ede.stl.Value ;
+package ede.stl.Value;
 
 import ede.stl.common.Utils;
 
-public class StrVal implements Value {
+public class StrVal implements Value{
     
-    private String.Value .
+    private String value;
 
-    public StrVal(String.Value .{
-        this.Value .=.Value .
+    public StrVal(String value){
+        this.value = value;
     }
 
-    public double rea.Value .){
-        return Double.parseDouble.Value .;
+    public double realValue(){
+        return Double.parseDouble(value);
     }
 
-    public long lon.Value .){
-        return Long.parseLong.Value .;
+    public long longValue(){
+        return Long.parseLong(value);
     }
 
-    public int in.Value .){
-        return Integer.parseInt.Value .;
+    public int intValue(){
+        return Integer.parseInt(value);
     }
 
-    public short shor.Value .){
-        return Short.parseShort.Value .;
+    public short shortValue(){
+        return Short.parseShort(value);
     }
 
-    public byte byt.Value .){
-        return Byte.parseByte.Value .;
+    public byte byteValue(){
+        return Byte.parseByte(value);
     }
 
-    public boolean boo.Value .){
-        return Boolean.parseBoolean.Value .;
+    public boolean boolValue(){
+        return Boolean.parseBoolean(value);
     }
 
     public String toString(){
-        return.Value .
+        return value;
     }
 
     @Override
-    public boolean isBool(){ 
+    public boolean isBoolValue(){ 
         return false; 
     }
 
     @Override
-    public boolean isShort(){ 
+    public boolean isShortValue(){ 
         return false; 
     }
 
     @Override
-    public boolean isUnsignedShort(){ 
+    public boolean isUnsignedShortValue(){ 
         return false; 
     }
 
     @Override
-    public boolean isByte(){ 
+    public boolean isByteValue(){ 
         return false; 
     }
 
@@ -64,32 +64,32 @@ public class StrVal implements Value {
     }
 
     @Override
-    public boolean isInt(){ 
+    public boolean isIntValue(){ 
         return false; 
     }
 
     @Override
-    public boolean isUnsignedInt(){ 
+    public boolean isUnsignedIntValue(){ 
         return false; 
     }
 
     @Override
-    public boolean isLong(){ 
+    public boolean isLongValue(){ 
         return false; 
     }
 
     @Override
-    public boolean isUnsignedLong(){ 
+    public boolean isUnsignedLongValue(){ 
         return false; 
     }
 
     @Override
-    public boolean isReal(){ 
+    public boolean isRealValue(){ 
         return false; 
     }
 
     @Override
-    public boolean isString(){ 
+    public boolean isStringValue(){ 
         return true; 
     }
 
@@ -109,73 +109,15 @@ public class StrVal implements Value {
     }
 
     @Override
-    public.Value .getShallowSlice(int startIndex, int endIndex) throws Exception{
+    public Value getShallowSlice(int startIndex, int endIndex) throws Exception{
         throw new UnsupportedOperationException("Cant perform a shallow slice operation on a String operand");
     }
 
     public int length(){
-        return.Value .length();
+        return value.length();
     }
 
     public char charAt(int index){
-        return.Value .charAt(index);
+        return value.charAt(index);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,65 +1,7 @@
 package ede.stl.gui;
 
 public interface Flags {
-    public long getStatu.Value .String statusName);
+    public long getStatusValue(String statusName);
 
-    public void setStatu.Value .String statusName, long statu.Value .;
+    public void setStatusValue(String statusName, long statusValue);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

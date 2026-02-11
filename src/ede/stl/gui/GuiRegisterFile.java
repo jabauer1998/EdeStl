@@ -70,90 +70,32 @@ public class GuiRegisterFile extends VBox implements RegFile {
     }
 
     @Override
-    public long getRegiste.Value .String regName){
+    public long getRegisterValue(String regName){
         GuiRegister Reg = regFile.get(regName);
-        return Reg.GetRegiste.Value .);
+        return Reg.GetRegisterValue();
     }
 
-    public long getRegiste.Value .int RegNumber){
+    public long getRegisterValue(int RegNumber){
         GuiRegister Reg = intRegFile.get(RegNumber);
-        return Reg.GetRegiste.Value .);
+        return Reg.GetRegisterValue();
     }
 
     @Override
-    public void setRegiste.Value .String regName, long re.Value .{ 
+    public void setRegisterValue(String regName, long regValue){ 
        GuiRegister Reg = regFile.get(regName);
-       Reg.SetRegiste.Value .re.Value .;
+       Reg.SetRegisterValue(regValue);
     }
 
      
-    public void setRegiste.Value .int regNumber, long re.Value .{
+    public void setRegisterValue(int regNumber, long regValue){
         GuiRegister Reg = intRegFile.get(regNumber);
-        Reg.SetRegiste.Value .re.Value .;
+        Reg.SetRegisterValue(regValue);
     }
 
     public void clearRegisters(){
-        Collection<GuiRegister> registers = regFile.Value .;
+        Collection<GuiRegister> registers = regFile.values();
         for(GuiRegister register : registers){
-            register.SetRegiste.Value .0);
+            register.SetRegisterValue(0);
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

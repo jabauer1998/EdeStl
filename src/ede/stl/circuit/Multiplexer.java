@@ -2,7 +2,7 @@ package ede.stl.circuit;
 
 import ede.stl.circuit.NandGate;
 import ede.stl.circuit.NotGate;
-import ede.stl.Value .WireVal;
+
 
 public class Multiplexer {
     public Multiplexer(WireVal FinalOutput, WireVal Input1, WireVal Input2, WireVal Select){
