@@ -7,7 +7,7 @@ import ede.stl.Value .Value;
  * 
  * @author Jacob Bauer
  */
-public abstract class CircuitElem implements.Value .
+public abstract class CircuitElem implements Value {
 
     /**
      * method to update the output of the component
@@ -30,31 +30,31 @@ public abstract class CircuitElem implements.Value .
 
     public abstract String toString();
 
-    public double rea.Value .){
+    public double realValue(){
         return getStateSignal() ? 1.0 : 0.0;
     }
 
-    public long lon.Value .){
+    public long longValue(){
         return getStateSignal() ? 1 : 0;
     }
 
-    public int in.Value .){
+    public int intValue(){
         return getStateSignal() ? 1 : 0;
     }
 
-    public short shor.Value .){
+    public short shortValue(){
         return (short)(getStateSignal() ? 1 : 0);
     }
 
-    public byte byt.Value .){
+    public byte byteValue(){
         return (byte)(getStateSignal() ? 1 : 0);
     }
 
-    public boolean boo.Value .){
+    public boolean boolValue(){
         return getStateSignal();
     }
 
-    public.Value .getShallowSlice(int index1, int index2){
+    public Value getShallowSlice(int index1, int index2){
         throw new UnsupportedOperationException("Error no slice operation found for CirsuitElem");
     }
 

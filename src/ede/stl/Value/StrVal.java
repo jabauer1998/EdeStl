@@ -2,7 +2,7 @@ package ede.stl.Value ;
 
 import ede.stl.common.Utils;
 
-public class StrVal implements.Value .
+public class StrVal implements Value {
     
     private String.Value .
 

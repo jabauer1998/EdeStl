@@ -2,7 +2,7 @@ package ede.stl.Value ;
 
 import ede.stl.common.Utils;
 
-public class ByteVal implements.Value .
+public class ByteVal implements Value {
     
     private byte.Value .
 

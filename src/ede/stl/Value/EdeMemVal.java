@@ -4,7 +4,7 @@ import ede.stl.gui.Machine;
 import ede.stl.gui.GuiEde;
 import ede.stl.Value .Value;
 
-public class EdeMemVal implements.Value .
+public class EdeMemVal implements Value {
     private Machine gui;
 
     public EdeMemVal(Machine edeInstance){

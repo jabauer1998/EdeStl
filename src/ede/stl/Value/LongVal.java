@@ -2,7 +2,7 @@ package ede.stl.Value ;
 
 import ede.stl.common.Utils;
 
-public class LongVal implements.Value .
+public class LongVal implements Value {
     
     private long.Value .
 

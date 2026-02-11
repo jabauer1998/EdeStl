@@ -4,7 +4,7 @@ import ede.stl.gui.Machine;
 import ede.stl.gui.GuiEde;
 import ede.stl.Value .Value;
 
-public class EdeRegVal implements.Value .
+public class EdeRegVal implements Value {
     private String regString;
     private Machine gui;
 

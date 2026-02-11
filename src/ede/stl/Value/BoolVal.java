@@ -1,6 +1,6 @@
 package ede.stl.Value ;
 
-public class BoolVal implements.Value .
+public class BoolVal implements Value {
     
     private boolean.Value .
 

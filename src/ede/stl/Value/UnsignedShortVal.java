@@ -2,7 +2,7 @@ package ede.stl.Value ;
 
 import ede.stl.common.Utils;
 
-public class UnsignedShortVal implements.Value . Unsigned{
+public class UnsignedShortVal implements Value, Unsigned {
     private short.Value .
 
     public UnsignedShortVal(short.Value .{
