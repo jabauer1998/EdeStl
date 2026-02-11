@@ -11,7 +11,7 @@ A Java-based Emulator Debug Environment (EDE) inspired by PEP9. It allows users 
 ## Project Architecture
 - **Language**: Java (GraalVM 22.3 / Java 19)
 - **GUI Framework**: JavaFX (OpenJFX 17 via Nix)
-- **Build System**: Custom bash build script (`build.sh`)
+- **Build System**: Custom bash build scripts (`build/LinuxBuild.sh` for Linux, `build/WindowsBuild.ps1` for Windows)
 - **No main method**: This is a library, not a standalone application
 
 ### Source Structure
@@ -29,12 +29,13 @@ src/ede/stl/
 ```
 
 ### Build
-Run `bash build.sh` to compile. Output goes to `bin/` directory.
+Run `bash build/LinuxBuild.sh build` to compile (or `bash build/LinuxBuild.sh clean` to clean).
+On Windows use `build/WindowsBuild.ps1 build`. Output goes to `bin/` directory.
 
 ## Recent Changes
 - 2026-02-11: Initial Replit setup
   - Installed Java (GraalVM 22.3) and OpenJFX
   - Renamed `values/` directory to `Value/` to match Java package declarations
-  - Created `build.sh` build script
+  - Created `build/LinuxBuild.sh` build script (equivalent to WindowsBuild.ps1)
   - Removed stale Emacs lock file (.#Utils.java)
-  - Configured Build workflow
+  - Configured Build workflow (`bash build/LinuxBuild.sh build`)
