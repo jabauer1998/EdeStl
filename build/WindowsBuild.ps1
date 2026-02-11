@@ -20,9 +20,8 @@ if($javaExists -ne ""){
 	    if(Test-Path -Path build\BuildList.txt){
 		Remove-Item -Force build\BuildList.txt
 	    }
-	    New-Item -Path "build\BuildList.txt" -ItemType File -Encoding "UTF-8"
-	    Get-ChildItem -Path "$srcRoot/src" -Recurse -File | Select-Object -ExpandProperty FullName > build\BuildList.txt
-	    Get-Content -Path 'build\BuildList.txt' | Set-Content -Path 'build\BuildList.txt' -Encoding "utf-8"
+	    New-Item -Path "build\BuildList.txt" -ItemType File
+	    Get-ChildItem -Path "$srcRoot/src" -Recurse -File | Where-Object { $_.Name -notlike "#*" -and $_.Name -notlike "*~" } | Select-Object -ExpandProperty FullName > build\BuildList.txt
 	    foreach ($line in Get-Content -Path 'build\BuildList.txt') {
 		$content = Get-Content -Path $line -Raw
     
@@ -31,7 +30,7 @@ if($javaExists -ne ""){
 		[System.IO.File]::WriteAllText($line, $content, $Utf8NoBomEncoding)
 	    }
 	    cat "build/BuildList.txt"
-	    javac "@build/BuildList.txt" -cp "lib\openjfx-25.0.2_windows-x64_bin-sdk\javafx-sdk-25.0.2\lib\*" -encoding "UTF-8"
+	    javac "@build/BuildList.txt" -sourcepath "./src" -cp "lib\openjfx-25.0.2_windows-x64_bin-sdk\javafx-sdk-25.0.2\lib\*;./lib/*" -encoding "UTF-8"
 	} elseif ($command -eq "clean"){
 	    Remove-Item -Recurse bin/*
 	} elseif ($command -eq "publish"){

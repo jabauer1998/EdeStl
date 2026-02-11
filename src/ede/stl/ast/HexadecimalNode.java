@@ -1,0 +1,100 @@
+package ede.stl.ast;
+
+import ede.stl.common.Position;
+import ede.stl.ast.AstNode;
+import ede.stl.ast.Expression;
+import ede.stl.passes.ExpressionVisitor;
+import java.lang.String;
+
+/**
+ * The Nu.Value .class is used to par.E different numbers in verilog
+ * 
+ * @author Jacob Bauer
+ */
+public class HexadecimalNode extends AstNode implements Expression{
+    public final String lexeme;// The token to use for the number.Value .
+
+    /**
+     * The Nu.Value .constructor takes in a token representing the number and generates the
+     * cor.Esponding num.Value .for that token
+     * 
+     * @param number the token to convert into a number
+     */
+    public HexadecimalNode(Position start, String lexeme) {
+        super(start);
+        this.lexeme = lexeme;
+    }
+
+    /**
+     * The accept method will make it so the visitor interface will work
+     * 
+     * @param astNodeVisitor the visitor object we want to use to visit another member of a
+     *                       class
+     */
+    public <ExprVisitType> ExprVisitType accept(ExpressionVisitor<ExprVisitType> exprVisitor, Object... argv){
+        return exprVisitor.visit(this, argv);
+    }
+
+    @Override
+    public String toString(){ // TODO Auto-generated method stub
+        return lexeme;
+     }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

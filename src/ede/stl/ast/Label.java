@@ -1,0 +1,108 @@
+package ede.stl.ast;
+
+import ede.stl.common.Pointer;
+import ede.stl.common.Position;
+import ede.stl.common.SymbolTable;
+import ede.stl.ast.AstNode;
+import ede.stl.ast.Expression;
+import ede.stl.passes.ExpressionVisitor;
+
+/**
+ * The VectorElement class is used to par.E a call to an array cell
+ * 
+ * @author Jacob Bauer
+ */
+
+public abstract class Label extends AstNode implements Expression, .Value .{
+
+    public final String     labelIdentifier;  // name of the array
+
+    /**
+     * The VectorElement constructor takes an identifier with up to twoindex to s Ecify the sub
+     * array that is desired
+     * 
+     * @param ident  name of the array
+     * @param index1 min index of the array
+     * @param index2 max index of the array
+     */
+
+    protected Label(Position start, String labelIdentifier) {
+        super(start);
+        this.labelIdentifier = labelIdentifier;
+    }
+
+    public <DataType> Pointer<DataType> get.Value .SymbolTable<Pointer<DataType>> table){
+        return null;
+    }
+
+    /**
+     * The accept method will make it so the visitor interface will work
+     * 
+     * @param astNodeVisitor the visitor object we want to use to visit another member of a
+     *                       class
+     */
+    abstract public <ExprVisitType> ExprVisitType accept(ExpressionVisitor<ExprVisitType> exprVisitor, Object... argv);
+
+    @Override
+    public String toString(){
+        return this.labelIdentifier;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

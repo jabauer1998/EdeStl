@@ -1,0 +1,119 @@
+package ede.stl.circuit;
+
+import javax.naming.OperationNotSupportedException;
+import ede.stl.Value .Value;
+/**
+ * The generic class for Circuit Objects
+ * 
+ * @author Jacob Bauer
+ */
+public abstract class CircuitElem implements.Value .
+
+    /**
+     * method to update the output of the component
+     * 
+     * @param  None
+     * @author      Jacob Bauer
+     */
+
+    public abstract void update(); // the update state of the component
+
+    /**
+     * All circuit elements must have some method of getting the state of an object that is
+     * attached to it
+     * 
+     * @param  None
+     * @author      Jacob Bauer
+     */
+
+    public abstract boolean getStateSignal();
+
+    public abstract String toString();
+
+    public double rea.Value .){
+        return getStateSignal() ? 1.0 : 0.0;
+    }
+
+    public long lon.Value .){
+        return getStateSignal() ? 1 : 0;
+    }
+
+    public int in.Value .){
+        return getStateSignal() ? 1 : 0;
+    }
+
+    public short shor.Value .){
+        return (short)(getStateSignal() ? 1 : 0);
+    }
+
+    public byte byt.Value .){
+        return (byte)(getStateSignal() ? 1 : 0);
+    }
+
+    public boolean boo.Value .){
+        return getStateSignal();
+    }
+
+    public.Value .getShallowSlice(int index1, int index2){
+        throw new UnsupportedOperationException("Error no slice operation found for CirsuitElem");
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,114 @@
+package ede.stl.ast;
+
+import ede.stl.common.Position;
+import ede.stl.common.ErrorLog;
+import ede.stl.interpreter.Environment;
+import ede.stl.Value .Value;
+import ede.stl.ast.AstNode;
+import ede.stl.ast.Expression;
+import ede.stl.passes.ExpressionVisitor;
+
+/**
+ * The Ternary.expression class was designed to par.E Ternary expressions Ex: (i == x) ?
+ * x : y it kind of works like an if else statement
+ * 
+ * @author Jacob Bauer
+ */
+public class TernaryOperation extends AstNode implements Expression {
+    public final Expression condition; // the condition phrase of the ternary Expression
+    public final Expression ifTrue;      // the Expression to the left of the colon
+    public final Expression ifFalse;     // the Expression to the right of the colon
+
+    /**
+     * Th ternary.expression takes in 3 expressions only one of which it returns. It can
+     * return the one on the left hand side if the colon or the right.
+     * 
+     * @param condition the condition to be evaluated
+     * @param left      the.expression to return if the condition is tr.E
+     * @param right     the exprVisitoresson to evaluate if the condition is false
+     */
+    public TernaryOperation(Position start, Expression condition, Expression ifTrue, Expression ifFalse) {
+        super(start);
+        this.condition = condition;
+        this.ifTrue = ifTrue;
+        this.ifFalse = ifFalse;
+    }
+    /**
+     * The accept method will make it so the visitor interface will work
+     * 
+     * @param astNodeVisitor the visitor object we want to use to visit another member of a
+     *                       class
+     */
+    public <ExprVisitType> ExprVisitType accept(ExpressionVisitor<ExprVisitType> exprVisitor, Object... argv){
+        return exprVisitor.visit(this, argv);
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(condition.toString());
+        sb.append(" ? ");
+        sb.append(ifTrue.toString());
+        sb.append(" : ");
+        sb.append(ifFalse.toString());
+        return sb.toString();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
