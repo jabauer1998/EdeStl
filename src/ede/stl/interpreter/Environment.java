@@ -10,7 +10,7 @@ import ede.stl.common.Pointer;
 import ede.stl.common.SymbolTable;
 import ede.stl.common.FormattedScanner;
 import ede.stl.gui.GuiEde;
-import ede.stl.Value.Value;
+import ede.stl.values.Value;
 import ede.stl.ast.ModuleDeclaration;
 import ede.stl.ast.FunctionDeclaration;
 import ede.stl.ast.TaskDeclaration;

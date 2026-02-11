@@ -1,7 +1,7 @@
 package ede.stl.circuit;
 
 import ede.stl.common.Utils;
-import ede.stl.Value.VectorVal;
+import ede.stl.values.VectorVal;
 import ede.stl.circuit.WireVal;
 
 public class RippleCarryAdder {

@@ -7,7 +7,7 @@ import ede.stl.gui.GuiJob.TextAreaType;
 import ede.stl.gui.GuiMachine;
 import ede.stl.gui.GuiRam;
 import ede.stl.gui.GuiRegister;
-import ede.stl.Value.Value;
+import ede.stl.values.Value;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;

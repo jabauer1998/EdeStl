@@ -1,16 +1,16 @@
-package ede.stl.Value;
+package ede.stl.values;
 
 
 import java.lang.Integer;
-import ede.stl.Value.ByteVal;
-import ede.stl.Value.IntVal;
-import ede.stl.Value.LongVal;
-import ede.stl.Value.ShortVal;
-import ede.stl.Value.UnsignedByteVal;
-import ede.stl.Value.UnsignedIntVal;
-import ede.stl.Value.UnsignedLongVal;
-import ede.stl.Value.UnsignedShortVal;
-import ede.stl.Value.VectorVal;
+import ede.stl.values.ByteVal;
+import ede.stl.values.IntVal;
+import ede.stl.values.LongVal;
+import ede.stl.values.ShortVal;
+import ede.stl.values.UnsignedByteVal;
+import ede.stl.values.UnsignedIntVal;
+import ede.stl.values.UnsignedLongVal;
+import ede.stl.values.UnsignedShortVal;
+import ede.stl.values.VectorVal;
 import ede.stl.circuit.CircuitElem;
 
 /**
@@ -19,9 +19,9 @@ import ede.stl.circuit.CircuitElem;
  * @author Jacob Bauer
  */
 
-public class OctalPattern extends Pattern{
+public class BinaryPattern extends Pattern{
 
-    public OctalPattern(String pattern) { super(pattern); }
+    public BinaryPattern(String pattern) { super(pattern); }
 
     public boolean match(LongVal value){
 
@@ -30,8 +30,8 @@ public class OctalPattern extends Pattern{
 
         int patternLength = pattern.length();
 
-        if(patternLength * 3 < Long.toBinaryString(val).length()){
-            long shiftedValue = val >> (patternLength * 3);
+        if(patternLength < Long.toBinaryString(val).length()){
+            long shiftedValue = val >> patternLength;
             if(shiftedValue != 0){
                 return false;
             }
@@ -42,9 +42,9 @@ public class OctalPattern extends Pattern{
             if (current == 'x' || current == 'z')
                 continue;
             
-            long patternPieceAsLong = Long.parseLong("" + current, 8);
-            long shiftedValLong = val >> 3*(patternLength - i) - 3;
-            long maskedVal = shiftedValLong & 07; // or in binary 0b111
+            long patternPieceAsLong = Long.parseLong("" + current, 2);
+            long shiftedValLong = val >> patternLength - i - 1;
+            long maskedVal = shiftedValLong & 0b1; // or in binary 0b111
 
             if(maskedVal != patternPieceAsLong)
                 return false;
@@ -54,13 +54,14 @@ public class OctalPattern extends Pattern{
     }
 
     public boolean match(UnsignedLongVal value){
+
         String pattern = super.getPattern();
         long val = value.longValue();
 
         int patternLength = pattern.length();
 
-        if(patternLength * 3 < Long.toBinaryString(val).length()){
-            long shiftedValue = val >> (patternLength * 3);
+        if(patternLength < Long.toBinaryString(val).length()){
+            long shiftedValue = val >> patternLength;
             if(shiftedValue != 0){
                 return false;
             }
@@ -71,9 +72,9 @@ public class OctalPattern extends Pattern{
             if (current == 'x' || current == 'z')
                 continue;
             
-            long patternPieceAsLong = Long.parseLong("" + current, 8);
-            long shiftedValLong = val >> 3*(patternLength - i) - 3;
-            long maskedVal = shiftedValLong & 07; // or in binary 0b111
+            long patternPieceAsLong = Long.parseLong("" + current, 2);
+            long shiftedValLong = val >> patternLength - i - 1;
+            long maskedVal = shiftedValLong & 0b1; // or in binary 0b111
 
             if(maskedVal != patternPieceAsLong)
                 return false;
@@ -89,14 +90,14 @@ public class OctalPattern extends Pattern{
 
         int patternLength = pattern.length();
 
-        if(patternLength > 8){
+        if(patternLength > 32){
             int num = value.intValue();
             LongVal newVal = new LongVal((long)num);
             return match(newVal);
         }
 
-        if(patternLength * 3 < Integer.toBinaryString(val).length()){
-            int shiftedValue = val >> (patternLength * 3);
+        if(patternLength < Integer.toBinaryString(val).length()){
+            int shiftedValue = val >> patternLength;
             if(shiftedValue != 0){
                 return false;
             }
@@ -107,9 +108,9 @@ public class OctalPattern extends Pattern{
             if (current == 'x' || current == 'z')
                 continue;
             
-            int patternPieceAsInt = Integer.parseInt("" + current, 8);
-            int shiftedValInt = val >> 3*(patternLength - i) - 3;
-            int maskedVal = shiftedValInt & 07; // or 0b111 for short
+            int patternPieceAsInt = Integer.parseInt("" + current, 2);
+            int shiftedValInt = val >> patternLength - i - 1;
+            int maskedVal = shiftedValInt & 0b1; // or 0b111 for short
 
             if(maskedVal != patternPieceAsInt)
                 return false;
@@ -119,19 +120,20 @@ public class OctalPattern extends Pattern{
     }
 
     public boolean match(UnsignedIntVal value){
+
         String pattern = super.getPattern();
         int val = value.intValue();
 
         int patternLength = pattern.length();
 
-        if(patternLength > 8){
+        if(patternLength > 32){
             int num = value.intValue();
             LongVal newVal = new LongVal((long)num);
             return match(newVal);
         }
 
-        if(patternLength * 3 < Integer.toBinaryString(val).length()){
-            int shiftedValue = val >> (patternLength * 3);
+        if(patternLength < Integer.toBinaryString(val).length()){
+            int shiftedValue = val >> patternLength;
             if(shiftedValue != 0){
                 return false;
             }
@@ -142,9 +144,9 @@ public class OctalPattern extends Pattern{
             if (current == 'x' || current == 'z')
                 continue;
             
-            int patternPieceAsInt = Integer.parseInt("" + current, 8);
-            int shiftedValInt = val >> 3*(patternLength - i) - 3;
-            int maskedVal = shiftedValInt & 07; // or 0b111 for short
+            int patternPieceAsInt = Integer.parseInt("" + current, 2);
+            int shiftedValInt = val >> patternLength - i - 1;
+            int maskedVal = shiftedValInt & 0b1; // or 0b111 for short
 
             if(maskedVal != patternPieceAsInt)
                 return false;
@@ -160,14 +162,14 @@ public class OctalPattern extends Pattern{
 
         int patternLength = pattern.length();
 
-        if(patternLength > 4){
+        if(patternLength > 16){
             short num = value.shortValue();
             IntVal newVal = new IntVal(num);
             return match(newVal);
         }
 
-        if(patternLength * 3 < Integer.toBinaryString(val).length()){
-            short shiftedValue = (short)(val >> (patternLength * 3));
+        if(patternLength < Integer.toBinaryString(val).length()){
+            short shiftedValue = (short)(val >> patternLength);
             if(shiftedValue != 0){
                 return false;
             }
@@ -178,9 +180,9 @@ public class OctalPattern extends Pattern{
             if (current == 'x' || current == 'z')
                 continue;
             
-            short patternPieceAsShort = Short.parseShort("" + current, 8);
-            short shiftedValShort = (short)(val >> 3*(patternLength - i) - 3);
-            short maskedVal = (short)(shiftedValShort & 07);
+            short patternPieceAsShort = Short.parseShort("" + current, 2);
+            short shiftedValShort = (short)(val >> patternLength - i - 1);
+            short maskedVal = (short)(shiftedValShort & 0b1);
 
             if(maskedVal != patternPieceAsShort)
                 return false;
@@ -190,19 +192,20 @@ public class OctalPattern extends Pattern{
     }
 
     public boolean match(UnsignedShortVal value){
+
         String pattern = super.getPattern();
         short val = value.shortValue();
 
         int patternLength = pattern.length();
 
-        if(patternLength > 4){
+        if(patternLength > 16){
             short num = value.shortValue();
             IntVal newVal = new IntVal(num);
             return match(newVal);
         }
 
-        if(patternLength * 3 < Integer.toBinaryString(val).length()){
-            short shiftedValue = (short)(val >> (patternLength * 3));
+        if(patternLength  < Integer.toBinaryString(val).length()){
+            short shiftedValue = (short)(val >> patternLength);
             if(shiftedValue != 0){
                 return false;
             }
@@ -213,9 +216,9 @@ public class OctalPattern extends Pattern{
             if (current == 'x' || current == 'z')
                 continue;
             
-            short patternPieceAsShort = Short.parseShort("" + current, 8);
-            short shiftedValShort = (short)(val >> 3*(patternLength - i) - 3);
-            short maskedVal = (short)(shiftedValShort & 07);
+            short patternPieceAsShort = Short.parseShort("" + current, 2);
+            short shiftedValShort = (short)(val >> patternLength - i - 1);
+            short maskedVal = (short)(shiftedValShort & 0b1);
 
             if(maskedVal != patternPieceAsShort)
                 return false;
@@ -231,14 +234,14 @@ public class OctalPattern extends Pattern{
 
         int patternLength = pattern.length();
 
-        if(patternLength > 2){
+        if(patternLength > 8){
             byte num = value.byteValue();
             ShortVal newVal = new ShortVal(num);
             return match(newVal);
         }
 
-        if(patternLength * 3 < Integer.toBinaryString(val).length()){
-            byte shiftedValue = (byte)(val >> (patternLength * 3));
+        if(patternLength < Integer.toBinaryString(val).length()){
+            byte shiftedValue = (byte)(val >> patternLength);
             if(shiftedValue != 0){
                 return false;
             }
@@ -249,9 +252,9 @@ public class OctalPattern extends Pattern{
             if (current == 'x' || current == 'z')
                 continue;
             
-            byte patternPieceAsByte = Byte.parseByte("" + current, 8);
-            byte shiftedValByte = (byte)(val >> 3*(patternLength - i) - 3);
-            byte maskedVal = (byte)(shiftedValByte & 07);
+            byte patternPieceAsByte = Byte.parseByte("" + current, 2);
+            byte shiftedValByte = (byte)(val >> patternLength - i - 1);
+            byte maskedVal = (byte)(shiftedValByte & 0b1);
 
             if(maskedVal != patternPieceAsByte)
                 return false;
@@ -261,19 +264,20 @@ public class OctalPattern extends Pattern{
     }
 
     public boolean match(UnsignedByteVal value){
+
         String pattern = super.getPattern();
         byte val = value.byteValue();
 
         int patternLength = pattern.length();
 
-        if(patternLength > 2){
+        if(patternLength > 8){
             byte num = value.byteValue();
             ShortVal newVal = new ShortVal(num);
             return match(newVal);
         }
 
-        if(patternLength * 3 < Integer.toBinaryString(val).length()){
-            byte shiftedValue = (byte)(val >> (patternLength * 3));
+        if(patternLength < Integer.toBinaryString(val).length()){
+            byte shiftedValue = (byte)(val >> patternLength);
             if(shiftedValue != 0){
                 return false;
             }
@@ -284,9 +288,9 @@ public class OctalPattern extends Pattern{
             if (current == 'x' || current == 'z')
                 continue;
             
-            byte patternPieceAsByte = Byte.parseByte("" + current, 8);
-            byte shiftedValByte = (byte)(val >> 3*(patternLength - i) - 3);
-            byte maskedVal = (byte)(shiftedValByte & 07);
+            byte patternPieceAsByte = Byte.parseByte("" + current, 2);
+            byte shiftedValByte = (byte)(val >> patternLength - i - 1);
+            byte maskedVal = (byte)(shiftedValByte & 0b1);
 
             if(maskedVal != patternPieceAsByte)
                 return false;
@@ -307,7 +311,8 @@ public class OctalPattern extends Pattern{
         int patternLength = pattern.length();
 
         int bitIncr = (value.getIndex1() < value.getIndex2()) ? 1 : -1;
-        int octIncr = bitIncr * 4;
+        int binIncr = bitIncr;
+
         int endOverflow = value.getIndex2() + ((value.getIndex1() > value.getIndex2())? patternLength - 1 : -patternLength + 1);
 
         if(patternLength * 4 < value.getSize()){
@@ -320,22 +325,17 @@ public class OctalPattern extends Pattern{
             }
         }
 
-        for (int i = 0, vi = endOverflow; i < patternLength; i++, vi+=octIncr) {
+        for (int i = 0, vi = endOverflow; i < patternLength; i++, vi+=binIncr) {
             char current = pattern.charAt(i);
             if (current == 'x' || current == 'z')
                 continue;
             
-            byte patternPieceAsByte = Byte.parseByte("" + current, 8);
+            byte patternPieceAsByte = Byte.parseByte("" + current, 2);
+            boolean patternSignal = patternPieceAsByte != 0;
 
-            for(int j = 0; j < 3; j++){
-                byte matchBit = (byte)(patternPieceAsByte >> (2 - j));
-                boolean matchSignal = matchBit != 0;
-
-                if(matchSignal != value.getValue(vi + j * bitIncr).getStateSignal()){
-                    return false;
-                }
-            }   
-            
+            if(patternSignal != value.getValue(vi).getStateSignal()){
+                return false;
+            }
         }
 
         return true;

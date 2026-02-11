@@ -14,10 +14,10 @@ import ede.stl.common.ErrorItem;
 import ede.stl.common.Utils;
 import ede.stl.interpreter.Environment;
 import ede.stl.interpreter.VerilogInterpreter;
-import ede.stl.Value.IntVal;
-import ede.stl.Value.Value;
-import ede.stl.Value.VectorVal;
-import ede.stl.Value.ArrayRegVal;
+import ede.stl.values.IntVal;
+import ede.stl.values.Value;
+import ede.stl.values.VectorVal;
+import ede.stl.values.ArrayRegVal;
 import ede.stl.ast.ModuleDeclaration;
 import ede.stl.ast.VerilogFile;
 import ede.stl.ast.ConstantExpression;
@@ -306,7 +306,7 @@ public class VerilogToJavaGen {
                 for(ModuleItem item : mod.moduleItemList) { codeGenRestModuleItem(item, moduleConstructor, mod.moduleName, moduleWriter); }
         }
         
-        private void codeGenRestModuleItem(ModuleItem item, MethodVisitor moduleConstructor, String modName, ClassWriter moduleWriter) {
+        private void codeGenRestModuleItem(ModuleItem item, MethodVisitor moduleConstructor, String modName, ClassWriter moduleWriter) throws Exception {
                 if(item instanceof GateDeclaration) codeGenGateDeclaration(item, moduleConstructor, modName, moduleWriter);
                 else if(item instanceof ContinuousAssignment) codeGenContinuousAssignment((ContinuousAssignment)item, moduleConstructor, modName, moduleWriter);
                 else if(item instanceof EmptyModItem) codeGenEmptyModItem();
@@ -332,13 +332,13 @@ public class VerilogToJavaGen {
                 
         }
         
-        private void codeGenContinuousAssignment(ContinuousAssignment item, MethodVisitor moduleConstructor, String modName, ClassWriter moduleWriter){
+        private void codeGenContinuousAssignment(ContinuousAssignment item, MethodVisitor moduleConstructor, String modName, ClassWriter moduleWriter) throws Exception{
                 for(BlockingAssignment assign: item.assignmentList) {
                         codeGenDeepAssignment(assign, moduleConstructor, modName, moduleWriter);
                 }
         }
         
-        private void codeGenDeepAssignment(BlockingAssignment assign, MethodVisitor constructor, String modName, ClassWriter moduleWriter) {
+        private void codeGenDeepAssignment(BlockingAssignment assign, MethodVisitor constructor, String modName, ClassWriter moduleWriter) throws Exception {
                 codeGenDeepExpression(assign.rightHandSide, constructor, modName, moduleWriter);
                 
                 if(assign.rightHandSide instanceof Element){
@@ -392,7 +392,7 @@ public class VerilogToJavaGen {
                 }
         }
         
-        private void codeGenAndGateDeclaration(AndGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) {
+        private void codeGenAndGateDeclaration(AndGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception {
                 int count = item.gateConnections.size() - 3;
                 
                 for(int i = 0; i < count; i++) {
@@ -412,7 +412,7 @@ public class VerilogToJavaGen {
                 moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "Value/circuit_elem/nodes/gates/AndGate", "<Init>", "(LWeb;LWeb;LWeb;[LWeb;)V", false);
         }
         
-        private void codeGenNandGateDeclaration(NandGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) {
+        private void codeGenNandGateDeclaration(NandGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception {
                 int count = item.gateConnections.size() - 3;
                 
                 for(int i = 0; i < count; i++) {
@@ -432,7 +432,7 @@ public class VerilogToJavaGen {
                 moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "Value/circuit_elem/nodes/gates/NandGate", "<Init>", "(LWeb;LWeb;LWeb;[LWeb;)V", false);
         }
         
-        private void codeGenNorGateDeclaration(NorGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) {
+        private void codeGenNorGateDeclaration(NorGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception {
                 int count = item.gateConnections.size() - 3;
                 
                 for(int i = 0; i < count; i++) {
@@ -452,13 +452,13 @@ public class VerilogToJavaGen {
                 moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "Value/circuit_elem/nodes/gates/NorGate", "<Init>", "(LWeb;LWeb;LWeb;[LWeb;)V", false);
         }
         
-        private void codeGenNotGateDeclaration(NotGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) {
+        private void codeGenNotGateDeclaration(NotGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception {
                 codeGenDeepExpression(item.gateConnections.get(0), moduleConstructor, modName, writer);
                 codeGenDeepExpression(item.gateConnections.get(1), moduleConstructor, modName, writer);
                 moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "Value/circuit_elem/nodes/gates/NandGate", "<Init>", "(LWeb;LWeb;)V", false);
         }
         
-        private void codeGenOrGateDeclaration(OrGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) {
+        private void codeGenOrGateDeclaration(OrGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception {
                 int count = item.gateConnections.size() - 3;
                 
                 for(int i = 0; i < count; i++) {
@@ -478,7 +478,7 @@ public class VerilogToJavaGen {
                 moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "Value/circuit_elem/nodes/gates/NorGate", "<Init>", "(LWeb;LWeb;LWeb;[LWeb;)V", false);
         }
         
-        private void codeGenXnorGateDeclaration(XnorGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) {
+        private void codeGenXnorGateDeclaration(XnorGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception {
                 int count = item.gateConnections.size() - 3;
                 
                 for(int i = 0; i < count; i++) {
@@ -498,7 +498,7 @@ public class VerilogToJavaGen {
                 moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "Value/circuit_elem/nodes/gates/XnorGate", "<Init>", "(LWeb;LWeb;LWeb;[LWeb;)V", false);
         }
         
-        private void codeGenXorGateDeclaration(XorGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) {
+        private void codeGenXorGateDeclaration(XorGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception {
                 int count = item.gateConnections.size() - 3;
                 
                 for(int i = 0; i < count; i++) {
@@ -644,7 +644,7 @@ public class VerilogToJavaGen {
                 methodVisit.visitEnd();
         }
         
-        private void codeGenDeepTask(TaskDeclaration decl, String modName, ClassWriter moduleWriter) {
+        private void codeGenDeepTask(TaskDeclaration decl, String modName, ClassWriter moduleWriter) throws Exception {
                 StringBuilder methodType = new StringBuilder();
                 methodType.append('(');
 

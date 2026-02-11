@@ -1,7 +1,7 @@
 package ede.stl.circuit;
 
 import ede.stl.circuit.Node;
-import ede.stl.Value.*;
+import ede.stl.values.*;
 
 public abstract class Gate extends Node {
 

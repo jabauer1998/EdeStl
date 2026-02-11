@@ -1,7 +1,7 @@
 package ede.stl.circuit;
 
 import javax.naming.OperationNotSupportedException;
-import ede.stl.Value.Value;
+import ede.stl.values.Value;
 /**
  * The generic class for Circuit Objects
  * 

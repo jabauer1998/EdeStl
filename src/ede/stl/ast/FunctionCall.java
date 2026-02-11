@@ -3,7 +3,7 @@ package ede.stl.ast;
 
 import ede.stl.common.Position;
 import ede.stl.interpreter.Environment;
-import ede.stl.Value.Value;
+import ede.stl.values.Value;
 import ede.stl.ast.AstNode;
 import ede.stl.ast.Expression;
 import ede.stl.ast.FunctionDeclaration;

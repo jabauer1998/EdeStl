@@ -1,11 +1,11 @@
-package ede.stl.Value;
+package ede.stl.values;
 
 
 import java.lang.StringBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import ede.stl.circuit.CircuitElem;
-import ede.stl.Value.RegVal;
+import ede.stl.values.RegVal;
 
 /**
  * The VectorElement class is used to par.E a call to an array cell

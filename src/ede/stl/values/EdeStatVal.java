@@ -1,50 +1,47 @@
-package ede.stl.Value;
+package ede.stl.values;
 
 import ede.stl.gui.Machine;
-import ede.stl.gui.GuiEde;
-import ede.stl.Value.Value;
+import ede.stl.values.Value;
 
-public class EdeMemVal implements Value{
+public class EdeStatVal implements Value{
+    private String statString;
     private Machine gui;
 
-    public EdeMemVal(Machine edeInstance){
+    public EdeStatVal(String regValueString, Machine edeInstance){
         this.gui = edeInstance;
+        this.statString = regValueString;
     }
 
-    public long elemAtIndex(int index){
-        return this.gui.getMemoryValue(index);
-    }
-
-    public void setElemAtIndex(int index, int value){
-        this.gui.setMemoryValue(index, value);
+    public void setStatusValue(int value){
+        gui.setStatusValue(statString, value);
     }
 
     @Override
     public double realValue(){
-        return -1;    
+        return (double)gui.getStatusValue(statString); 
     }
 
     @Override
     public long longValue(){
-        return -1;
+        return (long)gui.getStatusValue(statString);
     }
     @Override
     public int intValue(){
-        return -1;
+        return (int)gui.getStatusValue(statString);
     }
     @Override
     public short shortValue(){
-        return -1;
+        return (short)gui.getStatusValue(statString);
     }
 
     @Override
     public byte byteValue(){
-        return -1;
+        return (byte)gui.getStatusValue(statString);
     }
     
     @Override
     public boolean boolValue(){
-        return false;
+        return gui.getStatusValue(statString) != 0;
     }
 
     @Override
@@ -106,8 +103,5 @@ public class EdeMemVal implements Value{
 
     @Override
     public Value getShallowSlice(int startIndex, int endIndex) throws Exception{ // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getShallowSlice'"); 
-    }
-
-    
+    throw new UnsupportedOperationException("Unimplemented method 'getShallowSlice'"); }
 }

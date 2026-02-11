@@ -1,98 +1,93 @@
-package ede.stl.Value;
+package ede.stl.values;
 
 import ede.stl.common.Utils;
 
-public class IntVal implements Value{
-    
-    private int value;
+public class UnsignedByteVal implements Value, Unsigned{
+    private Byte value;
 
-    public IntVal(int value){
+    public UnsignedByteVal(byte value){
         this.value = value;
     }
 
-    public double realValue(){
-        return (double)value;
+    public UnsignedByteVal(int value){
+        this.value = (byte)value;
     }
-
-    public long longValue(){
-        return value;
-    }
-
-    public int intValue(){
-        return value;
-    }
-
-    public short shortValue(){
-        return (short)value;
-    }
-
-    public byte byteValue(){
-        return (byte)value;
-    }
-
-    public boolean boolValue(){
-        return value != 0;
-    }
-
 
     public String toString(){
-        return Integer.toString(value);
+        byte value = this.byteValue();
+        return Integer.toUnsignedString(value);
     }
 
     @Override
-    public boolean isBoolValue(){ // TODO Auto-generated method stub
-        return false; 
+    public boolean isByteValue(){
+        return false;
+    }
+
+    @Override
+    public boolean isUnsignedByteValue(){
+        return true;
+    }
+
+    public long longValue(){
+        return Byte.toUnsignedLong(value);
+    }
+
+    public int intValue(){
+        return Byte.toUnsignedInt(value);
+    }
+
+    public short shortValue(){
+        return (short)Byte.toUnsignedInt(value);
+    }
+
+    public byte byteValue(){
+        return value;
+    }
+
+    @Override
+    public double realValue(){ // TODO Auto-generated method stub
+    return (double)value; }
+
+    @Override
+    public boolean boolValue(){ // TODO Auto-generated method stub
+    return value != 0; }
+
+    @Override
+    public boolean isBoolValue(){
+        return false;
     }
 
     @Override
     public boolean isShortValue(){ // TODO Auto-generated method stub
-        return false; 
-    }
+    return false; }
 
     @Override
     public boolean isUnsignedShortValue(){ // TODO Auto-generated method stub
-        return false; 
-    }
-
-    @Override
-    public boolean isByteValue(){ // TODO Auto-generated method stub
-        return false; 
-    }
-
-    @Override
-    public boolean isUnsignedByteValue(){ // TODO Auto-generated method stub
-        return false; 
-    }
+    return false; }
 
     @Override
     public boolean isIntValue(){ // TODO Auto-generated method stub
-        return true; 
-    }
+    return false; }
 
     @Override
     public boolean isUnsignedIntValue(){ // TODO Auto-generated method stub
-        return false; 
-    }
+    return false; }
 
     @Override
     public boolean isLongValue(){ // TODO Auto-generated method stub
-        return false; 
-    }
+    return false; }
 
     @Override
     public boolean isUnsignedLongValue(){ // TODO Auto-generated method stub
-        return false; 
-    }
+    return false; }
 
     @Override
     public boolean isRealValue(){ // TODO Auto-generated method stub
-        return false; 
-    }
+    return false; }
 
     @Override
     public boolean isStringValue(){ // TODO Auto-generated method stub
-        return false; 
-    }
+    return false; }
 
     @Override
     public boolean isVector(){ // TODO Auto-generated method stub
@@ -107,12 +102,12 @@ public class IntVal implements Value{
     return false; }
 
     @Override
-    public Value getShallowSlice(int startIndex, int endIndex) throws Exception{ // TODO Auto-generated method stub
-        if(startIndex > 32 || startIndex < 0){
+    public Value getShallowSlice(int startIndex, int endIndex) throws Exception{
+        if(startIndex > 8 || startIndex < 0){
             throw new UnsupportedOperationException("Error startIndex is out of bounds at " +startIndex);
         }
 
-        if(endIndex > 32 || endIndex < 0){
+        if(endIndex > 8 || endIndex < 0){
             throw new UnsupportedOperationException("Error endIndex is outof bounds at " + endIndex);
         }
 

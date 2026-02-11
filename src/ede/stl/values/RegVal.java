@@ -1,4 +1,4 @@
-package ede.stl.Value;
+package ede.stl.values;
 
 import ede.stl.circuit.Node;
 

@@ -1,16 +1,16 @@
-package ede.stl.Value;
+package ede.stl.values;
 
 
 import java.lang.Integer;
-import ede.stl.Value.ByteVal;
-import ede.stl.Value.IntVal;
-import ede.stl.Value.LongVal;
-import ede.stl.Value.ShortVal;
-import ede.stl.Value.UnsignedByteVal;
-import ede.stl.Value.UnsignedIntVal;
-import ede.stl.Value.UnsignedLongVal;
-import ede.stl.Value.UnsignedShortVal;
-import ede.stl.Value.VectorVal;
+import ede.stl.values.ByteVal;
+import ede.stl.values.IntVal;
+import ede.stl.values.LongVal;
+import ede.stl.values.ShortVal;
+import ede.stl.values.UnsignedByteVal;
+import ede.stl.values.UnsignedIntVal;
+import ede.stl.values.UnsignedLongVal;
+import ede.stl.values.UnsignedShortVal;
+import ede.stl.values.VectorVal;
 import ede.stl.circuit.CircuitElem;
 
 /**
@@ -19,9 +19,9 @@ import ede.stl.circuit.CircuitElem;
  * @author Jacob Bauer
  */
 
-public class BinaryPattern extends Pattern{
+public class HexadecimalPattern extends Pattern{
 
-    public BinaryPattern(String pattern) { super(pattern); }
+    public HexadecimalPattern(String pattern) { super(pattern); }
 
     public boolean match(LongVal value){
 
@@ -30,8 +30,8 @@ public class BinaryPattern extends Pattern{
 
         int patternLength = pattern.length();
 
-        if(patternLength < Long.toBinaryString(val).length()){
-            long shiftedValue = val >> patternLength;
+        if(patternLength * 4 < Long.toBinaryString(val).length()){
+            long shiftedValue = val >> (patternLength * 4);
             if(shiftedValue != 0){
                 return false;
             }
@@ -42,9 +42,9 @@ public class BinaryPattern extends Pattern{
             if (current == 'x' || current == 'z')
                 continue;
             
-            long patternPieceAsLong = Long.parseLong("" + current, 2);
-            long shiftedValLong = val >> patternLength - i - 1;
-            long maskedVal = shiftedValLong & 0b1; // or in binary 0b111
+            long patternPieceAsLong = Long.parseLong("" + current, 16);
+            long shiftedValLong = val >> 4*(patternLength - i) - 4;
+            long maskedVal = shiftedValLong & 0xf;
 
             if(maskedVal != patternPieceAsLong)
                 return false;
@@ -54,14 +54,13 @@ public class BinaryPattern extends Pattern{
     }
 
     public boolean match(UnsignedLongVal value){
-
         String pattern = super.getPattern();
         long val = value.longValue();
 
         int patternLength = pattern.length();
 
-        if(patternLength < Long.toBinaryString(val).length()){
-            long shiftedValue = val >> patternLength;
+        if(patternLength * 4 < Long.toBinaryString(val).length()){
+            long shiftedValue = val >> (patternLength * 4);
             if(shiftedValue != 0){
                 return false;
             }
@@ -72,9 +71,9 @@ public class BinaryPattern extends Pattern{
             if (current == 'x' || current == 'z')
                 continue;
             
-            long patternPieceAsLong = Long.parseLong("" + current, 2);
-            long shiftedValLong = val >> patternLength - i - 1;
-            long maskedVal = shiftedValLong & 0b1; // or in binary 0b111
+            long patternPieceAsLong = Long.parseLong("" + current, 16);
+            long shiftedValLong = val >> 4*(patternLength - i) - 4;
+            long maskedVal = shiftedValLong & 0xf;
 
             if(maskedVal != patternPieceAsLong)
                 return false;
@@ -90,14 +89,14 @@ public class BinaryPattern extends Pattern{
 
         int patternLength = pattern.length();
 
-        if(patternLength > 32){
+        if(patternLength > 8){
             int num = value.intValue();
             LongVal newVal = new LongVal((long)num);
             return match(newVal);
         }
 
-        if(patternLength < Integer.toBinaryString(val).length()){
-            int shiftedValue = val >> patternLength;
+        if(patternLength * 4 < Integer.toBinaryString(val).length()){
+            int shiftedValue = val >> (patternLength * 4);
             if(shiftedValue != 0){
                 return false;
             }
@@ -108,9 +107,9 @@ public class BinaryPattern extends Pattern{
             if (current == 'x' || current == 'z')
                 continue;
             
-            int patternPieceAsInt = Integer.parseInt("" + current, 2);
-            int shiftedValInt = val >> patternLength - i - 1;
-            int maskedVal = shiftedValInt & 0b1; // or 0b111 for short
+            int patternPieceAsInt = Integer.parseInt("" + current, 16);
+            int shiftedValInt = val >> 4*(patternLength - i) - 4;
+            int maskedVal = shiftedValInt & 0xf;
 
             if(maskedVal != patternPieceAsInt)
                 return false;
@@ -120,20 +119,19 @@ public class BinaryPattern extends Pattern{
     }
 
     public boolean match(UnsignedIntVal value){
-
         String pattern = super.getPattern();
         int val = value.intValue();
 
         int patternLength = pattern.length();
 
-        if(patternLength > 32){
+        if(patternLength > 8){
             int num = value.intValue();
             LongVal newVal = new LongVal((long)num);
             return match(newVal);
         }
 
-        if(patternLength < Integer.toBinaryString(val).length()){
-            int shiftedValue = val >> patternLength;
+        if(patternLength * 4 < Integer.toBinaryString(val).length()){
+            int shiftedValue = val >> (patternLength * 4);
             if(shiftedValue != 0){
                 return false;
             }
@@ -144,9 +142,9 @@ public class BinaryPattern extends Pattern{
             if (current == 'x' || current == 'z')
                 continue;
             
-            int patternPieceAsInt = Integer.parseInt("" + current, 2);
-            int shiftedValInt = val >> patternLength - i - 1;
-            int maskedVal = shiftedValInt & 0b1; // or 0b111 for short
+            int patternPieceAsInt = Integer.parseInt("" + current, 16);
+            int shiftedValInt = val >> 4*(patternLength - i) - 4;
+            int maskedVal = shiftedValInt & 0xf;
 
             if(maskedVal != patternPieceAsInt)
                 return false;
@@ -162,14 +160,14 @@ public class BinaryPattern extends Pattern{
 
         int patternLength = pattern.length();
 
-        if(patternLength > 16){
+        if(patternLength > 4){
             short num = value.shortValue();
             IntVal newVal = new IntVal(num);
             return match(newVal);
         }
 
-        if(patternLength < Integer.toBinaryString(val).length()){
-            short shiftedValue = (short)(val >> patternLength);
+        if(patternLength * 4 < Integer.toBinaryString(val).length()){
+            short shiftedValue = (short)(val >> (patternLength * 4));
             if(shiftedValue != 0){
                 return false;
             }
@@ -180,9 +178,9 @@ public class BinaryPattern extends Pattern{
             if (current == 'x' || current == 'z')
                 continue;
             
-            short patternPieceAsShort = Short.parseShort("" + current, 2);
-            short shiftedValShort = (short)(val >> patternLength - i - 1);
-            short maskedVal = (short)(shiftedValShort & 0b1);
+            short patternPieceAsShort = Short.parseShort("" + current, 16);
+            short shiftedValShort = (short)(val >> 4*(patternLength - i) - 4);
+            short maskedVal = (short)(shiftedValShort & 0xf);
 
             if(maskedVal != patternPieceAsShort)
                 return false;
@@ -192,20 +190,19 @@ public class BinaryPattern extends Pattern{
     }
 
     public boolean match(UnsignedShortVal value){
-
         String pattern = super.getPattern();
         short val = value.shortValue();
 
         int patternLength = pattern.length();
 
-        if(patternLength > 16){
+        if(patternLength > 4){
             short num = value.shortValue();
             IntVal newVal = new IntVal(num);
             return match(newVal);
         }
 
-        if(patternLength  < Integer.toBinaryString(val).length()){
-            short shiftedValue = (short)(val >> patternLength);
+        if(patternLength * 4 < Integer.toBinaryString(val).length()){
+            short shiftedValue = (short)(val >> (patternLength * 4));
             if(shiftedValue != 0){
                 return false;
             }
@@ -216,9 +213,9 @@ public class BinaryPattern extends Pattern{
             if (current == 'x' || current == 'z')
                 continue;
             
-            short patternPieceAsShort = Short.parseShort("" + current, 2);
-            short shiftedValShort = (short)(val >> patternLength - i - 1);
-            short maskedVal = (short)(shiftedValShort & 0b1);
+            short patternPieceAsShort = Short.parseShort("" + current, 16);
+            short shiftedValShort = (short)(val >> 4*(patternLength - i) - 4);
+            short maskedVal = (short)(shiftedValShort & 0xf);
 
             if(maskedVal != patternPieceAsShort)
                 return false;
@@ -234,14 +231,14 @@ public class BinaryPattern extends Pattern{
 
         int patternLength = pattern.length();
 
-        if(patternLength > 8){
+        if(patternLength > 2){
             byte num = value.byteValue();
             ShortVal newVal = new ShortVal(num);
             return match(newVal);
         }
 
-        if(patternLength < Integer.toBinaryString(val).length()){
-            byte shiftedValue = (byte)(val >> patternLength);
+        if(patternLength * 4 < Integer.toBinaryString(val).length()){
+            byte shiftedValue = (byte)(val >> (patternLength * 4));
             if(shiftedValue != 0){
                 return false;
             }
@@ -252,9 +249,9 @@ public class BinaryPattern extends Pattern{
             if (current == 'x' || current == 'z')
                 continue;
             
-            byte patternPieceAsByte = Byte.parseByte("" + current, 2);
-            byte shiftedValByte = (byte)(val >> patternLength - i - 1);
-            byte maskedVal = (byte)(shiftedValByte & 0b1);
+            byte patternPieceAsByte = Byte.parseByte("" + current, 16);
+            byte shiftedValByte = (byte)(val >> 4*(patternLength - i) - 4);
+            byte maskedVal = (byte)(shiftedValByte & 0xf);
 
             if(maskedVal != patternPieceAsByte)
                 return false;
@@ -264,20 +261,19 @@ public class BinaryPattern extends Pattern{
     }
 
     public boolean match(UnsignedByteVal value){
-
         String pattern = super.getPattern();
         byte val = value.byteValue();
 
         int patternLength = pattern.length();
 
-        if(patternLength > 8){
+        if(patternLength > 2){
             byte num = value.byteValue();
             ShortVal newVal = new ShortVal(num);
             return match(newVal);
         }
 
-        if(patternLength < Integer.toBinaryString(val).length()){
-            byte shiftedValue = (byte)(val >> patternLength);
+        if(patternLength * 4 < Integer.toBinaryString(val).length()){
+            byte shiftedValue = (byte)(val >> (patternLength * 4));
             if(shiftedValue != 0){
                 return false;
             }
@@ -288,9 +284,9 @@ public class BinaryPattern extends Pattern{
             if (current == 'x' || current == 'z')
                 continue;
             
-            byte patternPieceAsByte = Byte.parseByte("" + current, 2);
-            byte shiftedValByte = (byte)(val >> patternLength - i - 1);
-            byte maskedVal = (byte)(shiftedValByte & 0b1);
+            byte patternPieceAsByte = Byte.parseByte("" + current, 16);
+            byte shiftedValByte = (byte)(val >> 4*(patternLength - i) - 4);
+            byte maskedVal = (byte)(shiftedValByte & 0xf);
 
             if(maskedVal != patternPieceAsByte)
                 return false;
@@ -311,8 +307,7 @@ public class BinaryPattern extends Pattern{
         int patternLength = pattern.length();
 
         int bitIncr = (value.getIndex1() < value.getIndex2()) ? 1 : -1;
-        int binIncr = bitIncr;
-
+        int hexIncr = bitIncr * 4;
         int endOverflow = value.getIndex2() + ((value.getIndex1() > value.getIndex2())? patternLength - 1 : -patternLength + 1);
 
         if(patternLength * 4 < value.getSize()){
@@ -325,17 +320,22 @@ public class BinaryPattern extends Pattern{
             }
         }
 
-        for (int i = 0, vi = endOverflow; i < patternLength; i++, vi+=binIncr) {
+        for (int i = 0, vi = endOverflow; i < patternLength; i++, vi+=hexIncr) {
             char current = pattern.charAt(i);
             if (current == 'x' || current == 'z')
                 continue;
             
-            byte patternPieceAsByte = Byte.parseByte("" + current, 2);
-            boolean patternSignal = patternPieceAsByte != 0;
+            byte patternPieceAsByte = Byte.parseByte("" + current, 16);
 
-            if(patternSignal != value.getValue(vi).getStateSignal()){
-                return false;
-            }
+            for(int j = 0; j < 4; j++){
+                byte matchBit = (byte)(patternPieceAsByte >> (3 - j));
+                boolean matchSignal = matchBit != 0;
+
+                if(matchSignal != value.getValue(vi + j * bitIncr).getStateSignal()){
+                    return false;
+                }
+            }   
+            
         }
 
         return true;
