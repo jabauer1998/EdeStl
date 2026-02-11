@@ -2,7 +2,7 @@ package ede.stl.ast;
 
 import ede.stl.common.Position;
 import ede.stl.ast.Expression;
-import ede.stl.ast..Value .
+import ede.stl.ast.LValue;
 import ede.stl.passes.StatementVisitor;
 
 /**

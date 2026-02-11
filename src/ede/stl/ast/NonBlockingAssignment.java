@@ -3,7 +3,7 @@ package ede.stl.ast;
 import java.util.List;
 import ede.stl.common.Position;
 import ede.stl.ast.Expression;
-import ede.stl.ast..Value .
+import ede.stl.ast.LValue;
 import ede.stl.passes.StatementVisitor;
 
 public class NonBlockingAssignment extends Assignment<List<.Value ., List<Expression>> {
