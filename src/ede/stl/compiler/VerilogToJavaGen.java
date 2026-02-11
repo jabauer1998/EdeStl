@@ -33,7 +33,7 @@ import ede.stl.ast.OctalNode;
 import ede.stl.ast.StringNode;
 import ede.stl.ast.Element;
 import ede.stl.ast.Identifier;
-import ede.stl.ast..Value .
+import ede.stl.ast.LValue;
 import ede.stl.ast.Slice;
 import ede.stl.ast.ContinuousAssignment;
 import ede.stl.ast.EmptyModItem;
