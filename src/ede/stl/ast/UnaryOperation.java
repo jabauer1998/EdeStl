@@ -7,7 +7,7 @@ import ede.stl.common.ErrorLog;
 import ede.stl.common.ErrorItem;
 import ede.stl.common.Utils;
 import ede.stl.interpreter.Environment;
-import ede.stl.Value.Value;
+import ede.stl.values.Value;
 import ede.stl.ast.AstNode;
 import ede.stl.ast.Expression;
 import ede.stl.passes.ExpressionVisitor;

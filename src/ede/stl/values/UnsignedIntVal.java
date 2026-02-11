@@ -1,113 +1,127 @@
-package ede.stl.Value;
+package ede.stl.values;
 
 import ede.stl.common.Utils;
 
-public class UnsignedByteVal implements Value, Unsigned{
-    private Byte value;
+public class UnsignedIntVal implements Value, Unsigned {
 
-    public UnsignedByteVal(byte value){
+    private int value;
+
+    public UnsignedIntVal(int value){
         this.value = value;
     }
 
-    public UnsignedByteVal(int value){
-        this.value = (byte)value;
-    }
-
     public String toString(){
-        byte value = this.byteValue();
+        int value = intValue();
         return Integer.toUnsignedString(value);
     }
 
     @Override
-    public boolean isByteValue(){
+    public boolean isIntValue(){
         return false;
     }
 
     @Override
-    public boolean isUnsignedByteValue(){
+    public boolean isUnsignedIntValue(){
         return true;
-    }
-
-    public long longValue(){
-        return Byte.toUnsignedLong(value);
-    }
-
-    public int intValue(){
-        return Byte.toUnsignedInt(value);
-    }
-
-    public short shortValue(){
-        return (short)Byte.toUnsignedInt(value);
-    }
-
-    public byte byteValue(){
-        return value;
     }
 
     @Override
     public double realValue(){ // TODO Auto-generated method stub
-    return (double)value; }
+        return (double)value; 
+    }
+
+    @Override
+    public long longValue(){ // TODO Auto-generated method stub
+        return Integer.toUnsignedLong(value);
+    }
+
+    @Override
+    public int intValue(){ // TODO Auto-generated method stub
+        return value;
+    }
+
+    @Override
+    public short shortValue(){ // TODO Auto-generated method stub
+        return (short)value;
+    }
+
+    @Override
+    public byte byteValue(){ // TODO Auto-generated method stub
+        return (byte)value;
+    }
 
     @Override
     public boolean boolValue(){ // TODO Auto-generated method stub
-    return value != 0; }
+        return value != 0;
+    }
 
     @Override
-    public boolean isBoolValue(){
+    public boolean isBoolValue(){ // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public boolean isShortValue(){ // TODO Auto-generated method stub
-    return false; }
+        return false;
+    }
 
     @Override
     public boolean isUnsignedShortValue(){ // TODO Auto-generated method stub
-    return false; }
+        return false; 
+    }
 
     @Override
-    public boolean isIntValue(){ // TODO Auto-generated method stub
-    return false; }
+    public boolean isByteValue(){ // TODO Auto-generated method stub
+        return false;
+    }
 
     @Override
-    public boolean isUnsignedIntValue(){ // TODO Auto-generated method stub
-    return false; }
+    public boolean isUnsignedByteValue(){ // TODO Auto-generated method stub
+        return false;
+    }
 
     @Override
     public boolean isLongValue(){ // TODO Auto-generated method stub
-    return false; }
+        return false;
+    }
 
     @Override
     public boolean isUnsignedLongValue(){ // TODO Auto-generated method stub
-    return false; }
+        return false;
+    }
 
     @Override
     public boolean isRealValue(){ // TODO Auto-generated method stub
-    return false; }
+        return false;
+    }
 
     @Override
     public boolean isStringValue(){ // TODO Auto-generated method stub
-    return false; }
+        return false;
+    }
 
     @Override
     public boolean isVector(){ // TODO Auto-generated method stub
-    return false; }
+        return false;
+    }
 
     @Override
     public boolean isRegister(){ // TODO Auto-generated method stub
-    return false; }
+        return false;
+    }
 
     @Override
     public boolean isWire(){ // TODO Auto-generated method stub
-    return false; }
+        return false;
+    }
 
     @Override
-    public Value getShallowSlice(int startIndex, int endIndex) throws Exception{
-        if(startIndex > 8 || startIndex < 0){
+    public Value getShallowSlice(int startIndex, int endIndex) throws Exception{ // TODO Auto-generated method stub
+        if(startIndex > 32 || startIndex < 0){
             throw new UnsupportedOperationException("Error startIndex is out of bounds at " +startIndex);
         }
 
-        if(endIndex > 8 || endIndex < 0){
+        if(endIndex > 32 || endIndex < 0){
             throw new UnsupportedOperationException("Error endIndex is outof bounds at " + endIndex);
         }
 
@@ -121,5 +135,4 @@ public class UnsignedByteVal implements Value, Unsigned{
 
         return Utils.getOptimalUnsignedForm(val & toKeepMask);
     }
-    
 }

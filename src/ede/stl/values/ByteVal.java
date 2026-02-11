@@ -1,17 +1,17 @@
-package ede.stl.Value;
+package ede.stl.values;
 
 import ede.stl.common.Utils;
 
-public class ShortVal implements Value{
+public class ByteVal implements Value{
     
-    private short value;
+    private byte value;
 
-    public ShortVal(short value){
+    public ByteVal(byte value){
         this.value = value;
     }
 
-    public ShortVal(int value){
-        this.value = (short)value;
+    public ByteVal(int value){
+        this.value = (byte)value;
     }
 
     public double realValue(){
@@ -38,18 +38,20 @@ public class ShortVal implements Value{
         return value != 0;
     }
 
+
     public String toString(){
-        return Short.toString(value);
+        return Byte.toString(value);
     }
 
     @Override
-    public boolean isBoolValue(){ // TODO Auto-generated method stub
+    public boolean isBoolValue(){ 
+        // TODO Auto-generated method stub
         return false; 
     }
 
     @Override
     public boolean isShortValue(){ // TODO Auto-generated method stub
-        return true; 
+        return false; 
     }
 
     @Override
@@ -59,7 +61,7 @@ public class ShortVal implements Value{
 
     @Override
     public boolean isByteValue(){ // TODO Auto-generated method stub
-        return false; 
+        return true; 
     }
 
     @Override
@@ -111,11 +113,11 @@ public class ShortVal implements Value{
 
     @Override
     public Value getShallowSlice(int startIndex, int endIndex) throws Exception{ // TODO Auto-generated method stub
-        if(startIndex > 16 || startIndex < 0){
+        if(startIndex > 8 || startIndex < 0){
             throw new UnsupportedOperationException("Error startIndex is out of bounds at " +startIndex);
         }
 
-        if(endIndex > 16 || endIndex < 0){
+        if(endIndex > 8 || endIndex < 0){
             throw new UnsupportedOperationException("Error endIndex is outof bounds at " + endIndex);
         }
 
@@ -129,5 +131,4 @@ public class ShortVal implements Value{
 
         return Utils.getOptimalUnsignedForm(val & toKeepMask);
     }
-    
 }

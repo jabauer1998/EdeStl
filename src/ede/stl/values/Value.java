@@ -1,4 +1,4 @@
-package ede.stl.Value;
+package ede.stl.values;
 
 public interface Value {
     public String toString();

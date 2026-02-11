@@ -1,17 +1,17 @@
-package ede.stl.Value;
+package ede.stl.values;
 
 import ede.stl.common.Utils;
-import ede.stl.Value.BoolVal;
-import ede.stl.Value.ByteVal;
-import ede.stl.Value.IntVal;
-import ede.stl.Value.LongVal;
-import ede.stl.Value.ShortVal;
-import ede.stl.Value.UnsignedByteVal;
-import ede.stl.Value.UnsignedIntVal;
-import ede.stl.Value.UnsignedLongVal;
-import ede.stl.Value.UnsignedShortVal;
-import ede.stl.Value.Value;
-import ede.stl.Value.VectorVal;
+import ede.stl.values.BoolVal;
+import ede.stl.values.ByteVal;
+import ede.stl.values.IntVal;
+import ede.stl.values.LongVal;
+import ede.stl.values.ShortVal;
+import ede.stl.values.UnsignedByteVal;
+import ede.stl.values.UnsignedIntVal;
+import ede.stl.values.UnsignedLongVal;
+import ede.stl.values.UnsignedShortVal;
+import ede.stl.values.Value;
+import ede.stl.values.VectorVal;
 import ede.stl.circuit.CircuitElem;
 
 /**

@@ -1,7 +1,7 @@
-package ede.stl.Value;
+package ede.stl.values;
 
-import ede.stl.Value.Value;
-import ede.stl.Value.RegVal;
+import ede.stl.values.Value;
+import ede.stl.values.RegVal;
 
 public class ArrayRegVal extends ArrayVal<RegVal> {
     public ArrayRegVal(Value arrayBegin, Value arrayEnd){

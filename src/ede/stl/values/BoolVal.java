@@ -1,4 +1,4 @@
-package ede.stl.Value;
+package ede.stl.values;
 
 public class BoolVal implements Value{
     

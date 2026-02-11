@@ -1,10 +1,12 @@
-package ede.stl.Value;
+package ede.stl.values;
 
-public class RealVal implements Value{
+import ede.stl.common.Utils;
+
+public class LongVal implements Value{
     
-    private double value;
+    private long value;
 
-    public RealVal(double value){
+    public LongVal(long value){
         this.value = value;
     }
 
@@ -13,7 +15,7 @@ public class RealVal implements Value{
     }
 
     public long longValue(){
-        return (long)value;
+        return value;
     }
 
     public int intValue(){
@@ -34,7 +36,7 @@ public class RealVal implements Value{
 
 
     public String toString(){
-        return Double.toString(value);
+        return Long.toString(value);
     }
 
     @Override
@@ -74,7 +76,7 @@ public class RealVal implements Value{
 
     @Override
     public boolean isLongValue(){ // TODO Auto-generated method stub
-        return false; 
+        return true; 
     }
 
     @Override
@@ -84,7 +86,7 @@ public class RealVal implements Value{
 
     @Override
     public boolean isRealValue(){ // TODO Auto-generated method stub
-        return true; 
+        return false; 
     }
 
     @Override
@@ -105,7 +107,23 @@ public class RealVal implements Value{
     return false; }
 
     @Override
-    public Value getShallowSlice(int startIndex, int endIndex) throws Exception{ // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getShallowSlice'"); 
+    public Value getShallowSlice(int startIndex, int endIndex) throws Exception{
+        if(startIndex > 64 || startIndex < 0){
+            throw new UnsupportedOperationException("Error startIndex is out of bounds at " +startIndex);
+        }
+
+        if(endIndex > 64 || endIndex < 0){
+            throw new UnsupportedOperationException("Error endIndex is outof bounds at " + endIndex);
+        }
+
+        int start = (startIndex <= endIndex) ? startIndex : endIndex;
+        int end = (startIndex >= endIndex) ? startIndex : endIndex;
+
+        int size = end - start + 1;
+
+        long val = (value >> start);
+        long toKeepMask = ((1 << size) - 1);
+
+        return Utils.getOptimalUnsignedForm(val & toKeepMask);
     }
 }

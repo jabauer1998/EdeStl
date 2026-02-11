@@ -1,8 +1,8 @@
-package ede.stl.Value;
+package ede.stl.values;
 
 import java.util.ArrayList;
 import ede.stl.common.Utils;
-import ede.stl.Value.Value;
+import ede.stl.values.Value;
 
 public class ArrayVal<ArrayType extends Value> implements Value {
     private final ArrayList<ArrayType> ArrList;

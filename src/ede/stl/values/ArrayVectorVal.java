@@ -1,7 +1,7 @@
-package ede.stl.Value;
+package ede.stl.values;
 
-import ede.stl.Value.Value;
-import ede.stl.Value.VectorVal;
+import ede.stl.values.Value;
+import ede.stl.values.VectorVal;
 
 public class ArrayVectorVal extends ArrayVal<VectorVal>{
     public ArrayVectorVal(Value arrayBegin, Value arrayEnd, Value vectorBegin, Value vectorEnd){

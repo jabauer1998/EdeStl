@@ -1,7 +1,7 @@
-package ede.stl.Value;
+package ede.stl.values;
 
-import ede.stl.Value.UnsignedIntVal;
-import ede.stl.Value.Value;
+import ede.stl.values.UnsignedIntVal;
+import ede.stl.values.Value;
 
 public class ArrayIntVal extends ArrayVal<UnsignedIntVal> {
     public ArrayIntVal(Value arrayBegin, Value arrayEnd){
