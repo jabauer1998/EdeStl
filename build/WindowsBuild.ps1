@@ -40,7 +40,7 @@ if($javaExists -ne ""){
 		    Remove-Item ".\tmp\META-INF\MANIFEST.MF"
 		}
 		# Move extracted files to classes directory, merging them
-		Move-Item -Path "$tmp\*" -Destination "./bin"
+		Move-Item -Path "$tmp\*" -Destination "./bin" -ErrorAction SilentlyContinue
 	    }
 	    Remove-Item -Path $tmp/* -Recurse -Force
 	    jar cf "$tmp/EdeStl.jar" "./bin"
