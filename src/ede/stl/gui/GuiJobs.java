@@ -10,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.Region;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
 
 public class GuiJobs extends VBox {

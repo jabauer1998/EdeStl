@@ -11,6 +11,7 @@ import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.control.ListView;
 
 public class GuiRam extends VBox implements Memory{
     private ArrayList<Label> Bytes;
