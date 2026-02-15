@@ -3,27 +3,27 @@ package ede.stl.gui;
 import java.util.Collection;
 import java.util.HashMap;
 import ede.stl.gui.Flags;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ScrollPane.ScrollBarPolicy;
-import javafx.scene.layout.HBox;
+import javax.swing.*;
+import java.awt.*;
 
-public class GuiFlags extends HBox implements Flags {
-    private ScrollPane FlagPane;
+public class GuiFlags extends JPanel implements Flags {
+    private JScrollPane FlagPane;
     private HashMap<String, GuiFlag> flagMap;
 
     private double actualWidth;
     private double actualHeight;
     
     public GuiFlags(double Width, double Height){
-        FlagPane = new ScrollPane();
-        FlagPane.setContent(this);
-        FlagPane.setMaxWidth(Width);
-        FlagPane.setMaxHeight(Height);
+        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+
+        FlagPane = new JScrollPane(this);
+        FlagPane.setMaximumSize(new Dimension((int)Width, (int)Height));
+        FlagPane.setPreferredSize(new Dimension((int)Width, (int)Height));
 
         this.actualHeight = Height;
         this.actualWidth = Width;
 
-        FlagPane.setVbarPolicy(ScrollBarPolicy.NEVER);
+        FlagPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 
         flagMap = new HashMap<>();
     }
@@ -31,12 +31,12 @@ public class GuiFlags extends HBox implements Flags {
     public void AddGuiFlag(String Name){
         GuiFlag Flag = new GuiFlag(Name, actualWidth / 6, actualHeight);
 
-        this.getChildren().addAll(Flag);
+        this.add(Flag);
 
         flagMap.put(Flag.getName(), Flag);
     }
 
-    public ScrollPane getScrollPane(){
+    public JScrollPane getScrollPane(){
         return FlagPane;
     }
 
@@ -52,7 +52,6 @@ public class GuiFlags extends HBox implements Flags {
         Flag.Set(statusValue != 0);
     }
 
-    
     public void clearStatusValues(){
         Collection<GuiFlag> values = flagMap.values();
         for(GuiFlag value : values){

@@ -4,15 +4,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
-import org.fxmisc.richtext.InlineCssTextArea;
 import ede.stl.common.ErrorLog;
 import ede.stl.common.Destination;
 import ede.stl.gui.GuiEde;
 import ede.stl.interpreter.EdeInterpreter;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.Region;
+import javax.swing.*;
+import javax.swing.text.*;
 
-public class VerilogJob extends GuiJob{
+public class VerilogJob extends GuiJob {
     private GuiEde edeInstance;
     private String errorPane;
     private String verilogFile;
@@ -31,7 +30,7 @@ public class VerilogJob extends GuiJob{
     }
 
     @Override
-    public void RunJob(){ // TODO Auto-generated method stub
+    public void RunJob(){
         CopyDataToOutputFile();
         StringWriter writer = new StringWriter();
         Destination Dest = new Destination(writer);
@@ -51,13 +50,13 @@ public class VerilogJob extends GuiJob{
         try {
             File.createNewFile();
             FileWriter Writer = new FileWriter(File);
-            Region tr = this.getInputSection();
+            JComponent tr = this.getInputSection();
             
-            if(tr instanceof InlineCssTextArea){
-                InlineCssTextArea ta = (InlineCssTextArea)tr;
+            if(tr instanceof JTextPane){
+                JTextPane ta = (JTextPane)tr;
                 Writer.write(ta.getText());
             } else {
-                TextArea ta = (TextArea)tr;
+                JTextArea ta = (JTextArea)tr;
                 Writer.write(ta.getText());
             }
             
@@ -67,61 +66,3 @@ public class VerilogJob extends GuiJob{
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

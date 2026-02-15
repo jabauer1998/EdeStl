@@ -8,63 +8,65 @@ import ede.stl.gui.GuiMachine;
 import ede.stl.gui.GuiRam;
 import ede.stl.gui.GuiRegister;
 import ede.stl.values.Value;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.scene.control.Button;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
-public class GuiEde extends VBox implements Machine{
+public class GuiEde extends JPanel implements Machine {
     private GuiJobs Jobs;
     private GuiMachine Machine;
 
     public GuiEde(double Width, double Height, int NumberOfBytesInRow, GuiRam.AddressFormat AddrFormat, GuiRam.MemoryFormat MemFormat){
-        HBox toolBar = new HBox();
-        Button clearMemory = new Button("Clear Memory");
-        clearMemory.setPrefHeight(Height/12);
-        clearMemory.setPrefWidth(Width/3);
-        clearMemory.setOnMouseClicked(new EventHandler<Event>() {
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        JPanel toolBar = new JPanel();
+        toolBar.setLayout(new BoxLayout(toolBar, BoxLayout.X_AXIS));
+
+        JButton clearMemory = new JButton("Clear Memory");
+        clearMemory.setPreferredSize(new Dimension((int)(Width/3), (int)(Height/12)));
+        clearMemory.addActionListener(new ActionListener() {
             @Override
-            public void handle(Event event){ // TODO Auto-generated method stub
+            public void actionPerformed(ActionEvent event){
                 Machine.clearMemory();
             }
         });
         
-        Button clearRegisters = new Button("Clear Registers");
-        clearRegisters.setPrefHeight(Height/12);
-        clearRegisters.setPrefWidth(Width/3);
-        clearRegisters.setOnMouseClicked(new EventHandler<Event>() {
+        JButton clearRegisters = new JButton("Clear Registers");
+        clearRegisters.setPreferredSize(new Dimension((int)(Width/3), (int)(Height/12)));
+        clearRegisters.addActionListener(new ActionListener() {
             @Override
-            public void handle(Event event){
+            public void actionPerformed(ActionEvent event){
                 Machine.clearRegisters();
             }
         });
 
-        Button clearStatus = new Button("Clear Status");
-        clearStatus.setPrefHeight(Height/12);
-        clearStatus.setPrefWidth(Width/3);
-        clearStatus.setOnMouseClicked(new EventHandler<Event>(){
+        JButton clearStatus = new JButton("Clear Status");
+        clearStatus.setPreferredSize(new Dimension((int)(Width/3), (int)(Height/12)));
+        clearStatus.addActionListener(new ActionListener() {
             @Override
-            public void handle(Event event){
+            public void actionPerformed(ActionEvent event){
                 Machine.clearStatusValues();
             }
         });
 
-        
+        toolBar.add(clearRegisters);
+        toolBar.add(clearMemory);
+        toolBar.add(clearStatus);
 
-        toolBar.getChildren().addAll(clearRegisters, clearMemory, clearStatus);
-
-        HBox mainPane = new HBox();
+        JPanel mainPane = new JPanel();
+        mainPane.setLayout(new BoxLayout(mainPane, BoxLayout.X_AXIS));
         this.Jobs = new GuiJobs(Width/3, Height*11/12);
         this.Machine = new GuiMachine(NumberOfBytesInRow, AddrFormat, MemFormat, Width * 2 / 3, Height * 11 / 12);
         
-        mainPane.getChildren().addAll(this.Jobs.getJobsPane(), this.Machine);
+        mainPane.add(this.Jobs.getJobsPane());
+        mainPane.add(this.Machine);
         
-        this.getChildren().addAll(toolBar, mainPane);
+        this.add(toolBar);
+        this.add(mainPane);
     }
     
     public void setUpMemory(int numBytes) {
-    	this.Machine.setUpMemory(numBytes);
+        this.Machine.setUpMemory(numBytes);
     }
 
     public void AddVerilogJob(String jobName, String verilogFile, String inputFile, String inputPane, String outputPane, String errorPane){
@@ -88,8 +90,8 @@ public class GuiEde extends VBox implements Machine{
     }
     
     public void AddRegister(String title, Value start, Value end, GuiRegister.Format Format) {
-    	int len = Math.abs(start.intValue() - end.intValue());
-    	this.Machine.AddGuiRegister(title, len, Format);
+        int len = Math.abs(start.intValue() - end.intValue());
+        this.Machine.AddGuiRegister(title, len, Format);
     }
 
     public void AddRegister(String Title, int Length, GuiRegister.Format Format){

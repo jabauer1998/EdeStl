@@ -6,22 +6,21 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-import org.fxmisc.richtext.InlineCssTextArea;
 import ede.stl.gui.GuiEde;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.Region;
+import javax.swing.*;
+import javax.swing.text.*;
 
 public class ExeJob extends GuiJob {
     private String ExeString;
     private String InputFile;
     private String OutputFile;
     private String ErrorFile;
-    private List<Region> guiJobs;
+    private List<JComponent> guiJobs;
     private String errorTextAreaName;
 
     private GuiEde edeInstance;
 
-    public ExeJob(String ButtonText, TextAreaType type, double Width, double Height, String ExeString, String InputFile, String OutputFile, String ErrorFile, String errorTextAreaName, List<Region> guiJobs, GuiEde edeInstance, String... keywords) { 
+    public ExeJob(String ButtonText, TextAreaType type, double Width, double Height, String ExeString, String InputFile, String OutputFile, String ErrorFile, String errorTextAreaName, List<JComponent> guiJobs, GuiEde edeInstance, String... keywords) { 
         super(ButtonText, type, Width, Height, keywords);
         this.ExeString = ExeString;
         this.InputFile = InputFile;
@@ -43,7 +42,6 @@ public class ExeJob extends GuiJob {
         try {
             Runtime.getRuntime().exec(ExeString);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -65,18 +63,17 @@ public class ExeJob extends GuiJob {
         try {
             File.createNewFile();
             FileWriter Writer = new FileWriter(InputFile);
-            Region inputSection = this.getInputSection();
-            if(inputSection instanceof InlineCssTextArea){
-                InlineCssTextArea ta = (InlineCssTextArea)inputSection;
+            JComponent inputSection = this.getInputSection();
+            if(inputSection instanceof JTextPane){
+                JTextPane ta = (JTextPane)inputSection;
                 Writer.write(ta.getText());
             } else {
-                TextArea ta = (TextArea)inputSection;
+                JTextArea ta = (JTextArea)inputSection;
                 Writer.write(ta.getText());
             }
             
             Writer.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -89,7 +86,7 @@ public class ExeJob extends GuiJob {
             }
         }
 
-        Region OutputTextArea = guiJobs.get(i + 1);
+        JComponent OutputTextArea = guiJobs.get(i + 1);
         File OutputFilePtr = new File(OutputFile);
 
         if(OutputFilePtr.exists()){
@@ -103,11 +100,11 @@ public class ExeJob extends GuiJob {
                     memText.append((char)outputCharFull);
                 }
 
-                if(OutputTextArea instanceof InlineCssTextArea){
-                    InlineCssTextArea ta = (InlineCssTextArea)OutputTextArea;
-                    ta.replaceText(memText.toString());
-                } else if(OutputTextArea instanceof TextArea){
-                    TextArea ta = (TextArea)OutputTextArea;
+                if(OutputTextArea instanceof JTextPane){
+                    JTextPane ta = (JTextPane)OutputTextArea;
+                    ta.setText(memText.toString());
+                } else if(OutputTextArea instanceof JTextArea){
+                    JTextArea ta = (JTextArea)OutputTextArea;
                     ta.setText(memText.toString());
                 }
 
@@ -123,7 +120,6 @@ public class ExeJob extends GuiJob {
     private void CollectErrorData(){
         File errorFilePtr = new File(ErrorFile);
         if(errorFilePtr.exists()){
-            //If it exists we need to collect the Error Data
             try {
                 FileReader fReader = new FileReader(errorFilePtr);
                 StringBuilder memText = new StringBuilder();
@@ -138,71 +134,10 @@ public class ExeJob extends GuiJob {
 
                 edeInstance.appendIoText(errorTextAreaName, memText.toString());
             } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
                 edeInstance.appendIoText(errorTextAreaName, e.toString());
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 edeInstance.appendIoText(errorTextAreaName, e.toString());
             }
-
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

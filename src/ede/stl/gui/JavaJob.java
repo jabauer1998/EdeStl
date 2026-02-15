@@ -6,21 +6,19 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.fxmisc.richtext.InlineCssTextArea;
 import ede.stl.gui.GuiEde;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.Region;
+import javax.swing.*;
+import javax.swing.text.*;
 
-public class JavaJob extends GuiJob{
+public class JavaJob extends GuiJob {
     private Callable<Void> functionToRun;
     private GuiEde edeInstance;
     private String errorPane;
     private String inputFile;
     private String outputFile;
-    private List<Region> guiJobs;
-    
+    private List<JComponent> guiJobs;
 
-    public JavaJob(String buttonText, TextAreaType type, double width, double height, Callable<Void> functionToRun, String inputFile, String outputFile, String errorPane, String[] keywords, List<Region> guiJobs,  GuiEde edeInstance){
+    public JavaJob(String buttonText, TextAreaType type, double width, double height, Callable<Void> functionToRun, String inputFile, String outputFile, String errorPane, String[] keywords, List<JComponent> guiJobs, GuiEde edeInstance){
         super(buttonText, type, width, height, keywords);
         this.functionToRun = functionToRun;
         this.edeInstance = edeInstance;
@@ -31,81 +29,55 @@ public class JavaJob extends GuiJob{
     }
 
     private void copyOverDataToInputFile(){
-        Region reg = this.getInputSection();
+        JComponent reg = this.getInputSection();
+        String textToCopy;
 
-        if(reg instanceof InlineCssTextArea){
-            InlineCssTextArea ta = (InlineCssTextArea)reg;
-            String textToCopy = ta.getText();
-            File iFile = new File(inputFile);
-            if(!iFile.exists()){
-                iFile.delete();
-            }
-
-            try {
-                iFile.createNewFile();
-                FileWriter Writer = new FileWriter(iFile);
-                Writer.write(textToCopy);
-                Writer.flush();
-                Writer.close();
-            } catch(Exception exp){
-                edeInstance.appendIoText(errorPane, exp.toString());
-            }
+        if(reg instanceof JTextPane){
+            JTextPane ta = (JTextPane)reg;
+            textToCopy = ta.getText();
         } else {
-            TextArea ta = (TextArea)reg;
-            String textToCopy = ta.getText();
-            File iFile = new File(inputFile);
-            if(!iFile.exists()){
-                iFile.delete();
-            }
+            JTextArea ta = (JTextArea)reg;
+            textToCopy = ta.getText();
+        }
 
-            try {
-                iFile.createNewFile();
-                FileWriter Writer = new FileWriter(iFile);
-                Writer.write(textToCopy);
-                Writer.flush();
-                Writer.close();
-            } catch(Exception exp){
-                edeInstance.appendIoText(errorPane, exp.toString());
-            }
+        File iFile = new File(inputFile);
+        if(!iFile.exists()){
+            iFile.delete();
+        }
+
+        try {
+            iFile.createNewFile();
+            FileWriter Writer = new FileWriter(iFile);
+            Writer.write(textToCopy);
+            Writer.flush();
+            Writer.close();
+        } catch(Exception exp){
+            edeInstance.appendIoText(errorPane, exp.toString());
         }
     }
 
     private void collectDataFromOutputFile(){
         for(int i = 0; i < guiJobs.size(); i++){
-            Region localArea = guiJobs.get(i);
+            JComponent localArea = guiJobs.get(i);
             if(localArea.hashCode() == this.getInputSection().hashCode()){
-                Region nextTextArea = guiJobs.get(i + 1);
-                if(nextTextArea instanceof InlineCssTextArea){
-                    InlineCssTextArea ta = (InlineCssTextArea)nextTextArea;
-                    ta.replaceText("");
-                    try{
-                        FileReader reader = new FileReader(outputFile);
-                        //Write all Text to the Next Text Area
-                        StringBuilder sb = new StringBuilder();
-                        while(reader.ready()){
-                            sb.append((char)reader.read());
-                        }
-                        ta.replaceText(sb.toString());
-                        reader.close();
-                    } catch(Exception exp){
-                        edeInstance.appendIoText(errorPane, exp.toString());
+                JComponent nextTextArea = guiJobs.get(i + 1);
+                try{
+                    FileReader reader = new FileReader(outputFile);
+                    StringBuilder sb = new StringBuilder();
+                    while(reader.ready()){
+                        sb.append((char)reader.read());
                     }
-                } else {
-                    TextArea ta = (TextArea)nextTextArea;
-                    ta.setText("");
-                    try{
-                        FileReader reader = new FileReader(outputFile);
-                        //Write all Text to the Next Text Area
-                        StringBuilder sb = new StringBuilder();
-                        while(reader.ready()){
-                            sb.append((char)reader.read());
-                        }
-                        ta.setText(sb.toString());
+                    reader.close();
 
-                        reader.close();
-                    } catch(Exception exp){
-                        edeInstance.appendIoText(errorPane, exp.toString());
+                    if(nextTextArea instanceof JTextPane){
+                        JTextPane ta = (JTextPane)nextTextArea;
+                        ta.setText(sb.toString());
+                    } else {
+                        JTextArea ta = (JTextArea)nextTextArea;
+                        ta.setText(sb.toString());
                     }
+                } catch(Exception exp){
+                    edeInstance.appendIoText(errorPane, exp.toString());
                 }
             }
         }
@@ -117,71 +89,8 @@ public class JavaJob extends GuiJob{
         try {
             functionToRun.call();
         } catch (Exception e) {
-            // TODO Auto-generated catch block
            edeInstance.appendIoText(errorPane, e.toString());
         }
         collectDataFromOutputFile();
     }
-
-    
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

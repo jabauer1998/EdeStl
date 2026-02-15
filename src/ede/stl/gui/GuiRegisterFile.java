@@ -3,12 +3,11 @@ package ede.stl.gui;
 import java.util.Collection;
 import java.util.HashMap;
 import ede.stl.gui.RegFile;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ScrollPane.ScrollBarPolicy;
-import javafx.scene.layout.VBox;
+import javax.swing.*;
+import java.awt.*;
 
-public class GuiRegisterFile extends VBox implements RegFile {
-    private ScrollPane Pane;
+public class GuiRegisterFile extends JPanel implements RegFile {
+    private JScrollPane Pane;
 
     private double RegisterWidth;
     private double RegisterHeight;
@@ -20,12 +19,13 @@ public class GuiRegisterFile extends VBox implements RegFile {
     private HashMap<Integer, GuiRegister> intRegFile;
     
     public GuiRegisterFile(double Width, double Height){
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
         actualWidth = Width;
         actualHeight = Height;
         
-        Pane = new ScrollPane();
-        Pane.setHbarPolicy(ScrollBarPolicy.NEVER);
-        Pane.setContent(this);
+        Pane = new JScrollPane(this);
+        Pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         this.RegisterWidth = Width;
         this.RegisterHeight = Height / 6;
@@ -34,7 +34,7 @@ public class GuiRegisterFile extends VBox implements RegFile {
         intRegFile = new HashMap<>();
     }
 
-    public ScrollPane getScrollPane(){
+    public JScrollPane getScrollPane(){
         return Pane;
     }
 
@@ -57,16 +57,14 @@ public class GuiRegisterFile extends VBox implements RegFile {
             intRegFile.put(lookupInt, Register);
         }
 
-        this.getChildren().add(Register);
+        this.add(Register);
         resizeRegisterFile();
     }
 
     private void resizeRegisterFile(){
-        this.setPrefWidth(actualWidth);
-        this.setPrefHeight(actualHeight);
+        this.setPreferredSize(new Dimension((int)actualWidth, (int)actualHeight));
 
-        Pane.setPrefHeight(actualHeight);
-        Pane.setPrefWidth(actualWidth);
+        Pane.setPreferredSize(new Dimension((int)actualWidth, (int)actualHeight));
     }
 
     @Override
@@ -86,7 +84,6 @@ public class GuiRegisterFile extends VBox implements RegFile {
        Reg.SetRegisterValue(regValue);
     }
 
-     
     public void setRegisterValue(int regNumber, long regValue){
         GuiRegister Reg = intRegFile.get(regNumber);
         Reg.SetRegisterValue(regValue);

@@ -4,23 +4,18 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import ede.stl.gui.Memory;
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ScrollPane.ScrollBarPolicy;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.TextAlignment;
+import javax.swing.*;
+import java.awt.*;
 
-public class GuiRam extends VBox implements Memory{
-    private ArrayList<Label> Bytes;
-    private ArrayList<Label> Addresses;
+public class GuiRam extends JPanel implements Memory {
+    private ArrayList<JLabel> Bytes;
+    private ArrayList<JLabel> Addresses;
     
     private int NumberOfBytes;
     private int NumberRowsRounded;
     private int BytesPerRow;
 
-    private ScrollPane Pane;
+    private JScrollPane Pane;
     private AddressFormat AddrFormat;
     private MemoryFormat MemFormat;
     
@@ -40,24 +35,19 @@ public class GuiRam extends VBox implements Memory{
     }
 
     public GuiRam(int BytesPerRow, AddressFormat AddrFormat, MemoryFormat MemFormat, double Width, double Height){
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.BytesPerRow = BytesPerRow;
 
         this.MemFormat = MemFormat;
         this.AddrFormat = AddrFormat;
 
-        this.setMaxHeight(Height);
-        this.setMaxWidth(Width);
-        this.setPrefWidth(Width);
-        this.setPrefHeight(Height);
+        this.setMaximumSize(new Dimension((int)Width, (int)Height));
+        this.setPreferredSize(new Dimension((int)Width, (int)Height));
         
-        this.Pane = new ScrollPane();
-        this.Pane.setMaxHeight(Height);
-        this.Pane.setMaxWidth(Width);
-        this.Pane.setPrefHeight(Height);
-        this.Pane.setPrefWidth(Width);
-        
-        this.Pane.setContent(this);
-        this.Pane.setHbarPolicy(ScrollBarPolicy.NEVER);
+        this.Pane = new JScrollPane(this);
+        this.Pane.setMaximumSize(new Dimension((int)Width, (int)Height));
+        this.Pane.setPreferredSize(new Dimension((int)Width, (int)Height));
+        this.Pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         Bytes = new ArrayList<>();
         Addresses = new ArrayList<>();
@@ -67,47 +57,45 @@ public class GuiRam extends VBox implements Memory{
     }
     
     public void setMemory(int numBytes) {
-    	this.NumberOfBytes = numBytes;
-    	this.NumberRowsRounded = (int)Math.ceil((NumberOfBytes / BytesPerRow));
-    	
-    	int Byte = 0;
-    	for(int Row = 0; Row < this.NumberRowsRounded; Row++){
-        //The Following HBoxes are Used to Organize the Memory Content that is Generated
-        //They are also stored into arrays to make the Labels Addressable when we need to modify a specific Label
-        HBox AddressToMemory = new HBox();
-        HBox RowOfMemory = new HBox();
-
-        if(this.AddrFormat == AddressFormat.HEXIDECIMAL){
-            Addresses.add(new Label(Integer.toHexString(Byte)));
-        } else if(this.AddrFormat == AddressFormat.BINARY){
-            Addresses.add(new Label(Integer.toBinaryString(Byte)));
-        } else if(this.AddrFormat == AddressFormat.OCTAL){
-            Addresses.add(new Label(Integer.toOctalString(Byte)));
-        } else {
-            Addresses.add(new Label(Integer.toString(Byte)));
-        }
+        this.NumberOfBytes = numBytes;
+        this.NumberRowsRounded = (int)Math.ceil((NumberOfBytes / BytesPerRow));
         
-        for(int i = 0; i < this.BytesPerRow; i++, Byte++){
+        int Byte = 0;
+        for(int Row = 0; Row < this.NumberRowsRounded; Row++){
+            JPanel AddressToMemory = new JPanel();
+            AddressToMemory.setLayout(new BoxLayout(AddressToMemory, BoxLayout.X_AXIS));
+            JPanel RowOfMemory = new JPanel();
+            RowOfMemory.setLayout(new BoxLayout(RowOfMemory, BoxLayout.X_AXIS));
 
-            if(this.MemFormat == MemoryFormat.HEXADECIMAL){
-                Bytes.add(new Label("00"));
-                Bytes.get(Bytes.size()-1).setPrefWidth(this.screenWidth/(this.BytesPerRow * 2));
-                Bytes.get(Bytes.size()-1).setTextAlignment(TextAlignment.RIGHT);
+            if(this.AddrFormat == AddressFormat.HEXIDECIMAL){
+                Addresses.add(new JLabel(Integer.toHexString(Byte)));
+            } else if(this.AddrFormat == AddressFormat.BINARY){
+                Addresses.add(new JLabel(Integer.toBinaryString(Byte)));
+            } else if(this.AddrFormat == AddressFormat.OCTAL){
+                Addresses.add(new JLabel(Integer.toOctalString(Byte)));
             } else {
-                Bytes.add(new Label("00000000"));
-                Bytes.get(Bytes.size()-1).setPrefWidth(screenWidth/(this.BytesPerRow * 3));
-                Bytes.get(Bytes.size()-1).setTextAlignment(TextAlignment.RIGHT);
+                Addresses.add(new JLabel(Integer.toString(Byte)));
             }
-            RowOfMemory.getChildren().add(Bytes.get(Bytes.size()-1));
-            RowOfMemory.setAlignment(Pos.CENTER_RIGHT);
+            
+            for(int i = 0; i < this.BytesPerRow; i++, Byte++){
+                if(this.MemFormat == MemoryFormat.HEXADECIMAL){
+                    Bytes.add(new JLabel("00"));
+                    Bytes.get(Bytes.size()-1).setPreferredSize(new Dimension((int)(this.screenWidth/(this.BytesPerRow * 2)), 20));
+                    Bytes.get(Bytes.size()-1).setHorizontalAlignment(SwingConstants.RIGHT);
+                } else {
+                    Bytes.add(new JLabel("00000000"));
+                    Bytes.get(Bytes.size()-1).setPreferredSize(new Dimension((int)(screenWidth/(this.BytesPerRow * 3)), 20));
+                    Bytes.get(Bytes.size()-1).setHorizontalAlignment(SwingConstants.RIGHT);
+                }
+                RowOfMemory.add(Bytes.get(Bytes.size()-1));
+            }
+            Addresses.get(Row).setHorizontalAlignment(SwingConstants.LEFT);
+            Addresses.get(Row).setPreferredSize(new Dimension((int)(screenWidth/3), 20));
+            AddressToMemory.add(Addresses.get(Row));
+            AddressToMemory.add(RowOfMemory);
+            AddressToMemory.setPreferredSize(new Dimension((int)screenWidth, 20));
+            this.add(AddressToMemory);
         }
-        Addresses.get(Row).setTextAlignment(TextAlignment.LEFT);
-        Addresses.get(Row).setPrefWidth(screenWidth/3);
-        AddressToMemory.getChildren().addAll(Addresses.get(Row), RowOfMemory);
-        AddressToMemory.setPrefWidth(screenWidth);
-        AddressToMemory.setAlignment(Pos.CENTER_LEFT);
-        this.getChildren().add(AddressToMemory);
-    	}
     }
 
     public void LoadProgram(String Program){
@@ -124,13 +112,13 @@ public class GuiRam extends VBox implements Memory{
         }
     }
 
-    public ScrollPane getScrollPane(){
+    public JScrollPane getScrollPane(){
         return Pane;
     }
 
     @Override
     public void setMemoryValue(int address, long dataValue){
-        Label Byte = Bytes.get(address);
+        JLabel Byte = Bytes.get(address);
         if(MemFormat == MemoryFormat.BINARY){
             String asString = Long.toBinaryString(dataValue);
             if(asString.length() > 8){
@@ -163,8 +151,8 @@ public class GuiRam extends VBox implements Memory{
     }
 
     @Override
-    public long getMemoryValue(int address){ // TODO Auto-generated method stub
-        Label Byte = Bytes.get(address);
+    public long getMemoryValue(int address){
+        JLabel Byte = Bytes.get(address);
         String text = Byte.getText();
         
         if(MemFormat == MemoryFormat.BINARY){

@@ -79,8 +79,8 @@ import ede.stl.ast.IfElseStatement;
 import ede.stl.ast.IfStatement;
 import ede.stl.ast.SystemTaskStatement;
 import ede.stl.ast.TaskStatement;
-import javafx.geometry.Rectangle2D;
-import javafx.stage.Screen;
+import java.awt.Toolkit;
+import java.awt.Dimension;
 
 public class VerilogToJavaGen {
 
@@ -165,14 +165,16 @@ public class VerilogToJavaGen {
         }
 
         private static void codeGenScreenDimensions(MethodVisitor mainVisit){
-                mainVisit.visitMethodInsn(Opcodes.INVOKESTATIC, "javafx/stage/Screen", "getPrimary", "()Ljavafx/stage/Screen;", false);
-                mainVisit.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "javafx/stage/Screen", "getBounds", "(Ljavafx/stage/Screen;)Ljavafx/geometry/Rectangle2D;", false);
+                mainVisit.visitMethodInsn(Opcodes.INVOKESTATIC, "java/awt/Toolkit", "getDefaultToolkit", "()Ljava/awt/Toolkit;", false);
+                mainVisit.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/awt/Toolkit", "getScreenSize", "()Ljava/awt/Dimension;", false);
                 mainVisit.visitVarInsn(Opcodes.ASTORE, 0);
                 
                 mainVisit.visitVarInsn(Opcodes.ALOAD, 0);
-    mainVisit.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "javafx/geometry/Rectangle2D", "getWidth", "(Ljavafx/geometry/Rectangle2D;)D", false);
+    mainVisit.visitFieldInsn(Opcodes.GETFIELD, "java/awt/Dimension", "width", "I");
+    mainVisit.visitInsn(Opcodes.I2D);
     mainVisit.visitVarInsn(Opcodes.ALOAD, 0);
-    mainVisit.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "javafx/geometry/Rectangle2D", "getWidth", "(Ljavafx/geometry/Rectangle2D;)D", false);
+    mainVisit.visitFieldInsn(Opcodes.GETFIELD, "java/awt/Dimension", "height", "I");
+    mainVisit.visitInsn(Opcodes.I2D);
         }
 
         private static void pushString(String val, MethodVisitor main){

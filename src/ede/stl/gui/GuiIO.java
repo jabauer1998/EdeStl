@@ -1,25 +1,23 @@
 package ede.stl.gui;
 
 import java.util.HashMap;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.VBox;
+import javax.swing.*;
+import java.awt.*;
 
-public class GuiIO extends VBox{
-    private TabPane TabPane;
+public class GuiIO extends JPanel {
+    private JTabbedPane TabPane;
 
     private double actualWidth;
     private double actualHeight;
 
-    private HashMap<String, TextArea> IoPaneMap;
+    private HashMap<String, JTextArea> IoPaneMap;
     
     public GuiIO(double Width, double Height){
-        TabPane = new TabPane();
-        TabPane.setMaxWidth(Width);
-        TabPane.setMaxHeight(Height);
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        TabPane = new JTabbedPane();
+        TabPane.setMaximumSize(new Dimension((int)Width, (int)Height));
+        TabPane.setPreferredSize(new Dimension((int)Width, (int)Height));
 
         IoPaneMap = new HashMap<>();
         this.actualWidth = Width;
@@ -27,104 +25,46 @@ public class GuiIO extends VBox{
     }
 
     public void AddIoSection(String TabTitle, String... PaneTitles){
-        VBox IoPanes = new VBox();
+        JPanel IoPanes = new JPanel();
+        IoPanes.setLayout(new BoxLayout(IoPanes, BoxLayout.Y_AXIS));
+
         for(String PaneTitle : PaneTitles){
-            VBox IoPaneWithLabel = new VBox();
-            Label Name = new Label(PaneTitle);
-            TextArea Area = new TextArea();
-            Area.setPrefWidth(actualWidth);
-            Area.setPrefHeight(actualHeight/PaneTitles.length);
+            JPanel IoPaneWithLabel = new JPanel();
+            IoPaneWithLabel.setLayout(new BoxLayout(IoPaneWithLabel, BoxLayout.Y_AXIS));
+            JLabel Name = new JLabel(PaneTitle);
+            JTextArea Area = new JTextArea();
+            Area.setPreferredSize(new Dimension((int)actualWidth, (int)(actualHeight/PaneTitles.length)));
 
             IoPaneMap.put(PaneTitle, Area);
-            IoPaneWithLabel.getChildren().addAll(Name, Area);
-            IoPanes.getChildren().addAll(IoPaneWithLabel);
+            IoPaneWithLabel.add(Name);
+            IoPaneWithLabel.add(new JScrollPane(Area));
+            IoPanes.add(IoPaneWithLabel);
         }
 
-        ScrollPane SPane = new ScrollPane();
-        SPane.setContent(IoPanes);
+        JScrollPane SPane = new JScrollPane(IoPanes);
 
-        Tab PaneTab = new Tab(TabTitle, SPane);
-        PaneTab.setClosable(false);
-        TabPane.getTabs().add(PaneTab);
+        TabPane.addTab(TabTitle, SPane);
     }
 
-    public TabPane getTabPane(){
+    public JTabbedPane getTabPane(){
         return TabPane;
     }
 
     public void writeIoText(String textAreaName, String toWrite){
-        TextArea ioArea = IoPaneMap.get(textAreaName);
+        JTextArea ioArea = IoPaneMap.get(textAreaName);
         ioArea.setText(toWrite);
     }
 
     public String readIoText(String textAreaName){
-        TextArea ioArea = IoPaneMap.get(textAreaName);
+        JTextArea ioArea = IoPaneMap.get(textAreaName);
         return ioArea.getText();
     }
 
     public void appendIoText(String textAreaName, String toAppend){
-        TextArea ioArea = IoPaneMap.get(textAreaName);
+        JTextArea ioArea = IoPaneMap.get(textAreaName);
         StringBuilder appender = new StringBuilder();
         appender.append(ioArea.getText());
         appender.append(toAppend);
         ioArea.setText(appender.toString());
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

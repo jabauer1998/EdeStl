@@ -3,32 +3,36 @@ package ede.stl.gui;
 import ede.stl.gui.Machine;
 import ede.stl.gui.GuiRam.AddressFormat;
 import ede.stl.gui.GuiRam.MemoryFormat;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javax.swing.*;
+import java.awt.*;
 
-public class GuiMachine extends HBox implements Machine{
+public class GuiMachine extends JPanel implements Machine {
     private GuiRegisterFile RegFile;
     private GuiRam Mem;
     private GuiFlags Flags;
     private GuiIO Io;
     
     public GuiMachine(int NumberOfBytesInRow, AddressFormat AddrFormat, MemoryFormat MemFormat, double Width, double Height){
+        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+
         this.RegFile = new GuiRegisterFile(Width / 3, Height);
         this.Mem = new GuiRam(NumberOfBytesInRow, AddrFormat, MemFormat, Width / 3, Height);
         
-        VBox FlagsAndIo = new VBox();
+        JPanel FlagsAndIo = new JPanel();
+        FlagsAndIo.setLayout(new BoxLayout(FlagsAndIo, BoxLayout.Y_AXIS));
         this.Flags = new GuiFlags(Width/3, Height/7);
         this.Io = new GuiIO(Width/3, Height*6/7);
 
-        FlagsAndIo.getChildren().addAll(Flags.getScrollPane(), this.Io.getTabPane());
+        FlagsAndIo.add(Flags.getScrollPane());
+        FlagsAndIo.add(this.Io.getTabPane());
 
-
-        this.getChildren().addAll(this.RegFile.getScrollPane(), this.Mem.getScrollPane(), FlagsAndIo);
+        this.add(this.RegFile.getScrollPane());
+        this.add(this.Mem.getScrollPane());
+        this.add(FlagsAndIo);
     }
     
     public void setUpMemory(int numBytes){
-    	this.Mem.setMemory(numBytes);
+        this.Mem.setMemory(numBytes);
     }
 
     public void AddGuiRegister(String Title, int Length, GuiRegister.Format Format){

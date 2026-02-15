@@ -1,16 +1,14 @@
 package ede.stl.gui;
 
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
+import javax.swing.*;
+import java.awt.*;
 
-public class GuiRegister extends HBox{
-    private Label TitleReg; //Name of the Register
-    private Label RegisterValue; //Hold some Current Value
+public class GuiRegister extends JPanel {
+    private JLabel TitleReg;
+    private JLabel RegisterValue;
     private int RegisterDecimalLength;
     private double Width;
     private double Height;
-
 
     public enum Format{
         HEXIDECIMAL,
@@ -20,9 +18,10 @@ public class GuiRegister extends HBox{
     private Format regFormat;
 
     public GuiRegister(String Title, int Length, Format Format, double Width, double Height){
-        TitleReg = new Label(Title);
-        TitleReg.setPrefWidth(Width/6);
-        TitleReg.setPrefHeight(Height);
+        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+
+        TitleReg = new JLabel(Title);
+        TitleReg.setPreferredSize(new Dimension((int)(Width/6), (int)Height));
 
         this.Width = Width;
         this.Height = Height;
@@ -30,12 +29,11 @@ public class GuiRegister extends HBox{
         RegisterDecimalLength = Length;
         this.regFormat = Format;
         
-        RegisterValue = new Label(GenZeros());
-        RegisterValue.setPrefHeight(Height);
-        RegisterValue.setPrefWidth(Width*5/6);
+        RegisterValue = new JLabel(GenZeros());
+        RegisterValue.setPreferredSize(new Dimension((int)(Width*5/6), (int)Height));
 
-        this.getChildren().addAll(TitleReg, RegisterValue);
-        this.setAlignment(Pos.CENTER_LEFT);
+        this.add(TitleReg);
+        this.add(RegisterValue);
     }
 
     public String getTitle(){
