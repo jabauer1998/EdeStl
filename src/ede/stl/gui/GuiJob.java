@@ -50,7 +50,6 @@ public abstract class GuiJob extends JPanel {
                     StyledDocument doc = textPane.getStyledDocument();
                     int cursorPosition = textPane.getCaretPosition();
                     String text = textPane.getText();
-
                     int findEndPositionLeft = Search.findNextNonWhitespace(cursorPosition, text, SearchDirection.LEFT);
                     int findBeginPositionLeft = Search.findNextWhiteSpace(findEndPositionLeft, text, SearchDirection.LEFT);
 
