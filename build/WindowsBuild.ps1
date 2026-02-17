@@ -30,7 +30,9 @@ if($javaExists -ne ""){
 		[System.IO.File]::WriteAllText($line, $content, $Utf8NoBomEncoding)
 	    }
 	    cat "build/BuildList.txt"
-	    javac "@build/BuildList.txt" -sourcepath "./src" -cp "lib\openjfx-25.0.2_windows-x64_bin-sdk\javafx-sdk-25.0.2\lib\*;./lib/*" -encoding "UTF-8"
+	    javac "@build/BuildList.txt" -sourcepath "./src" -d "./tmp" -cp ".\lib\*" -encoding "UTF-8"
+	    jar cf "bin/EdeStl.jar" -C "./tmp/" "."
+	    Remove-Item -Path "./tmp/*" -Recurse -Force
 	} elseif ($command -eq "clean"){
 	    Remove-Item -Recurse bin/*
 	} elseif ($command -eq "publish"){
