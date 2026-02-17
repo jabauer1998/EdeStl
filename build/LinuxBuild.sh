@@ -39,13 +39,15 @@ if [ -n "$javaExists" ]; then
                     CLASSPATH="$CLASSPATH$jar"
                 fi
             done
+            mkdir -p tmp
             if [ -n "$CLASSPATH" ]; then
-                javac "@build/BuildList.txt" -sourcepath "./src" -classpath "$CLASSPATH" -encoding "UTF-8"
+                javac "@build/BuildList.txt" -sourcepath "./src" -classpath "$CLASSPATH" -d "tmp" -encoding "UTF-8"
             else
-                javac "@build/BuildList.txt" -sourcepath "./src" -encoding "UTF-8"
+                javac "@build/BuildList.txt" -sourcepath "./src" -d "tmp" -encoding "UTF-8"
             fi
         elif [ "$command" = "clean" ]; then
             rm -rf bin/*
+            rm -rf tmp/*
         elif [ "$command" = "publish" ]; then
             :
         else
