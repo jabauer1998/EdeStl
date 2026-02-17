@@ -1,15 +1,21 @@
 package ede.stl.passes;
 
+import java.io.StringWriter;
 import ede.stl.ast.*;
 import ede.stl.interpreter.VerilogInterpreter;
+import ede.stl.common.Destination;
+import ede.stl.common.ErrorLog;
+import ede.stl.gui.GuiEde;
 
 public class MetaDataGatherer implements ModuleVisitor<Void> {
     private GuiEde edeInstance;
-    private VerilogInterpreter interpreter = new VerilogInterpreter();
+    private VerilogInterpreter constSolver;
   
-    public MetaDataGatherer(GuiEde edeInstance, StringStream str){
+    public MetaDataGatherer(GuiEde edeInstance, StringWriter str){
+        Destination dest = new Destination(str);
+        ErrorLog errLog = new ErrorLog(dest);
         this.edeInstance = edeInstance;
-       
+        this.constSolver = new VerilogInterpreter(errLog, dest);
     }
   
     public Void visit(ModuleDeclaration mod, Object... argv){
@@ -73,9 +79,10 @@ public class MetaDataGatherer implements ModuleVisitor<Void> {
 
     public Void visit(Reg.Scalar.Array decl, Object... argv){
         if(decl.annotationLexeme.equals("@Memory")){
-            int numBytes = Integer.parseInt(decl.arrayIndex2);
+            int numBytes = Integer.parseInt(decl.arrayIndex2.toString());
             edeInstance.setUpMemory(numBytes);
         }
+        return null;
     }
 
     public Void visit(Reg.Vector.Array decl, Object... argv){
