@@ -46,11 +46,17 @@ public abstract class GuiJob extends JPanel {
 
             textPane.addKeyListener(new KeyAdapter(){
                 @Override
-                public void keyTyped(KeyEvent arg0){
-                    StyledDocument doc = textPane.getStyledDocument();
-                    int cursorPosition = textPane.getCaretPosition();
-                    String text = textPane.getText();
+                public void handle(Event arg0){
+                    InlineCssTextArea myInputSection = (InlineCssTextArea)InputSection;
+                    int cursorPosition = myInputSection.getCaretPosition();
+                    String text = myInputSection.getText();
 
+		    if(text.charAt(cursorPosition - 1) == '\b' || text.charAt(cursorPosition) == '\b'){
+			text = text.substring(0, cursorPosition) + text.substring(cursorPosition + 1, text.length());
+		    }
+		    
+                    //Otherwise it is a whitespace and we need to change the color word before and after the whitespace
+>>>>>>> 84d1dc1 (Fixed all errors)
                     int findEndPositionLeft = Search.findNextNonWhitespace(cursorPosition, text, SearchDirection.LEFT);
                     int findBeginPositionLeft = Search.findNextWhiteSpace(findEndPositionLeft, text, SearchDirection.LEFT);
 

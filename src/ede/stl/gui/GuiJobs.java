@@ -5,8 +5,12 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import ede.stl.gui.GuiEde;
 import ede.stl.gui.GuiJob.TextAreaType;
-import javax.swing.*;
-import java.awt.*;
+import javafx.geometry.Pos;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.Region;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.VBox;
 
 public class GuiJobs extends JPanel {
     private JScrollPane JobsPane;
