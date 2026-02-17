@@ -6,16 +6,20 @@ import ede.stl.interpreter.VerilogInterpreter;
 import ede.stl.common.Destination;
 import ede.stl.common.ErrorLog;
 import ede.stl.gui.GuiEde;
+import ede.stl.gui.GuiRegister;
 
 public class MetaDataGatherer implements ModuleVisitor<Void> {
     private GuiEde edeInstance;
     private VerilogInterpreter constSolver;
+    private ErrorLog errLog;
+    private GuiRegister.Format regFormat;
   
-    public MetaDataGatherer(GuiEde edeInstance, StringWriter str){
+    public MetaDataGatherer(GuiEde edeInstance, StringWriter str, GuiRegister.Format format){
         Destination dest = new Destination(str);
-        ErrorLog errLog = new ErrorLog(dest);
+        errLog = new ErrorLog(dest);
         this.edeInstance = edeInstance;
         this.constSolver = new VerilogInterpreter(errLog, dest);
+        this.regFormat = format;
     }
   
     public Void visit(ModuleDeclaration mod, Object... argv){
@@ -78,14 +82,16 @@ public class MetaDataGatherer implements ModuleVisitor<Void> {
     }
 
     public Void visit(Reg.Scalar.Array decl, Object... argv){
-        if(decl.annotationLexeme.equals("@Memory")){
-            int numBytes = Integer.parseInt(decl.arrayIndex2.toString());
-            edeInstance.setUpMemory(numBytes);
-        }
         return null;
     }
 
     public Void visit(Reg.Vector.Array decl, Object... argv){
+        if(decl.annotationLexeme.equals("@memory")){
+          int first = constSolver.interpretExpression(decl.arrayIndex1.toString()).intValue();
+          int second = constSolver.interpretExpression(decl.arrayIndex2.toString()).intValue();
+          int numBytes = Math.abs(first - second) + 1;
+          edeInstance.setUpMemory(numBytes);
+        }
         return null;
     }
 
@@ -98,10 +104,19 @@ public class MetaDataGatherer implements ModuleVisitor<Void> {
     }
 
     public Void visit(Reg.Scalar.Ident decl, Object... argv){
+        if(decl.annotationLexeme.equals("@status")){
+            edeInstance.AddFlag(decl.declarationIdentifier);
+        }
         return null;
     }
 
     public Void visit(Reg.Vector.Ident decl, Object... argv){
+        if(decl.annotationLexeme.equals("@register")){
+          int first = constSolver.interpretExpression(decl.GetIndex1().toString()).intValue();
+          int second = constSolver.interpretExpression(decl.GetIndex2().toString()).intValue();
+          int numBytes = Math.abs(first - second) + 1;
+          edeInstance.AddRegister(decl.declarationIdentifier, numBytes, regFormat);
+        }
         return null;
     }
 
