@@ -143,7 +143,14 @@ public class GuiEde extends JPanel implements Machine {
         return this.Machine.readIoText(textAreaName);
     }
 
-    public void gatherMetaDataFromVerilogFile(String verilogFile){
-        
+    public void gatherMetaDataFromVerilogFile(String verilogFile, GuiRegister.Format format){
+        ErrorLog errLog = new ErrorLog(new Destination(new StringWriter()));
+        Lexer lexer = new Lexer(new Source(new FileStream(verilogFile)), errLog);
+        Parser parser = new Parser(lexer, errLog);
+        VerilogFile file = parser.parse();
+        for(ModuleDeclaration decl : file.moduleDeclarationList){
+            MetaDataGatherer gatherer = new MetaDataGatherer(this, new StringWriter(), format);
+            gatherer.visit(decl);
+        }
     }
 }
