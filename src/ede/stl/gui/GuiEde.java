@@ -142,4 +142,8 @@ public class GuiEde extends JPanel implements Machine {
     public String readIoText(String textAreaName){
         return this.Machine.readIoText(textAreaName);
     }
+
+    public void gatherMetaDataFromVerilogFile(String verilogFile){
+        
+    }
 }

@@ -107,8 +107,6 @@
 /home/runner/workspace/src/ede/stl/gui/Machine.java
 /home/runner/workspace/src/ede/stl/gui/Memory.java
 /home/runner/workspace/src/ede/stl/gui/RegFile.java
-/home/runner/workspace/src/ede/stl/gui/ExeJob.java
-/home/runner/workspace/src/ede/stl/gui/GuiEde.java
 /home/runner/workspace/src/ede/stl/gui/GuiFlag.java
 /home/runner/workspace/src/ede/stl/gui/GuiFlags.java
 /home/runner/workspace/src/ede/stl/gui/GuiIO.java
@@ -116,10 +114,12 @@
 /home/runner/workspace/src/ede/stl/gui/GuiRegister.java
 /home/runner/workspace/src/ede/stl/gui/GuiRegisterFile.java
 /home/runner/workspace/src/ede/stl/gui/JavaJob.java
-/home/runner/workspace/src/ede/stl/gui/VerilogJob.java
-/home/runner/workspace/src/ede/stl/gui/GuiJob.java
 /home/runner/workspace/src/ede/stl/gui/GuiJobs.java
 /home/runner/workspace/src/ede/stl/gui/GuiRam.java
+/home/runner/workspace/src/ede/stl/gui/GuiJob.java
+/home/runner/workspace/src/ede/stl/gui/VerilogJob.java
+/home/runner/workspace/src/ede/stl/gui/GuiEde.java
+/home/runner/workspace/src/ede/stl/gui/ExeJob.java
 /home/runner/workspace/src/ede/stl/interpreter/Environment.java
 /home/runner/workspace/src/ede/stl/interpreter/VerilogInterpreter.java
 /home/runner/workspace/src/ede/stl/interpreter/EdeInterpreter.java
@@ -136,6 +136,7 @@
 /home/runner/workspace/src/ede/stl/passes/TypeCheckerFunctionData.java
 /home/runner/workspace/src/ede/stl/passes/TypeCheckerVariableData.java
 /home/runner/workspace/src/ede/stl/passes/TypeChecker.java
+/home/runner/workspace/src/ede/stl/passes/MetaDataGatherer.java
 /home/runner/workspace/src/ede/stl/values/ArrayIntVal.java
 /home/runner/workspace/src/ede/stl/values/ArrayRegVal.java
 /home/runner/workspace/src/ede/stl/values/ArrayVal.java

@@ -18,7 +18,8 @@ public abstract class GuiJob extends JPanel {
 
     public enum TextAreaType{
         DEFAULT,
-        KEYWORD
+        KEYWORD,
+        NONE
     }
 
     protected GuiJob(String ButtonText, TextAreaType type, double Width, double Height, String... keywordArr){
@@ -77,14 +78,15 @@ public abstract class GuiJob extends JPanel {
                     }
                 }
             });
-        } else {
+        } else if(type == TextAreaType.DEFAULT) {
             JTextArea textArea = new JTextArea();
             textArea.setPreferredSize(new Dimension((int)Width, (int)Height));
             InputSection = textArea;
         }
 
         this.add(ExeButton);
-        this.add(InputSection);
+        if(type != TextAreaType.NONE)
+            this.add(InputSection);
     }
 
     public abstract void RunJob();
