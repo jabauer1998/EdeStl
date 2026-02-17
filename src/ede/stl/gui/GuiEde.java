@@ -1,12 +1,26 @@
 package ede.stl.gui;
 
+import java.io.FileReader;
+import java.io.StringWriter;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.Callable;
+import ede.stl.ast.ModuleDeclaration;
+import ede.stl.ast.VerilogFile;
+import ede.stl.common.Destination;
+import ede.stl.common.ErrorLog;
+import ede.stl.common.Source;
 import ede.stl.gui.Machine;
 import ede.stl.gui.GuiJobs;
 import ede.stl.gui.GuiJob.TextAreaType;
 import ede.stl.gui.GuiMachine;
 import ede.stl.gui.GuiRam;
 import ede.stl.gui.GuiRegister;
+import ede.stl.parser.Lexer;
+import ede.stl.parser.Parser;
+import ede.stl.parser.Preprocessor;
+import ede.stl.parser.Token;
+import ede.stl.passes.MetaDataGatherer;
 import ede.stl.values.Value;
 import javax.swing.*;
 import java.awt.*;
@@ -141,5 +155,24 @@ public class GuiEde extends JPanel implements Machine {
 
     public String readIoText(String textAreaName){
         return this.Machine.readIoText(textAreaName);
+    }
+
+    public void gatherMetaDataFromVerilogFile(String verilogFile, GuiRegister.Format format){
+        try {
+            ErrorLog errLog = new ErrorLog(new Destination(new StringWriter()));
+            Lexer lexer = new Lexer(new Source(new FileReader(verilogFile)), errLog);
+            LinkedList<Token> tokens = lexer.tokenize();
+            List<Token> filtered = Lexer.filterWhiteSpace(tokens);
+            Preprocessor preProc = new Preprocessor(errLog, filtered);
+            List<Token> processed = preProc.executePass();
+            Parser parser = new Parser(processed, errLog);
+            VerilogFile file = parser.parseVerilogFile();
+            for(ModuleDeclaration decl : file.modules){
+                MetaDataGatherer gatherer = new MetaDataGatherer(this, new StringWriter(), format);
+                gatherer.visit(decl);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
