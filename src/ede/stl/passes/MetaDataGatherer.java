@@ -1,9 +1,17 @@
 package ede.stl.passes;
 
 import ede.stl.ast.*;
+import ede.stl.interpreter.VerilogInterpreter;
 
 public class MetaDataGatherer implements ModuleVisitor<Void> {
-
+    private GuiEde edeInstance;
+    private VerilogInterpreter interpreter = new VerilogInterpreter();
+  
+    public MetaDataGatherer(GuiEde edeInstance, StringStream str){
+        this.edeInstance = edeInstance;
+       
+    }
+  
     public Void visit(ModuleDeclaration mod, Object... argv){
         for(ModuleItem item : mod.moduleItemList){
             item.accept(this);
@@ -64,7 +72,10 @@ public class MetaDataGatherer implements ModuleVisitor<Void> {
     }
 
     public Void visit(Reg.Scalar.Array decl, Object... argv){
-        return null;
+        if(decl.annotationLexeme.equals("@Memory")){
+            int numBytes = Integer.parseInt(decl.arrayIndex2);
+            edeInstance.setUpMemory(numBytes);
+        }
     }
 
     public Void visit(Reg.Vector.Array decl, Object... argv){
