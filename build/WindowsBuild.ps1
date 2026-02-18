@@ -30,25 +30,22 @@ if($javaExists -ne ""){
 		[System.IO.File]::WriteAllText($line, $content, $Utf8NoBomEncoding)
 	    }
 	    cat "build/BuildList.txt"
-	    javac "@build/BuildList.txt" -d "./bin" -sourcepath "./src" -cp "lib\openjfx-25.0.2_windows-x64_bin-sdk\javafx-sdk-25.0.2\lib\*;./lib/*" -encoding "UTF-8"
-	    $tmp = "./tmp"
-	    $dependencyJars = Get-ChildItem -Path lib -Filter *.jar
+	    javac "@build/BuildList.txt" -d "./tmp" -sourcepath "./src" -cp "./lib/*" -encoding "UTF-8"
+	    $dependencyJars = Get-ChildItem -Path "./lib" -Filter *.jar
+	    Write-Host $dependencyJars
 	    foreach ($jar in $dependencyJars) {
 		# Extract contents of each dependency JAR into the temp directory
-		jar xf $jar.FullName -C $tmp
+		jar xf $jar.FullName -C "./tmp"
 	        if (Test-Path ".\tmp\META-INF\MANIFEST.MF") {
 		    Remove-Item ".\tmp\META-INF\MANIFEST.MF"
 		}
-		# Move extracted files to classes directory, merging them
-		Move-Item -Path "$tmp\*" -Destination "./bin" -ErrorAction SilentlyContinue
 	    }
-	    Remove-Item -Path $tmp/* -Recurse -Force
-	    jar cf "$tmp/EdeStl.jar" "./bin"
-	    Remove-Item -Path ./bin/* -Recurse -Force
-	    Move-Item "./tmp/EdeStl.jar" "./bin"
+	    jar cf "./bin/EdeStl.jar" -C "./tmp" "."
+	    #Remove-Item -Path ./tmp/* -Recurse -Force
 	} elseif ($command -eq "clean"){
 	    Get-ChildItem -Path './src' -Include *.class -Recurse | Remove-Item -Force
-	    Get-ChildItem -Path './bin' -Include *.class -Recurse | Remove-Item -Force
+	    Get-ChildItem -Path './bin' -Include * -Recurse | Remove-Item -Force
+	    Get-ChildItem -Path './tmp' -Include * -Recurse | Remove-Item -Force
 	    Remove-Item -Recurse -Force "*~"
 	    Remove-Item -Recurse -Force "*#" 
 	} else {
