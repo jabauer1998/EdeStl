@@ -41,7 +41,16 @@ if($javaExists -ne ""){
 		}
 	    }
 	    jar cf "./bin/EdeStl.jar" -C "./tmp" "."
-	    #Remove-Item -Path ./tmp/* -Recurse -Force
+	    Remove-Item -Path ./tmp/* -Recurse -Force
+	    javac "" -d "./tmp" -sourcepath "./sample" -cp "./bin/EdeStl.jar" -encoding "UTF-8"
+	    foreach ($jar in $dependencyJars) {
+		# Extract contents of each dependency JAR into the temp directory
+		jar xf $jar.FullName -C "./tmp"
+	        if (Test-Path ".\tmp\META-INF\MANIFEST.MF") {
+		    Remove-Item ".\tmp\META-INF\MANIFEST.MF"
+		}
+	    }
+	    jar cfe "./bin/EdeSample.jar" "ede.Processor.java" -C "./tmp" "."
 	} elseif ($command -eq "clean"){
 	    Get-ChildItem -Path './src' -Include *.class -Recurse | Remove-Item -Force
 	    Get-ChildItem -Path './bin' -Include * -Recurse | Remove-Item -Force
