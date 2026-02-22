@@ -43,7 +43,16 @@ src/ede/stl/
 
 ### Build
 Run `bash build/LinuxBuild.sh build` to compile (or `bash build/LinuxBuild.sh clean` to clean).
-On Windows use `build/WindowsBuild.ps1 build`. Output goes to `bin/` directory.
+On Windows use `build/WindowsBuild.ps1 build`.
+
+Build steps (both platforms):
+1. Compile all `.java` sources to `tmp/` directory
+2. Extract `lib/asm-9.6.jar` into `tmp/` for bundling
+3. Bundle everything into `bin/EdeStl.jar`
+4. Clean `tmp/`, then compile `sample/ede/Processor.java` against the library jar (if dependencies available)
+5. Bundle sample into `bin/EdeSample.jar`
+
+Additional commands: `run` (runs EdeSample.jar), `clean` (removes bin/*, tmp/*, temp files)
 
 ## Recent Changes
 - 2026-02-15: Converted GUI from JavaFX to Swing
