@@ -60,8 +60,8 @@ public class GuiMachine extends JPanel implements Machine {
         this.Flags.AddGuiFlag(Name);
     }
 
-    public void AddIoSection(String TabTitle, String... PaneTitles){
-        this.Io.AddIoSection(TabTitle, PaneTitles);
+    public void AddIoSection(String TabTitle, String PaneTitle, GuiIO.Editable editable){
+        this.Io.AddIoSection(TabTitle, PaneTitle, editable);
     }
 
     public void setMemoryValue(int Address, long dataValue){

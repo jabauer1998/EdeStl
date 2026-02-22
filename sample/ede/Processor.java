@@ -86,8 +86,9 @@ public class Processor {
 
                 EdeInstance.AddVerilogJob("Execute", "./sample/processor/ARM7TDMIS.v", "default", "StandardInput", "StandardOutput", "StandardError");
 
-                EdeInstance.AddIoSection("Errors", "StandardError");
-                EdeInstance.AddIoSection("Io", "StandardInput", "StandardOutput");
+                EdeInstance.AddIoSection("Errors", "StandardError", ede.stl.gui.GuiIO.Editable.READ_ONLY);
+                EdeInstance.AddIoSection("Io", "StandardInput", ede.stl.gui.GuiIO.Editable.EDITABLE);
+                EdeInstance.AddIoSection("Io", "StandardOutput", ede.stl.gui.GuiIO.Editable.READ_ONLY);
 
                 frame.setPreferredSize(screenSize);
                 frame.add(EdeInstance);
