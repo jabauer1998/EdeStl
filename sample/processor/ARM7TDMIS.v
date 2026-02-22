@@ -113,8 +113,8 @@ reg [7:0] MEM [0:`MEMSIZE]; //Simulated Ram for this processor
    endtask //loadProgram
 
    task setRegister;
-        integer regNumber;
-        reg [`WIDTH:0] regValue; 
+        input [`WIDTH:0] regNumber;
+        input [`WIDTH:0] regValue; 
         begin
                 case (regNumber)
                         0: R0 = regValue;
@@ -142,7 +142,7 @@ reg [7:0] MEM [0:`MEMSIZE]; //Simulated Ram for this processor
    endtask
 
    function reg [`WIDTH:0] getRegister;
-        input [31:0] regNumber;
+        input [`WIDTH:0] regNumber;
         begin
                 case(regNumber)
                         0: getRegister = R0;
