@@ -39,6 +39,7 @@ public abstract class ProcessBase extends AstNode implements ModuleItem, Runnabl
           executeProcess(interpreter, semaphore);
         } catch (Exception e) {
           errLog.addItem(new ErrorItem("Exception " + e.toString() + "\n with \n" + e.getMessage() + "\n"));
+          e.printStackTrace();
           this.semaphore.release();
         }
       }
