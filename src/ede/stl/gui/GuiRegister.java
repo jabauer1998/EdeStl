@@ -18,10 +18,10 @@ public class GuiRegister extends JPanel {
     private Format regFormat;
 
     public GuiRegister(String Title, int Length, Format Format, double Width, double Height){
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        this.setLayout(new BorderLayout());
 
         TitleReg = new JLabel(Title);
-        TitleReg.setPreferredSize(new Dimension((int)(Width/6), (int)Height));
+        TitleReg.setHorizontalAlignment(SwingConstants.LEFT);
 
         this.Width = Width;
         this.Height = Height;
@@ -30,14 +30,14 @@ public class GuiRegister extends JPanel {
         this.regFormat = Format;
         
         RegisterValue = new JLabel(GenZeros());
-        RegisterValue.setPreferredSize(new Dimension((int)(Width*5/6), (int)Height));
+        RegisterValue.setHorizontalAlignment(SwingConstants.RIGHT);
 
         this.setPreferredSize(new Dimension((int)Width, (int)Height));
         this.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int)Height));
         this.setMinimumSize(new Dimension((int)Width, (int)Height));
 
-        this.add(TitleReg);
-        this.add(RegisterValue);
+        this.add(TitleReg, BorderLayout.WEST);
+        this.add(RegisterValue, BorderLayout.EAST);
     }
 
     public String getTitle(){
