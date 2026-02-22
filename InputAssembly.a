@@ -1,2 +1,3 @@
+MOV R0, #88
 SWI 1
 STP

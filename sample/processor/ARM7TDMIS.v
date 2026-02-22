@@ -142,7 +142,7 @@ reg [7:0] MEM [0:`MEMSIZE]; //Simulated Ram for this processor
    endtask
 
    function reg [`WIDTH:0] getRegister;
-        integer regNumber;
+        input [31:0] regNumber;
         begin
                 case(regNumber)
                         0: getRegister = R0;
