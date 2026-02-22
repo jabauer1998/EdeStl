@@ -464,13 +464,20 @@ public abstract class Interpreter {
          */
 
         protected IntVal interpretTaskDeclaration(TaskDeclaration task) throws Exception{
-                String taskName = task.taskName;
+                String taskName = task.taskName + "Shallow";
 
-                if (environment.functionExists(taskName)) {
+                if (environment.functionExists(taskName + "Shallow")) {
                         Utils.errorAndExit("Task declaration by the name of " + taskName + " found at [" + task.position + "] already exists at "
-                                + environment.lookupTask(taskName).position.toString());
+                                + environment.lookupTask(taskName + "Deep").position.toString());
                 } else {
-                        environment.addTask(taskName, task);
+                        environment.addTask(taskName + "Shallow", task);
+                }
+
+                if (environment.functionExists(taskName + "Deep")) {
+                        Utils.errorAndExit("Task declaration by the name of " + taskName + " found at [" + task.position + "] already exists at "
+                                + environment.lookupTask(taskName + "Deep").position.toString());
+                } else {
+                        environment.addTask(taskName + "Deep", task);
                 }
 
                 return null;
@@ -478,16 +485,22 @@ public abstract class Interpreter {
 
         protected IntVal interpretFunctionDeclaration(FunctionDeclaration function) throws Exception{
                 StrVal functionName = Utils.fetchFunctionName(function.functionName);
-                // May need to finish this later
 
-                if (environment.functionExists(functionName.toString())) {
-                        Utils.errorAndExit("Error: No function with the name of " + functionName + " was found");
+                if (environment.functionExists(functionName.toString() + "Shallow")) {
+                        Utils.errorAndExit("Error: Redeclaration of function " + functionName + "Shallow");
                         return Utils.errorOccured();
                 } else {
-                        environment.addFunction(functionName.toString(), function);
-                        return Utils.success();
+                        environment.addFunction(functionName.toString() + "Shallow", function);
                 }
 
+                if (environment.functionExists(functionName.toString() + "Deep")) {
+                        Utils.errorAndExit("Error: Redeclaration of function " + functionName + "Deep");
+                        return Utils.errorOccured();
+                } else {
+                        environment.addFunction(functionName.toString() + "Deep", function);
+                }
+
+                return Utils.success();
         }
 
         protected IntVal interpretProcess(ProcessBase process) throws Exception{
@@ -1732,18 +1745,18 @@ public abstract class Interpreter {
                 if (call instanceof SystemFunctionCall)
                         return interpretSystemFunctionCall((SystemFunctionCall)call);
                 else {
-                        String tname = call.functionName;
+                        String tname = call.functionName + "Shallow";
 
                         if (environment.functionExists(tname)) {
                                 // Collect symbol table data from the function
-                                FunctionDeclaration funcData = environment.lookupFunction(tname);
+                                FunctionDeclaration funcData = environment.lookupFunction(tname + "Shallow");
 
                                 environment.addStackFrame(tname);
 
                                 // Add the Function Name to the Symbol Table
                                 interpretModuleItem(funcData.functionName);
 
-                                Pointer<Value> returnData = environment.lookupVariable(tname); // get return object
+                                Pointer<Value> returnData = environment.lookupVariable(tname + "Shallow"); // get return object
 
                                 List<Value> paramaterValues = new LinkedList<Value>();
 
@@ -1796,13 +1809,13 @@ public abstract class Interpreter {
         protected Value interpretDeepFunctionCall(FunctionCall call) throws Exception{
 
                 if (!(call instanceof SystemFunctionCall)) {
-                        String tname = call.functionName;
+                        String tname = call.functionName + "Deep";
 
                         if (environment.functionExists(tname)) {
                                 // Collect symbol table data from the function
-                                FunctionDeclaration funcData = environment.lookupFunction(tname);
+                                FunctionDeclaration funcData = environment.lookupFunction(tname + "Deep");
 
-                                environment.addStackFrame(tname);
+                                environment.addStackFrame(tname + "Deep");
                                 List<String> paramaterNames = new LinkedList<String>();
 
                                 for (ModuleItem Parameter : funcData.paramaters) {

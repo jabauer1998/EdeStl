@@ -199,7 +199,7 @@ public class EdeInterpreter extends VerilogInterpreter {
         return Utils.success();
     }
 
-    protected IntVal interpretShallowBlockingAssingment(BlockingAssignment assign) throws Exception{
+    protected IntVal interpretShallowBlockingAssignment(BlockingAssignment assign) throws Exception{
 
         if(assign.leftHandSide instanceof Element){
             Element leftHandSide = (Element)assign.leftHandSide;
@@ -252,8 +252,8 @@ public class EdeInterpreter extends VerilogInterpreter {
 
     public Value interpretShallowOptimizedIdentifier(Identifier ident) throws Exception{
         if (environment.variableExists(ident.labelIdentifier)) {
-			Pointer<Value> data = environment.lookupVariable(ident.labelIdentifier);
-			Value typeData = data.deRefrence();
+                        Pointer<Value> data = environment.lookupVariable(ident.labelIdentifier);
+                        Value typeData = data.deRefrence();
             if(typeData instanceof EdeStatVal){
                 EdeStatVal stat = (EdeStatVal)typeData;
                 return new LongVal(stat.intValue());
@@ -261,14 +261,14 @@ public class EdeInterpreter extends VerilogInterpreter {
                 EdeRegVal reg = (EdeRegVal)typeData;
                 return new LongVal(reg.longValue());
             }
-		}
+                }
         return super.interpretShallowOptimizedIdentifier(ident);
     }
 
     public Value interpretShallowOptimizedElement(Element elem) throws Exception{
         if(environment.variableExists(elem.labelIdentifier)){
             Pointer<Value> data = environment.lookupVariable(elem.labelIdentifier);
-			Value typeData = data.deRefrence();
+                        Value typeData = data.deRefrence();
             if(typeData instanceof EdeMemVal){
                 EdeMemVal edeMemVal = (EdeMemVal)typeData;
                 Value result = interpretShallowOptimizedExpression(elem.index1);
@@ -285,7 +285,7 @@ public class EdeInterpreter extends VerilogInterpreter {
     public Value interpretShallowOptimizedSlice(Slice elem) throws Exception{
         if(environment.variableExists(elem.labelIdentifier)){
             Pointer<Value> data = environment.lookupVariable(elem.labelIdentifier);
-			Value typeData = data.deRefrence();
+                        Value typeData = data.deRefrence();
             if(typeData instanceof EdeRegVal){
                 EdeRegVal edeRegVal = (EdeRegVal)typeData;
                 Value result1 = interpretShallowOptimizedExpression(elem.index1);
