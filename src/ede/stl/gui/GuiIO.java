@@ -10,7 +10,14 @@ public class GuiIO extends JPanel {
     private double actualWidth;
     private double actualHeight;
 
+    public enum Editable{
+        READ_ONLY,
+        EDITABLE
+    }
+
     private HashMap<String, JTextArea> IoPaneMap;
+    private HashMap<String, JPanel> TabMap;
+    private HashMap<String, Integer> TabPaneCountMap;
     
     public GuiIO(double Width, double Height){
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -20,32 +27,47 @@ public class GuiIO extends JPanel {
         TabPane.setPreferredSize(new Dimension((int)Width, (int)Height));
 
         IoPaneMap = new HashMap<>();
+        TabMap = new HashMap<>();
+        TabPaneCountMap = new HashMap<>();
         this.actualWidth = Width;
         this.actualHeight = Height;
     }
 
-    public void AddIoSection(String TabTitle, String... PaneTitles){
-        JPanel IoPanes = new JPanel();
-        IoPanes.setLayout(new BoxLayout(IoPanes, BoxLayout.Y_AXIS));
+    public void AddIoSection(String TabTitle, String PaneTitle, Editable editable){
+        JPanel IoPanes;
+        int paneCount;
 
-        for(String PaneTitle : PaneTitles){
-            JPanel IoPaneWithLabel = new JPanel();
-            IoPaneWithLabel.setLayout(new BoxLayout(IoPaneWithLabel, BoxLayout.Y_AXIS));
-            JLabel Name = new JLabel(PaneTitle);
-            JTextArea Area = new JTextArea();
-            Area.setLineWrap(true);
-            Area.setWrapStyleWord(true);
-            Area.setPreferredSize(new Dimension((int)actualWidth, (int)(actualHeight/PaneTitles.length)));
+        if (TabMap.containsKey(TabTitle)) {
+            IoPanes = TabMap.get(TabTitle);
+            paneCount = TabPaneCountMap.get(TabTitle) + 1;
+            TabPaneCountMap.put(TabTitle, paneCount);
+        } else {
+            IoPanes = new JPanel();
+            IoPanes.setLayout(new BoxLayout(IoPanes, BoxLayout.Y_AXIS));
+            TabMap.put(TabTitle, IoPanes);
+            paneCount = 1;
+            TabPaneCountMap.put(TabTitle, paneCount);
 
-            IoPaneMap.put(PaneTitle, Area);
-            IoPaneWithLabel.add(Name);
-            IoPaneWithLabel.add(new JScrollPane(Area));
-            IoPanes.add(IoPaneWithLabel);
+            JScrollPane SPane = new JScrollPane(IoPanes);
+            TabPane.addTab(TabTitle, SPane);
         }
 
-        JScrollPane SPane = new JScrollPane(IoPanes);
+        JPanel IoPaneWithLabel = new JPanel();
+        IoPaneWithLabel.setLayout(new BoxLayout(IoPaneWithLabel, BoxLayout.Y_AXIS));
+        JLabel Name = new JLabel(PaneTitle);
+        JTextArea Area = new JTextArea();
+        Area.setLineWrap(true);
+        Area.setWrapStyleWord(true);
+        Area.setEditable(editable == Editable.EDITABLE);
+        Area.setPreferredSize(new Dimension((int)actualWidth, (int)(actualHeight / paneCount)));
 
-        TabPane.addTab(TabTitle, SPane);
+        IoPaneMap.put(PaneTitle, Area);
+        IoPaneWithLabel.add(Name);
+        IoPaneWithLabel.add(new JScrollPane(Area));
+        IoPanes.add(IoPaneWithLabel);
+
+        IoPanes.revalidate();
+        IoPanes.repaint();
     }
 
     public JTabbedPane getTabPane(){

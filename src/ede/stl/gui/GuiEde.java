@@ -116,8 +116,8 @@ public class GuiEde extends JPanel implements Machine {
         this.Machine.AddGuiFlag(Name);
     }
 
-    public void AddIoSection(String TabTitle, String... PaneTitles){
-        this.Machine.AddIoSection(TabTitle, PaneTitles);
+    public void AddIoSection(String TabTitle, String PaneTitle, GuiIO.Editable editable){
+        this.Machine.AddIoSection(TabTitle, PaneTitle, editable);
     }
     
     public void AddRegister(String title, Value start, Value end, GuiRegister.Format Format) {
