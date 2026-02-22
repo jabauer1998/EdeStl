@@ -41,7 +41,7 @@ public class Processor {
                 JFrame frame = new JFrame("Emulator Development Environment");
 
                 int numBytesInRow = 1;
-                GuiEde EdeInstance = new GuiEde(screenWidth, screenHeight, numBytesInRow, GuiRam.AddressFormat.DECIMAL, GuiRam.MemoryFormat.HEXADECIMAL);
+                GuiEde EdeInstance = new GuiEde(screenWidth, screenHeight, numBytesInRow, GuiRam.AddressFormat.DECIMAL, GuiRam.MemoryFormat.BINARY);
 
                 EdeInstance.gatherMetaDataFromVerilogFile("./sample/processor/ARM7TDMIS.v", GuiRegister.Format.BINARY);
 

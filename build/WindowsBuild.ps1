@@ -93,7 +93,7 @@ if($javaExists -ne ""){
                 if ($jar.Name -eq "asm-9.6.jar") { continue }
                 $RUN_CP += ";$($jar.FullName)"
             }
-            java -cp "$RUN_CP" sample.ede.Processorf
+            java -cp "$RUN_CP" sample.ede.Processor
         } elseif ($command -eq "clean"){
             Get-ChildItem -Path './src' -Include *.class -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
             if (Test-Path -Path './bin') { Remove-Item -Path './bin/*' -Recurse -Force -ErrorAction SilentlyContinue }
