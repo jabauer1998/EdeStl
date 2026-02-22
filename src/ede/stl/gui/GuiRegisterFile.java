@@ -8,6 +8,7 @@ import java.awt.*;
 
 public class GuiRegisterFile extends JPanel implements RegFile {
     private JScrollPane Pane;
+    private JPanel contentPanel;
 
     private double RegisterWidth;
     private double RegisterHeight;
@@ -19,12 +20,13 @@ public class GuiRegisterFile extends JPanel implements RegFile {
     private HashMap<Integer, GuiRegister> intRegFile;
     
     public GuiRegisterFile(double Width, double Height){
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
         actualWidth = Width;
         actualHeight = Height;
+
+        contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         
-        Pane = new JScrollPane(this);
+        Pane = new JScrollPane(contentPanel);
         Pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         this.RegisterWidth = Width;
@@ -57,14 +59,14 @@ public class GuiRegisterFile extends JPanel implements RegFile {
             intRegFile.put(lookupInt, Register);
         }
 
-        this.add(Register);
+        contentPanel.add(Register);
         resizeRegisterFile();
     }
 
     private void resizeRegisterFile(){
-        this.setPreferredSize(new Dimension((int)actualWidth, (int)actualHeight));
-
         Pane.setPreferredSize(new Dimension((int)actualWidth, (int)actualHeight));
+        contentPanel.revalidate();
+        contentPanel.repaint();
     }
 
     @Override
