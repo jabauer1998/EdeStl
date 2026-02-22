@@ -109,7 +109,6 @@
 /home/runner/workspace/src/ede/stl/gui/RegFile.java
 /home/runner/workspace/src/ede/stl/gui/GuiFlag.java
 /home/runner/workspace/src/ede/stl/gui/GuiFlags.java
-/home/runner/workspace/src/ede/stl/gui/GuiIO.java
 /home/runner/workspace/src/ede/stl/gui/JavaJob.java
 /home/runner/workspace/src/ede/stl/gui/GuiJobs.java
 /home/runner/workspace/src/ede/stl/gui/VerilogJob.java
@@ -120,6 +119,7 @@
 /home/runner/workspace/src/ede/stl/gui/GuiRegister.java
 /home/runner/workspace/src/ede/stl/gui/GuiMachine.java
 /home/runner/workspace/src/ede/stl/gui/GuiEde.java
+/home/runner/workspace/src/ede/stl/gui/GuiIO.java
 /home/runner/workspace/src/ede/stl/interpreter/Environment.java
 /home/runner/workspace/src/ede/stl/interpreter/VerilogInterpreter.java
 /home/runner/workspace/src/ede/stl/interpreter/EdeInterpreter.java
