@@ -33,11 +33,17 @@ public class GuiEde extends JPanel implements Machine {
     public GuiEde(double Width, double Height, int NumberOfBytesInRow, GuiRam.AddressFormat AddrFormat, GuiRam.MemoryFormat MemFormat){
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
+        int toolBarHeight = (int)(Height/12);
+
         JPanel toolBar = new JPanel();
         toolBar.setLayout(new BoxLayout(toolBar, BoxLayout.X_AXIS));
+        toolBar.setPreferredSize(new Dimension((int)Width, toolBarHeight));
+        toolBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, toolBarHeight));
+        toolBar.setMinimumSize(new Dimension((int)Width, toolBarHeight));
 
         JButton clearMemory = new JButton("Clear Memory");
-        clearMemory.setPreferredSize(new Dimension((int)(Width/3), (int)(Height/12)));
+        clearMemory.setPreferredSize(new Dimension((int)(Width/3), toolBarHeight));
+        clearMemory.setMaximumSize(new Dimension((int)(Width/3), toolBarHeight));
         clearMemory.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event){
@@ -46,7 +52,8 @@ public class GuiEde extends JPanel implements Machine {
         });
         
         JButton clearRegisters = new JButton("Clear Registers");
-        clearRegisters.setPreferredSize(new Dimension((int)(Width/3), (int)(Height/12)));
+        clearRegisters.setPreferredSize(new Dimension((int)(Width/3), toolBarHeight));
+        clearRegisters.setMaximumSize(new Dimension((int)(Width/3), toolBarHeight));
         clearRegisters.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event){
@@ -55,7 +62,8 @@ public class GuiEde extends JPanel implements Machine {
         });
 
         JButton clearStatus = new JButton("Clear Status");
-        clearStatus.setPreferredSize(new Dimension((int)(Width/3), (int)(Height/12)));
+        clearStatus.setPreferredSize(new Dimension((int)(Width/3), toolBarHeight));
+        clearStatus.setMaximumSize(new Dimension((int)(Width/3), toolBarHeight));
         clearStatus.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event){
@@ -67,12 +75,20 @@ public class GuiEde extends JPanel implements Machine {
         toolBar.add(clearMemory);
         toolBar.add(clearStatus);
 
+        double jobsWidth = Width / 3;
+        double mainHeight = Height - toolBarHeight;
+
         JPanel mainPane = new JPanel();
         mainPane.setLayout(new BoxLayout(mainPane, BoxLayout.X_AXIS));
-        this.Jobs = new GuiJobs(Width/3, Height*11/12);
-        this.Machine = new GuiMachine(NumberOfBytesInRow, AddrFormat, MemFormat, Width * 2 / 3, Height * 11 / 12);
+        this.Jobs = new GuiJobs(jobsWidth, mainHeight);
+        this.Machine = new GuiMachine(NumberOfBytesInRow, AddrFormat, MemFormat, Width - jobsWidth, mainHeight);
         
-        mainPane.add(this.Jobs.getJobsPane());
+        JScrollPane jobsPane = this.Jobs.getJobsPane();
+        jobsPane.setPreferredSize(new Dimension((int)jobsWidth, (int)mainHeight));
+        jobsPane.setMaximumSize(new Dimension((int)jobsWidth, Integer.MAX_VALUE));
+        jobsPane.setMinimumSize(new Dimension((int)jobsWidth, (int)mainHeight));
+
+        mainPane.add(jobsPane);
         mainPane.add(this.Machine);
         
         this.add(toolBar);
@@ -168,10 +184,13 @@ public class GuiEde extends JPanel implements Machine {
             List<Token> filtered = Lexer.filterWhiteSpace(processed);
             Parser parser = new Parser(filtered, errLog);
             VerilogFile file = parser.parseVerilogFile();
+            System.err.println("[GuiEde] Parsed " + file.modules.size() + " modules");
             for(ModuleDeclaration decl : file.modules){
+                System.err.println("[GuiEde] Processing module with " + decl.moduleItemList.size() + " items");
                 MetaDataGatherer gatherer = new MetaDataGatherer(this, new StringWriter(), format);
                 gatherer.visit(decl);
             }
+            System.err.println("[GuiEde] MetaData gathering complete");
         } catch (Exception e) {
             e.printStackTrace();
         }
