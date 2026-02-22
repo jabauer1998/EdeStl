@@ -71,6 +71,9 @@ if [ -n "$javaExists" ]; then
                 SAMPLE_CP="./bin/EdeStl.jar"
                 for jar in lib/*.jar; do
                     if [ -f "$jar" ]; then
+                        case "$jar" in
+                            *asm-9.6.jar) continue ;;
+                        esac
                         SAMPLE_CP="$SAMPLE_CP:$jar"
                     fi
                 done
