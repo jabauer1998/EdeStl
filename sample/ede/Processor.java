@@ -11,7 +11,8 @@ import declan.backend.assembler.ArmAssemblerLexer;
 import java.io.FileWriter;
 import java.io.FileReader;
 import java.util.List;
-import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 
 
@@ -42,8 +43,7 @@ public class Processor {
 		EdeInstance.AddJavaJob("Assemble", TextAreaType.DEFAULT, new Callable<Void>() {
 			public Void call(){
 				try{
-					FileReader Reader = new FileReader("InputAssembly.a");
-					ANTLRInputStream byteStream = new ANTLRInputStream(Reader);
+					CharStream byteStream = CharStreams.fromFileName("InputAssembly.a");
 					ArmAssemblerLexer lex = new ArmAssemblerLexer(byteStream);
 					CommonTokenStream tokStream = new CommonTokenStream(lex);
 					ArmAssemblerParser parse = new ArmAssemblerParser(tokStream);
