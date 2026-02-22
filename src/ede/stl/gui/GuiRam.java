@@ -94,8 +94,11 @@ public class GuiRam extends JPanel implements Memory {
             AddressToMemory.add(Addresses.get(Row));
             AddressToMemory.add(RowOfMemory);
             AddressToMemory.setPreferredSize(new Dimension((int)screenWidth, 20));
+            AddressToMemory.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
             this.add(AddressToMemory);
         }
+        this.revalidate();
+        this.repaint();
     }
 
     public void LoadProgram(String Program){

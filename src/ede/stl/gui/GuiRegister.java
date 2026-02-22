@@ -32,6 +32,10 @@ public class GuiRegister extends JPanel {
         RegisterValue = new JLabel(GenZeros());
         RegisterValue.setPreferredSize(new Dimension((int)(Width*5/6), (int)Height));
 
+        this.setPreferredSize(new Dimension((int)Width, (int)Height));
+        this.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int)Height));
+        this.setMinimumSize(new Dimension((int)Width, (int)Height));
+
         this.add(TitleReg);
         this.add(RegisterValue);
     }
@@ -77,6 +81,7 @@ public class GuiRegister extends JPanel {
                 padder.append(strVal);
                 strVal = padder.toString();
             }
+            this.RegisterValue.setText(strVal);
         }
     }
 
