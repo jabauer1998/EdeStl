@@ -33,6 +33,8 @@ public class GuiIO extends JPanel {
             IoPaneWithLabel.setLayout(new BoxLayout(IoPaneWithLabel, BoxLayout.Y_AXIS));
             JLabel Name = new JLabel(PaneTitle);
             JTextArea Area = new JTextArea();
+            Area.setLineWrap(true);
+            Area.setWrapStyleWord(true);
             Area.setPreferredSize(new Dimension((int)actualWidth, (int)(actualHeight/PaneTitles.length)));
 
             IoPaneMap.put(PaneTitle, Area);
