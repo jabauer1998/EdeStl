@@ -33,7 +33,7 @@ public abstract class ProcessBase extends AstNode implements ModuleItem, Runnabl
     public void run(){
       if (statement == null) {
         System.out.println("Error need to set a semaphore for AllwaysStatements");
-        System.exit(1);
+        throw new RuntimeException("Error need to set a semaphore for AllwaysStatements");
       } else {
         try {
           executeProcess(interpreter, semaphore);

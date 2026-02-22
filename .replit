@@ -42,4 +42,4 @@ outputType = "vnc"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd /home/runner/workspace && tools/jdk-25.0.2/bin/java -cp \"bin/EdeStl.jar:bin/EdeSample.jar:lib/Declan.jar\" sample.ede.Processor"
+args = "cd /home/runner/workspace/sample && /home/runner/workspace/tools/jdk-25.0.2/bin/java -cp \"/home/runner/workspace/bin/EdeStl.jar:/home/runner/workspace/bin/EdeSample.jar:/home/runner/workspace/lib/Declan.jar\" sample.ede.Processor"
