@@ -163,8 +163,8 @@ reg [7:0] MEM [0:`MEMSIZE]; //Simulated Ram for this processor
                         15: getRegister = R15;
                         default: begin
                                 $display("Error: Cannot retrieve data for register %d\n", regNumber);
-                        $finish;
-                        retRegister = -1;
+                                $finish;
+                        getRegister = -1;
                         end
                 endcase
         end
