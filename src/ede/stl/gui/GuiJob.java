@@ -40,9 +40,10 @@ public abstract class GuiJob extends JPanel {
             this.keywords.add(keyword);
         }
 
+        JScrollPane scrollPane = null;
+
         if(type == TextAreaType.KEYWORD){
             JTextPane textPane = new JTextPane();
-            textPane.setPreferredSize(new Dimension((int)Width, (int)Height));
             InputSection = textPane;
 
             textPane.addKeyListener(new KeyAdapter(){
@@ -78,15 +79,20 @@ public abstract class GuiJob extends JPanel {
                     }
                 }
             });
+
+            scrollPane = new JScrollPane(textPane);
         } else if(type == TextAreaType.DEFAULT) {
             JTextArea textArea = new JTextArea();
-            textArea.setPreferredSize(new Dimension((int)Width, (int)Height));
             InputSection = textArea;
+            scrollPane = new JScrollPane(textArea);
         }
 
         this.add(ExeButton);
-        if(type != TextAreaType.NONE)
-            this.add(InputSection);
+        if(type != TextAreaType.NONE && scrollPane != null){
+            scrollPane.setPreferredSize(new Dimension((int)Width, (int)Height));
+            scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int)Height));
+            this.add(scrollPane);
+        }
     }
 
     public abstract void RunJob();
