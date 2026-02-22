@@ -169,7 +169,7 @@ public class EdeInterpreter extends VerilogInterpreter {
             Pointer<Value> val = environment.lookupVariable(leftHandSide.labelIdentifier);
             if(val == null){
                 errorLog.addItem(new ErrorItem("Variable " + leftHandSide.labelIdentifier + " does not exist in the current scope", leftHandSide.position));
-                return Utils.errorOccured()
+                return Utils.errorOccured();
             }
             Value deref = val.deRefrence();
             if(deref instanceof EdeStatVal){
