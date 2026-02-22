@@ -27,7 +27,8 @@ public abstract class GuiJob extends JPanel {
 
         ExeButton = new JButton(ButtonText);
         ExeButton.setPreferredSize(new Dimension((int)Width, 30));
-        ExeButton.setMaximumSize(new Dimension((int)Width, 30));
+        ExeButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        ExeButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         ExeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
                 RunJob();
@@ -87,12 +88,14 @@ public abstract class GuiJob extends JPanel {
             scrollPane = new JScrollPane(textArea);
         }
 
-        this.setMaximumSize(new Dimension((int)Width, (int)Height + 30));
+        this.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int)Height + 30));
+        this.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         this.add(ExeButton);
         if(type != TextAreaType.NONE && scrollPane != null){
             scrollPane.setPreferredSize(new Dimension((int)Width, (int)Height));
-            scrollPane.setMaximumSize(new Dimension((int)Width, (int)Height));
+            scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int)Height));
+            scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
             this.add(scrollPane);
         }
     }
