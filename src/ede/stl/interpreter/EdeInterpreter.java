@@ -45,7 +45,7 @@ public class EdeInterpreter extends VerilogInterpreter {
                 Value index2Val = interpretShallowOptimizedExpression(decl.GetIndex2());
                 int intIndex2 = index2Val.intValue();
                 
-                int size = (intIndex2 > intIndex1) ? intIndex2 - intIndex1 : intIndex1 - intIndex2;
+                int size = ((intIndex2 > intIndex1) ? intIndex2 - intIndex1 : intIndex1 - intIndex2) + 1;
                 if(size != 8){
                     errorLog.addItem(new ErrorItem("Expected vector of size 8 for @Memory annotation but found reg ["+intIndex1+':'+intIndex2+']', decl.position));
                     return Utils.errorOccured();
