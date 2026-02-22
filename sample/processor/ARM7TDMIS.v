@@ -290,7 +290,7 @@ reg [7:0] MEM [0:`MEMSIZE]; //Simulated Ram for this processor
                                                 2'b10: begin 
                                                         op2 = op2 >> (getRegister(INSTR[11:8]) & 8'b11111111);
                                                         if(op2[`WIDTH] == 1)
-                                                                        op2 = op2 | (((1 << getRegister(INSTR[11:8]) & 8'b11111111)) - 1) << (`WIDTH + 1 - (getRegister(INSTR[11:8]) & 8'b11111111))); //Arithmetic Right                                               
+                                                          op2 = op2 | ((1 << getRegister(INSTR[11:8]) & 8'b11111111) - 1) << (`WIDTH + 1 - (getRegister(INSTR[11:8]) & 8'b11111111)); //Arithmetic Right                                               
                                                 end                                                      
                                                 2'b11: begin
                                                         for(i = 0; i <= `WIDTH; i = i + 1)
@@ -330,16 +330,16 @@ reg [7:0] MEM [0:`MEMSIZE]; //Simulated Ram for this processor
                                 17: solution32 = ~op2;
                         endcase // case (code)
              
-                        if(INSTR[20]) begin //set the status bits if necessary
+                                 if(INSTR[20]) begin //set the status bits if necessary
                                         C = solution32[32];
                                         Z = !solution32;
                                         N = solution32[31];
-                        V = (solution32[31] & ~op1[`WIDTH] & ~op2[`WIDTH]) | (~solution32[31] & op1[`WIDTH] & op2[`WIDTH]));
-                        end
+                                        V = ((solution32[31] & ~op1[`WIDTH] & ~op2[`WIDTH]) | (~solution32[31] & op1[`WIDTH] & op2[`WIDTH]));
+                                 end
 
                                 //If the instruction wants a result return it
-                        if(code >= 2 && code <= 9 || code >= 10 && code <= 17) begin 
-                                setRegister(INSTR[15:12], solution32[31:0]);
+                                if(code >= 2 && code <= 9 || code >= 10 && code <= 17) begin 
+                                    setRegister(INSTR[15:12], solution32[31:0]);
                                 end
                         end
                         18: begin //MRS Instruction
