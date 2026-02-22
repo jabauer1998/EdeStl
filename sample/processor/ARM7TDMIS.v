@@ -620,11 +620,11 @@ reg [7:0] MEM [0:`MEMSIZE]; //Simulated Ram for this processor
                         case(INSTR[23:0])
                                 //0: R[0] = $input;
                                 1: begin 
-                                        $display("%d\n", $getRegister(0));
+                                        $display("%d\n", getRegister(0));
                                 end //displays value in RO
                                 default: begin
-                                                $display("Error: invalid interupt vector number");
-                                                $finish;
+                                            $display("Error: invalid interupt vector number");
+                                            $finish;
                                 end
                                 endcase // case (INSTR[])
                         end // case: 27
