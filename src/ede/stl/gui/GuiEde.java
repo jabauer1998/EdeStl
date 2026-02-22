@@ -78,21 +78,22 @@ public class GuiEde extends JPanel implements Machine {
         double jobsWidth = Width / 3;
         double mainHeight = Height - toolBarHeight;
 
-        JPanel mainPane = new JPanel();
-        mainPane.setLayout(new BoxLayout(mainPane, BoxLayout.X_AXIS));
         this.Jobs = new GuiJobs(jobsWidth, mainHeight);
         this.Machine = new GuiMachine(NumberOfBytesInRow, AddrFormat, MemFormat, Width - jobsWidth, mainHeight);
         
         JScrollPane jobsPane = this.Jobs.getJobsPane();
         jobsPane.setPreferredSize(new Dimension((int)jobsWidth, (int)mainHeight));
-        jobsPane.setMaximumSize(new Dimension((int)jobsWidth, Integer.MAX_VALUE));
-        jobsPane.setMinimumSize(new Dimension((int)jobsWidth, (int)mainHeight));
+        jobsPane.setMinimumSize(new Dimension(100, 0));
 
-        mainPane.add(jobsPane);
-        mainPane.add(this.Machine);
+        this.Machine.setMinimumSize(new Dimension(200, 0));
+
+        JSplitPane mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jobsPane, this.Machine);
+        mainSplit.setDividerLocation((int)jobsWidth);
+        mainSplit.setResizeWeight(0.33);
+        mainSplit.setContinuousLayout(true);
         
         this.add(toolBar);
-        this.add(mainPane);
+        this.add(mainSplit);
     }
     
     public void setUpMemory(int numBytes) {

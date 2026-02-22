@@ -13,22 +13,39 @@ public class GuiMachine extends JPanel implements Machine {
     private GuiIO Io;
     
     public GuiMachine(int NumberOfBytesInRow, AddressFormat AddrFormat, MemoryFormat MemFormat, double Width, double Height){
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        this.setLayout(new BorderLayout());
 
-        this.RegFile = new GuiRegisterFile(Width / 3, Height);
-        this.Mem = new GuiRam(NumberOfBytesInRow, AddrFormat, MemFormat, Width / 3, Height);
+        double thirdWidth = Width / 3;
+
+        this.RegFile = new GuiRegisterFile(thirdWidth, Height);
+        this.Mem = new GuiRam(NumberOfBytesInRow, AddrFormat, MemFormat, thirdWidth, Height);
         
         JPanel FlagsAndIo = new JPanel();
         FlagsAndIo.setLayout(new BoxLayout(FlagsAndIo, BoxLayout.Y_AXIS));
-        this.Flags = new GuiFlags(Width/3, Height/7);
-        this.Io = new GuiIO(Width/3, Height*6/7);
+        this.Flags = new GuiFlags(thirdWidth, Height/7);
+        this.Io = new GuiIO(thirdWidth, Height*6/7);
 
         FlagsAndIo.add(Flags.getScrollPane());
         FlagsAndIo.add(this.Io.getTabPane());
 
-        this.add(this.RegFile.getScrollPane());
-        this.add(this.Mem.getScrollPane());
-        this.add(FlagsAndIo);
+        JScrollPane regScroll = this.RegFile.getScrollPane();
+        JScrollPane memScroll = this.Mem.getScrollPane();
+
+        regScroll.setMinimumSize(new Dimension(80, 0));
+        memScroll.setMinimumSize(new Dimension(80, 0));
+        FlagsAndIo.setMinimumSize(new Dimension(80, 0));
+
+        JSplitPane rightSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, memScroll, FlagsAndIo);
+        rightSplit.setDividerLocation((int)thirdWidth);
+        rightSplit.setResizeWeight(0.5);
+        rightSplit.setContinuousLayout(true);
+
+        JSplitPane mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, regScroll, rightSplit);
+        mainSplit.setDividerLocation((int)thirdWidth);
+        mainSplit.setResizeWeight(0.33);
+        mainSplit.setContinuousLayout(true);
+
+        this.add(mainSplit, BorderLayout.CENTER);
     }
     
     public void setUpMemory(int numBytes){
