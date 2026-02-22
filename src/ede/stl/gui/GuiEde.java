@@ -184,13 +184,10 @@ public class GuiEde extends JPanel implements Machine {
             List<Token> filtered = Lexer.filterWhiteSpace(processed);
             Parser parser = new Parser(filtered, errLog);
             VerilogFile file = parser.parseVerilogFile();
-            System.err.println("[GuiEde] Parsed " + file.modules.size() + " modules");
             for(ModuleDeclaration decl : file.modules){
-                System.err.println("[GuiEde] Processing module with " + decl.moduleItemList.size() + " items");
                 MetaDataGatherer gatherer = new MetaDataGatherer(this, new StringWriter(), format);
                 gatherer.visit(decl);
             }
-            System.err.println("[GuiEde] MetaData gathering complete");
         } catch (Exception e) {
             e.printStackTrace();
         }

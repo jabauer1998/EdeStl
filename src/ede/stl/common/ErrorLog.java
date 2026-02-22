@@ -35,7 +35,7 @@ public class ErrorLog {
         for (InfoItem info : infoLog) { output.println(info.toString()); }
 
         output.flush();
-        output.close();
+        infoLog.clear();
     }
 
     public void printLogNoFlush(){ for (InfoItem info : infoLog) { output.println(info.toString()); } }
