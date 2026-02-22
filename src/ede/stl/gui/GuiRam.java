@@ -62,37 +62,37 @@ public class GuiRam extends JPanel implements Memory {
         
         int Byte = 0;
         for(int Row = 0; Row < this.NumberRowsRounded; Row++){
-            JPanel AddressToMemory = new JPanel();
-            AddressToMemory.setLayout(new BoxLayout(AddressToMemory, BoxLayout.X_AXIS));
+            JPanel AddressToMemory = new JPanel(new BorderLayout());
             JPanel RowOfMemory = new JPanel();
             RowOfMemory.setLayout(new BoxLayout(RowOfMemory, BoxLayout.X_AXIS));
 
+            JLabel addrLabel;
             if(this.AddrFormat == AddressFormat.HEXIDECIMAL){
-                Addresses.add(new JLabel(Integer.toHexString(Byte)));
+                addrLabel = new JLabel(Integer.toHexString(Byte));
             } else if(this.AddrFormat == AddressFormat.BINARY){
-                Addresses.add(new JLabel(Integer.toBinaryString(Byte)));
+                addrLabel = new JLabel(Integer.toBinaryString(Byte));
             } else if(this.AddrFormat == AddressFormat.OCTAL){
-                Addresses.add(new JLabel(Integer.toOctalString(Byte)));
+                addrLabel = new JLabel(Integer.toOctalString(Byte));
             } else {
-                Addresses.add(new JLabel(Integer.toString(Byte)));
+                addrLabel = new JLabel(Integer.toString(Byte));
             }
+            Addresses.add(addrLabel);
             
             for(int i = 0; i < this.BytesPerRow; i++, Byte++){
+                JLabel byteLabel;
                 if(this.MemFormat == MemoryFormat.HEXADECIMAL){
-                    Bytes.add(new JLabel("00"));
-                    Bytes.get(Bytes.size()-1).setPreferredSize(new Dimension((int)(this.screenWidth/(this.BytesPerRow * 2)), 20));
-                    Bytes.get(Bytes.size()-1).setHorizontalAlignment(SwingConstants.RIGHT);
+                    byteLabel = new JLabel("00");
                 } else {
-                    Bytes.add(new JLabel("00000000"));
-                    Bytes.get(Bytes.size()-1).setPreferredSize(new Dimension((int)(screenWidth/(this.BytesPerRow * 3)), 20));
-                    Bytes.get(Bytes.size()-1).setHorizontalAlignment(SwingConstants.RIGHT);
+                    byteLabel = new JLabel("00000000");
                 }
-                RowOfMemory.add(Bytes.get(Bytes.size()-1));
+                byteLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                Bytes.add(byteLabel);
+                RowOfMemory.add(byteLabel);
             }
-            Addresses.get(Row).setHorizontalAlignment(SwingConstants.LEFT);
-            Addresses.get(Row).setPreferredSize(new Dimension((int)(screenWidth/3), 20));
-            AddressToMemory.add(Addresses.get(Row));
-            AddressToMemory.add(RowOfMemory);
+            addrLabel.setHorizontalAlignment(SwingConstants.LEFT);
+            addrLabel.setPreferredSize(new Dimension((int)(screenWidth/3), 20));
+            AddressToMemory.add(addrLabel, BorderLayout.WEST);
+            AddressToMemory.add(RowOfMemory, BorderLayout.CENTER);
             AddressToMemory.setPreferredSize(new Dimension((int)screenWidth, 20));
             AddressToMemory.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
             this.add(AddressToMemory);
