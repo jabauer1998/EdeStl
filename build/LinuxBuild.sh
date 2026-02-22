@@ -2,14 +2,20 @@
 
 location=$(pwd)
 
-echo "Checking if Java Exists..."
-javaExists=$(java -version 2>&1 | head -1)
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR/.."
 
+JDK25_HOME="$(pwd)/tools/jdk-25.0.2"
+if [ -d "$JDK25_HOME" ]; then
+    export JAVA_HOME="$JDK25_HOME"
+    export PATH="$JDK25_HOME/bin:$PATH"
+fi
+
+echo "Checking if Java Exists..."
+javaExists=$(java -version 2>&1 | head -1)
+
 if [ -n "$javaExists" ]; then
-    echo "Java Found..."
+    echo "Java Found: $javaExists"
     echo "Searching for Command..."
     if [ $# -eq 0 ]; then
         echo "No command found, expected 1 argument..."
@@ -62,7 +68,13 @@ if [ -n "$javaExists" ]; then
             rm -rf tmp/*
             if [ -f "sample/ede/Processor.java" ]; then
                 echo "Building Sample"
-                javac "sample/ede/Processor.java" -d "./tmp" -sourcepath "./sample" -cp "./bin/EdeStl.jar" -encoding "UTF-8"
+                SAMPLE_CP="./bin/EdeStl.jar"
+                for jar in lib/*.jar; do
+                    if [ -f "$jar" ]; then
+                        SAMPLE_CP="$SAMPLE_CP:$jar"
+                    fi
+                done
+                javac "sample/ede/Processor.java" -d "./tmp" -sourcepath "./sample" -cp "$SAMPLE_CP" -encoding "UTF-8"
                 if [ $? -eq 0 ]; then
                     echo "Bundling Sample into a Jar"
                     jar cfe "./bin/EdeSample.jar" "sample.ede.Processor" -C "./tmp" "."

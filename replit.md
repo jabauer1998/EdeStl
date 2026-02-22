@@ -10,7 +10,7 @@ A Java-based Emulator Debug Environment (EDE) inspired by PEP9. It allows users 
 - Three stub methods in VerilogToJavaGen.java (codeGenFileDescriptor, codeGenDeepExpression, codeGenDeepStatement) were lost during prior corruption and need reimplementation
 
 ## Project Architecture
-- **Language**: Java (GraalVM 22.3 / Java 19)
+- **Language**: Java (OpenJDK 25.0.2, installed at tools/jdk-25.0.2)
 - **GUI Framework**: Swing (javax.swing / java.awt)
 - **Build System**: Custom bash build scripts (`build/LinuxBuild.sh` for Linux, `build/WindowsBuild.ps1` for Windows)
 - **No main method**: This is a library, not a standalone application
@@ -55,6 +55,15 @@ Build steps (both platforms):
 Additional commands: `run` (runs EdeSample.jar), `clean` (removes bin/*, tmp/*, temp files)
 
 ## Recent Changes
+- 2026-02-22: Upgraded to JDK 25 and added Declan.jar dependency
+  - Downloaded OpenJDK 25.0.2 to tools/jdk-25.0.2 (needed for Declan.jar class version 69.0)
+  - Build script auto-detects JDK 25 in tools/ directory
+  - Fixed sample/ede/Processor.java imports (Callable, TextAreaType, GuiRegister, AssemblerVisitor, ProgramContext)
+  - Both EdeStl.jar and EdeSample.jar now build successfully
+- 2026-02-22: Synced Linux build script with Windows build
+  - Added jar creation (EdeStl.jar), ASM extraction, sample compilation, EdeSample.jar bundling
+  - Added `run` command, improved `clean` command
+  - Sample classpath now includes all lib/*.jar files
 - 2026-02-15: Converted GUI from JavaFX to Swing
   - Replaced all JavaFX components with Swing equivalents across 13 GUI files
   - Replaced InlineCssTextArea (RichTextFX) with JTextPane + StyledDocument for keyword highlighting
