@@ -86,12 +86,6 @@ public class Processor {
 
                 EdeInstance.AddVerilogJob("Execute", "./processor/ARM7TDMIS.v", "default", "StandardInput", "StandardOutput", "StandardError");
 
-                EdeInstance.AddFlag("C");
-                EdeInstance.AddFlag("V");
-                EdeInstance.AddFlag("N");
-                EdeInstance.AddFlag("O");
-                EdeInstance.AddFlag("Z");
-
                 EdeInstance.AddIoSection("Errors", "StandardError");
                 EdeInstance.AddIoSection("Io", "StandardInput", "StandardOutput");
 
