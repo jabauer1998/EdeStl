@@ -45,6 +45,7 @@ if [ -n "$javaExists" ]; then
                     CLASSPATH="$CLASSPATH$jar"
                 fi
             done
+            rm -rf tmp
             mkdir -p tmp
             mkdir -p bin
             echo "Building Src"
