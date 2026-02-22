@@ -1,102 +1,54 @@
-package ede;
+package sample.ede;
 
-private void buildDefaultMachine(Stage stage){
-		Screen screen = Screen.getPrimary();
-		Rectangle2D bounds = screen.getVisualBounds();
+import javax.swing.*;
+import java.awt.*;
+import ede.stl.gui.GuiEde;
+import ede.stl.gui.JavaJob;
+import ede.stl.gui.VerilogJob;
+import ede.stl.gui.GuiRam;
+import declan.backend.assembler.ArmAssemblerParser;
+import declan.backend.assembler.ArmAssemblerLexer;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.util.List;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
 
-		stage.setX(bounds.getMinX());
-		stage.setY(bounds.getMinY());
 
-		stage.setMaxWidth(bounds.getWidth());
-		stage.setMaxHeight(bounds.getHeight());
-		stage.setWidth(bounds.getWidth());
-		stage.setHeight(bounds.getHeight());
+public class Processor {
+    public static void main(String[] args){
+	javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                buildDefaultMachine();
+            }
+        });
+    }
+    
+    private static void buildDefaultMachine(){
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+                Dimension screenSize = toolkit.getScreenSize();
+        
+                // Extract the width and height
+                int screenWidth = screenSize.width;
+                int screenHeight = screenSize.height;
+	
+	        JFrame frame = new JFrame("Emulator Development Environment");
 
-		stage.setTitle("ARM7TDMIS Processor");
+		int numBytesInRow = 1;
+		GuiEde EdeInstance = new GuiEde(screenWidth, screenHeight, numBytesInRow, GuiRam.AddressFormat.DECIMAL, GuiRam.MemoryFormat.HEXADECIMAL);
 
-		int NumberOfBytes = 1000;
-		int NumberOfBytesInRow = 4;
+		EdeInstance.gatherMetaDataFromVerilogFile("./processor/ARM7TDMIS.v", GuiRegister.Format.BINARY);
 
-		GuiEde EdeInstance = new GuiEde(NumberOfBytes, NumberOfBytesInRow, GuiRam.AddressFormat.DECIMAL, GuiRam.MemoryFormat.HEXADECIMAL, stage.getMaxWidth(), stage.getMaxHeight());
-
-		String[] declanKeywords = new String[]{
-			"VAR", "CONST", "PROCEDURE", "BEGIN", "END", "END.", "RETURN", "INTEGER;", "INTEGER"
-		};
-
-		EdeInstance.AddJavaJob("Compile DeClan", TextAreaType.KEYWORD, new Callable<Void>() {
-			@Override
-			public Void call(){
-				try {
-					FileReader reader = new FileReader("InputDeClan.d");
-					Source readerSource = new ReaderSource(reader);
-					edu.depauw.declan.common.ErrorLog errorLog = new edu.depauw.declan.common.ErrorLog();
-					MyDeClanLexer lexer = new MyDeClanLexer(readerSource, errorLog);
-					MyDeClanParser parser = new MyDeClanParser(lexer, errorLog);
-					
-
-					Program p = parser.parseProgram();
-					MyICodeGenerator generator = new MyICodeGenerator(errorLog, gen);
-
-					MyStandardLibrary stdLib = new MyStandardLibrary(errorLog);
-					stdLib.ioLibrary().accept(generator);
-					p.accept(generator);
-
-					List<ICode> icode = generator.getICode();
-
-					FileWriter fw = new FileWriter("OutputIr.i");
-					for(ICode ic : icode){
-						fw.write(ic.toString());
-						fw.write('\n');
-					}
-					fw.close();
-				} catch(Exception exp){
-					EdeInstance.appendIoText("StandardError", exp.toString());
-				}
-				return null;
-			}
-			
-		}, "InputDeclan.d", "OutputIr.i", "StandardError", declanKeywords);
-
-		EdeInstance.AddJavaJob("Compile Ir", TextAreaType.DEFAULT, new Callable<Void>() {
-
-			@Override
-			public Void call(){
-				try{
-					// TODO Auto-generated method stub
-					FileReader Reader = new FileReader("InputIr.i");
-					edu.depauw.declan.common.ErrorLog errorLog = new edu.depauw.declan.common.ErrorLog();
-					Source source = new ReaderSource(Reader);
-					MyIrLexer lexer = new MyIrLexer(source, errorLog);
-					MyIrParser parser = new MyIrParser(lexer, errorLog);
-					List<ICode> icode = parser.parseProgram();
-
-					MyOptimizer optimizer = new MyOptimizer(icode, gen);
-					optimizer.runDataFlowAnalysis();
-					optimizer.performDeadCodeElimination();
-
-					icode = optimizer.getICode();
-
-					MyCodeGenerator codeGen = new MyCodeGenerator(optimizer.getLiveVariableAnalysis(), icode, gen, errorLog);
-					FileWriter Writer = new FileWriter(new File("OutputAssembly.a"));
-					codeGen.codeGen(Writer);
-					Writer.close();
-				} catch (Exception exp){
-					EdeInstance.appendIoText("StandardError", exp.toString());
-				}
-				return null;
-			}
-			
-		}, "InputIr.i", "OutputAssembly.a", "StandardError");
 		EdeInstance.AddJavaJob("Assemble", TextAreaType.DEFAULT, new Callable<Void>() {
 			public Void call(){
 				try{
 					FileReader Reader = new FileReader("InputAssembly.a");
 					ANTLRInputStream byteStream = new ANTLRInputStream(Reader);
-					ParserLexer lex = new ParserLexer(byteStream);
+					ArmAssemblerLexer lex = new ArmAssemblerLexer(byteStream);
 					CommonTokenStream tokStream = new CommonTokenStream(lex);
-					ParserParser parse = new ParserParser(tokStream);
+					ArmAssemblerParser parse = new ArmAssemblerParser(tokStream);
 					ProgramContext ctx = parse.program();
-					AssemblerVisitor visitor = new AssemblerVisitor();
+					ArmAssemblerVisitor visitor = new ArmAssemblerVisitor();
 					List<Integer> assembledCode = visitor.assembleCode(ctx);
 
 					//Now we just need to write to the Output File
@@ -127,26 +79,7 @@ private void buildDefaultMachine(Stage stage){
 			}
 		}, "InputAssembly.a", "OutputBinary.bin", "StandardError");
 
-		EdeInstance.AddVerilogJob("Execute", "processor/ARM7TDMIS.v", "default", "StandardInput", "StandardOutput", "StandardError");
-
-		int RegisterLength = 32;
-		EdeInstance.AddRegister("CPSR", RegisterLength, GuiRegister.Format.BINARY);
-		EdeInstance.AddRegister("R0", RegisterLength, GuiRegister.Format.BINARY);
-		EdeInstance.AddRegister("R1", RegisterLength, GuiRegister.Format.BINARY);
-		EdeInstance.AddRegister("R2", RegisterLength, GuiRegister.Format.BINARY);
-		EdeInstance.AddRegister("R3", RegisterLength, GuiRegister.Format.BINARY);
-		EdeInstance.AddRegister("R4", RegisterLength, GuiRegister.Format.BINARY);
-		EdeInstance.AddRegister("R5", RegisterLength, GuiRegister.Format.BINARY);
-		EdeInstance.AddRegister("R6", RegisterLength, GuiRegister.Format.BINARY);
-		EdeInstance.AddRegister("R7", RegisterLength, GuiRegister.Format.BINARY);
-		EdeInstance.AddRegister("R8", RegisterLength, GuiRegister.Format.BINARY);
-		EdeInstance.AddRegister("R9", RegisterLength, GuiRegister.Format.BINARY);
-		EdeInstance.AddRegister("R10", RegisterLength, GuiRegister.Format.BINARY);
-		EdeInstance.AddRegister("R11", RegisterLength, GuiRegister.Format.BINARY);
-		EdeInstance.AddRegister("R12", RegisterLength, GuiRegister.Format.BINARY);
-		EdeInstance.AddRegister("R13", RegisterLength, GuiRegister.Format.BINARY);
-		EdeInstance.AddRegister("R14", RegisterLength, GuiRegister.Format.BINARY);
-		EdeInstance.AddRegister("R15", RegisterLength, GuiRegister.Format.BINARY);
+		EdeInstance.AddVerilogJob("Execute", "./processor/ARM7TDMIS.v", "default", "StandardInput", "StandardOutput", "StandardError");
 
 		EdeInstance.AddFlag("C");
 		EdeInstance.AddFlag("V");
@@ -156,20 +89,11 @@ private void buildDefaultMachine(Stage stage){
 
 		EdeInstance.AddIoSection("Errors", "StandardError");
 		EdeInstance.AddIoSection("Io", "StandardInput", "StandardOutput");
-		
-		Scene scene = new Scene(EdeInstance);
-		stage.setScene(scene);
-		stage.setMaximized(true);
-		stage.show();
+
+		frame.setPreferredSize(screenSize);
+		frame.add(EdeInstance);
+	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	        frame.pack();
+                frame.setVisible(true);
 	}
 }
-    
-
-@Override
-public void start(Stage stage){
-    buildDefaultMachine(stage);
-}
-}
-
-
-

@@ -30,27 +30,17 @@ if($javaExists -ne ""){
 		[System.IO.File]::WriteAllText($line, $content, $Utf8NoBomEncoding)
 	    }
 	    cat "build/BuildList.txt"
+	    Write-Host "Building Src"
 	    javac "@build/BuildList.txt" -d "./tmp" -sourcepath "./src" -cp "./lib/*" -encoding "UTF-8"
-	    $dependencyJars = Get-ChildItem -Path "./lib" -Filter *.jar
-	    Write-Host $dependencyJars
-	    foreach ($jar in $dependencyJars) {
-		# Extract contents of each dependency JAR into the temp directory
-		jar xf $jar.FullName -C "./tmp"
-	        if (Test-Path ".\tmp\META-INF\MANIFEST.MF") {
-		    Remove-Item ".\tmp\META-INF\MANIFEST.MF"
-		}
-	    }
+	    Write-Host "Bundling into a Jar"
 	    jar cf "./bin/EdeStl.jar" -C "./tmp" "."
+	    Write-Host "Deleting Tmp Directory"
 	    Remove-Item -Path ./tmp/* -Recurse -Force
-	    javac "" -d "./tmp" -sourcepath "./sample" -cp "./bin/EdeStl.jar" -encoding "UTF-8"
-	    foreach ($jar in $dependencyJars) {
-		# Extract contents of each dependency JAR into the temp directory
-		jar xf $jar.FullName -C "./tmp"
-	        if (Test-Path ".\tmp\META-INF\MANIFEST.MF") {
-		    Remove-Item ".\tmp\META-INF\MANIFEST.MF"
-		}
-	    }
-	    jar cfe "./bin/EdeSample.jar" "ede.Processor.java" -C "./tmp" "."
+	    javac "sample/ede/Processor.java" -d "./tmp" -sourcepath "./sample" -cp "./bin/EdeStl.jar" -encoding "UTF-8"
+	    jar cfe "./bin/EdeSample.jar" "sample.ede.Processor.java" -C "./tmp" "."
+	    Remove-Item -Path "./tmp/*" -Recurse -Force
+	} elseif ($command -eq "run") {
+	    java -jar ./bin/EdeSample.jar
 	} elseif ($command -eq "clean"){
 	    Get-ChildItem -Path './src' -Include *.class -Recurse | Remove-Item -Force
 	    Get-ChildItem -Path './bin' -Include * -Recurse | Remove-Item -Force
