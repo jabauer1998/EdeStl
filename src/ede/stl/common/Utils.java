@@ -4645,12 +4645,6 @@ public class Utils {
                 } else if(Item instanceof Input.Wire.Vector.Ident){
                         Input.Wire.Vector.Ident InputItem = (Input.Wire.Vector.Ident)Item;
                         return InputItem.declarationIdentifier;
-                } else if(Item instanceof Int.Ident){
-                        Int.Ident ident = (Int.Ident)Item;
-                        return ident.declarationIdentifier;             
-                } else if(Item instanceof Real.Ident){
-                        Real.Ident real = (Real.Ident)Item;
-                        return real.declarationIdentifier;
                 } else {
                         return null;
                 }
