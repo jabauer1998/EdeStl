@@ -43,7 +43,7 @@ public class Processor {
                 int numBytesInRow = 1;
                 GuiEde EdeInstance = new GuiEde(screenWidth, screenHeight, numBytesInRow, GuiRam.AddressFormat.DECIMAL, GuiRam.MemoryFormat.HEXADECIMAL);
 
-                EdeInstance.gatherMetaDataFromVerilogFile("./processor/ARM7TDMIS.v", GuiRegister.Format.BINARY);
+                EdeInstance.gatherMetaDataFromVerilogFile("./sample/processor/ARM7TDMIS.v", GuiRegister.Format.BINARY);
 
                 EdeInstance.AddJavaJob("Assemble", TextAreaType.DEFAULT, new Callable<Void>() {
                         public Void call(){
@@ -84,7 +84,7 @@ public class Processor {
                         }
                 }, "InputAssembly.a", "OutputBinary.bin", "StandardError");
 
-                EdeInstance.AddVerilogJob("Execute", "./processor/ARM7TDMIS.v", "default", "StandardInput", "StandardOutput", "StandardError");
+                EdeInstance.AddVerilogJob("Execute", "./sample/processor/ARM7TDMIS.v", "default", "StandardInput", "StandardOutput", "StandardError");
 
                 EdeInstance.AddIoSection("Errors", "StandardError");
                 EdeInstance.AddIoSection("Io", "StandardInput", "StandardOutput");
