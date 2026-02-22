@@ -31,7 +31,7 @@ public class GuiEde extends JPanel implements Machine {
     private GuiMachine Machine;
 
     public GuiEde(double Width, double Height, int NumberOfBytesInRow, GuiRam.AddressFormat AddrFormat, GuiRam.MemoryFormat MemFormat){
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setLayout(new BorderLayout());
 
         int toolBarHeight = (int)(Height/12);
 
@@ -92,8 +92,8 @@ public class GuiEde extends JPanel implements Machine {
         mainSplit.setResizeWeight(0.33);
         mainSplit.setContinuousLayout(true);
         
-        this.add(toolBar);
-        this.add(mainSplit);
+        this.add(toolBar, BorderLayout.NORTH);
+        this.add(mainSplit, BorderLayout.CENTER);
     }
     
     public void setUpMemory(int numBytes) {
