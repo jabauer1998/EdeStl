@@ -38,8 +38,8 @@ name = "Run Sample"
 author = "agent"
 
 [workflows.workflow.metadata]
-outputType = "console"
+outputType = "vnc"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd /home/runner/workspace/sample && /home/runner/workspace/jre/bin/java -cp \"/home/runner/workspace/bin/EdeStl.jar:/home/runner/workspace/bin/EdeSample.jar:/home/runner/workspace/lib/Declan.jar\" sample.ede.Processor"
+args = "/home/runner/workspace/jre/bin/java -cp \"/home/runner/workspace/bin/EdeStl.jar:/home/runner/workspace/bin/EdeSample.jar:/home/runner/workspace/lib/Declan.jar\" sample.ede.Processor"
