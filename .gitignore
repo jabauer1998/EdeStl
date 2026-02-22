@@ -2,7 +2,7 @@
 *#
 *.class
 .#*
-
+./build/BuildList.txt
 # Java
 *.jar
 *.war

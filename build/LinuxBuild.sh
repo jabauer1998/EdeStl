@@ -87,7 +87,16 @@ if [ -n "$javaExists" ]; then
                 rm -rf tmp/*
             fi
         elif [ "$command" = "run" ]; then
-            java -jar ./bin/EdeSample.jar
+            RUN_CP="./bin/EdeStl.jar:./bin/EdeSample.jar"
+            for jar in lib/*.jar; do
+                if [ -f "$jar" ]; then
+                    case "$jar" in
+                        *asm-9.6.jar) continue ;;
+                    esac
+                    RUN_CP="$RUN_CP:$jar"
+                fi
+            done
+            java -cp "$RUN_CP" sample.ede.Processor
         elif [ "$command" = "clean" ]; then
             find ./src -name "*.class" -delete 2>/dev/null
             rm -rf bin/*
