@@ -40,7 +40,6 @@
 /home/runner/workspace/src/ede/stl/ast/OrGateDeclaration.java
 /home/runner/workspace/src/ede/stl/ast/PortConnection.java
 /home/runner/workspace/src/ede/stl/ast/ProcedureDeclaration.java
-/home/runner/workspace/src/ede/stl/ast/ProcessBase.java
 /home/runner/workspace/src/ede/stl/ast/Real.java
 /home/runner/workspace/src/ede/stl/ast/Reg.java
 /home/runner/workspace/src/ede/stl/ast/RepeatStatement.java
@@ -73,6 +72,7 @@
 /home/runner/workspace/src/ede/stl/ast/Output.java
 /home/runner/workspace/src/ede/stl/ast/BinaryOperation.java
 /home/runner/workspace/src/ede/stl/ast/UnaryOperation.java
+/home/runner/workspace/src/ede/stl/ast/ProcessBase.java
 /home/runner/workspace/src/ede/stl/circuit/Node.java
 /home/runner/workspace/src/ede/stl/circuit/Web.java
 /home/runner/workspace/src/ede/stl/circuit/Gate.java
@@ -117,17 +117,17 @@
 /home/runner/workspace/src/ede/stl/gui/GuiRam.java
 /home/runner/workspace/src/ede/stl/gui/VerilogJob.java
 /home/runner/workspace/src/ede/stl/gui/ExeJob.java
-/home/runner/workspace/src/ede/stl/gui/GuiEde.java
 /home/runner/workspace/src/ede/stl/gui/GuiJob.java
 /home/runner/workspace/src/ede/stl/gui/GuiRegisterFile.java
+/home/runner/workspace/src/ede/stl/gui/GuiEde.java
 /home/runner/workspace/src/ede/stl/interpreter/Environment.java
 /home/runner/workspace/src/ede/stl/interpreter/VerilogInterpreter.java
 /home/runner/workspace/src/ede/stl/interpreter/EdeInterpreter.java
 /home/runner/workspace/src/ede/stl/interpreter/Interpreter.java
 /home/runner/workspace/src/ede/stl/parser/Lexer.java
 /home/runner/workspace/src/ede/stl/parser/MacroExpansionData.java
-/home/runner/workspace/src/ede/stl/parser/Preprocessor.java
 /home/runner/workspace/src/ede/stl/parser/Token.java
+/home/runner/workspace/src/ede/stl/parser/Preprocessor.java
 /home/runner/workspace/src/ede/stl/parser/Parser.java
 /home/runner/workspace/src/ede/stl/passes/ExpressionVisitor.java
 /home/runner/workspace/src/ede/stl/passes/Indexer.java

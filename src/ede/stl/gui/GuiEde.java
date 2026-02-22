@@ -159,13 +159,14 @@ public class GuiEde extends JPanel implements Machine {
 
     public void gatherMetaDataFromVerilogFile(String verilogFile, GuiRegister.Format format){
         try {
-            ErrorLog errLog = new ErrorLog(new Destination(new StringWriter()));
+            java.io.PrintWriter errWriter = new java.io.PrintWriter(System.err, true);
+            ErrorLog errLog = new ErrorLog(new Destination(errWriter));
             Lexer lexer = new Lexer(new Source(new FileReader(verilogFile)), errLog);
             LinkedList<Token> tokens = lexer.tokenize();
-            List<Token> filtered = Lexer.filterWhiteSpace(tokens);
-            Preprocessor preProc = new Preprocessor(errLog, filtered);
+            Preprocessor preProc = new Preprocessor(errLog, tokens);
             List<Token> processed = preProc.executePass();
-            Parser parser = new Parser(processed, errLog);
+            List<Token> filtered = Lexer.filterWhiteSpace(processed);
+            Parser parser = new Parser(filtered, errLog);
             VerilogFile file = parser.parseVerilogFile();
             for(ModuleDeclaration decl : file.modules){
                 MetaDataGatherer gatherer = new MetaDataGatherer(this, new StringWriter(), format);

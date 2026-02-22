@@ -86,7 +86,7 @@ public class MetaDataGatherer implements ModuleVisitor<Void> {
     }
 
     public Void visit(Reg.Vector.Array decl, Object... argv){
-        if(decl.annotationLexeme.equals("@memory")){
+        if(decl.annotationLexeme != null && decl.annotationLexeme.equalsIgnoreCase("@memory")){
           int first = constSolver.interpretExpression(decl.arrayIndex1.toString()).intValue();
           int second = constSolver.interpretExpression(decl.arrayIndex2.toString()).intValue();
           int numBytes = Math.abs(first - second) + 1;
@@ -104,14 +104,14 @@ public class MetaDataGatherer implements ModuleVisitor<Void> {
     }
 
     public Void visit(Reg.Scalar.Ident decl, Object... argv){
-        if(decl.annotationLexeme.equals("@status")){
+        if(decl.annotationLexeme != null && decl.annotationLexeme.equalsIgnoreCase("@status")){
             edeInstance.AddFlag(decl.declarationIdentifier);
         }
         return null;
     }
 
     public Void visit(Reg.Vector.Ident decl, Object... argv){
-        if(decl.annotationLexeme.equals("@register")){
+        if(decl.annotationLexeme != null && decl.annotationLexeme.equalsIgnoreCase("@register")){
           int first = constSolver.interpretExpression(decl.GetIndex1().toString()).intValue();
           int second = constSolver.interpretExpression(decl.GetIndex2().toString()).intValue();
           int numBytes = Math.abs(first - second) + 1;

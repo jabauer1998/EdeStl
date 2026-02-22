@@ -79,7 +79,7 @@ public class Preprocessor {
     void errorAndExit(ErrorItem item){
         errorLog.addItem(item);
         errorLog.printLog();
-        System.exit(1);
+        throw new RuntimeException("Preprocessor error: " + item.toString());
     }
 
     private void processDefine(){
