@@ -4,7 +4,7 @@ expertMode = true
 
 [nix]
 channel = "stable-25_05"
-packages = ["openjfx"]
+packages = ["openjfx", "xorg.libX11", "xorg.libXext", "xorg.libXrender", "xorg.libXtst", "xorg.libXi"]
 
 [workflows]
 runButton = "Project"
@@ -18,6 +18,10 @@ author = "agent"
 task = "workflow.run"
 args = "Build"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Run Sample"
+
 [[workflows.workflow]]
 name = "Build"
 author = "agent"
@@ -28,3 +32,14 @@ outputType = "console"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "bash build/LinuxBuild.sh build"
+
+[[workflows.workflow]]
+name = "Run Sample"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "vnc"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd /home/runner/workspace && tools/jdk-25.0.2/bin/java -cp \"bin/EdeStl.jar:bin/EdeSample.jar:lib/Declan.jar\" sample.ede.Processor"
