@@ -520,9 +520,19 @@ public class Parser {
         private List<ModuleItem> parseModuleItemList(){
                 List<ModuleItem> modList = new ArrayList<>();
 
-                while(!willMatch(Token.Type.ENDMODULE)) {
-                        List<ModuleItem> modItem = parseModuleItem();
-                        modList.addAll(modItem);
+                while(!willMatch(Token.Type.ENDMODULE) && !willMatch(Token.Type.EOF)) {
+                        try {
+                                List<ModuleItem> modItem = parseModuleItem();
+                                modList.addAll(modItem);
+                        } catch (RuntimeException e) {
+                                System.err.println("Warning: Skipping module item due to parse error: " + e.getMessage());
+                                while(!willMatch(Token.Type.SEMI) && !willMatch(Token.Type.ENDMODULE) && !willMatch(Token.Type.EOF)) {
+                                        skip();
+                                }
+                                if(willMatch(Token.Type.SEMI)) {
+                                        skip();
+                                }
+                        }
                 }
 
                 return modList;

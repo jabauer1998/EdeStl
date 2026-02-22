@@ -1,6 +1,6 @@
 module Arm();
 `define WIDTH 31
-`define MEMSIZE 3000000
+`define MEMSIZE 1000
 
 //Initialize the Memory for the EDE
 // @Memory

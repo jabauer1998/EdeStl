@@ -86,10 +86,13 @@ public class MetaDataGatherer implements ModuleVisitor<Void> {
     }
 
     public Void visit(Reg.Vector.Array decl, Object... argv){
+        System.err.println("[MetaData] Reg.Vector.Array: annotation=" + decl.annotationLexeme + " ident=" + decl.declarationIdentifier);
         if(decl.annotationLexeme != null && decl.annotationLexeme.equalsIgnoreCase("@memory")){
+          System.err.println("[MetaData] Found @Memory annotation, computing size...");
           int first = constSolver.interpretExpression(decl.arrayIndex1.toString()).intValue();
           int second = constSolver.interpretExpression(decl.arrayIndex2.toString()).intValue();
           int numBytes = Math.abs(first - second) + 1;
+          System.err.println("[MetaData] Memory size: " + numBytes + " bytes");
           edeInstance.setUpMemory(numBytes);
         }
         return null;
@@ -111,10 +114,12 @@ public class MetaDataGatherer implements ModuleVisitor<Void> {
     }
 
     public Void visit(Reg.Vector.Ident decl, Object... argv){
+        System.err.println("[MetaData] Reg.Vector.Ident: annotation=" + decl.annotationLexeme + " ident=" + decl.declarationIdentifier);
         if(decl.annotationLexeme != null && decl.annotationLexeme.equalsIgnoreCase("@register")){
           int first = constSolver.interpretExpression(decl.GetIndex1().toString()).intValue();
           int second = constSolver.interpretExpression(decl.GetIndex2().toString()).intValue();
           int numBytes = Math.abs(first - second) + 1;
+          System.err.println("[MetaData] Adding register: " + decl.declarationIdentifier + " with " + numBytes + " bits");
           edeInstance.AddRegister(decl.declarationIdentifier, numBytes, regFormat);
         }
         return null;

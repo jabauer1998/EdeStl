@@ -87,10 +87,12 @@ public abstract class GuiJob extends JPanel {
             scrollPane = new JScrollPane(textArea);
         }
 
+        this.setMaximumSize(new Dimension((int)Width, (int)Height + 30));
+
         this.add(ExeButton);
         if(type != TextAreaType.NONE && scrollPane != null){
             scrollPane.setPreferredSize(new Dimension((int)Width, (int)Height));
-            scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int)Height));
+            scrollPane.setMaximumSize(new Dimension((int)Width, (int)Height));
             this.add(scrollPane);
         }
     }
