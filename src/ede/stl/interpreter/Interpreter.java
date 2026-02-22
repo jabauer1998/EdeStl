@@ -1502,22 +1502,28 @@ public abstract class Interpreter {
                 Value left = interpretDeepExpression(op.left);
                 Value right = interpretDeepExpression(op.right);
 
-                switch(op.Op){
-                        case PLUS:
-                                return Utils.createAdder(left, right);
-                        case MINUS:
-                                return Utils.createSubtractor(left, right);
-                        case BAND:
-                                return Utils.bitwiseAndCircuit(left, right);
-                        case BOR:
-                                return Utils.bitwiseOrCircuit(left, right);
-                        case BXOR:
-                                return Utils.bitwiseXorCircuit(left, right);
-                        case BXNOR:
-                                return Utils.bitwiseXnorCircuit(left, right);
-                        default:
-                                Utils.errorAndExit("Invalid deep operation in verilog of type " + left.getClass() + " " + op.Op + " " + right.getClass());
-                                return Utils.errorOccured();
+                boolean isCircuit = (left.isWire() || left.isVector()) && (right.isWire() || right.isVector());
+
+                if(isCircuit){
+                        switch(op.Op){
+                                case PLUS:
+                                        return Utils.createAdder(left, right);
+                                case MINUS:
+                                        return Utils.createSubtractor(left, right);
+                                case BAND:
+                                        return Utils.bitwiseAndCircuit(left, right);
+                                case BOR:
+                                        return Utils.bitwiseOrCircuit(left, right);
+                                case BXOR:
+                                        return Utils.bitwiseXorCircuit(left, right);
+                                case BXNOR:
+                                        return Utils.bitwiseXnorCircuit(left, right);
+                                default:
+                                        Utils.errorAndExit("Invalid deep operation in verilog of type " + left.getClass() + " " + op.Op + " " + right.getClass());
+                                        return Utils.errorOccured();
+                        }
+                } else {
+                        return interpretShallowBinaryOperation(op);
                 }
 
         }
