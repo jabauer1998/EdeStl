@@ -100,8 +100,8 @@
 /home/runner/workspace/src/ede/stl/common/Search.java
 /home/runner/workspace/src/ede/stl/common/Source.java
 /home/runner/workspace/src/ede/stl/common/SymbolTable.java
-/home/runner/workspace/src/ede/stl/common/Utils.java
 /home/runner/workspace/src/ede/stl/common/ErrorLog.java
+/home/runner/workspace/src/ede/stl/common/Utils.java
 /home/runner/workspace/src/ede/stl/compiler/VerilogToJavaGen.java
 /home/runner/workspace/src/ede/stl/gui/Flags.java
 /home/runner/workspace/src/ede/stl/gui/Machine.java
