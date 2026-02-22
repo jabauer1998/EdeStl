@@ -5,8 +5,12 @@ location=$(pwd)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR/.."
 
+JRE_HOME="$(pwd)/jre"
 JDK25_HOME="$(pwd)/tools/jdk-25.0.2"
-if [ -d "$JDK25_HOME" ]; then
+if [ -d "$JRE_HOME" ]; then
+    export JAVA_HOME="$JRE_HOME"
+    export PATH="$JRE_HOME/bin:$PATH"
+elif [ -d "$JDK25_HOME" ]; then
     export JAVA_HOME="$JDK25_HOME"
     export PATH="$JDK25_HOME/bin:$PATH"
 fi

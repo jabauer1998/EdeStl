@@ -10,7 +10,7 @@ A Java-based Emulator Debug Environment (EDE) inspired by PEP9. It allows users 
 - Three stub methods in VerilogToJavaGen.java (codeGenFileDescriptor, codeGenDeepExpression, codeGenDeepStatement) were lost during prior corruption and need reimplementation
 
 ## Project Architecture
-- **Language**: Java (OpenJDK 25.0.2, installed at tools/jdk-25.0.2)
+- **Language**: Java (OpenJDK 25.0.2, installed at jre/)
 - **GUI Framework**: Swing (javax.swing / java.awt)
 - **Build System**: Custom bash build scripts (`build/LinuxBuild.sh` for Linux, `build/WindowsBuild.ps1` for Windows)
 - **No main method**: This is a library, not a standalone application
