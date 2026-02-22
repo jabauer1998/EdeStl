@@ -489,7 +489,7 @@ public class Parser {
                                         match(Token.Type.SEMI, STRATEGY.REPAIR);
                                         return array;
                                 } else {
-                                        Reg.Vector.Ident decl = vector.new Ident(localStart, ident);
+                                        Reg.Vector.Ident decl = vector.new Ident(localStart, annotation.getLexeme(), ident);
                                         match(Token.Type.SEMI, STRATEGY.REPAIR);
                                         return decl;
                                 }
@@ -507,7 +507,7 @@ public class Parser {
                                         match(Token.Type.SEMI, STRATEGY.REPAIR);
                                         return decl;
                                 } else {
-                                        Reg.Scalar.Ident decl = scalar.new Ident(localStart, ident);
+                                        Reg.Scalar.Ident decl = scalar.new Ident(localStart, annotation.getLexeme(), ident);
                                         match(Token.Type.SEMI, STRATEGY.REPAIR);
                                         return decl;
                                 }
