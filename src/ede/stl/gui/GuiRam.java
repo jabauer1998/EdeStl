@@ -57,7 +57,6 @@ public class GuiRam extends JPanel implements Memory {
     }
     
     public void setMemory(int numBytes) {
-        System.err.println("[GuiRam] setMemory called with " + numBytes + " bytes");
         this.NumberOfBytes = numBytes;
         this.NumberRowsRounded = (int)Math.ceil((NumberOfBytes / BytesPerRow));
         

@@ -93,7 +93,6 @@
 /home/runner/workspace/src/ede/stl/common/Debugger.java
 /home/runner/workspace/src/ede/stl/common/Destination.java
 /home/runner/workspace/src/ede/stl/common/ErrorItem.java
-/home/runner/workspace/src/ede/stl/common/ErrorLog.java
 /home/runner/workspace/src/ede/stl/common/FormattedScanner.java
 /home/runner/workspace/src/ede/stl/common/InfoItem.java
 /home/runner/workspace/src/ede/stl/common/Pointer.java
@@ -102,6 +101,7 @@
 /home/runner/workspace/src/ede/stl/common/Source.java
 /home/runner/workspace/src/ede/stl/common/SymbolTable.java
 /home/runner/workspace/src/ede/stl/common/Utils.java
+/home/runner/workspace/src/ede/stl/common/ErrorLog.java
 /home/runner/workspace/src/ede/stl/compiler/VerilogToJavaGen.java
 /home/runner/workspace/src/ede/stl/gui/Flags.java
 /home/runner/workspace/src/ede/stl/gui/Machine.java
@@ -118,8 +118,8 @@
 /home/runner/workspace/src/ede/stl/gui/GuiRegisterFile.java
 /home/runner/workspace/src/ede/stl/gui/GuiRegister.java
 /home/runner/workspace/src/ede/stl/gui/GuiJob.java
-/home/runner/workspace/src/ede/stl/gui/GuiRam.java
 /home/runner/workspace/src/ede/stl/gui/GuiEde.java
+/home/runner/workspace/src/ede/stl/gui/GuiRam.java
 /home/runner/workspace/src/ede/stl/interpreter/Environment.java
 /home/runner/workspace/src/ede/stl/interpreter/VerilogInterpreter.java
 /home/runner/workspace/src/ede/stl/interpreter/EdeInterpreter.java

@@ -55,6 +55,12 @@ Build steps (both platforms):
 Additional commands: `run` (runs EdeSample.jar), `clean` (removes bin/*, tmp/*, temp files)
 
 ## Recent Changes
+- 2026-02-22: Fixed ErrorLog closing System.err and Verilog syntax error
+  - ErrorLog.printLog() was calling output.close() which closed System.err, silencing all subsequent error output
+  - Removed close() call, added infoLog.clear() to prevent duplicate error printing
+  - Fixed syntax error in ARM7TDMIS.v line 291: missing opening parenthesis in shift expression
+  - Removed debug logging from GuiEde, MetaDataGatherer, and GuiRam
+  - Parser error recovery confirmed working: all 17 registers (R0-R15, CPSR) and 1001-byte memory correctly detected
 - 2026-02-22: Upgraded to JDK 25 and added Declan.jar dependency
   - Downloaded OpenJDK 25.0.2 to tools/jdk-25.0.2 (needed for Declan.jar class version 69.0)
   - Build script auto-detects JDK 25 in tools/ directory
