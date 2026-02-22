@@ -1,2 +1,2 @@
-MOV R0, #8
-SWI 0
+MOV R0, #80
+SWI 1
