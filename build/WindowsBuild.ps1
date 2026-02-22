@@ -32,6 +32,7 @@ if($javaExists -ne ""){
 	    cat "build/BuildList.txt"
 	    Write-Host "Building Src"
 	    javac "@build/BuildList.txt" -d "./tmp" -sourcepath "./src" -cp "./lib/*" -encoding "UTF-8"
+			jar xf "./lib/asm-9.6.jar "-C "./tmp"
 	    Write-Host "Bundling into a Jar"
 	    jar cf "./bin/EdeStl.jar" -C "./tmp" "."
 	    Write-Host "Deleting Tmp Directory"
