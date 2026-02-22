@@ -103,31 +103,6 @@ public class EdeInterpreter extends VerilogInterpreter {
         return super.interpretDeclaration(decl);
     }
 
-    protected Value interpretSystemFunctionCall(SystemFunctionCall call) throws Exception{
-        String identifier = call.functionName;
-        if(identifier.equals("getRegister")){
-            Expression regExp = call.argumentList.get(0);
-            Value regName = interpretShallowOptimizedExpression(regExp);
-
-            if(regName.isStringValue()){
-                return new LongVal(this.guiInstance.getRegisterValue(regName.toString()));
-            } else {
-                return new LongVal(this.guiInstance.getRegisterValue(regName.intValue()));
-            }
-        } else if(identifier.equals("getStatus")){
-            Expression statusNameExp = call.argumentList.get(0);
-            Value statusName = interpretShallowOptimizedExpression(statusNameExp);
-
-            return new LongVal(this.guiInstance.getStatusValue(statusName.toString()));
-        } else if(identifier.equals("getMemory")){
-            Expression memoryAddressExp = call.argumentList.get(0);
-            Value memAddressVal = interpretShallowOptimizedExpression(memoryAddressExp);
-            return new LongVal(this.guiInstance.getMemoryValue(memAddressVal.intValue()));
-        } else {
-            return super.interpretSystemFunctionCall(call);
-        }
-    }
-
     protected IntVal interpretSystemTaskCall(SystemTaskStatement stat) throws Exception{
         String identifier = stat.taskName;
 
@@ -151,47 +126,6 @@ public class EdeInterpreter extends VerilogInterpreter {
            } else {
                Utils.errorAndExit("Unknown number of print arguments in " + stat.taskName, stat.position);
            }
-        } else if(identifier.equals("setRegister")){
-            if(stat.argumentList.size() != 2){
-               Utils.errorAndExit("Error: Invalid amount of Arguments for Set Register...\nExpected 2 but found " + stat.argumentList.size()); 
-            } else {
-                Expression registerNameExp = stat.argumentList.get(0);
-                Expression registerValueExp = stat.argumentList.get(1);
-
-                Value registerNameVal = interpretShallowOptimizedExpression(registerNameExp);
-                Value registerValueVal = interpretShallowOptimizedExpression(registerValueExp);
-
-                if(registerNameVal.isStringValue()){
-                    guiInstance.setRegisterValue(registerNameVal.toString(), registerValueVal.longValue());
-                } else {
-                    guiInstance.setRegisterValue(registerNameVal.intValue(), registerValueVal.longValue());
-                }
-            }
-        } else if(identifier.equals("setStatus")){
-            if(stat.argumentList.size() != 2){
-                Utils.errorAndExit("Error: Invalid amount of arguments for Status...\nExpected 2 but found " + stat.argumentList.size());
-            }
-
-            Expression statusNameExp = stat.argumentList.get(0);
-            Expression statusValueExp = stat.argumentList.get(1);
-
-            Value statusNameVal = interpretShallowOptimizedExpression(statusNameExp);
-            Value statusValueVal = interpretShallowOptimizedExpression(statusValueExp);
-
-            guiInstance.setStatusValue(statusNameVal.toString(), statusValueVal.longValue());
-        } else if(identifier.equals("setMemory")){
-            if(stat.argumentList.size() != 2){
-                Utils.errorAndExit("Error: Invalid amount of aruments for settingMemory Address...\nExpected 2 but found " + stat.argumentList.size());
-            }
-
-            Expression memAddressExp = stat.argumentList.get(0);
-            Expression memValExp = stat.argumentList.get(1);
-
-            Value memAddressVal = interpretShallowOptimizedExpression(memAddressExp);
-            Value memValVal = interpretShallowOptimizedExpression(memValExp);
-
-            
-            guiInstance.setMemoryValue(memAddressVal.intValue(), memValVal.longValue());
         } else {
             return super.interpretSystemTaskCall(stat);
         }
