@@ -7,6 +7,7 @@ import java.util.Set;
 import ede.stl.common.Search;
 import ede.stl.common.Search.SearchDirection;
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -47,38 +48,13 @@ public abstract class GuiJob extends JPanel {
             JTextPane textPane = new JTextPane();
             InputSection = textPane;
 
-            textPane.addKeyListener(new KeyAdapter(){
+            textPane.getStyledDocument().addDocumentListener(new DocumentListener(){
                 @Override
-                public void keyTyped(KeyEvent arg0){
-                    StyledDocument doc = textPane.getStyledDocument();
-                    int cursorPosition = textPane.getCaretPosition();
-                    String text = textPane.getText();
-                    int findEndPositionLeft = Search.findNextNonWhitespace(cursorPosition, text, SearchDirection.LEFT);
-                    int findBeginPositionLeft = Search.findNextWhiteSpace(findEndPositionLeft, text, SearchDirection.LEFT);
-
-                    int findBeginPositionRight = Search.findNextNonWhitespace(cursorPosition, text, SearchDirection.RIGHT);
-                    int findEndPositionRight = Search.findNextWhiteSpace(findBeginPositionRight, text, SearchDirection.RIGHT);
-
-                    StyleContext sc = StyleContext.getDefaultStyleContext();
-
-                    String leftSubString = text.substring(findBeginPositionLeft, findEndPositionLeft);
-                    if(keywords.contains(leftSubString)){
-                        AttributeSet blueAttr = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.BLUE);
-                        doc.setCharacterAttributes(findBeginPositionLeft, findEndPositionLeft - findBeginPositionLeft, blueAttr, false);
-                    } else {
-                        AttributeSet blackAttr = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.BLACK);
-                        doc.setCharacterAttributes(findBeginPositionLeft, findEndPositionLeft - findBeginPositionLeft, blackAttr, false);
-                    }
-
-                    String rightSubString = text.substring(findBeginPositionRight, findEndPositionRight + 1);
-                    if(keywords.contains(rightSubString)){
-                        AttributeSet blueAttr = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.BLUE);
-                        doc.setCharacterAttributes(findBeginPositionRight, findEndPositionRight + 1 - findBeginPositionRight, blueAttr, false);
-                    } else {
-                        AttributeSet blackAttr = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.BLACK);
-                        doc.setCharacterAttributes(findBeginPositionRight, findEndPositionRight + 1 - findBeginPositionRight, blackAttr, false);
-                    }
-                }
+                public void insertUpdate(DocumentEvent e){ highlightKeywords(textPane); }
+                @Override
+                public void removeUpdate(DocumentEvent e){ highlightKeywords(textPane); }
+                @Override
+                public void changedUpdate(DocumentEvent e){ }
             });
 
             scrollPane = new JScrollPane(textPane);
@@ -98,6 +74,39 @@ public abstract class GuiJob extends JPanel {
             scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
             this.add(scrollPane);
         }
+    }
+
+    private void highlightKeywords(JTextPane textPane){
+        SwingUtilities.invokeLater(() -> {
+            try {
+                StyledDocument doc = textPane.getStyledDocument();
+                String text = doc.getText(0, doc.getLength());
+                if(text.isEmpty()) return;
+
+                StyleContext sc = StyleContext.getDefaultStyleContext();
+                AttributeSet blackAttr = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.BLACK);
+                AttributeSet blueAttr = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, Color.BLUE);
+
+                doc.setCharacterAttributes(0, text.length(), blackAttr, false);
+
+                int i = 0;
+                while(i < text.length()){
+                    if(Character.isWhitespace(text.charAt(i))){
+                        i++;
+                        continue;
+                    }
+                    int start = i;
+                    while(i < text.length() && !Character.isWhitespace(text.charAt(i))){
+                        i++;
+                    }
+                    String word = text.substring(start, i);
+                    if(keywords.contains(word)){
+                        doc.setCharacterAttributes(start, word.length(), blueAttr, false);
+                    }
+                }
+            } catch(BadLocationException ex){
+            }
+        });
     }
 
     public abstract void RunJob();

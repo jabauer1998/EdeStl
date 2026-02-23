@@ -1,4 +1,0 @@
-MOV R0, #249
-ADD R0, R0, R0
-SWI 1
-STP
