@@ -45,7 +45,9 @@ public class Processor {
 
                 EdeInstance.gatherMetaDataFromVerilogFile("./sample/processor/ARM7TDMIS.v", GuiRegister.Format.BINARY);
 
-                EdeInstance.AddJavaJob("Assemble", TextAreaType.DEFAULT, new Callable<Void>() {
+                String[] keywords = {"ADD", "SUB", "MOV", "LDR", "STR", "B", "BL", "CMP", "BEQ", "BNE", "BGT", "BLT", "BGE"};
+
+                EdeInstance.AddJavaJob("Assemble", TextAreaType.KEYWORD, new Callable<Void>() {
                         public Void call(){
                                 try{
                                         CharStream byteStream = CharStreams.fromFileName("InputAssembly.a");
@@ -82,7 +84,7 @@ public class Processor {
                                 }
                                 return null;
                         }
-                }, "InputAssembly.a", "OutputBinary.bin", "StandardError");
+                }, "InputAssembly.a", "OutputBinary.bin", "StandardError", keywords);
 
                 EdeInstance.AddVerilogJob("Execute", "./sample/processor/ARM7TDMIS.v", "default", "StandardInput", "StandardOutput", "StandardError");
 
