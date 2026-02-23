@@ -41,13 +41,10 @@ public class GuiRam extends JPanel implements Memory {
         this.MemFormat = MemFormat;
         this.AddrFormat = AddrFormat;
 
-        this.setMaximumSize(new Dimension((int)Width, (int)Height));
-        this.setPreferredSize(new Dimension((int)Width, (int)Height));
-        
         this.Pane = new JScrollPane(this);
-        this.Pane.setMaximumSize(new Dimension((int)Width, (int)Height));
         this.Pane.setPreferredSize(new Dimension((int)Width, (int)Height));
         this.Pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        this.Pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
         Bytes = new ArrayList<>();
         Addresses = new ArrayList<>();
