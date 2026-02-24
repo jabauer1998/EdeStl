@@ -45,6 +45,19 @@ public class GuiJobs extends JPanel {
         Jobs.add(Job.getInputSection());
     }
 
+    public void finalize(){
+	for(int i = 1; i < Jobs.size(); i++){
+	    GuiJob previous = Jobs.get(i - 1);
+	    if(previous instanceof JavaJob){
+		JavaJob prev = (JavaJob)previous;
+		prev.setNextJob(Jobs.get(i));
+	    } else if(previous instanceof ExeJob){
+		ExeJob prev = (ExeJob)previous;
+		prev.setNextJob(Jobs.get(i));
+	    }
+	}
+    }
+
     public JScrollPane getJobsPane(){
         return JobsPane;
     }
