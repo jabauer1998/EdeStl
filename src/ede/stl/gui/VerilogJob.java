@@ -19,8 +19,8 @@ public class VerilogJob extends GuiJob {
     private String outputPane;
     private String inputPane;
 
-    public VerilogJob(String JobName, double Width, double Height, String verilogFile, String inputFile, String inputPane, String outputPane, String errorPane, GuiEde Ede){
-        super(JobName, TextAreaType.DEFAULT, Width, Height);
+    public VerilogJob(String JobName, TextAreaNumbered numbered, double Width, double Height, String verilogFile, String inputFile, String inputPane, String outputPane, String errorPane, GuiEde Ede){
+        super(JobName, TextAreaType.DEFAULT, numbered, Width, Height);
         this.edeInstance = Ede;
         this.errorPane = errorPane;
         this.verilogFile = verilogFile;

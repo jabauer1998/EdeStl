@@ -9,14 +9,14 @@ public class JavaJob extends GuiJob{
     private GuiEde edeInstance;
     private GuiJob nextJob;
 
-    public JavaJob(String buttonText, TextAreaType type, double width, double height, GuiEde edeInstance, EdeCallable functionToRun){
-        super(buttonText, type, width, height);
+    public JavaJob(String buttonText, TextAreaType type, TextAreaNumbered numbered, double width, double height, GuiEde edeInstance, EdeCallable functionToRun){
+        super(buttonText, type, numbered, width, height);
         this.functionToRun = functionToRun;
         this.edeInstance = edeInstance;
     }
 
-    public JavaJob(String buttonText, TextAreaType type, double width, double height, GuiEde edeInstance, EdeCallable functionToRun, String[] keywords){
-        super(buttonText, type, width, height, keywords);
+    public JavaJob(String buttonText, TextAreaType type, TextAreaNumbered numbered, double width, double height, GuiEde edeInstance, String[] keywords, EdeCallable functionToRun){
+        super(buttonText, type, numbered, width, height, keywords);
         this.functionToRun = functionToRun;
         this.edeInstance = edeInstance;
     }

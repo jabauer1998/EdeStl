@@ -13,8 +13,8 @@ public class ExeJob extends GuiJob {
     private GuiEde edeInstance;
     private GuiJob nextJob;
 
-    public ExeJob(String ButtonText, TextAreaType type, double Width, double Height, String ExeString, GuiEde edeInstance, String... keywords) { 
-        super(ButtonText, type, Width, Height, keywords);
+    public ExeJob(String ButtonText, TextAreaType type, TextAreaNumbered numbered, double Width, double Height, String ExeString, GuiEde edeInstance, String... keywords) { 
+        super(ButtonText, type, numbered, Width, Height, keywords);
         this.ExeString = ExeString;
         this.edeInstance = edeInstance;
     }
