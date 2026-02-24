@@ -55,6 +55,18 @@ Build steps (both platforms):
 Additional commands: `run` (runs EdeSample.jar), `clean` (removes bin/*, tmp/*, temp files)
 
 ## Recent Changes
+- 2026-02-24: Refactored GuiJobs to eliminate file-based I/O between jobs
+  - Created EdeCallable functional interface (takes String input, returns String output)
+  - JavaJob and ExeJob now chain directly: output posts to next job's text pane via nextJob.setText()
+  - Added getText()/setText() helpers to GuiJob base class
+  - GuiJobs now stores GuiJob list (not JComponent), added linkJobs() to wire job chain
+  - VerilogJob retains file I/O (writes pane text to inputFile for interpreter binary loading)
+  - Removed Callable<Void> usage in favor of EdeCallable
+  - Processor.java sample updated: assembler uses CharStreams.fromString() instead of file reading
+- 2026-02-24: Fixed KEYWORD text pane editing
+  - Replaced KeyListener with DocumentListener for keyword highlighting in GuiJob
+  - Old keyTyped handler crashed on empty text and stale cursor positions, preventing typing
+  - New highlightKeywords() method scans full text safely via SwingUtilities.invokeLater
 - 2026-02-22: Fixed ErrorLog closing System.err and Verilog syntax error
   - ErrorLog.printLog() was calling output.close() which closed System.err, silencing all subsequent error output
   - Removed close() call, added infoLog.clear() to prevent duplicate error printing

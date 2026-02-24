@@ -99,8 +99,8 @@ public class GuiEde extends JPanel implements Machine {
         this.Machine.setUpMemory(numBytes);
     }
 
-    public void AddVerilogJob(String jobName, String verilogFile, String inputPane, String outputPane, String errorPane){
-        this.Jobs.AddVerilogJob(jobName, verilogFile, inputPane, outputPane, errorPane, this);
+    public void AddVerilogJob(String jobName, String verilogFile, String inputFile, String inputPane, String outputPane, String errorPane){
+        this.Jobs.AddVerilogJob(jobName, verilogFile, inputFile, inputPane, outputPane, errorPane, this);
     }
 
     public void AddExeJob(String jobName, TextAreaType type, String execString, String... keywords){

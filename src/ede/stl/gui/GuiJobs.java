@@ -38,8 +38,8 @@ public class GuiJobs extends JPanel {
         Jobs.add(Job);
     }
 
-    public void AddVerilogJob(String JobName, String verilogFile, String inputPane, String outputPane, String errorPane, GuiEde edeInstance){
-        VerilogJob Job = new VerilogJob(JobName, JobWidth, JobHeight, verilogFile, inputPane, outputPane, errorPane, edeInstance);
+    public void AddVerilogJob(String JobName, String verilogFile, String inputFile, String inputPane, String outputPane, String errorPane, GuiEde edeInstance){
+        VerilogJob Job = new VerilogJob(JobName, JobWidth, JobHeight, verilogFile, inputFile, inputPane, outputPane, errorPane, edeInstance);
         this.add(Job);
         Jobs.add(Job);
     }
