@@ -4,7 +4,6 @@ import java.io.FileReader;
 import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import ede.stl.ast.ModuleDeclaration;
 import ede.stl.ast.VerilogFile;
 import ede.stl.common.Destination;
@@ -100,16 +99,16 @@ public class GuiEde extends JPanel implements Machine {
         this.Machine.setUpMemory(numBytes);
     }
 
-    public void AddVerilogJob(String jobName, String verilogFile, String inputFile, String inputPane, String outputPane, String errorPane){
-        this.Jobs.AddVerilogJob(jobName, verilogFile, inputFile, inputPane, outputPane, errorPane, this);
+    public void AddVerilogJob(String jobName, String verilogFile, String inputPane, String outputPane, String errorPane){
+        this.Jobs.AddVerilogJob(jobName, verilogFile, inputPane, outputPane, errorPane, this);
     }
 
-    public void AddExeJob(String jobName, TextAreaType type, String execString, String inputFile, String outputFile, String errorFile, String errorPane, String... keywords){
-        this.Jobs.AddExeJob(jobName, type, execString, inputFile, outputFile, errorFile, errorPane, this, keywords);
+    public void AddExeJob(String jobName, TextAreaType type, String execString, String... keywords){
+        this.Jobs.AddExeJob(jobName, type, execString, this, keywords);
     }
 
-    public void AddJavaJob(String jobName, TextAreaType type, Callable<Void> functionToRun, String inputFile, String outputFile, String errorPane, String... keywords){
-        this.Jobs.AddJavaJob(jobName, type, functionToRun, inputFile, outputFile, errorPane, this, keywords);
+    public void AddJavaJob(String jobName, TextAreaType type, EdeCallable functionToRun, String... keywords){
+        this.Jobs.AddJavaJob(jobName, type, functionToRun, this, keywords);
     }
 
     public void AddFlag(String Name){
@@ -174,8 +173,8 @@ public class GuiEde extends JPanel implements Machine {
         return this.Machine.readIoText(textAreaName);
     }
 
-    public void finalize(){
-	return this.Jobs.finalize();
+    public void linkJobs(){
+        this.Jobs.linkJobs();
     }
 
     public void gatherMetaDataFromVerilogFile(String verilogFile, GuiRegister.Format format){

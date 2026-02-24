@@ -2,7 +2,6 @@ package ede.stl.gui;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import ede.stl.gui.GuiEde;
 import ede.stl.gui.GuiJob.TextAreaType;
 import javax.swing.*;
@@ -14,7 +13,7 @@ public class GuiJobs extends JPanel {
     private double JobHeight;
     private double JobWidth;
 
-    private List<JComponent> Jobs;
+    private List<GuiJob> Jobs;
     
     public GuiJobs(double Width, double Height){
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -27,35 +26,34 @@ public class GuiJobs extends JPanel {
         Jobs = new LinkedList<>();
     }
 
-    public void AddExeJob(String JobName, TextAreaType type, String ExecString, String InputFile, String OutputFile, String ErrorFile, String errorTextBox, GuiEde edeInstance, String... keywords){
-        ExeJob Job = new ExeJob(JobName, type, JobWidth, JobHeight, ExecString, InputFile, OutputFile, ErrorFile, errorTextBox, Jobs, edeInstance, keywords);
+    public void AddExeJob(String JobName, TextAreaType type, String ExecString, GuiEde edeInstance, String... keywords){
+        ExeJob Job = new ExeJob(JobName, type, JobWidth, JobHeight, ExecString, edeInstance, keywords);
         this.add(Job);
-        Jobs.add(Job.getInputSection());
+        Jobs.add(Job);
     }
 
-    public void AddJavaJob(String JobName, TextAreaType type, Callable<Void> functionToRun, String InputFile, String OutputFile, String errorPane, GuiEde edeInstance, String... keywords){
-        JavaJob Job = new JavaJob(JobName, type, JobWidth, JobHeight, functionToRun, InputFile, OutputFile, errorPane, keywords, Jobs, edeInstance);
+    public void AddJavaJob(String JobName, TextAreaType type, EdeCallable functionToRun, GuiEde edeInstance, String... keywords){
+        JavaJob Job = new JavaJob(JobName, type, JobWidth, JobHeight, edeInstance, functionToRun, keywords);
         this.add(Job);
-        Jobs.add(Job.getInputSection());
+        Jobs.add(Job);
     }
 
-    public void AddVerilogJob(String JobName, String verilogFile, String inputFile, String inputPane, String outputPane, String errorPane, GuiEde edeInstance){
-        VerilogJob Job = new VerilogJob(JobName, JobWidth, JobHeight, verilogFile, inputFile, inputPane, outputPane, errorPane, edeInstance);
+    public void AddVerilogJob(String JobName, String verilogFile, String inputPane, String outputPane, String errorPane, GuiEde edeInstance){
+        VerilogJob Job = new VerilogJob(JobName, JobWidth, JobHeight, verilogFile, inputPane, outputPane, errorPane, edeInstance);
         this.add(Job);
-        Jobs.add(Job.getInputSection());
+        Jobs.add(Job);
     }
 
-    public void finalize(){
-	for(int i = 1; i < Jobs.size(); i++){
-	    GuiJob previous = Jobs.get(i - 1);
-	    if(previous instanceof JavaJob){
-		JavaJob prev = (JavaJob)previous;
-		prev.setNextJob(Jobs.get(i));
-	    } else if(previous instanceof ExeJob){
-		ExeJob prev = (ExeJob)previous;
-		prev.setNextJob(Jobs.get(i));
-	    }
-	}
+    public void linkJobs(){
+        for(int i = 0; i < Jobs.size() - 1; i++){
+            GuiJob current = Jobs.get(i);
+            GuiJob next = Jobs.get(i + 1);
+            if(current instanceof JavaJob){
+                ((JavaJob)current).setNextJob(next);
+            } else if(current instanceof ExeJob){
+                ((ExeJob)current).setNextJob(next);
+            }
+        }
     }
 
     public JScrollPane getJobsPane(){
