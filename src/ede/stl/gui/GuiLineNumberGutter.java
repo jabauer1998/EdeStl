@@ -9,7 +9,7 @@ public class GuiLineNumberGutter extends JComponent {
     private JComponent textComponent;
     private int gutterWidth = 40;
 
-    public LineNumberGutter(JComponent textComponent) {
+    public GuiLineNumberGutter(JComponent textComponent) {
         this.textComponent = textComponent;
         setFont(textComponent.getFont());
 
