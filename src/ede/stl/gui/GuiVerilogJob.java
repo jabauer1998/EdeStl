@@ -11,7 +11,7 @@ import ede.stl.interpreter.EdeInterpreter;
 import javax.swing.*;
 import javax.swing.text.*;
 
-public class VerilogJob extends GuiJob {
+public class GuiVerilogJob extends GuiJob {
     private GuiEde edeInstance;
     private String errorPane;
     private String verilogFile;
@@ -19,7 +19,7 @@ public class VerilogJob extends GuiJob {
     private String outputPane;
     private String inputPane;
 
-    public VerilogJob(String JobName, TextAreaNumbered numbered, double Width, double Height, String verilogFile, String inputFile, String inputPane, String outputPane, String errorPane, GuiEde Ede){
+    public GuiVerilogJob(String JobName, TextAreaNumbered numbered, double Width, double Height, String verilogFile, String inputFile, String inputPane, String outputPane, String errorPane, GuiEde Ede){
         super(JobName, TextAreaType.DEFAULT, numbered, Width, Height);
         this.edeInstance = Ede;
         this.errorPane = errorPane;

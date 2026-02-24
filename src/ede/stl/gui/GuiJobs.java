@@ -5,6 +5,7 @@ import java.util.List;
 import ede.stl.gui.GuiEde;
 import ede.stl.gui.GuiJob.TextAreaType;
 import ede.stl.gui.GuiJob.TextAreaNumbered;
+import ede.stl.common.EdeCallable;
 import javax.swing.*;
 import java.awt.*;
 
@@ -28,24 +29,24 @@ public class GuiJobs extends JPanel {
     }
 
     public void AddExeJob(String JobName, TextAreaType type, TextAreaNumbered numbered, String ExecString, GuiEde edeInstance, String... keywords){
-        ExeJob Job = new ExeJob(JobName, type, numbered, JobWidth, JobHeight, ExecString, edeInstance, keywords);
+        GuiExeJob Job = new GuiExeJob(JobName, type, numbered, JobWidth, JobHeight, ExecString, edeInstance, keywords);
         this.add(Job);
         Jobs.add(Job);
     }
 
     public void AddJavaJob(String JobName, TextAreaType type, TextAreaNumbered numbered, EdeCallable functionToRun, GuiEde edeInstance, String... keywords){
-        JavaJob Job;
+        GuiJavaJob Job;
         if(keywords.length > 0){
-            Job = new JavaJob(JobName, type, numbered, JobWidth, JobHeight, edeInstance, keywords, functionToRun);
+            Job = new GuiJavaJob(JobName, type, numbered, JobWidth, JobHeight, edeInstance, keywords, functionToRun);
         } else {
-            Job = new JavaJob(JobName, type, numbered, JobWidth, JobHeight, edeInstance, functionToRun);
+            Job = new GuiJavaJob(JobName, type, numbered, JobWidth, JobHeight, edeInstance, functionToRun);
         }
         this.add(Job);
         Jobs.add(Job);
     }
 
     public void AddVerilogJob(String JobName, TextAreaNumbered numbered, String verilogFile, String inputFile, String inputPane, String outputPane, String errorPane, GuiEde edeInstance){
-        VerilogJob Job = new VerilogJob(JobName, numbered, JobWidth, JobHeight, verilogFile, inputFile, inputPane, outputPane, errorPane, edeInstance);
+        GuiVerilogJob Job = new GuiVerilogJob(JobName, numbered, JobWidth, JobHeight, verilogFile, inputFile, inputPane, outputPane, errorPane, edeInstance);
         this.add(Job);
         Jobs.add(Job);
     }
@@ -54,10 +55,10 @@ public class GuiJobs extends JPanel {
         for(int i = 0; i < Jobs.size() - 1; i++){
             GuiJob current = Jobs.get(i);
             GuiJob next = Jobs.get(i + 1);
-            if(current instanceof JavaJob){
-                ((JavaJob)current).setNextJob(next);
-            } else if(current instanceof ExeJob){
-                ((ExeJob)current).setNextJob(next);
+            if(current instanceof GuiJavaJob){
+                ((GuiJavaJob)current).setNextJob(next);
+            } else if(current instanceof GuiExeJob){
+                ((GuiExeJob)current).setNextJob(next);
             }
         }
     }

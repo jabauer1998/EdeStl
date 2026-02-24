@@ -20,7 +20,7 @@ A Java-based Emulator Debug Environment (EDE) inspired by PEP9. It allows users 
 src/ede/stl/
 ├── ast/          - Abstract Syntax Tree nodes for Verilog parsing
 ├── circuit/      - Circuit simulation classes (gates, adders, Node, Web, etc.)
-├── common/       - Shared utilities (Position, Source, ErrorLog, Utils)
+├── common/       - Shared utilities (Position, Source, ErrorLog, Utils, EdeCallable)
 ├── compiler/     - Verilog to Java code generator (VerilogToJavaGen)
 ├── gui/          - Swing GUI components (GuiEde, GuiRam, etc.)
 ├── interpreter/  - Verilog interpreter
@@ -55,6 +55,16 @@ Build steps (both platforms):
 Additional commands: `run` (runs EdeSample.jar), `clean` (removes bin/*, tmp/*, temp files)
 
 ## Recent Changes
+- 2026-02-24: Refactored GUI class names and removed interfaces
+  - Renamed job classes: ExeJob → GuiExeJob, JavaJob → GuiJavaJob, VerilogJob → GuiVerilogJob
+  - Renamed LineNumberGutter → GuiLineNumberGutter (standalone file)
+  - Removed interfaces: Machine, Flags, Memory, RegFile (classes now standalone, no implements)
+  - Moved EdeCallable from gui/ to common/ package
+  - Replaced Machine type references with GuiEde in values/ and interpreter/
+  - Removed stale @Override annotations from interface methods
+  - Added GuiLineNumberGutter: line number gutter component for text panes (row header on JScrollPane)
+  - GuiJob supports TextAreaNumbered enum (IS_NUMBERED / IS_NOT_NUMBERED)
+  - Fixed GuiRam memory row calculation: uses floating-point division to prevent IndexOutOfBoundsException
 - 2026-02-24: Fixed VerilogJob file mismatch and state reset
   - VerilogJob inputFile was "OutputBinary.bin" but ARM7TDMIS.v's loadProgram reads from "default" via $fopen
   - Changed Processor.java to pass "default" as inputFile so assembler output reaches the interpreter

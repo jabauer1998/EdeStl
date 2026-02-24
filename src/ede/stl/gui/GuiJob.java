@@ -72,7 +72,7 @@ public abstract class GuiJob extends JPanel {
         }
 
         if(scrollPane != null && isNumbered == TextAreaNumbered.IS_NUMBERED){
-            scrollPane.setRowHeaderView(new LineNumberGutter(InputSection));
+            scrollPane.setRowHeaderView(new GuiLineNumberGutter(InputSection));
         }
 
         this.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int)Height + 30));

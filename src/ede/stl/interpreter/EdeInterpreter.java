@@ -1,7 +1,6 @@
 package ede.stl.interpreter;
 
 import javax.swing.tree.ExpandVetoException;
-import ede.stl.gui.Machine;
 import ede.stl.common.Pointer;
 import ede.stl.common.ErrorLog;
 import ede.stl.common.ErrorItem;
@@ -25,11 +24,11 @@ import ede.stl.ast.BlockingAssignment;
 import ede.stl.ast.SystemTaskStatement;
 
 public class EdeInterpreter extends VerilogInterpreter {
-    private Machine guiInstance;
+    private GuiEde guiInstance;
     private String standardOutputPane;
     private String standardInputPane;
     
-    public EdeInterpreter(ErrorLog errLog, Machine guiInstance, String standardOutputPane, String standardInputPane){
+    public EdeInterpreter(ErrorLog errLog, GuiEde guiInstance, String standardOutputPane, String standardInputPane){
         super(errLog);
         this.guiInstance = guiInstance;
         this.standardOutputPane = standardOutputPane;

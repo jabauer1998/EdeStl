@@ -1,12 +1,11 @@
 package ede.stl.gui;
 
-import ede.stl.gui.Machine;
 import ede.stl.gui.GuiRam.AddressFormat;
 import ede.stl.gui.GuiRam.MemoryFormat;
 import javax.swing.*;
 import java.awt.*;
 
-public class GuiMachine extends JPanel implements Machine {
+public class GuiMachine extends JPanel {
     private GuiRegisterFile RegFile;
     private GuiRam Mem;
     private GuiFlags Flags;
@@ -92,7 +91,6 @@ public class GuiMachine extends JPanel implements Machine {
         return this.Flags.getStatusValue(statusName);
     }
 
-    @Override
     public void setRegisterValue(int regNumber, long regValue){
         this.RegFile.setRegisterValue(regNumber, regValue);
     }
