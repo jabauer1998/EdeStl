@@ -114,4 +114,21 @@ public abstract class GuiJob extends JPanel {
     public JComponent getInputSection(){
         return InputSection;
     }
+
+    public String getText(){
+        if(InputSection instanceof JTextPane){
+            return ((JTextPane)InputSection).getText();
+        } else if(InputSection instanceof JTextArea){
+            return ((JTextArea)InputSection).getText();
+        }
+        return "";
+    }
+
+    public void setText(String text){
+        if(InputSection instanceof JTextPane){
+            ((JTextPane)InputSection).setText(text);
+        } else if(InputSection instanceof JTextArea){
+            ((JTextArea)InputSection).setText(text);
+        }
+    }
 }

@@ -2,19 +2,15 @@ package sample.ede;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.concurrent.Callable;
 import ede.stl.gui.GuiEde;
 import ede.stl.gui.GuiJob.TextAreaType;
 import ede.stl.gui.GuiRegister;
-import ede.stl.gui.JavaJob;
-import ede.stl.gui.VerilogJob;
+import ede.stl.gui.EdeCallable;
 import ede.stl.gui.GuiRam;
 import declan.backend.assembler.ArmAssemblerParser;
 import declan.backend.assembler.ArmAssemblerParser.ProgramContext;
 import declan.backend.assembler.ArmAssemblerLexer;
 import declan.backend.assembler.AssemblerVisitor;
-import java.io.FileWriter;
-import java.io.FileReader;
 import java.util.List;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CharStream;
@@ -34,7 +30,6 @@ public class Processor {
                 Toolkit toolkit = Toolkit.getDefaultToolkit();
                 Dimension screenSize = toolkit.getScreenSize();
         
-                // Extract the width and height
                 int screenWidth = screenSize.width;
                 int screenHeight = screenSize.height;
         
@@ -47,46 +42,42 @@ public class Processor {
 
                 String[] keywords = {"ADD", "SUB", "MOV", "LDR", "STR", "B", "BL", "CMP", "BEQ", "BNE", "BGT", "BLT", "BGE"};
 
-                EdeInstance.AddJavaJob("Assemble", TextAreaType.KEYWORD, new Callable<Void>() {
-                        public Void call(){
-                                try{
-                                        CharStream byteStream = CharStreams.fromFileName("InputAssembly.a");
-                                        ArmAssemblerLexer lex = new ArmAssemblerLexer(byteStream);
-                                        CommonTokenStream tokStream = new CommonTokenStream(lex);
-                                        ArmAssemblerParser parse = new ArmAssemblerParser(tokStream);
-                                        ProgramContext ctx = parse.program();
-                                        AssemblerVisitor visitor = new AssemblerVisitor();
-                                        List<Integer> assembledCode = visitor.assembleCode(ctx);
+                EdeInstance.AddJavaJob("Assemble", TextAreaType.KEYWORD, new EdeCallable() {
+                        public String call(String input) throws Exception {
+                                CharStream byteStream = CharStreams.fromString(input);
+                                ArmAssemblerLexer lex = new ArmAssemblerLexer(byteStream);
+                                CommonTokenStream tokStream = new CommonTokenStream(lex);
+                                ArmAssemblerParser parse = new ArmAssemblerParser(tokStream);
+                                ProgramContext ctx = parse.program();
+                                AssemblerVisitor visitor = new AssemblerVisitor();
+                                List<Integer> assembledCode = visitor.assembleCode(ctx);
 
-                                        //Now we just need to write to the Output File
-                                        FileWriter writer = new FileWriter("OutputBinary.bin");
-                                        for(Integer assembledCodeInstr : assembledCode){
-                                                StringBuilder resultBuilder = new StringBuilder();
-                                                String rawBinaryString = Integer.toBinaryString(assembledCodeInstr);
-                                                if(rawBinaryString.length() > 32){
-                                                        rawBinaryString = rawBinaryString.substring(rawBinaryString.length() - 32);
-                                                }
-                                                
-                                                if(rawBinaryString.length() < 32){
-                                                        for(int i = 0; i < 32 - rawBinaryString.length(); i++){
-                                                                resultBuilder.append('0');
-                                                        }
-                                                        resultBuilder.append(rawBinaryString);
-                                                        rawBinaryString = resultBuilder.toString();
-                                                }
-
-                                                writer.append(rawBinaryString);
-                                                writer.append('\n');
+                                StringBuilder output = new StringBuilder();
+                                for(Integer assembledCodeInstr : assembledCode){
+                                        StringBuilder resultBuilder = new StringBuilder();
+                                        String rawBinaryString = Integer.toBinaryString(assembledCodeInstr);
+                                        if(rawBinaryString.length() > 32){
+                                                rawBinaryString = rawBinaryString.substring(rawBinaryString.length() - 32);
                                         }
-                                        writer.close();
-                                } catch(Exception exp){
-                                        EdeInstance.appendIoText("StandardError", exp.toString());
+                                        
+                                        if(rawBinaryString.length() < 32){
+                                                for(int i = 0; i < 32 - rawBinaryString.length(); i++){
+                                                        resultBuilder.append('0');
+                                                }
+                                                resultBuilder.append(rawBinaryString);
+                                                rawBinaryString = resultBuilder.toString();
+                                        }
+
+                                        output.append(rawBinaryString);
+                                        output.append('\n');
                                 }
-                                return null;
+                                return output.toString();
                         }
-                }, "InputAssembly.a", "OutputBinary.bin", "StandardError", keywords);
+                }, keywords);
 
                 EdeInstance.AddVerilogJob("Execute", "./sample/processor/ARM7TDMIS.v", "default", "StandardInput", "StandardOutput", "StandardError");
+
+                EdeInstance.linkJobs();
 
                 EdeInstance.AddIoSection("Errors", "StandardError", ede.stl.gui.GuiIO.Editable.READ_ONLY);
                 EdeInstance.AddIoSection("Io", "StandardInput", ede.stl.gui.GuiIO.Editable.EDITABLE);
