@@ -16,16 +16,95 @@ public abstract class GuiJob extends JPanel {
     private JButton ExeButton;
     private JComponent InputSection;
     private HashSet<String> keywords;
+    private TextAreaNumbered isNumbered;
 
+    private static class LineNumberGutter extends JComponent {
+        private JComponent textComponent;
+
+        LineNumberGutter(JComponent textComponent) {
+            this.textComponent = textComponent;
+            setPreferredSize(new Dimension(40, 0));
+            setFont(textComponent.getFont());
+
+            if (textComponent instanceof JTextArea) {
+                ((JTextArea)textComponent).getDocument().addDocumentListener(new DocumentListener() {
+                    public void insertUpdate(DocumentEvent e) { repaint(); }
+                    public void removeUpdate(DocumentEvent e) { repaint(); }
+                    public void changedUpdate(DocumentEvent e) { repaint(); }
+                });
+            } else if (textComponent instanceof JTextPane) {
+                ((JTextPane)textComponent).getDocument().addDocumentListener(new DocumentListener() {
+                    public void insertUpdate(DocumentEvent e) { SwingUtilities.invokeLater(() -> repaint()); }
+                    public void removeUpdate(DocumentEvent e) { SwingUtilities.invokeLater(() -> repaint()); }
+                    public void changedUpdate(DocumentEvent e) {}
+                });
+            }
+
+            textComponent.addComponentListener(new ComponentAdapter() {
+                public void componentResized(ComponentEvent e) { repaint(); }
+            });
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.setColor(new Color(230, 230, 230));
+            g.fillRect(0, 0, getWidth(), getHeight());
+            g.setColor(Color.GRAY);
+            g.setFont(textComponent.getFont());
+
+            FontMetrics fm = g.getFontMetrics();
+            int lineHeight;
+            int totalLines;
+
+            if (textComponent instanceof JTextArea) {
+                JTextArea ta = (JTextArea)textComponent;
+                lineHeight = fm.getHeight();
+                totalLines = ta.getLineCount();
+            } else if (textComponent instanceof JTextPane) {
+                JTextPane tp = (JTextPane)textComponent;
+                lineHeight = fm.getHeight();
+                String text = tp.getText();
+                totalLines = 1;
+                for (int i = 0; i < text.length(); i++) {
+                    if (text.charAt(i) == '\n') totalLines++;
+                }
+            } else {
+                return;
+            }
+
+            int digits = String.valueOf(totalLines).length();
+            int gutterWidth = fm.stringWidth("0".repeat(Math.max(digits, 3))) + 16;
+            if (gutterWidth != getPreferredSize().width) {
+                setPreferredSize(new Dimension(gutterWidth, 0));
+                revalidate();
+            }
+
+            Insets insets = textComponent.getInsets();
+            int y = insets.top;
+            for (int line = 1; line <= totalLines; line++) {
+                String num = String.valueOf(line);
+                int x = getWidth() - fm.stringWidth(num) - 8;
+                g.drawString(num, x, y + fm.getAscent());
+                y += lineHeight;
+            }
+        }
+    }
     public enum TextAreaType{
         DEFAULT,
         KEYWORD,
         NONE
     }
 
-    protected GuiJob(String ButtonText, TextAreaType type, double Width, double Height, String... keywordArr){
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    public enum TextAreaNumbered{
+        IS_NUMBERED,
+        IS_NOT_NUMBERED
+    }
 
+    protected GuiJob(String ButtonText, TextAreaType type, TextAreaNumbered isNumbered, double Width, double Height, String... keywordArr){
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.isNumbered = isNumbered;
+        
         ExeButton = new JButton(ButtonText);
         ExeButton.setPreferredSize(new Dimension((int)Width, 30));
         ExeButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
@@ -62,6 +141,10 @@ public abstract class GuiJob extends JPanel {
             JTextArea textArea = new JTextArea();
             InputSection = textArea;
             scrollPane = new JScrollPane(textArea);
+        }
+
+        if(scrollPane != null && isNumbered == TextAreaNumbered.IS_NUMBERED){
+            scrollPane.setRowHeaderView(new LineNumberGutter(InputSection));
         }
 
         this.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int)Height + 30));

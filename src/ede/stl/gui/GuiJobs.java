@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import ede.stl.gui.GuiEde;
 import ede.stl.gui.GuiJob.TextAreaType;
+import ede.stl.gui.GuiJob.TextAreaNumbered;
 import javax.swing.*;
 import java.awt.*;
 
@@ -26,20 +27,25 @@ public class GuiJobs extends JPanel {
         Jobs = new LinkedList<>();
     }
 
-    public void AddExeJob(String JobName, TextAreaType type, String ExecString, GuiEde edeInstance, String... keywords){
-        ExeJob Job = new ExeJob(JobName, type, JobWidth, JobHeight, ExecString, edeInstance, keywords);
+    public void AddExeJob(String JobName, TextAreaType type, TextAreaNumbered numbered, String ExecString, GuiEde edeInstance, String... keywords){
+        ExeJob Job = new ExeJob(JobName, type, numbered, JobWidth, JobHeight, ExecString, edeInstance, keywords);
         this.add(Job);
         Jobs.add(Job);
     }
 
-    public void AddJavaJob(String JobName, TextAreaType type, EdeCallable functionToRun, GuiEde edeInstance, String... keywords){
-        JavaJob Job = new JavaJob(JobName, type, JobWidth, JobHeight, edeInstance, functionToRun, keywords);
+    public void AddJavaJob(String JobName, TextAreaType type, TextAreaNumbered numbered, EdeCallable functionToRun, GuiEde edeInstance, String... keywords){
+        JavaJob Job;
+        if(keywords.length > 0){
+            Job = new JavaJob(JobName, type, numbered, JobWidth, JobHeight, edeInstance, keywords, functionToRun);
+        } else {
+            Job = new JavaJob(JobName, type, numbered, JobWidth, JobHeight, edeInstance, functionToRun);
+        }
         this.add(Job);
         Jobs.add(Job);
     }
 
-    public void AddVerilogJob(String JobName, String verilogFile, String inputFile, String inputPane, String outputPane, String errorPane, GuiEde edeInstance){
-        VerilogJob Job = new VerilogJob(JobName, JobWidth, JobHeight, verilogFile, inputFile, inputPane, outputPane, errorPane, edeInstance);
+    public void AddVerilogJob(String JobName, TextAreaNumbered numbered, String verilogFile, String inputFile, String inputPane, String outputPane, String errorPane, GuiEde edeInstance){
+        VerilogJob Job = new VerilogJob(JobName, numbered, JobWidth, JobHeight, verilogFile, inputFile, inputPane, outputPane, errorPane, edeInstance);
         this.add(Job);
         Jobs.add(Job);
     }

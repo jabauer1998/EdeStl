@@ -12,6 +12,7 @@ import ede.stl.common.Source;
 import ede.stl.gui.Machine;
 import ede.stl.gui.GuiJobs;
 import ede.stl.gui.GuiJob.TextAreaType;
+import ede.stl.gui.GuiJob.TextAreaNumbered;
 import ede.stl.gui.GuiMachine;
 import ede.stl.gui.GuiRam;
 import ede.stl.gui.GuiRegister;
@@ -100,15 +101,27 @@ public class GuiEde extends JPanel implements Machine {
     }
 
     public void AddVerilogJob(String jobName, String verilogFile, String inputFile, String inputPane, String outputPane, String errorPane){
-        this.Jobs.AddVerilogJob(jobName, verilogFile, inputFile, inputPane, outputPane, errorPane, this);
+        this.Jobs.AddVerilogJob(jobName, TextAreaNumbered.IS_NOT_NUMBERED, verilogFile, inputFile, inputPane, outputPane, errorPane, this);
+    }
+
+    public void AddVerilogJob(String jobName, TextAreaNumbered numbered, String verilogFile, String inputFile, String inputPane, String outputPane, String errorPane){
+        this.Jobs.AddVerilogJob(jobName, numbered, verilogFile, inputFile, inputPane, outputPane, errorPane, this);
     }
 
     public void AddExeJob(String jobName, TextAreaType type, String execString, String... keywords){
-        this.Jobs.AddExeJob(jobName, type, execString, this, keywords);
+        this.Jobs.AddExeJob(jobName, type, TextAreaNumbered.IS_NOT_NUMBERED, execString, this, keywords);
+    }
+
+    public void AddExeJob(String jobName, TextAreaType type, TextAreaNumbered numbered, String execString, String... keywords){
+        this.Jobs.AddExeJob(jobName, type, numbered, execString, this, keywords);
     }
 
     public void AddJavaJob(String jobName, TextAreaType type, EdeCallable functionToRun, String... keywords){
-        this.Jobs.AddJavaJob(jobName, type, functionToRun, this, keywords);
+        this.Jobs.AddJavaJob(jobName, type, TextAreaNumbered.IS_NOT_NUMBERED, functionToRun, this, keywords);
+    }
+
+    public void AddJavaJob(String jobName, TextAreaType type, TextAreaNumbered numbered, EdeCallable functionToRun, String... keywords){
+        this.Jobs.AddJavaJob(jobName, type, numbered, functionToRun, this, keywords);
     }
 
     public void AddFlag(String Name){
