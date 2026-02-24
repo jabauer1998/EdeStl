@@ -20,29 +20,43 @@ public abstract class GuiJob extends JPanel {
 
     private static class LineNumberGutter extends JComponent {
         private JComponent textComponent;
+        private int gutterWidth = 40;
 
         LineNumberGutter(JComponent textComponent) {
             this.textComponent = textComponent;
-            setPreferredSize(new Dimension(40, 0));
             setFont(textComponent.getFont());
 
             if (textComponent instanceof JTextArea) {
                 ((JTextArea)textComponent).getDocument().addDocumentListener(new DocumentListener() {
-                    public void insertUpdate(DocumentEvent e) { repaint(); }
-                    public void removeUpdate(DocumentEvent e) { repaint(); }
-                    public void changedUpdate(DocumentEvent e) { repaint(); }
+                    public void insertUpdate(DocumentEvent e) { updateAndRepaint(); }
+                    public void removeUpdate(DocumentEvent e) { updateAndRepaint(); }
+                    public void changedUpdate(DocumentEvent e) { updateAndRepaint(); }
                 });
             } else if (textComponent instanceof JTextPane) {
                 ((JTextPane)textComponent).getDocument().addDocumentListener(new DocumentListener() {
-                    public void insertUpdate(DocumentEvent e) { SwingUtilities.invokeLater(() -> repaint()); }
-                    public void removeUpdate(DocumentEvent e) { SwingUtilities.invokeLater(() -> repaint()); }
+                    public void insertUpdate(DocumentEvent e) { SwingUtilities.invokeLater(() -> updateAndRepaint()); }
+                    public void removeUpdate(DocumentEvent e) { SwingUtilities.invokeLater(() -> updateAndRepaint()); }
                     public void changedUpdate(DocumentEvent e) {}
                 });
             }
 
             textComponent.addComponentListener(new ComponentAdapter() {
-                public void componentResized(ComponentEvent e) { repaint(); }
+                public void componentResized(ComponentEvent e) { updateAndRepaint(); }
             });
+        }
+
+        private void updateAndRepaint() {
+            Dimension newSize = new Dimension(gutterWidth, textComponent.getPreferredSize().height);
+            if (!newSize.equals(getPreferredSize())) {
+                setPreferredSize(newSize);
+                revalidate();
+            }
+            repaint();
+        }
+
+        @Override
+        public Dimension getPreferredSize() {
+            return new Dimension(gutterWidth, textComponent.getPreferredSize().height);
         }
 
         @Override
@@ -54,17 +68,12 @@ public abstract class GuiJob extends JPanel {
             g.setFont(textComponent.getFont());
 
             FontMetrics fm = g.getFontMetrics();
-            int lineHeight;
             int totalLines;
 
             if (textComponent instanceof JTextArea) {
-                JTextArea ta = (JTextArea)textComponent;
-                lineHeight = fm.getHeight();
-                totalLines = ta.getLineCount();
+                totalLines = ((JTextArea)textComponent).getLineCount();
             } else if (textComponent instanceof JTextPane) {
-                JTextPane tp = (JTextPane)textComponent;
-                lineHeight = fm.getHeight();
-                String text = tp.getText();
+                String text = ((JTextPane)textComponent).getText();
                 totalLines = 1;
                 for (int i = 0; i < text.length(); i++) {
                     if (text.charAt(i) == '\n') totalLines++;
@@ -74,18 +83,19 @@ public abstract class GuiJob extends JPanel {
             }
 
             int digits = String.valueOf(totalLines).length();
-            int gutterWidth = fm.stringWidth("0".repeat(Math.max(digits, 3))) + 16;
-            if (gutterWidth != getPreferredSize().width) {
-                setPreferredSize(new Dimension(gutterWidth, 0));
+            int newWidth = fm.stringWidth("0".repeat(Math.max(digits, 3))) + 16;
+            if (newWidth != gutterWidth) {
+                gutterWidth = newWidth;
                 revalidate();
             }
 
             Insets insets = textComponent.getInsets();
-            int y = insets.top;
+            int y = insets.top + fm.getAscent();
+            int lineHeight = fm.getHeight();
             for (int line = 1; line <= totalLines; line++) {
                 String num = String.valueOf(line);
                 int x = getWidth() - fm.stringWidth(num) - 8;
-                g.drawString(num, x, y + fm.getAscent());
+                g.drawString(num, x, y);
                 y += lineHeight;
             }
         }

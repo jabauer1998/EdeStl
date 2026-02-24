@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import ede.stl.gui.GuiEde;
 import ede.stl.gui.GuiJob.TextAreaType;
+import ede.stl.gui.GuiJob.TextAreaNumbered;
 import ede.stl.gui.GuiRegister;
 import ede.stl.gui.EdeCallable;
 import ede.stl.gui.GuiRam;
@@ -42,7 +43,7 @@ public class Processor {
 
                 String[] keywords = {"ADD", "SUB", "MOV", "LDR", "STR", "B", "BL", "CMP", "BEQ", "BNE", "BGT", "BLT", "BGE"};
 
-                EdeInstance.AddJavaJob("Assemble", TextAreaType.KEYWORD, new EdeCallable() {
+                EdeInstance.AddJavaJob("Assemble", TextAreaType.KEYWORD, TextAreaNumbered.IS_NUMBERED, new EdeCallable() {
                         public String call(String input) throws Exception {
                                 CharStream byteStream = CharStreams.fromString(input);
                                 ArmAssemblerLexer lex = new ArmAssemblerLexer(byteStream);
@@ -75,7 +76,7 @@ public class Processor {
                         }
                 }, keywords);
 
-                EdeInstance.AddVerilogJob("Execute", "./sample/processor/ARM7TDMIS.v", "default", "StandardInput", "StandardOutput", "StandardError");
+                EdeInstance.AddVerilogJob("Execute", TextAreaNumbered.IS_NUMBERED, "./sample/processor/ARM7TDMIS.v", "default", "StandardInput", "StandardOutput", "StandardError");
 
                 EdeInstance.linkJobs();
 
