@@ -31,6 +31,11 @@ public class VerilogJob extends GuiJob {
 
     @Override
     public void RunJob(){
+        edeInstance.clearRegisters();
+        edeInstance.clearMemory();
+        edeInstance.clearStatusValues();
+        edeInstance.writeIoText(outputPane, "");
+        edeInstance.writeIoText(errorPane, "");
         CopyDataToInputFile();
         StringWriter writer = new StringWriter();
         Destination Dest = new Destination(writer);

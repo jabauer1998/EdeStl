@@ -75,7 +75,7 @@ public class Processor {
                         }
                 }, keywords);
 
-                EdeInstance.AddVerilogJob("Execute", "./sample/processor/ARM7TDMIS.v", "OutputBinary.bin", "StandardInput", "StandardOutput", "StandardError");
+                EdeInstance.AddVerilogJob("Execute", "./sample/processor/ARM7TDMIS.v", "default", "StandardInput", "StandardOutput", "StandardError");
 
                 EdeInstance.linkJobs();
 
