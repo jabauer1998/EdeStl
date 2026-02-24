@@ -2,11 +2,10 @@ package ede.stl.gui;
 
 import java.util.Collection;
 import java.util.HashMap;
-import ede.stl.gui.Flags;
 import javax.swing.*;
 import java.awt.*;
 
-public class GuiFlags extends JPanel implements Flags {
+public class GuiFlags extends JPanel {
     private JScrollPane FlagPane;
     private HashMap<String, GuiFlag> flagMap;
 
@@ -40,13 +39,11 @@ public class GuiFlags extends JPanel implements Flags {
         return FlagPane;
     }
 
-    @Override
     public long getStatusValue(String statusName){
         GuiFlag Flag = flagMap.get(statusName);
         return Flag.isSet() ? 1 : 0;
     }
 
-    @Override
     public void setStatusValue(String statusName, long statusValue){
         GuiFlag Flag = flagMap.get(statusName);
         Flag.Set(statusValue != 0);

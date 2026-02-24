@@ -8,12 +8,12 @@ import ede.stl.gui.GuiEde;
 import javax.swing.*;
 import javax.swing.text.*;
 
-public class ExeJob extends GuiJob {
+public class GuiExeJob extends GuiJob {
     private String ExeString;
     private GuiEde edeInstance;
     private GuiJob nextJob;
 
-    public ExeJob(String ButtonText, TextAreaType type, TextAreaNumbered numbered, double Width, double Height, String ExeString, GuiEde edeInstance, String... keywords) { 
+    public GuiExeJob(String ButtonText, TextAreaType type, TextAreaNumbered numbered, double Width, double Height, String ExeString, GuiEde edeInstance, String... keywords) { 
         super(ButtonText, type, numbered, Width, Height, keywords);
         this.ExeString = ExeString;
         this.edeInstance = edeInstance;

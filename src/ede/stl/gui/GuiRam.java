@@ -3,11 +3,10 @@ package ede.stl.gui;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import ede.stl.gui.Memory;
 import javax.swing.*;
 import java.awt.*;
 
-public class GuiRam extends JPanel implements Memory {
+public class GuiRam extends JPanel {
     private ArrayList<JLabel> Bytes;
     private ArrayList<JLabel> Addresses;
     
@@ -116,7 +115,6 @@ public class GuiRam extends JPanel implements Memory {
         return Pane;
     }
 
-    @Override
     public void setMemoryValue(int address, long dataValue){
         JLabel Byte = Bytes.get(address);
         if(MemFormat == MemoryFormat.BINARY){
@@ -150,7 +148,6 @@ public class GuiRam extends JPanel implements Memory {
         }
     }
 
-    @Override
     public long getMemoryValue(int address){
         JLabel Byte = Bytes.get(address);
         String text = Byte.getText();

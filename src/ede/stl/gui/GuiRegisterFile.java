@@ -2,11 +2,10 @@ package ede.stl.gui;
 
 import java.util.Collection;
 import java.util.HashMap;
-import ede.stl.gui.RegFile;
 import javax.swing.*;
 import java.awt.*;
 
-public class GuiRegisterFile extends JPanel implements RegFile {
+public class GuiRegisterFile extends JPanel {
     private JScrollPane Pane;
     private JPanel contentPanel;
 
@@ -69,7 +68,6 @@ public class GuiRegisterFile extends JPanel implements RegFile {
         contentPanel.repaint();
     }
 
-    @Override
     public long getRegisterValue(String regName){
         GuiRegister Reg = regFile.get(regName);
         return Reg.GetRegisterValue();
@@ -80,7 +78,6 @@ public class GuiRegisterFile extends JPanel implements RegFile {
         return Reg.GetRegisterValue();
     }
 
-    @Override
     public void setRegisterValue(String regName, long regValue){ 
        GuiRegister Reg = regFile.get(regName);
        Reg.SetRegisterValue(regValue);

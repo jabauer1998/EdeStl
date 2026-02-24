@@ -6,7 +6,7 @@ import ede.stl.gui.GuiEde;
 import ede.stl.gui.GuiJob.TextAreaType;
 import ede.stl.gui.GuiJob.TextAreaNumbered;
 import ede.stl.gui.GuiRegister;
-import ede.stl.gui.EdeCallable;
+import ede.stl.common.EdeCallable;
 import ede.stl.gui.GuiRam;
 import declan.backend.assembler.ArmAssemblerParser;
 import declan.backend.assembler.ArmAssemblerParser.ProgramContext;

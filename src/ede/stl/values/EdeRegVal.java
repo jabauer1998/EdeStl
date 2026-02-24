@@ -1,14 +1,13 @@
 package ede.stl.values;
 
-import ede.stl.gui.Machine;
 import ede.stl.gui.GuiEde;
 import ede.stl.values.Value;
 
 public class EdeRegVal implements Value{
     private String regString;
-    private Machine gui;
+    private GuiEde gui;
 
-    public EdeRegVal(String regValueString, Machine edeInstance){
+    public EdeRegVal(String regValueString, GuiEde edeInstance){
         this.gui = edeInstance;
         this.regString = regValueString;
     }

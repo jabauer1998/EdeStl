@@ -9,11 +9,11 @@ import ede.stl.ast.VerilogFile;
 import ede.stl.common.Destination;
 import ede.stl.common.ErrorLog;
 import ede.stl.common.Source;
-import ede.stl.gui.Machine;
 import ede.stl.gui.GuiJobs;
 import ede.stl.gui.GuiJob.TextAreaType;
 import ede.stl.gui.GuiJob.TextAreaNumbered;
 import ede.stl.gui.GuiMachine;
+import ede.stl.common.EdeCallable;
 import ede.stl.gui.GuiRam;
 import ede.stl.gui.GuiRegister;
 import ede.stl.parser.Lexer;
@@ -26,7 +26,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class GuiEde extends JPanel implements Machine {
+public class GuiEde extends JPanel {
     private GuiJobs Jobs;
     private GuiMachine Machine;
 
@@ -169,7 +169,6 @@ public class GuiEde extends JPanel implements Machine {
         return this.Machine.getStatusValue(statusName);
     }
 
-    @Override
     public void setRegisterValue(int regNumber, long regValue){
         this.Machine.setRegisterValue(regNumber, regValue);
     }

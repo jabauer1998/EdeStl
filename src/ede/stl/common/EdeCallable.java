@@ -1,4 +1,4 @@
-package ede.stl.gui;
+package ede.stl.common;
 
 @FunctionalInterface
 public interface EdeCallable {

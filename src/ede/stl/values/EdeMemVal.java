@@ -1,13 +1,12 @@
 package ede.stl.values;
 
-import ede.stl.gui.Machine;
 import ede.stl.gui.GuiEde;
 import ede.stl.values.Value;
 
 public class EdeMemVal implements Value{
-    private Machine gui;
+    private GuiEde gui;
 
-    public EdeMemVal(Machine edeInstance){
+    public EdeMemVal(GuiEde edeInstance){
         this.gui = edeInstance;
     }
 
