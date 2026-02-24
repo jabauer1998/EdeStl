@@ -173,6 +173,18 @@ public class GuiEde extends JPanel implements Machine {
         return this.Machine.readIoText(textAreaName);
     }
 
+    public void clearRegisters(){
+        this.Machine.clearRegisters();
+    }
+
+    public void clearMemory(){
+        this.Machine.clearMemory();
+    }
+
+    public void clearStatusValues(){
+        this.Machine.clearStatusValues();
+    }
+
     public void linkJobs(){
         this.Jobs.linkJobs();
     }
