@@ -174,6 +174,10 @@ public class GuiEde extends JPanel implements Machine {
         return this.Machine.readIoText(textAreaName);
     }
 
+    public void finalize(){
+	return this.Jobs.finalize();
+    }
+
     public void gatherMetaDataFromVerilogFile(String verilogFile, GuiRegister.Format format){
         try {
             java.io.PrintWriter errWriter = new java.io.PrintWriter(System.err, true);

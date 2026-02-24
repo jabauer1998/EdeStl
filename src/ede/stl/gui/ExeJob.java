@@ -12,15 +12,13 @@ import javax.swing.text.*;
 
 public class ExeJob extends GuiJob {
     private String ExeString;
-    private String InputFile;
-    private String OutputFile;
-    private String ErrorFile;
-    private List<JComponent> guiJobs;
-    private String errorTextAreaName;
-
+    private String InputType;
+    private String OutputType;
+    private String ErrorType;
     private GuiEde edeInstance;
+    private GuiJob nextJob;
 
-    public ExeJob(String ButtonText, TextAreaType type, double Width, double Height, String ExeString, String InputFile, String OutputFile, String ErrorFile, String errorTextAreaName, List<JComponent> guiJobs, GuiEde edeInstance, String... keywords) { 
+    public ExeJob(String ButtonText, TextAreaType type, double Width, double Height, String ExeString, String inputType, String outputType, String errorType, String[] keywords) { 
         super(ButtonText, type, Width, Height, keywords);
         this.ExeString = ExeString;
         this.InputFile = InputFile;
@@ -31,19 +29,29 @@ public class ExeJob extends GuiJob {
         this.errorTextAreaName = errorTextAreaName;
     }
 
+    public void setNextJob(GuiJob job){
+	this.nextJob = job;
+    }
+
     public void RunJob(){
-        CreateFiles();
-        RunCommand();
-        CopyOverOutputData();
-        CollectErrorData();
+	String outStr = 
+	if(outputType.equals("StandardOut") || outputType.equals("StdOut")){
+		try {
+		    Process proc = Runtime.getRuntime().exec(ExeString);
+		    // Read the standard output
+		    BufferedReader stdOutput = new BufferedReader(new InputStreamReader(process.getOutputStream()));
+		} catch (IOException e) {
+		    edeInstance.addIoText("StandardError", e.toString());
+		} catch (InterruptedException e){
+		    edeInstnace.addIoText("StandardError", e.toString());
+		}
+	} else {
+
+	}
     }
 
     private void RunCommand(){
-        try {
-            Runtime.getRuntime().exec(ExeString);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        
     }
 
     public void CreateFiles(){
