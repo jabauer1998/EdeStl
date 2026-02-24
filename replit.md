@@ -55,6 +55,11 @@ Build steps (both platforms):
 Additional commands: `run` (runs EdeSample.jar), `clean` (removes bin/*, tmp/*, temp files)
 
 ## Recent Changes
+- 2026-02-24: Fixed VerilogJob file mismatch and state reset
+  - VerilogJob inputFile was "OutputBinary.bin" but ARM7TDMIS.v's loadProgram reads from "default" via $fopen
+  - Changed Processor.java to pass "default" as inputFile so assembler output reaches the interpreter
+  - Added automatic state reset in VerilogJob.RunJob(): clears registers, memory, status flags, and IO panes before each execution
+  - Prevents accumulating register/output values across repeated runs
 - 2026-02-24: Refactored GuiJobs to eliminate file-based I/O between jobs
   - Created EdeCallable functional interface (takes String input, returns String output)
   - JavaJob and ExeJob now chain directly: output posts to next job's text pane via nextJob.setText()
