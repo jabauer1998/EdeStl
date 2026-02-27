@@ -103,6 +103,8 @@ C:\Users\jabau\Source\Repos\EdeStl\src\ede\stl\common\Search.java
 C:\Users\jabau\Source\Repos\EdeStl\src\ede\stl\common\Source.java
 C:\Users\jabau\Source\Repos\EdeStl\src\ede\stl\common\SymbolTable.java
 C:\Users\jabau\Source\Repos\EdeStl\src\ede\stl\common\Utils.java
+C:\Users\jabau\Source\Repos\EdeStl\src\ede\stl\compiler\CompiledEnvironment.java
+C:\Users\jabau\Source\Repos\EdeStl\src\ede\stl\compiler\RunnableThread.java
 C:\Users\jabau\Source\Repos\EdeStl\src\ede\stl\compiler\VerilogToJavaGen.java
 C:\Users\jabau\Source\Repos\EdeStl\src\ede\stl\gui\GuiEde.java
 C:\Users\jabau\Source\Repos\EdeStl\src\ede\stl\gui\GuiExeJob.java

@@ -93,7 +93,6 @@ public class VerilogToJavaGen {
         private Integer currentNum = 10;
         
         public VerilogToJavaGen(int javaVersion) {
-                this.mainWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
                 this.javaVersion = javaVersion;
                 this.errLog = new ErrorLog();
         }
@@ -131,30 +130,23 @@ public class VerilogToJavaGen {
 
         public void codeGenVerilogFile(VerilogFile file, int bytesPerRow, String addressFormat, String memoryFormat) throws Exception{
                 String name = "edeDriver";
+		this.mainWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
                 this.mainWriter.visit(this.javaVersion, // Java version (e.g., V1_8 for Java 8)
                         Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER, // Access flags (public class)
-                        name, // Internal class name
+                        "ede/instance/" + name, // Internal class name
                         null, // Signature (null for non-generic classes)
                         "java/lang/Object", // Superclass
                         null); // Interfaces (null if none)
-
-                MethodVisitor mainVisit = this.mainWriter.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, // Access: public static
-                        "main", // Name: main
-                        "([Ljava/lang/String;)V", // Descriptor: takes String[] returns void
-                        null, // Signature (generics related, null for simple types)
-                        null // Exceptions thrown (null for none)
-                );
-
-                mainVisit.visitCode();
-                codeGenScreenDimensions(mainVisit);
-                codeGenEdeEnvironment(file, mainVisit, name, mainWriter, bytesPerRow, addressFormat, memoryFormat);
-                codeGenFileDescriptor(mainVisit);
 
                 for (ModuleDeclaration module : file.modules) {
                         ClassWriter moduleWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
                         codeGenModule(module, moduleWriter, mainVisit);
                 }
 
+		mainVisit.visitCode();
+                codeGenScreenDimensions(mainVisit);
+                codeGenEdeEnvironment(file, mainVisit, name, mainWriter, bytesPerRow, addressFormat, memoryFormat);
+		
                 // End the method (RETURN)
                 mainVisit.visitInsn(Opcodes.RETURN);
                 mainVisit.visitMaxs(0, 0); // COMPUTE_MAXS and COMPUTE_FRAMES handle these automatically
@@ -170,11 +162,11 @@ public class VerilogToJavaGen {
                 mainVisit.visitVarInsn(Opcodes.ASTORE, 0);
                 
                 mainVisit.visitVarInsn(Opcodes.ALOAD, 0);
-    mainVisit.visitFieldInsn(Opcodes.GETFIELD, "java/awt/Dimension", "width", "I");
-    mainVisit.visitInsn(Opcodes.I2D);
-    mainVisit.visitVarInsn(Opcodes.ALOAD, 0);
-    mainVisit.visitFieldInsn(Opcodes.GETFIELD, "java/awt/Dimension", "height", "I");
-    mainVisit.visitInsn(Opcodes.I2D);
+		mainVisit.visitFieldInsn(Opcodes.GETFIELD, "java/awt/Dimension", "width", "I");
+		mainVisit.visitInsn(Opcodes.I2D);
+		mainVisit.visitVarInsn(Opcodes.ALOAD, 0);
+		mainVisit.visitFieldInsn(Opcodes.GETFIELD, "java/awt/Dimension", "height", "I");
+		mainVisit.visitInsn(Opcodes.I2D);
         }
 
         private static void pushString(String val, MethodVisitor main){
