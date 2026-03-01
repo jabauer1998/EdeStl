@@ -35,7 +35,7 @@ public class GuiEde extends JPanel {
         this.setLayout(new BorderLayout());
 
         int toolBarHeight = (int)(Height/12);
-	this.canStep = false;
+        this.canStep = false;
 
         JPanel toolBar = new JPanel();
         toolBar.setLayout(new BoxLayout(toolBar, BoxLayout.X_AXIS));
@@ -73,10 +73,10 @@ public class GuiEde extends JPanel {
             }
         });
 
-	JButton takeStep = new JButton("Take Step");
-        clearStatus.setPreferredSize(new Dimension((int)(Width/4), toolBarHeight));
-        clearStatus.setMaximumSize(new Dimension((int)(Width/4), toolBarHeight));
-        clearStatus.addActionListener(new ActionListener() {
+        JButton takeStep = new JButton("Take Step");
+        takeStep.setPreferredSize(new Dimension((int)(Width/4), toolBarHeight));
+        takeStep.setMaximumSize(new Dimension((int)(Width/4), toolBarHeight));
+        takeStep.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event){
                 canStep = true;
@@ -86,7 +86,7 @@ public class GuiEde extends JPanel {
         toolBar.add(clearRegisters);
         toolBar.add(clearMemory);
         toolBar.add(clearStatus);
-	toolBar.add(takeStep);
+        toolBar.add(takeStep);
 
         double jobsWidth = Width / 3;
         double mainHeight = Height - toolBarHeight;
@@ -215,11 +215,11 @@ public class GuiEde extends JPanel {
     }
 
     public boolean canStep(){
-	return canStep;
+        return canStep;
     }
 
     public void cantStep(){
-	this.canStep = false;
+        this.canStep = false;
     }
 
     public void gatherMetaDataFromVerilogFile(String verilogFile, GuiRegister.Format format){
