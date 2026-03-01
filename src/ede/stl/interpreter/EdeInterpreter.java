@@ -22,6 +22,7 @@ import ede.stl.ast.Output;
 import ede.stl.ast.Reg;
 import ede.stl.ast.BlockingAssignment;
 import ede.stl.ast.SystemTaskStatement;
+import ede.stl.ast.TaskStatement;
 
 public class EdeInterpreter extends VerilogInterpreter {
     private GuiEde guiInstance;
@@ -100,6 +101,18 @@ public class EdeInterpreter extends VerilogInterpreter {
             }
         }
         return super.interpretDeclaration(decl);
+    }
+
+    protected IntVal interpretTaskCall(TaskStatement stat) throws Exception{
+	if(stat.annotationLexeme.toLowerCase() == "@breakpoint"){
+	    while(!guiInstance.canStep());
+	    guiInstance.cantStep();
+	    super.interpretTaskCall(stat);
+	    return Utils.success();
+	} else {
+	    super.interpretTaskCall(stat);
+	    return Utils.success();
+	}
     }
 
     protected IntVal interpretSystemTaskCall(SystemTaskStatement stat) throws Exception{

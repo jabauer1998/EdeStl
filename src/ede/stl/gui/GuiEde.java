@@ -29,11 +29,13 @@ import java.awt.event.*;
 public class GuiEde extends JPanel {
     private GuiJobs Jobs;
     private GuiMachine Machine;
+    private boolean canStep;
 
     public GuiEde(double Width, double Height, int NumberOfBytesInRow, GuiRam.AddressFormat AddrFormat, GuiRam.MemoryFormat MemFormat){
         this.setLayout(new BorderLayout());
 
         int toolBarHeight = (int)(Height/12);
+	this.canStep = false;
 
         JPanel toolBar = new JPanel();
         toolBar.setLayout(new BoxLayout(toolBar, BoxLayout.X_AXIS));
@@ -42,8 +44,8 @@ public class GuiEde extends JPanel {
         toolBar.setMinimumSize(new Dimension((int)Width, toolBarHeight));
 
         JButton clearMemory = new JButton("Clear Memory");
-        clearMemory.setPreferredSize(new Dimension((int)(Width/3), toolBarHeight));
-        clearMemory.setMaximumSize(new Dimension((int)(Width/3), toolBarHeight));
+        clearMemory.setPreferredSize(new Dimension((int)(Width/4), toolBarHeight));
+        clearMemory.setMaximumSize(new Dimension((int)(Width/4), toolBarHeight));
         clearMemory.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event){
@@ -52,8 +54,8 @@ public class GuiEde extends JPanel {
         });
         
         JButton clearRegisters = new JButton("Clear Registers");
-        clearRegisters.setPreferredSize(new Dimension((int)(Width/3), toolBarHeight));
-        clearRegisters.setMaximumSize(new Dimension((int)(Width/3), toolBarHeight));
+        clearRegisters.setPreferredSize(new Dimension((int)(Width/4), toolBarHeight));
+        clearRegisters.setMaximumSize(new Dimension((int)(Width/4), toolBarHeight));
         clearRegisters.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event){
@@ -62,8 +64,8 @@ public class GuiEde extends JPanel {
         });
 
         JButton clearStatus = new JButton("Clear Status");
-        clearStatus.setPreferredSize(new Dimension((int)(Width/3), toolBarHeight));
-        clearStatus.setMaximumSize(new Dimension((int)(Width/3), toolBarHeight));
+        clearStatus.setPreferredSize(new Dimension((int)(Width/4), toolBarHeight));
+        clearStatus.setMaximumSize(new Dimension((int)(Width/4), toolBarHeight));
         clearStatus.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event){
@@ -71,9 +73,20 @@ public class GuiEde extends JPanel {
             }
         });
 
+	JButton takeStep = new JButton("Take Step");
+        clearStatus.setPreferredSize(new Dimension((int)(Width/4), toolBarHeight));
+        clearStatus.setMaximumSize(new Dimension((int)(Width/4), toolBarHeight));
+        clearStatus.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event){
+                canStep = true;
+            }
+        });
+
         toolBar.add(clearRegisters);
         toolBar.add(clearMemory);
         toolBar.add(clearStatus);
+	toolBar.add(takeStep);
 
         double jobsWidth = Width / 3;
         double mainHeight = Height - toolBarHeight;
@@ -199,6 +212,14 @@ public class GuiEde extends JPanel {
 
     public void linkJobs(){
         this.Jobs.linkJobs();
+    }
+
+    public boolean canStep(){
+	return canStep;
+    }
+
+    public void cantStep(){
+	this.canStep = false;
     }
 
     public void gatherMetaDataFromVerilogFile(String verilogFile, GuiRegister.Format format){

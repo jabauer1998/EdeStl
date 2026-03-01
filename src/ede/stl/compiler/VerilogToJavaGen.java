@@ -140,13 +140,20 @@ public class VerilogToJavaGen {
 
                 for (ModuleDeclaration module : file.modules) {
                         ClassWriter moduleWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-                        codeGenModule(module, moduleWriter, mainVisit);
+                        codeGenModule(module, moduleWriter);
                 }
+
+	        MethodVisitor mainVisit = mainWriter.visitMethod(
+	          Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, // Access: public static
+                  "main",                                  // Name: main
+                  "([Ljava/lang/String;)V",                // Descriptor: takes String[] and returns void
+		  null,                                    // Signature: null
+		  null                                     // Exceptions: null
+		);
 
 		mainVisit.visitCode();
                 codeGenScreenDimensions(mainVisit);
                 codeGenEdeEnvironment(file, mainVisit, name, mainWriter, bytesPerRow, addressFormat, memoryFormat);
-		
                 // End the method (RETURN)
                 mainVisit.visitInsn(Opcodes.RETURN);
                 mainVisit.visitMaxs(0, 0); // COMPUTE_MAXS and COMPUTE_FRAMES handle these automatically
@@ -212,15 +219,15 @@ public class VerilogToJavaGen {
                 String owner = "GuiEde";
                 main.visitTypeInsn(Opcodes.NEW, owner);
                 main.visitInsn(Opcodes.DUP);
-                main.visitMethodInsn(Opcodes.INVOKESPECIAL, "GuiEde", "<init>", "(DDILGuiRam$AddressFormat;LGuiRam$AddressFormat;)V",
+                main.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/gui/GuiEde", "<init>", "(DDILede/stl/gui/GuiRam$AddressFormat;Lede/stl/gui/GuiRam$AddressFormat;)V",
                         false);
                 main.visitVarInsn(Opcodes.ASTORE, 1); // Use ASTORE for object references
         }
 
         private void codeGenEdeEnvironment(VerilogFile file, MethodVisitor main, String modName, ClassWriter writer, int numBytesPerRowInMem, String addressFormat, String memoryFormat) throws Exception{
                 pushInt(numBytesPerRowInMem, main);
-                pushEnum("GuiRam$AddressFormat", addressFormat, main);
-                pushEnum("GuiRam$MemoryFormat", memoryFormat, main);
+                pushEnum("ede/stl/gui/GuiRam$AddressFormat", addressFormat, main);
+                pushEnum("ede/stl/gui/GuiRam$MemoryFormat", memoryFormat, main);
                 pushEdeEnvironment(main); // Pops all previous pushes and results in an Ede object
                 loadEdeWithMemRegistersAndFlags(file, main, modName, writer);
         }
@@ -249,7 +256,7 @@ public class VerilogToJavaGen {
                 if(arr.annotationLexeme.equals("@Memory")){
                         codeGenShallowExpression(arr.arrayIndex2, main, modName, mainWriter);
                         codeGenShallowExpression(arr.arrayIndex1, main, modName, mainWriter);
-                        main.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "GuiEde", "setMemory", "(LValue;LValue;)V", false);
+                        main.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/gui/GuiEde", "setMemory", "(Lede/atl/gui/Value;Lede/stl/gui/Value;)V", false);
                 }
         }
 
@@ -258,7 +265,7 @@ public class VerilogToJavaGen {
                 if (item.annotationLexeme.equals("@Flag")) {
                         main.visitVarInsn(Opcodes.AALOAD, 1);
                         pushString(item.declarationIdentifier, main);
-                        main.visitMethodInsn(Opcodes.AALOAD, "GuiEde", "addFlag", "(S)V", false);
+                        main.visitMethodInsn(Opcodes.AALOAD, "ede/stl/gui/GuiEde", "addFlag", "(S)V", false);
                 }
 
         }
@@ -273,12 +280,12 @@ public class VerilogToJavaGen {
                         codeGenShallowExpression(item.GetIndex2(), main, modName, writer);
 
                         pushEnum("GuiRegister$Format", "BINARY", main);
-                        main.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "GuiEde", "addRegister", "(SLValue;LValue;LGuiRegister$Format;)V", false);
+                        main.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/gui/GuiEde", "addRegister", "(SLede/stl/gui/Value;Lede/stl/gui/Value;Lede/stl/gui/GuiRegister$Format;)V", false);
                 }
 
         }
 
-        private void codeGenModule(ModuleDeclaration mod, ClassWriter moduleWriter, MethodVisitor mainWriter) throws Exception{
+        private void codeGenModule(ModuleDeclaration mod, ClassWriter moduleWriter) throws Exception{
                 moduleWriter.visit(this.javaVersion, // Java version (e.g., V1_8 for Java 8)
                         Opcodes.ACC_PUBLIC | Opcodes.ACC_SUPER, // Access flags (public class)
                         mod.moduleName, // Internal class name

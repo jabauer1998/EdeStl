@@ -1293,6 +1293,28 @@ public class Parser {
                 return new ModuleInstance(start, ident, expList);
         }
 
+        public Statement parseAnnotationStatement(){
+	    Position start = getStart();
+	    Token tok = match(Token.Type.ANNOTATION);
+	    if(willMatch(Token.Type.IDENT)){
+		String ident = parseRawIdentifier();
+                if (willMatch(Token.Type.RPAR)) {
+		    skip();
+                    match(Token.Type.SEMI);
+                    return new TaskStatement(start, tok.getLexeme(), ident, new ArrayList<>());
+                } else {
+                     List<Expression> expList = parseExpressionList();
+                     match(Token.Type.RPAR);
+                     match(Token.Type.SEMI);
+                     return new TaskStatement(start, tok.getLexeme(), ident, expList);
+                } 
+	    } else {
+		Token nextTok = peek();
+		errorAndExit("Unexpected next tok " + tok.toString() + " after annoation " + tok.getLexeme());
+		return null;
+	    }
+        }
+
         /**
          * Below is the code for parsing statements aswell as CaseItems
          * 
@@ -1305,7 +1327,8 @@ public class Parser {
         // TaskCall
         public Statement parseStatement(){
                 Position start = getStart();
-                if (willMatch(Token.Type.IF)) return parseIfStatement();
+		if(willMatch(Token.Type.ANNOTATION)) return parseAnnotationStatement();
+                else if (willMatch(Token.Type.IF)) return parseIfStatement();
                 else if (willMatch(Token.Type.CASE)) return parseCaseStatement();
                 else if (willMatch(Token.Type.CASEZ)) return parseCaseZStatement();
                 else if (willMatch(Token.Type.CASEX)) return parseCaseXStatement();

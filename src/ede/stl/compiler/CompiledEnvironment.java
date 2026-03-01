@@ -1,13 +1,25 @@
 package ede.stl.compiler;
 
+import ede.stl.gui.GuiEde;
+import java.util.LinkedList;
+import java.util.ArrayList;
+import ede.stl.common.Pointer;
+import java.lang.Runnable;
+import java.lang.Thread;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.Callable;
+import ede.stl.common.FormattedScanner;
+import java.io.FileWriter;
+import java.io.FileReader;
+
 public class CompiledEnvironment{
     private GuiEde edeInstance;
     private LinkedList<RunnableThread> threads;
     private int tickets;
     private Pointer<Semaphore> sema;
 
-    private ArrayList<FormattedScanner> readOnlyDescriptorArray;
-    private ArrayList<FileWriter> writerFileDescriptorArray;
+    private ArrayList<FormattedScanner> readOnlyFileDescriptorArray;
+    private ArrayList<FileWriter> writableFileDescriptorArray;
 	
     public CompiledEnvironment(GuiEde edeInstance){
 	this.edeInstance = edeInstance;
@@ -20,14 +32,14 @@ public class CompiledEnvironment{
     }
 
     public void runThreads(){
-	sema.setValue(new Semaphore(-tickets + 1));
+	sema.assign(new Semaphore(-tickets + 1));
 	for(RunnableThread thread: threads){
 	    Thread realThread = new Thread(thread);
 	    realThread.start();
 	}
 	try{
-	    sema.getValue().acquire();
-	} catch(InteruptedException exp){
+	    sema.deRefrence().acquire();
+	} catch(InterruptedException exp){
 	    addErrorText("Interupt occured when trying to get semaphore after running all the processes");
 	}
     }
@@ -72,11 +84,11 @@ public class CompiledEnvironment{
     }
 
     public FileWriter getFileWriter(int fileDescriptor){
-	return writeableFileDescriptorArray.get(fileDescriptor);
+	return writableFileDescriptorArray.get(fileDescriptor);
     }
 
     public void clearFileReader(int fileDescriptor){
-	readOnltFileDescriptorArray.set(fileDesctiptor, null);
+	readOnlyFileDescriptorArray.set(fileDescriptor, null);
     }
 
     public void clearFileWriter(int fileDescriptor){
@@ -84,10 +96,10 @@ public class CompiledEnvironment{
     }
 
     public void addErrorText(String errorText){
-	edeInstance.addIoText("StandardError", errorText);
+	edeInstance.appendIoText("StandardError", errorText);
     }
 
     public void addOutputText(String ioText){
-	edeInstance.addIoText("StandardOutput", ioText);
+	edeInstance.appendIoText("StandardOutput", ioText);
     }
 }

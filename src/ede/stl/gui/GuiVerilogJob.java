@@ -62,7 +62,7 @@ public class GuiVerilogJob extends GuiJob {
 	    edeInstance.appendIoText(errorPane, writer.toString());
 	} else {
 	    try {
-		this.toCall.call(); //Ignore arg 
+		this.toRun.call(); //Ignore arg 
 	    } catch(Exception exp){
 		edeInstance.appendIoText(errorPane, exp.toString());
 	    }
