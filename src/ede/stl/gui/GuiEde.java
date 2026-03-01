@@ -29,6 +29,7 @@ import java.awt.event.*;
 public class GuiEde extends JPanel {
     private GuiJobs Jobs;
     private GuiMachine Machine;
+    private final Object stepLock = new Object();
     private boolean canStep;
 
     public GuiEde(double Width, double Height, int NumberOfBytesInRow, GuiRam.AddressFormat AddrFormat, GuiRam.MemoryFormat MemFormat){
@@ -79,7 +80,10 @@ public class GuiEde extends JPanel {
         takeStep.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event){
-                canStep = true;
+                synchronized(stepLock) {
+                    canStep = true;
+                    stepLock.notifyAll();
+                }
             }
         });
 
@@ -155,71 +159,112 @@ public class GuiEde extends JPanel {
     }
 
     public void setRegisterValue(String registerName, long registerValue){
-        this.Machine.setRegisterValue(registerName, registerValue);
+        SwingUtilities.invokeLater(() -> this.Machine.setRegisterValue(registerName, registerValue));
     }
 
     public void setMemoryValue(int memoryAddress, long registerValue){
-        this.Machine.setMemoryValue(memoryAddress, registerValue);
+        SwingUtilities.invokeLater(() -> this.Machine.setMemoryValue(memoryAddress, registerValue));
     }
 
     public void setStatusValue(String statusName, long registerName){
-        this.Machine.setStatusValue(statusName, registerName);
+        SwingUtilities.invokeLater(() -> this.Machine.setStatusValue(statusName, registerName));
     }
 
     public long getRegisterValue(String regName){
-        return this.Machine.getRegisterValue(regName);
+        if(SwingUtilities.isEventDispatchThread()){
+            return this.Machine.getRegisterValue(regName);
+        }
+        final long[] result = new long[1];
+        try {
+            SwingUtilities.invokeAndWait(() -> result[0] = this.Machine.getRegisterValue(regName));
+        } catch(Exception e) { throw new RuntimeException(e); }
+        return result[0];
     }
 
     public long getRegisterValue(int RegNumber){
-        return this.Machine.getRegisterValue(RegNumber);
+        if(SwingUtilities.isEventDispatchThread()){
+            return this.Machine.getRegisterValue(RegNumber);
+        }
+        final long[] result = new long[1];
+        try {
+            SwingUtilities.invokeAndWait(() -> result[0] = this.Machine.getRegisterValue(RegNumber));
+        } catch(Exception e) { throw new RuntimeException(e); }
+        return result[0];
     }
 
     public long getMemoryValue(int memoryAddress){
-        return this.Machine.getMemoryValue(memoryAddress);
+        if(SwingUtilities.isEventDispatchThread()){
+            return this.Machine.getMemoryValue(memoryAddress);
+        }
+        final long[] result = new long[1];
+        try {
+            SwingUtilities.invokeAndWait(() -> result[0] = this.Machine.getMemoryValue(memoryAddress));
+        } catch(Exception e) { throw new RuntimeException(e); }
+        return result[0];
     }
 
     public long getStatusValue(String statusName){
-        return this.Machine.getStatusValue(statusName);
+        if(SwingUtilities.isEventDispatchThread()){
+            return this.Machine.getStatusValue(statusName);
+        }
+        final long[] result = new long[1];
+        try {
+            SwingUtilities.invokeAndWait(() -> result[0] = this.Machine.getStatusValue(statusName));
+        } catch(Exception e) { throw new RuntimeException(e); }
+        return result[0];
     }
 
     public void setRegisterValue(int regNumber, long regValue){
-        this.Machine.setRegisterValue(regNumber, regValue);
+        SwingUtilities.invokeLater(() -> this.Machine.setRegisterValue(regNumber, regValue));
     }
 
     public void writeIoText(String textAreaName, String textToWrite){
-        this.Machine.writeIoText(textAreaName, textToWrite);
+        SwingUtilities.invokeLater(() -> this.Machine.writeIoText(textAreaName, textToWrite));
     }
 
     public void appendIoText(String textAreaName, String textToAppend){
-        this.Machine.appendIoText(textAreaName, textToAppend);
+        SwingUtilities.invokeLater(() -> this.Machine.appendIoText(textAreaName, textToAppend));
     }
 
     public String readIoText(String textAreaName){
-        return this.Machine.readIoText(textAreaName);
+        if(SwingUtilities.isEventDispatchThread()){
+            return this.Machine.readIoText(textAreaName);
+        }
+        final String[] result = new String[1];
+        try {
+            SwingUtilities.invokeAndWait(() -> result[0] = this.Machine.readIoText(textAreaName));
+        } catch(Exception e) { throw new RuntimeException(e); }
+        return result[0];
     }
 
     public void clearRegisters(){
-        this.Machine.clearRegisters();
+        SwingUtilities.invokeLater(() -> this.Machine.clearRegisters());
     }
 
     public void clearMemory(){
-        this.Machine.clearMemory();
+        SwingUtilities.invokeLater(() -> this.Machine.clearMemory());
     }
 
     public void clearStatusValues(){
-        this.Machine.clearStatusValues();
+        SwingUtilities.invokeLater(() -> this.Machine.clearStatusValues());
     }
 
     public void linkJobs(){
         this.Jobs.linkJobs();
     }
 
-    public boolean canStep(){
-        return canStep;
-    }
-
-    public void cantStep(){
-        this.canStep = false;
+    public void waitForStep(){
+        synchronized(stepLock) {
+            while(!canStep) {
+                try {
+                    stepLock.wait();
+                } catch(InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+            }
+            canStep = false;
+        }
     }
 
     public void gatherMetaDataFromVerilogFile(String verilogFile, GuiRegister.Format format){
