@@ -39,7 +39,7 @@ public abstract class GuiJob extends JPanel {
         ExeButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         ExeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                RunJob();
+                new Thread(() -> RunJob()).start();
             }
         });
 
@@ -136,10 +136,12 @@ public abstract class GuiJob extends JPanel {
     }
 
     public void setText(String text){
-        if(InputSection instanceof JTextPane){
-            ((JTextPane)InputSection).setText(text);
-        } else if(InputSection instanceof JTextArea){
-            ((JTextArea)InputSection).setText(text);
-        }
+        SwingUtilities.invokeLater(() -> {
+            if(InputSection instanceof JTextPane){
+                ((JTextPane)InputSection).setText(text);
+            } else if(InputSection instanceof JTextArea){
+                ((JTextArea)InputSection).setText(text);
+            }
+        });
     }
 }

@@ -63,6 +63,11 @@ Additional commands: `run` (runs EdeSample.jar), `clean` (removes bin/*, tmp/*, 
   - TaskStatement now supports annotationLexeme field for breakpoint annotations
   - ANNOTATION token type added to Lexer for //@Annotation syntax in Verilog comments
   - GuiVerilogJob supports both interpreted and compiled execution modes
+  - RunJob() now executes on background thread to keep Swing EDT responsive during breakpoints
+  - Breakpoint wait uses proper wait/notify synchronization (not busy-wait) with stepLock Object
+  - All GUI-mutating methods in GuiEde wrapped with SwingUtilities.invokeLater for thread safety
+  - GUI-reading methods use SwingUtilities.invokeAndWait with isEventDispatchThread guard
+  - GuiJob.setText() wrapped with SwingUtilities.invokeLater
 - 2026-02-24: Refactored GUI class names and removed interfaces
   - Renamed job classes: ExeJob → GuiExeJob, JavaJob → GuiJavaJob, VerilogJob → GuiVerilogJob
   - Renamed LineNumberGutter → GuiLineNumberGutter (standalone file)
