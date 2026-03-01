@@ -20,7 +20,6 @@ import java.util.Collections;
  */
 
 public class FunctionCall extends AstNode implements Expression {
-
     public final String     functionName; // name of the function
     public final List<Expression> argumentList;      // parameter Expressions
 

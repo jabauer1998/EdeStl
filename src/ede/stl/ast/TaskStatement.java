@@ -8,13 +8,22 @@ import ede.stl.passes.StatementVisitor;
 import java.util.List;
 
 public class TaskStatement extends AstNode implements Statement {
+    public final String annotationLexeme;
     public final String taskName;
     public final List<Expression> argumentList;
 
-    public TaskStatement(Position start, String taskName, List<Expression> argumentList) {
+    public TaskStatement(Position start, String annotationLexeme, String taskName, List<Expression> argumentList) {
         super(start);
         this.taskName = taskName;
         this.argumentList = argumentList;
+	this.annotationLexeme = annotationLexeme;
+    }
+
+    public TaskStatement(Position start, String taskName, List<Expression> argumentList){
+	super(start);
+        this.taskName = taskName;
+        this.argumentList = argumentList;
+	this.annotationLexeme = null;
     }
 
     /**

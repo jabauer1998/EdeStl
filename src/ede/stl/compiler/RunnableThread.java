@@ -1,6 +1,11 @@
 package ede.stl.compiler;
 
-public class RunnableThread extends Runnable{
+import ede.stl.common.Pointer;
+import java.lang.Runnable;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.Callable;
+
+public class RunnableThread implements Runnable{
     private Callable<Void> toRun;
     private Pointer<Semaphore> sema;
     
@@ -12,11 +17,10 @@ public class RunnableThread extends Runnable{
     public void run(){
 	try{
 	    toRun.call();
+	    sema.deRefrence().acquire();
 	} catch(RuntimeException exp){
-	    sema.getValue().aquire();
 	    throw exp;
 	} catch(Exception exp){
-	    sema.getValue().aquire();
 	    throw new RuntimeException(exp);
 	}
     }

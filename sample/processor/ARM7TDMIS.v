@@ -647,8 +647,8 @@ reg [7:0] MEM [0:`MEMSIZE]; //Simulated Ram for this processor
       while(InstructionCode != 28 && R15 < `MEMSIZE) begin
                 INSTR = fetch(R15); //old Fetch
                 InstructionCode = decode(INSTR);
-                $display("Instruction Code is %d", InstructionCode);
                 incriment; //increment the program counter by a word or 4 bytes
+	        //@Breakpoint
                 execute(InstructionCode);
       end
    end
