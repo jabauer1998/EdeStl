@@ -10,6 +10,7 @@ public class GuiMachine extends JPanel {
     private GuiRam Mem;
     private GuiFlags Flags;
     private GuiIO Io;
+    private JCheckBox debuggerCheckBox;
     
     public GuiMachine(int NumberOfBytesInRow, AddressFormat AddrFormat, MemoryFormat MemFormat, double Width, double Height){
         this.setLayout(new BorderLayout());
@@ -25,6 +26,11 @@ public class GuiMachine extends JPanel {
         this.Io = new GuiIO(thirdWidth, Height*6/7);
 
         FlagsAndIo.add(Flags.getScrollPane());
+
+        this.debuggerCheckBox = new JCheckBox("Enable Debugger");
+        this.debuggerCheckBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        FlagsAndIo.add(this.debuggerCheckBox);
+
         FlagsAndIo.add(this.Io.getTabPane());
 
         JScrollPane regScroll = this.RegFile.getScrollPane();
@@ -117,5 +123,9 @@ public class GuiMachine extends JPanel {
 
     public void clearRegisters(){
         this.RegFile.clearRegisters();
+    }
+
+    public boolean isDebuggerEnabled(){
+        return this.debuggerCheckBox.isSelected();
     }
 }

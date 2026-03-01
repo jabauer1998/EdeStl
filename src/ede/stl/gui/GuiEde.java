@@ -253,6 +253,17 @@ public class GuiEde extends JPanel {
         this.Jobs.linkJobs();
     }
 
+    public boolean isDebuggerEnabled(){
+        if(SwingUtilities.isEventDispatchThread()){
+            return this.Machine.isDebuggerEnabled();
+        }
+        final boolean[] result = new boolean[1];
+        try {
+            SwingUtilities.invokeAndWait(() -> result[0] = this.Machine.isDebuggerEnabled());
+        } catch(Exception e) { throw new RuntimeException(e); }
+        return result[0];
+    }
+
     public void waitForStep(){
         synchronized(stepLock) {
             while(!canStep) {
