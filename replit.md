@@ -55,6 +55,14 @@ Build steps (both platforms):
 Additional commands: `run` (runs EdeSample.jar), `clean` (removes bin/*, tmp/*, temp files)
 
 ## Recent Changes
+- 2026-03-01: Fixed breakpoint annotation parsing and GUI issues
+  - Parser.parseAnnotationStatement() was missing LPAR match before expression list — added proper LPAR/RPAR handling
+  - GuiEde "Take Step" button was setting size/listener on clearStatus instead of takeStep — fixed references
+  - EdeInterpreter.interpretTaskCall() used == for string comparison and didn't null-check annotationLexeme — fixed with .equals() and null guard
+  - New files added by user: CompiledEnvironment.java, RunnableThread.java (compiler package)
+  - TaskStatement now supports annotationLexeme field for breakpoint annotations
+  - ANNOTATION token type added to Lexer for //@Annotation syntax in Verilog comments
+  - GuiVerilogJob supports both interpreted and compiled execution modes
 - 2026-02-24: Refactored GUI class names and removed interfaces
   - Renamed job classes: ExeJob → GuiExeJob, JavaJob → GuiJavaJob, VerilogJob → GuiVerilogJob
   - Renamed LineNumberGutter → GuiLineNumberGutter (standalone file)

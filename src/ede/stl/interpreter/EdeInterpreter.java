@@ -104,15 +104,15 @@ public class EdeInterpreter extends VerilogInterpreter {
     }
 
     protected IntVal interpretTaskCall(TaskStatement stat) throws Exception{
-	if(stat.annotationLexeme.toLowerCase() == "@breakpoint"){
-	    while(!guiInstance.canStep());
-	    guiInstance.cantStep();
-	    super.interpretTaskCall(stat);
-	    return Utils.success();
-	} else {
-	    super.interpretTaskCall(stat);
-	    return Utils.success();
-	}
+        if(stat.annotationLexeme != null && stat.annotationLexeme.toLowerCase().equals("@breakpoint")){
+            while(!guiInstance.canStep());
+            guiInstance.cantStep();
+            super.interpretTaskCall(stat);
+            return Utils.success();
+        } else {
+            super.interpretTaskCall(stat);
+            return Utils.success();
+        }
     }
 
     protected IntVal interpretSystemTaskCall(SystemTaskStatement stat) throws Exception{
