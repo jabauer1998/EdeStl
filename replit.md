@@ -68,6 +68,8 @@ Additional commands: `run` (runs EdeSample.jar), `clean` (removes bin/*, tmp/*, 
   - All GUI-mutating methods in GuiEde wrapped with SwingUtilities.invokeLater for thread safety
   - GUI-reading methods use SwingUtilities.invokeAndWait with isEventDispatchThread guard
   - GuiJob.setText() wrapped with SwingUtilities.invokeLater
+  - "Enable Debugger" checkbox added to GuiMachine between Flags and IO panels
+  - EdeInterpreter checks isDebuggerEnabled() before pausing at @breakpoint annotations
 - 2026-02-24: Refactored GUI class names and removed interfaces
   - Renamed job classes: ExeJob → GuiExeJob, JavaJob → GuiJavaJob, VerilogJob → GuiVerilogJob
   - Renamed LineNumberGutter → GuiLineNumberGutter (standalone file)
