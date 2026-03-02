@@ -16,7 +16,7 @@ public class GuiFlags extends JPanel {
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
         FlagPane = new JScrollPane(this);
-        FlagPane.setMaximumSize(new Dimension((int)Width, (int)Height));
+        FlagPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int)Height));
         FlagPane.setPreferredSize(new Dimension((int)Width, (int)Height));
 
         this.actualHeight = Height;

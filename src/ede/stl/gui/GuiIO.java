@@ -23,7 +23,7 @@ public class GuiIO extends JPanel {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         TabPane = new JTabbedPane();
-        TabPane.setMaximumSize(new Dimension((int)Width, (int)Height));
+        TabPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int)Height));
         TabPane.setPreferredSize(new Dimension((int)Width, (int)Height));
 
         IoPaneMap = new HashMap<>();
