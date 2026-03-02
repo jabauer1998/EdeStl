@@ -44,6 +44,7 @@ public class Processor {
                 String[] keywords = {"ADD", "SUB", "MOV", "LDR", "STR", "B", "BL", "CMP", "BEQ", "BNE", "BGT", "BLT", "BGE"};
 
                 EdeInstance.AddJavaJob("Assemble", TextAreaType.KEYWORD, TextAreaNumbered.IS_NUMBERED, new EdeCallable() {
+			@Override
                         public String call(String input) throws Exception {
                                 CharStream byteStream = CharStreams.fromString(input);
                                 ArmAssemblerLexer lex = new ArmAssemblerLexer(byteStream);
