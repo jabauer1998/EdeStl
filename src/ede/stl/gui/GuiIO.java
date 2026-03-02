@@ -41,29 +41,26 @@ public class GuiIO extends JPanel {
             IoPanes = TabMap.get(TabTitle);
             paneCount = TabPaneCountMap.get(TabTitle) + 1;
             TabPaneCountMap.put(TabTitle, paneCount);
+            ((GridLayout) IoPanes.getLayout()).setRows(paneCount);
         } else {
-            IoPanes = new JPanel();
-            IoPanes.setLayout(new BoxLayout(IoPanes, BoxLayout.Y_AXIS));
+            IoPanes = new JPanel(new GridLayout(1, 1));
             TabMap.put(TabTitle, IoPanes);
             paneCount = 1;
             TabPaneCountMap.put(TabTitle, paneCount);
 
-            JScrollPane SPane = new JScrollPane(IoPanes);
-            TabPane.addTab(TabTitle, SPane);
+            TabPane.addTab(TabTitle, IoPanes);
         }
 
-        JPanel IoPaneWithLabel = new JPanel();
-        IoPaneWithLabel.setLayout(new BoxLayout(IoPaneWithLabel, BoxLayout.Y_AXIS));
+        JPanel IoPaneWithLabel = new JPanel(new BorderLayout());
         JLabel Name = new JLabel(PaneTitle);
         JTextArea Area = new JTextArea();
         Area.setLineWrap(true);
         Area.setWrapStyleWord(true);
         Area.setEditable(editable == Editable.EDITABLE);
-        Area.setPreferredSize(new Dimension((int)actualWidth, (int)(actualHeight / paneCount)));
 
         IoPaneMap.put(PaneTitle, Area);
-        IoPaneWithLabel.add(Name);
-        IoPaneWithLabel.add(new JScrollPane(Area));
+        IoPaneWithLabel.add(Name, BorderLayout.NORTH);
+        IoPaneWithLabel.add(new JScrollPane(Area), BorderLayout.CENTER);
         IoPanes.add(IoPaneWithLabel);
 
         IoPanes.revalidate();
