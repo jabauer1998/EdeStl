@@ -30,43 +30,47 @@ public class GuiVerilogJob extends GuiJob {
         this.inputFile = inputFile;
         this.outputPane = outputPane;
         this.inputPane = inputPane;
-	this.isInterpreted = true;
+        this.isInterpreted = true;
     }
 
     public GuiVerilogJob(String JobName, TextAreaNumbered numbered, double width, double height, String inputFile, String inputPane, String outputPane, String errorPane, GuiEde ede, Callable<Void> edeCallable){
-	super(JobName, TextAreaType.DEFAULT, numbered, width, height);
-	this.verilogFile = null; //Only used for interpreted version
-	this.edeInstance = ede; //Should be set to be used in CopyDataToInputFile
-	this.inputPane = inputPane; //Propably not used
-	this.outputPane = outputPane; //Probably not utilized
-	this.errorPane = errorPane;
-	this.isInterpreted = false;
-	this.toRun = edeCallable;
+        super(JobName, TextAreaType.DEFAULT, numbered, width, height);
+        this.verilogFile = null; //Only used for interpreted version
+        this.edeInstance = ede; //Should be set to be used in CopyDataToInputFile
+        this.inputPane = inputPane; //Propably not used
+        this.outputPane = outputPane; //Probably not utilized
+        this.errorPane = errorPane;
+        this.isInterpreted = false;
+        this.toRun = edeCallable;
     }
 
     @Override
     public void RunJob(){
-	edeInstance.clearRegisters();
+        edeInstance.clearRegisters();
         edeInstance.clearMemory();
         edeInstance.clearStatusValues();
-	edeInstance.writeIoText(outputPane, "");
+        edeInstance.writeIoText(outputPane, "");
         edeInstance.writeIoText(errorPane, "");
-	CopyDataToInputFile();
+        CopyDataToInputFile();
         if(isInterpreted){
-	    StringWriter writer = new StringWriter();
-	    Destination Dest = new Destination(writer);
-	    ErrorLog errLog = new ErrorLog(Dest);
-	    EdeInterpreter interpreter = new EdeInterpreter(errLog, edeInstance, outputPane, inputPane);
-	    interpreter.interpretFile(verilogFile);
-	    errLog.printLog();
-	    edeInstance.appendIoText(errorPane, writer.toString());
-	} else {
-	    try {
-		this.toRun.call(); //Ignore arg 
-	    } catch(Exception exp){
-		edeInstance.appendIoText(errorPane, exp.toString());
-	    }
-	}
+            StringWriter writer = new StringWriter();
+            Destination Dest = new Destination(writer);
+            ErrorLog errLog = new ErrorLog(Dest);
+            EdeInterpreter interpreter = new EdeInterpreter(errLog, edeInstance, outputPane, inputPane);
+            try {
+                interpreter.interpretFile(verilogFile);
+            } catch(Exception exp){
+                edeInstance.appendIoText(errorPane, exp.toString());
+            }
+            errLog.printLog();
+            edeInstance.appendIoText(errorPane, writer.toString());
+        } else {
+            try {
+                this.toRun.call(); //Ignore arg 
+            } catch(Exception exp){
+                edeInstance.appendIoText(errorPane, exp.toString());
+            }
+        }
     }
 
     private void CopyDataToInputFile(){
