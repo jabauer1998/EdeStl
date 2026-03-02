@@ -55,6 +55,9 @@ Build steps (both platforms):
 Additional commands: `run` (runs EdeSample.jar), `clean` (removes bin/*, tmp/*, temp files)
 
 ## Recent Changes
+- 2026-03-02: Fixed partial IO output and improved error visibility
+  - GuiVerilogJob.RunJob() now wraps interpreter.interpretFile() in try/catch — exceptions on background thread are shown in error pane instead of being silently swallowed
+  - GuiIO.appendIoText() replaced read-modify-write (getText+append+setText) with JTextArea.append() for efficient, thread-safe incremental text updates
 - 2026-03-01: Fixed breakpoint annotation parsing and GUI issues
   - Parser.parseAnnotationStatement() was missing LPAR match before expression list — added proper LPAR/RPAR handling
   - GuiEde "Take Step" button was setting size/listener on clearStatus instead of takeStep — fixed references

@@ -86,9 +86,6 @@ public class GuiIO extends JPanel {
 
     public void appendIoText(String textAreaName, String toAppend){
         JTextArea ioArea = IoPaneMap.get(textAreaName);
-        StringBuilder appender = new StringBuilder();
-        appender.append(ioArea.getText());
-        appender.append(toAppend);
-        ioArea.setText(appender.toString());
+        ioArea.append(toAppend);
     }
 }
