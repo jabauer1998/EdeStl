@@ -55,6 +55,11 @@ Build steps (both platforms):
 Additional commands: `run` (runs EdeSample.jar), `clean` (removes bin/*, tmp/*, temp files)
 
 ## Recent Changes
+- 2026-03-02: Fixed EdeRegVal bit manipulation bugs breaking @Register annotated registers
+  - Integer overflow: all `(1 << index)` changed to `(1L << index)` in setBitAtIndex, setBitsAtIndex to prevent overflow for indices >= 31
+  - getBitsInRange wrong shift: else branch (begin >= end) shifted by `begin` instead of `end`, causing slices like `INSTR[31:28]` to return 0 — fixed to shift by `end`
+  - setBitsAtIndex off-by-one: size was `maxIndex - minIndex` instead of `maxIndex - minIndex + 1`, missing the last bit
+  - Root cause: when INSTR had @Register annotation, INSTR[31:28] returned 0 instead of 0xE (always-execute), so checkCC failed and execute() was entirely skipped
 - 2026-03-02: Fixed partial IO output and improved error visibility
   - GuiVerilogJob.RunJob() now wraps interpreter.interpretFile() in try/catch — exceptions on background thread are shown in error pane instead of being silently swallowed
   - GuiIO.appendIoText() replaced read-modify-write (getText+append+setText) with JTextArea.append() for efficient, thread-safe incremental text updates

@@ -88,6 +88,7 @@ module Arm();
    reg		  Z;
    
    //Hidden registers
+   //@Register
    reg [`WIDTH:0] INSTR;
 
    integer	  InstructionCode;

@@ -20,9 +20,9 @@ public class EdeRegVal implements Value{
         long regValue = gui.getRegisterValue(regString);
         boolean bitSet = value != 0;
         if(!bitSet){
-            regValue &= ~(1 << index);
+            regValue &= ~(1L << index);
         } else {
-            regValue |= (1 << index);
+            regValue |= (1L << index);
         }
         gui.setRegisterValue(regString, regValue);
     }
@@ -36,14 +36,14 @@ public class EdeRegVal implements Value{
         long regValue = gui.getRegisterValue(regString);
         if(minIndex < maxIndex){
             int index = minIndex;
-            int size = maxIndex - minIndex;
+            int size = maxIndex - minIndex + 1;
             int numIndex = 0;
             while(index <= maxIndex && numIndex < size){
                 boolean isSet = ((value >> numIndex) & 1) != 0;
                 if(isSet){
-                    regValue |= (1 << index);
+                    regValue |= (1L << index);
                 } else {
-                    regValue &= ~(1 << index);
+                    regValue &= ~(1L << index);
                 }
                 index++;
                 numIndex++;
@@ -51,14 +51,14 @@ public class EdeRegVal implements Value{
             gui.setRegisterValue(regString, regValue);
         } else {
             int index = minIndex;
-            int size = minIndex - maxIndex;
+            int size = minIndex - maxIndex + 1;
             int numIndex = 0;
             while(index >= maxIndex && numIndex < size){
                 boolean isSet = ((value >> numIndex) & 1) != 0;
                 if(isSet){
-                    regValue |= (1 << index);
+                    regValue |= (1L << index);
                 } else {
-                    regValue &= ~(1 << index);
+                    regValue &= ~(1L << index);
                 }
                 index--;
                 numIndex++;
@@ -70,13 +70,13 @@ public class EdeRegVal implements Value{
     public long getBitsInRange(int begin, int end){
         long val = this.longValue();
         if(begin < end){
-            long mask = (1 << (end + 1)) - 1;
-            mask ^= (1 << begin) - 1;
+            long mask = (1L << (end + 1)) - 1;
+            mask ^= (1L << begin) - 1;
             return (val & mask) >> begin;
         } else {
-            long mask = (1 << (begin + 1)) - 1;
-            mask ^= (1 << end) - 1;
-            return (val & mask) >> begin;
+            long mask = (1L << (begin + 1)) - 1;
+            mask ^= (1L << end) - 1;
+            return (val & mask) >> end;
         }
     }
 
