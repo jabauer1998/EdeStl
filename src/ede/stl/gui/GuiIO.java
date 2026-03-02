@@ -41,17 +41,25 @@ public class GuiIO extends JPanel {
             IoPanes = TabMap.get(TabTitle);
             paneCount = TabPaneCountMap.get(TabTitle) + 1;
             TabPaneCountMap.put(TabTitle, paneCount);
-            ((GridLayout) IoPanes.getLayout()).setRows(paneCount);
         } else {
-            IoPanes = new JPanel(new GridLayout(1, 1));
+            IoPanes = new JPanel();
+            IoPanes.setLayout(new BoxLayout(IoPanes, BoxLayout.Y_AXIS));
             TabMap.put(TabTitle, IoPanes);
             paneCount = 1;
             TabPaneCountMap.put(TabTitle, paneCount);
 
-            TabPane.addTab(TabTitle, IoPanes);
+            JScrollPane outerScroll = new JScrollPane(IoPanes);
+            outerScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            TabPane.addTab(TabTitle, outerScroll);
         }
 
+        int paneHeight = (int)(actualHeight / 3);
+
         JPanel IoPaneWithLabel = new JPanel(new BorderLayout());
+        IoPaneWithLabel.setPreferredSize(new Dimension((int)actualWidth, paneHeight));
+        IoPaneWithLabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, paneHeight));
+        IoPaneWithLabel.setMinimumSize(new Dimension(0, paneHeight));
+
         JLabel Name = new JLabel(PaneTitle);
         JTextArea Area = new JTextArea();
         Area.setLineWrap(true);
