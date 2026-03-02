@@ -79,23 +79,23 @@ module Arm();
    //Now for some of the Status registers
 
    //@Status
-   reg		  C;
+   reg            C;
    //@Status
-   reg		  V;
+   reg            V;
    //@Status
-   reg		  N;
+   reg            N;
    //@Status
-   reg		  Z;
+   reg            Z;
    
    //Hidden registers
    //@Register
    reg [`WIDTH:0] INSTR;
 
-   integer	  InstructionCode;
+   integer        InstructionCode;
 
    task loadProgram;
       input [31:0] address;
-      integer	   status, handler;
+      integer      status, handler;
       reg [31:0]   binaryLine;
       begin
          R15 = address; // initialize stack pointer to address 0
@@ -173,7 +173,7 @@ module Arm();
 
    function reg [`WIDTH:0] fetch;
       input reg [`WIDTH:0] addr;
-      reg [`WIDTH:0]	   store;
+      reg [`WIDTH:0]       store;
       begin
          store[31:24] = MEM[addr]; //get memory from gui in specified addresses
          store[23:16] = MEM[addr + 1];
@@ -265,7 +265,7 @@ module Arm();
       reg [31:0]   address;
       reg [31:0]   totalholder;
       reg [15:0]   regList;
-      integer	   i;
+      integer      i;
       if(checkCC(INSTR[31:28])) begin
          case(code)
            0: R15 = getRegister(INSTR[3:0]); //BX or BE
@@ -455,9 +455,11 @@ module Arm();
               if(INSTR[20])// load
                 if(INSTR[22]) begin //In byte mode
                    setRegister(INSTR[15:12], MEM[address]);
-                end else begin //In half word mode
-                   totalholder[15:8] = MEM[address];
-                   totalholder[7:0] = MEM[address + 1];
+                end else begin //In word mode
+                   totalholder[31:24] = MEM[address];
+                   totalholder[23:16] = MEM[address + 1];
+                   totalholder[15:8] = MEM[address + 2];
+                   totalholder[7:0] = MEM[address + 3];
                    setRegister(INSTR[15:12], totalholder);
                 end
               else //store
@@ -476,7 +478,7 @@ module Arm();
                 end
               
               if(!INSTR[24])//Post Indexed
-		if(INSTR[23])//U bit
+                if(INSTR[23])//U bit
                   setRegister(INSTR[19:16], getRegister(INSTR[19:16]) + offset);          
                 else
                   setRegister(INSTR[19:16], getRegister(INSTR[19:16]) - offset); 
@@ -648,9 +650,9 @@ module Arm();
       while(InstructionCode != 28 && R15 < `MEMSIZE) begin
          INSTR = fetch(R15); //old Fetch
          InstructionCode = decode(INSTR);
-	 $display("Instruction code is %d", InstructionCode);
+         $display("Instruction code is %d", InstructionCode);
          incriment; //increment the program counter by a word or 4 bytes
-	 //@Breakpoint
+         //@Breakpoint
          execute(InstructionCode);
       end
    end
