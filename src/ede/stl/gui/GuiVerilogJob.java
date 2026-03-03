@@ -20,9 +20,8 @@ public class GuiVerilogJob extends GuiJob {
     private String outputPane;
     private String inputPane;
     private boolean isInterpreted;
-    private Callable<Void> toRun;
 
-    public GuiVerilogJob(String JobName, TextAreaNumbered numbered, double Width, double Height, String verilogFile, String inputFile, String inputPane, String outputPane, String errorPane, GuiEde Ede){
+    public GuiVerilogJob(String JobName, TextAreaNumbered numbered, double Width, double Height, String verilogFile, String inputFile, String inputPane, String outputPane, String errorPane, GuiEde Ede, boolean isInterpreted){
         super(JobName, TextAreaType.DEFAULT, numbered, Width, Height);
         this.edeInstance = Ede;
         this.errorPane = errorPane;
@@ -30,18 +29,7 @@ public class GuiVerilogJob extends GuiJob {
         this.inputFile = inputFile;
         this.outputPane = outputPane;
         this.inputPane = inputPane;
-        this.isInterpreted = true;
-    }
-
-    public GuiVerilogJob(String JobName, TextAreaNumbered numbered, double width, double height, String inputFile, String inputPane, String outputPane, String errorPane, GuiEde ede, Callable<Void> edeCallable){
-        super(JobName, TextAreaType.DEFAULT, numbered, width, height);
-        this.verilogFile = null; //Only used for interpreted version
-        this.edeInstance = ede; //Should be set to be used in CopyDataToInputFile
-        this.inputPane = inputPane; //Propably not used
-        this.outputPane = outputPane; //Probably not utilized
-        this.errorPane = errorPane;
-        this.isInterpreted = false;
-        this.toRun = edeCallable;
+        this.isInterpreted = isInterpreted;
     }
 
     @Override
@@ -65,11 +53,32 @@ public class GuiVerilogJob extends GuiJob {
             errLog.printLog();
             edeInstance.appendIoText(errorPane, writer.toString());
         } else {
-            try {
-                this.toRun.call(); //Ignore arg 
-            } catch(Exception exp){
-                edeInstance.appendIoText(errorPane, exp.toString());
-            }
+            CompilerEnvironment env = new CompilerEnvironment(edeInstance);
+
+	    try {
+		// 1. Load the class dynamically
+		Class<?> targetClass = Class.forName("ede/instance/Processor.class");
+
+		// Example of getting all public methods, including inherited ones
+		Method[] publicMethods = targetClass.getMethods();
+		
+		for (Method method : publicMethods) {
+		   int modifiers = method.getModifiers();
+                   if (Modifier.isPublic(modifiers) && Modifier.isStatic(modifiers)) {
+                       env.addProcess(new Callable<Void>(){
+			       public Void call(){
+				   method.invoke(edeInstance);
+			       }
+		       });
+                   }
+		}
+
+		env.runProcesses();
+	    } catch (ClassNotFoundException e) {
+		System.err.println("Error: Class not found - " + className);
+		e.printStackTrace();
+		edeInstance.appendIoText("StandardError", e.toString());
+	    }
         }
     }
 
