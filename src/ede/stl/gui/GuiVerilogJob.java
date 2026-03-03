@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.concurrent.Callable;
 import ede.stl.common.ErrorLog;
 import ede.stl.common.Destination;
@@ -60,29 +62,33 @@ public class GuiVerilogJob extends GuiJob {
             CompiledEnvironment env = new CompiledEnvironment(edeInstance);
 
             try {
-                // 1. Load the class dynamically
-                Class<?> targetClass = Class.forName("ede/instance/Processor.class");
+                URL[] urls = { new File("ede/instance").toURI().toURL() };
+                URLClassLoader classLoader = new URLClassLoader(urls, getClass().getClassLoader());
+                Class<?> targetClass = classLoader.loadClass("Processes");
 
-                // Example of getting all public methods, including inherited ones
-                Method[] publicMethods = targetClass.getMethods();
-                
-                for (Method method : publicMethods) {
-                   int modifiers = method.getModifiers();
-                   if (Modifier.isPublic(modifiers) && Modifier.isStatic(modifiers)) {
-                       env.addThread(new Callable<Void>(){
-                               public Void call() throws Exception {
-                                   method.invoke(edeInstance);
-                                   return null;
-                               }
-                       });
-                   }
+                for (Method method : targetClass.getDeclaredMethods()) {
+                    int modifiers = method.getModifiers();
+                    Class<?>[] params = method.getParameterTypes();
+                    boolean isProcessMethod = Modifier.isPublic(modifiers)
+                            && Modifier.isStatic(modifiers)
+                            && params.length == 1
+                            && params[0].equals(CompiledEnvironment.class);
+                    if (isProcessMethod) {
+                        final Method m = method;
+                        env.addThread(new Callable<Void>(){
+                            public Void call() throws Exception {
+                                m.invoke(null, env);
+                                return null;
+                            }
+                        });
+                    }
                 }
 
                 env.runThreads();
             } catch (ClassNotFoundException e) {
-                System.err.println("Error: Class not found - " + e.getMessage());
-                e.printStackTrace();
-                edeInstance.appendIoText("StandardError", e.toString());
+                edeInstance.appendIoText(errorPane, "Compiled class not found: " + e.getMessage());
+            } catch (Exception e) {
+                edeInstance.appendIoText(errorPane, e.toString());
             }
         }
     }
