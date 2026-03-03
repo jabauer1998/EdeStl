@@ -63,10 +63,12 @@ if [ -n "$javaExists" ]; then
                 cd "$location"
                 exit 1
             fi
-            if [ -f "./lib/asm-9.6.jar" ]; then
-                echo "Extracting asm-9.6.jar into tmp"
-                (cd tmp && jar xf "../lib/asm-9.6.jar")
-            fi
+            for lib_jar in lib/*.jar; do
+                if [ -f "$lib_jar" ]; then
+                    echo "Extracting $lib_jar into tmp"
+                    (cd tmp && jar xf "../$lib_jar")
+                fi
+            done
             echo "Bundling into a Jar"
             jar cf "./bin/EdeStl.jar" -C "./tmp" "."
             echo "Deleting Tmp Directory"
@@ -74,14 +76,6 @@ if [ -n "$javaExists" ]; then
             if [ -f "sample/ede/Processor.java" ]; then
                 echo "Building Sample"
                 SAMPLE_CP="./bin/EdeStl.jar"
-                for jar in lib/*.jar; do
-                    if [ -f "$jar" ]; then
-                        case "$jar" in
-                            *asm-9.6.jar) continue ;;
-                        esac
-                        SAMPLE_CP="$SAMPLE_CP:$jar"
-                    fi
-                done
                 javac "sample/ede/Processor.java" -d "./tmp" -sourcepath "./sample" -cp "$SAMPLE_CP" -encoding "UTF-8"
                 if [ $? -eq 0 ]; then
                     echo "Bundling Sample into a Jar"
@@ -92,16 +86,7 @@ if [ -n "$javaExists" ]; then
                 rm -rf tmp/*
             fi
         elif [ "$command" = "run" ]; then
-            RUN_CP="./bin/EdeStl.jar:./bin/EdeSample.jar"
-            for jar in lib/*.jar; do
-                if [ -f "$jar" ]; then
-                    case "$jar" in
-                        *asm-9.6.jar) continue ;;
-                    esac
-                    RUN_CP="$RUN_CP:$jar"
-                fi
-            done
-            java -cp "$RUN_CP" sample.ede.Processor
+            java -cp "./bin/EdeStl.jar:./bin/EdeSample.jar" sample.ede.Processor
         elif [ "$command" = "clean" ]; then
             find ./src -name "*.class" -delete 2>/dev/null
             rm -rf bin/*
