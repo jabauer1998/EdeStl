@@ -58,10 +58,10 @@ if($javaExists -ne ""){
                 exit 1
             }
 
-            if (Test-Path -Path "./lib/asm-9.6.jar") {
-                Write-Host "Extracting asm-9.6.jar into tmp"
+            foreach ($lib_jar in Get-ChildItem -Path "lib\*.jar" -ErrorAction SilentlyContinue) {
+                Write-Host "Extracting $($lib_jar.Name) into tmp"
                 Push-Location tmp
-                jar xf "../lib/asm-9.6.jar"
+                jar xf "$($lib_jar.FullName)"
                 Pop-Location
             }
 
@@ -74,10 +74,6 @@ if($javaExists -ne ""){
             if (Test-Path -Path "sample/ede/Processor.java") {
                 Write-Host "Building Sample"
                 $SAMPLE_CP = "./bin/EdeStl.jar"
-                foreach ($jar in Get-ChildItem -Path "lib\*.jar" -ErrorAction SilentlyContinue) {
-                    if ($jar.Name -eq "asm-9.6.jar") { continue }
-                    $SAMPLE_CP += ";$($jar.FullName)"
-                }
                 javac "sample/ede/Processor.java" -d "./tmp" -sourcepath "./sample" -cp "$SAMPLE_CP" -encoding "UTF-8"
                 if ($LASTEXITCODE -eq 0) {
                     Write-Host "Bundling Sample into a Jar"
@@ -88,12 +84,7 @@ if($javaExists -ne ""){
                 Remove-Item -Path ./tmp/* -Recurse -Force
             }
         } elseif ($command -eq "run") {
-            $RUN_CP = "./bin/EdeStl.jar;./bin/EdeSample.jar"
-            foreach ($jar in Get-ChildItem -Path "lib\*.jar" -ErrorAction SilentlyContinue) {
-                if ($jar.Name -eq "asm-9.6.jar") { continue }
-                $RUN_CP += ";$($jar.FullName)"
-            }
-            java -cp "$RUN_CP" sample.ede.Processor
+            java -cp "./bin/EdeStl.jar;./bin/EdeSample.jar" sample.ede.Processor
         } elseif ($command -eq "clean"){
             Get-ChildItem -Path './src' -Include *.class -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
             if (Test-Path -Path './bin') { Remove-Item -Path './bin/*' -Recurse -Force -ErrorAction SilentlyContinue }
