@@ -84,7 +84,8 @@ import ede.stl.ast.SystemTaskStatement;
 import ede.stl.ast.TaskStatement;
 import java.awt.Toolkit;
 import java.awt.Dimension;
-import java.io.FileInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 
 public class VerilogToJavaGen {
 
@@ -101,6 +102,9 @@ public class VerilogToJavaGen {
                 this.javaVersion = javaVersion;
                 this.errLog = new ErrorLog();
                 this.processNumber = 0;
+                this.scopedTable = new Stack<>();
+                this.scopedFields = new Stack<>();
+                this.funcTypes = new SymbolTable<>();
         }
         
         boolean localInScope(String name){
@@ -135,11 +139,30 @@ public class VerilogToJavaGen {
         }
 
         public void codeGenVerilogFile(VerilogFile file, int bytesPerRow, String addressFormat, String memoryFormat) throws Exception{
+                new File("ede/instance/mods").mkdirs();
+
                 ClassWriter processWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+                processWriter.visit(this.javaVersion,
+                        Opcodes.ACC_PUBLIC | Opcodes.ACC_SUPER,
+                        "Processes",
+                        null,
+                        "java/lang/Object",
+                        null);
+
                 for (ModuleDeclaration module : file.modules) {
                         ClassWriter moduleWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
                         codeGenModule(module, moduleWriter, processWriter);
-                        FileInputStream fis = new FileInputStream("ede/instance/mods/" + module.moduleName + ".class");
+                        moduleWriter.visitEnd();
+                        byte[] moduleBytes = moduleWriter.toByteArray();
+                        try (FileOutputStream fos = new FileOutputStream("ede/instance/mods/" + module.moduleName + ".class")) {
+                                fos.write(moduleBytes);
+                        }
+                }
+
+                processWriter.visitEnd();
+                byte[] processBytes = processWriter.toByteArray();
+                try (FileOutputStream fos = new FileOutputStream("ede/instance/Processes.class")) {
+                        fos.write(processBytes);
                 }
         }
 
@@ -218,24 +241,26 @@ public class VerilogToJavaGen {
        }
 
        private void codeGenInitialProcess(InitialProcess process, String modName, ClassWriter processWriter) throws Exception{
-           MethodVisitor methodVisit = processWriter.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, "process" + this.processNumber, "(Lede/stl/compiler/CompilerEnvironment;)V", null, null);
+           MethodVisitor methodVisit = processWriter.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, "process" + this.processNumber, "(Lede/stl/compiler/CompiledEnvironment;)V", null, null);
            methodVisit.visitCode();
-           codeGenShallowStatement(process.statement, "processes " + this.processNumber, methodVisit, modName, processWriter);
-           methodVisit.visitInsn(Opcodes.RETURN); // Static methods return to the caller
-           methodVisit.visitMaxs(0, 0); // Values are ignored if COMPUTE_MAXS is used
+           codeGenShallowStatement(process.statement, "process" + this.processNumber, methodVisit, modName, processWriter);
+           methodVisit.visitInsn(Opcodes.RETURN);
+           methodVisit.visitMaxs(0, 0);
            methodVisit.visitEnd();
+           this.processNumber++;
        }
 
       private void codeGenAllwaysProcess(AllwaysProcess process, String modName, ClassWriter processWriter) throws Exception{
-            MethodVisitor methodVisit = processWriter.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, "process" + this.processNumber, "(Lede/stl/compiler/CompilerEnvironment;)V", null, null);
+           MethodVisitor methodVisit = processWriter.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, "process" + this.processNumber, "(Lede/stl/compiler/CompiledEnvironment;)V", null, null);
            methodVisit.visitCode();
            Label begin = new Label();
            methodVisit.visitLabel(begin);
            codeGenShallowStatement(process.statement, "process" + this.processNumber, methodVisit, modName, processWriter);
            methodVisit.visitJumpInsn(Opcodes.GOTO, begin);
-           methodVisit.visitInsn(Opcodes.RETURN); // Static methods return to the caller
-           methodVisit.visitMaxs(0, 0); // Values are ignored if COMPUTE_MAXS is used
+           methodVisit.visitInsn(Opcodes.RETURN);
+           methodVisit.visitMaxs(0, 0);
            methodVisit.visitEnd();
+           this.processNumber++;
        }
         
         private void codeGenGateDeclaration(ModuleItem item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception{
