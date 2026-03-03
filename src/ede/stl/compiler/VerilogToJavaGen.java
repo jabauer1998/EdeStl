@@ -84,9 +84,6 @@ import ede.stl.ast.SystemTaskStatement;
 import ede.stl.ast.TaskStatement;
 import java.awt.Toolkit;
 import java.awt.Dimension;
-import org.objectweb.asm.util.CheckClassAdapter;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.io.FileInputStream;
 
 public class VerilogToJavaGen {
@@ -103,7 +100,7 @@ public class VerilogToJavaGen {
         public VerilogToJavaGen(int javaVersion) {
                 this.javaVersion = javaVersion;
                 this.errLog = new ErrorLog();
-		this.processNumber = 0;
+                this.processNumber = 0;
         }
         
         boolean localInScope(String name){
@@ -138,19 +135,11 @@ public class VerilogToJavaGen {
         }
 
         public void codeGenVerilogFile(VerilogFile file, int bytesPerRow, String addressFormat, String memoryFormat) throws Exception{
-	        ClassWriter processWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
+                ClassWriter processWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
                 for (ModuleDeclaration module : file.modules) {
                         ClassWriter moduleWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
                         codeGenModule(module, moduleWriter, processWriter);
-			FileInputStream fis = new FileInputStream("ede/instance/mods/" + module.moduleName + ".class");
-			ClassReader classReader = new ClassReader(fis);
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			// 'true' to print results even if no errors are found (for full trace)
-			boolean printResults = true;
-			CheckClassAdapter.verify(classReader, printResults, pw); 
-			// The results (or errors) are in sw.toString()
-			System.out.println(sw.toString());
+                        FileInputStream fis = new FileInputStream("ede/instance/mods/" + module.moduleName + ".class");
                 }
         }
 
@@ -220,16 +209,16 @@ public class VerilogToJavaGen {
                 else if(item instanceof ContinuousAssignment) codeGenContinuousAssignment((ContinuousAssignment)item, moduleConstructor, modName, moduleWriter);
                 else if(item instanceof EmptyModItem) codeGenEmptyModItem();
                 else if(item instanceof ModuleInstantiation) codeGenModuleInstantiation((ModuleInstantiation)item, moduleConstructor, modName, moduleWriter);
-		else if(item instanceof ProcessBase) codeGenProcess((ProcessBase)item, modName, processWriter);
+                else if(item instanceof ProcessBase) codeGenProcess((ProcessBase)item, modName, processWriter);
         }
 
        private void codeGenProcess(ProcessBase process, String modName, ClassWriter processWriter) throws Exception{
-	   if(process instanceof InitialProcess) codeGenInitialProcess((InitialProcess)process, modName, processWriter);
-	   else if(process instanceof AllwaysProcess) codeGenAllwaysProcess((AllwaysProcess)process, modName, processWriter);
+           if(process instanceof InitialProcess) codeGenInitialProcess((InitialProcess)process, modName, processWriter);
+           else if(process instanceof AllwaysProcess) codeGenAllwaysProcess((AllwaysProcess)process, modName, processWriter);
        }
 
        private void codeGenInitialProcess(InitialProcess process, String modName, ClassWriter processWriter) throws Exception{
-	   MethodVisitor methodVisit = processWriter.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, "process" + this.processNumber, "(Lede/stl/compiler/CompilerEnvironment;)V", null, null);
+           MethodVisitor methodVisit = processWriter.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, "process" + this.processNumber, "(Lede/stl/compiler/CompilerEnvironment;)V", null, null);
            methodVisit.visitCode();
            codeGenShallowStatement(process.statement, "processes " + this.processNumber, methodVisit, modName, processWriter);
            methodVisit.visitInsn(Opcodes.RETURN); // Static methods return to the caller
@@ -238,7 +227,7 @@ public class VerilogToJavaGen {
        }
 
       private void codeGenAllwaysProcess(AllwaysProcess process, String modName, ClassWriter processWriter) throws Exception{
-	    MethodVisitor methodVisit = processWriter.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, "process" + this.processNumber, "(Lede/stl/compiler/CompilerEnvironment;)V", null, null);
+            MethodVisitor methodVisit = processWriter.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, "process" + this.processNumber, "(Lede/stl/compiler/CompilerEnvironment;)V", null, null);
            methodVisit.visitCode();
            Label begin = new Label();
            methodVisit.visitLabel(begin);
@@ -291,7 +280,7 @@ public class VerilogToJavaGen {
                         } else {
                                 Utils.errorAndExit("Error cant find local or field in deep assignment");
                         }
-                        constructor.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "assignDeepElem", "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/value/Value;)V", false);
+                        constructor.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "assignDeepElem", "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;)V", false);
                 } else if (assign.rightHandSide instanceof Slice){
                         Slice slice = (Slice)assign.rightHandSide;
                         codeGenShallowExpression(slice.index1, constructor, modName, moduleWriter);
@@ -308,7 +297,7 @@ public class VerilogToJavaGen {
                         } else {
                                 Utils.errorAndExit("Error cant find local or field in deep assignment");
                         }
-                        constructor.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "assignDeepSlice", "(LValue;LValue;LValue;LValue;)V", false);
+                        constructor.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "assignDeepSlice", "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;)V", false);
                 } else if(assign.rightHandSide instanceof Identifier) {
                         Identifier ident = (Identifier)assign.rightHandSide;
                         
@@ -319,7 +308,7 @@ public class VerilogToJavaGen {
                                 constructor.visitFieldInsn(Opcodes.PUTFIELD, 
                 modName, // Owner class internal name
                 ident.labelIdentifier,           // Field name
-                "LValue;");
+                "Lede/stl/values/Value;");
                         } else {
                                 Utils.errorAndExit("Error no ident found for deep assignment with " + ident.labelIdentifier + " as its name");
                         }
@@ -337,7 +326,7 @@ public class VerilogToJavaGen {
                 }
                 
                 pushInt(item.gateConnections.size() - count, moduleConstructor);
-                moduleConstructor.visitTypeInsn(Opcodes.ANEWARRAY, "Web");
+                moduleConstructor.visitTypeInsn(Opcodes.ANEWARRAY, "ede/stl/circuit/Web");
                 for(int i = count; i < item.gateConnections.size(); i++) {
                         moduleConstructor.visitInsn(Opcodes.DUP);
                         pushInt(i, moduleConstructor); // Array index
@@ -345,7 +334,7 @@ public class VerilogToJavaGen {
                         codeGenDeepExpression(exp, moduleConstructor, modName, writer);   // Value
                         moduleConstructor.visitInsn(Opcodes.AASTORE);
                 }
-                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "Value/circuit_elem/nodes/gates/AndGate", "<Init>", "(LWeb;LWeb;LWeb;[LWeb;)V", false);
+                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/AndGate", "<Init>", "(Lede/stl/circuit/Web;Lede/stl/circuit/Web;Lede/stl/circuit/Web;[Lede/stl/circuit/Web;)V", false);
         }
         
         private void codeGenNandGateDeclaration(NandGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception {
@@ -357,7 +346,7 @@ public class VerilogToJavaGen {
                 }
                 
                 pushInt(item.gateConnections.size() - count, moduleConstructor);
-                moduleConstructor.visitTypeInsn(Opcodes.ANEWARRAY, "Web");
+                moduleConstructor.visitTypeInsn(Opcodes.ANEWARRAY, "ede/stl/circuit/Web");
                 for(int i = count; i < item.gateConnections.size(); i++) {
                         moduleConstructor.visitInsn(Opcodes.DUP);
                         pushInt(i, moduleConstructor); // Array index
@@ -365,7 +354,7 @@ public class VerilogToJavaGen {
                         codeGenDeepExpression(exp, moduleConstructor, modName, writer);   // Value
                         moduleConstructor.visitInsn(Opcodes.AASTORE);
                 }
-                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "Value/circuit_elem/nodes/gates/NandGate", "<Init>", "(LWeb;LWeb;LWeb;[LWeb;)V", false);
+                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/NandGate", "<Init>", "(Lede/stl/circuit/Web;Lede/stl/circuit/Web;Lede/stl/circuit/Web;[Lede/stl/circuit/Web;)V", false);
         }
         
         private void codeGenNorGateDeclaration(NorGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception {
@@ -377,7 +366,7 @@ public class VerilogToJavaGen {
                 }
                 
                 pushInt(item.gateConnections.size() - count, moduleConstructor);
-                moduleConstructor.visitTypeInsn(Opcodes.ANEWARRAY, "Web");
+                moduleConstructor.visitTypeInsn(Opcodes.ANEWARRAY, "ede/stl/circuit/Web");
                 for(int i = count; i < item.gateConnections.size(); i++) {
                         moduleConstructor.visitInsn(Opcodes.DUP);
                         pushInt(i, moduleConstructor); // Array index
@@ -385,13 +374,13 @@ public class VerilogToJavaGen {
                         codeGenDeepExpression(exp, moduleConstructor, modName, writer);   // Value
                         moduleConstructor.visitInsn(Opcodes.AASTORE);
                 }
-                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "Value/circuit_elem/nodes/gates/NorGate", "<Init>", "(LWeb;LWeb;LWeb;[LWeb;)V", false);
+                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/NorGate", "<Init>", "(Lede/stl/circuit/Web;Lede/stl/circuit/Web;Lede/stl/circuit/Web;[Lede/stl/circuit/Web;)V", false);
         }
         
         private void codeGenNotGateDeclaration(NotGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception {
                 codeGenDeepExpression(item.gateConnections.get(0), moduleConstructor, modName, writer);
                 codeGenDeepExpression(item.gateConnections.get(1), moduleConstructor, modName, writer);
-                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "Value/circuit_elem/nodes/gates/NandGate", "<Init>", "(LWeb;LWeb;)V", false);
+                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/NandGate", "<Init>", "(Lede/stl/circuit/Web;Lede/stl/circuit/Web;)V", false);
         }
         
         private void codeGenOrGateDeclaration(OrGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception {
@@ -403,7 +392,7 @@ public class VerilogToJavaGen {
                 }
                 
                 pushInt(item.gateConnections.size() - count, moduleConstructor);
-                moduleConstructor.visitTypeInsn(Opcodes.ANEWARRAY, "Web");
+                moduleConstructor.visitTypeInsn(Opcodes.ANEWARRAY, "ede/stl/circuit/Web");
                 for(int i = count; i < item.gateConnections.size(); i++) {
                         moduleConstructor.visitInsn(Opcodes.DUP);
                         pushInt(i, moduleConstructor); // Array index
@@ -411,7 +400,7 @@ public class VerilogToJavaGen {
                         codeGenDeepExpression(exp, moduleConstructor, modName, writer);   // Value
                         moduleConstructor.visitInsn(Opcodes.AASTORE);
                 }
-                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "Value/circuit_elem/nodes/gates/NorGate", "<Init>", "(LWeb;LWeb;LWeb;[LWeb;)V", false);
+                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/NorGate", "<Init>", "(Lede/stl/circuit/Web;Lede/stl/circuit/Web;Lede/stl/circuit/Web;[Lede/stl/circuit/Web;)V", false);
         }
         
         private void codeGenXnorGateDeclaration(XnorGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception {
@@ -423,7 +412,7 @@ public class VerilogToJavaGen {
                 }
                 
                 pushInt(item.gateConnections.size() - count, moduleConstructor);
-                moduleConstructor.visitTypeInsn(Opcodes.ANEWARRAY, "Web");
+                moduleConstructor.visitTypeInsn(Opcodes.ANEWARRAY, "ede/stl/circuit/Web");
                 for(int i = count; i < item.gateConnections.size(); i++) {
                         moduleConstructor.visitInsn(Opcodes.DUP);
                         pushInt(i, moduleConstructor); // Array index
@@ -431,7 +420,7 @@ public class VerilogToJavaGen {
                         codeGenDeepExpression(exp, moduleConstructor, modName, writer);   // Value
                         moduleConstructor.visitInsn(Opcodes.AASTORE);
                 }
-                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "Value/circuit_elem/nodes/gates/XnorGate", "<Init>", "(LWeb;LWeb;LWeb;[LWeb;)V", false);
+                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/XnorGate", "<Init>", "(Lede/stl/circuit/Web;Lede/stl/circuit/Web;Lede/stl/circuit/Web;[Lede/stl/circuit/Web;)V", false);
         }
         
         private void codeGenXorGateDeclaration(XorGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception {
@@ -443,7 +432,7 @@ public class VerilogToJavaGen {
                 }
                 
                 pushInt(item.gateConnections.size() - count, moduleConstructor);
-                moduleConstructor.visitTypeInsn(Opcodes.ANEWARRAY, "Web");
+                moduleConstructor.visitTypeInsn(Opcodes.ANEWARRAY, "ede/stl/circuit/Web");
                 for(int i = count; i < item.gateConnections.size(); i++) {
                         moduleConstructor.visitInsn(Opcodes.DUP);
                         pushInt(i, moduleConstructor); // Array index
@@ -451,7 +440,7 @@ public class VerilogToJavaGen {
                         codeGenDeepExpression(exp, moduleConstructor, modName, writer);   // Value
                         moduleConstructor.visitInsn(Opcodes.AASTORE);
                 }
-                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "Value/circuit_elem/nodes/gates/XnorGate", "<Init>", "(LWeb;LWeb;LWeb;[LWeb;)V", false);
+                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/XnorGate", "<Init>", "(Lede/stl/circuit/Web;Lede/stl/circuit/Web;Lede/stl/circuit/Web;[Lede/stl/circuit/Web;)V", false);
         }
 
         private String nameOf(ModuleItem declaration) throws Exception {
@@ -491,33 +480,33 @@ public class VerilogToJavaGen {
 
         private String typeOf(ModuleItem declaration) throws Exception {
                 if (declaration instanceof Input.Wire.Vector.Ident)
-                        return "LVectorVal;";
+                        return "Lede/stl/values/VectorVal;";
                 else if (declaration instanceof Input.Reg.Vector.Ident)
                         return "LVectorVal";
                 else if (declaration instanceof Input.Wire.Scalar.Ident)
-                        return "LWireVal;";
+                        return "Lede/stl/circuit/WireVal;";
                 else if (declaration instanceof Input.Reg.Scalar.Ident)
-                        return "LRegVal;";
+                        return "Lede/stl/values/RegVal;";
                 else if (declaration instanceof Output.Wire.Vector.Ident)
-                        return "LVectorVal;";
+                        return "Lede/stl/values/VectorVal;";
                 else if (declaration instanceof Output.Reg.Vector.Ident)
-                        return "LVectorVal;";
+                        return "Lede/stl/values/VectorVal;";
                 else if (declaration instanceof Output.Wire.Scalar.Ident)
-                        return "LWireVal;";
+                        return "Lede/stl/circuit/WireVal;";
                 else if (declaration instanceof Output.Reg.Scalar.Ident)
-                        return "LRegVal;";
+                        return "Lede/stl/values/RegVal;";
                 else if (declaration instanceof Wire.Vector.Ident)
-                        return "LVectorVal;";
+                        return "Lede/stl/values/VectorVal;";
                 else if (declaration instanceof Reg.Vector.Ident)
-                        return "LVectorVal;";
+                        return "Lede/stl/values/VectorVal;";
                 else if (declaration instanceof Wire.Scalar.Ident)
-                        return "LWireVal;";
+                        return "Lede/stl/circuit/WireVal;";
                 else if (declaration instanceof Reg.Scalar.Ident)
-                        return "LRegVal;";
+                        return "Lede/stl/values/RegVal;";
                 else if (declaration instanceof Int.Ident)
-                        return "LIntVal;";
+                        return "Lede/stl/values/IntVal;";
                 else if (declaration instanceof Real.Ident)
-                        return "LRealVal;";
+                        return "Lede/stl/values/RealVal;";
                 else {
                         Utils.errorAndExit("Error Could not find Ident Declaration with the following type " + declaration.getClass().getName());
                         return "";
@@ -699,9 +688,9 @@ public class VerilogToJavaGen {
                                                         codeGenShallowExpression(exp, method, modName, module);
                                                         method.visitVarInsn(Opcodes.ALOAD, 0);
                                                         method.visitMethodInsn(Opcodes.INVOKESTATIC,
-                      "Utils", // Internal name of the class
+                      "ede/stl/common/Utils", // Internal name of the class
                       "caseBoolean",           // Name of the static method
-                      "(LValue;LValue;)B",                        // Method descriptor (void return, no args)
+                      "(Lede/stl/values/Value;Lede/stl/values/Value;)B",                        // Method descriptor (void return, no args)
                       false);
                                                         method.visitJumpInsn(Opcodes.IFNE, equalLabel);
                                         }
@@ -733,9 +722,9 @@ public class VerilogToJavaGen {
                                                 codeGenShallowExpression(exp, method, modName, module);
                                                 method.visitVarInsn(Opcodes.ALOAD, 0);
                                                 method.visitMethodInsn(Opcodes.INVOKESTATIC,
-              "Utils", // Internal name of the class
+              "ede/stl/common/Utils", // Internal name of the class
               "caseBoolean",           // Name of the static method
-              "(LValue;LValue;)B",                        // Method descriptor (void return, no args)
+              "(Lede/stl/values/Value;Lede/stl/values/Value;)B",                        // Method descriptor (void return, no args)
               false);
                                                 method.visitJumpInsn(Opcodes.IFNE, equalLabel);
                                 }
@@ -765,9 +754,9 @@ public class VerilogToJavaGen {
                                                 codeGenShallowExpression(exp, method, modName, module);
                                                 method.visitVarInsn(Opcodes.ALOAD, 0);
                                                 method.visitMethodInsn(Opcodes.INVOKESTATIC,
-              "Utils", // Internal name of the class
+              "ede/stl/common/Utils", // Internal name of the class
               "caseBoolean",           // Name of the static method
-              "(LValue;LValue;)B",                        // Method descriptor (void return, no args)
+              "(Lede/stl/values/Value;Lede/stl/values/Value;)B",                        // Method descriptor (void return, no args)
               false);
                                                 method.visitJumpInsn(Opcodes.IFNE, equalLabel);
                                 }
@@ -789,9 +778,9 @@ public class VerilogToJavaGen {
                         codeGenShallowExpression(stat.condition, method, modName, module);
                         Label endLabel = new Label();
                         method.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-              "Value", // Internal name of the class
+              "ede/stl/values/Value", // Internal name of the class
               "boolValue",           // Name of the static method
-              "(LValue;)B",                        // Method descriptor (void return, no args)
+              "(Lede/stl/values/Value;)B",                        // Method descriptor (void return, no args)
               false);
                         method.visitJumpInsn(Opcodes.IFEQ, endLabel);
                         codeGenShallowStatement(stat.trueStatement, methodName, method, modName, module);
@@ -804,9 +793,9 @@ public class VerilogToJavaGen {
                 Label endLabel = new Label();
                 Label elseLabel = new Label();
                 method.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-      "Value", // Internal name of the class
+      "ede/stl/values/Value", // Internal name of the class
       "boolValue",           // Name of the static method
-      "(LValue;)B",                        // Method descriptor (void return, no args)
+      "(Lede/stl/values/Value;)B",                        // Method descriptor (void return, no args)
       false);
                 method.visitJumpInsn(Opcodes.IFEQ, elseLabel);
                 codeGenShallowStatement(stat.trueStatement, methodName, method, modName, module);
@@ -837,9 +826,9 @@ public class VerilogToJavaGen {
                 method.visitLabel(loopBegin);
                 codeGenShallowExpression(stat.exp, method, modName, module);
                 method.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-      "Value", // Internal name of the class
+      "ede/stl/values/Value", // Internal name of the class
       "boolValue",           // Name of the static method
-      "(LValue;)B",                        // Method descriptor (void return, no args)
+      "(Lede/stl/values/Value;)B",                        // Method descriptor (void return, no args)
       false);
                 method.visitJumpInsn(Opcodes.IFNE, loopBody);
         }
@@ -849,9 +838,9 @@ public class VerilogToJavaGen {
                  method.visitVarInsn(Opcodes.ISTORE, 0);
                  codeGenShallowExpression(loop.exp, method, modName, module);
                  method.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-              "Value", // Internal name of the class
+              "ede/stl/values/Value", // Internal name of the class
               "intValue",           // Name of the static method
-              "(LValue;)I",                        // Method descriptor (void return, no args)
+              "(Lede/stl/values/Value;)I",                        // Method descriptor (void return, no args)
               false);
                  method.visitVarInsn(Opcodes.ISTORE, 1);
                  
@@ -880,9 +869,9 @@ public class VerilogToJavaGen {
                 method.visitLabel(loopBegin);
                 codeGenShallowExpression(loop.exp, method, modName, module);
                 method.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-      "Value", // Internal name of the class
+      "ede/stl/values/Value", // Internal name of the class
       "boolValue",           // Name of the static method
-      "(LValue;)B",                        // Method descriptor (void return, no args)
+      "(Lede/stl/values/Value;)B",                        // Method descriptor (void return, no args)
       false);
                 method.visitJumpInsn(Opcodes.IFNE, loopBody);
         }
@@ -905,14 +894,14 @@ public class VerilogToJavaGen {
                                 method.visitFieldInsn(Opcodes.GETFIELD, 
                         modName, // Owner class internal name
                         leftHandElement.labelIdentifier,           // Field name
-                        "LValue;");
+                        "Lede/stl/values/Value;");
                           } else {
                                 Utils.errorAndExit("Error can not find left hand side of assignment" + leftHandElement.labelIdentifier);
                           }
                           method.visitMethodInsn(Opcodes.INVOKESTATIC,
-          "Utils", // Internal name of the class
+          "ede/stl/common/Utils", // Internal name of the class
           "shallowAssignElem",           // Name of the static method
-          "(LValue;LValue;LValue;)V",                        // Method descriptor (void return, no args)
+          "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;)V",                        // Method descriptor (void return, no args)
           false);      
                  } else if(assign.leftHandSide instanceof Slice) {
                          Slice slice = (Slice)assign.leftHandSide;
@@ -926,14 +915,14 @@ public class VerilogToJavaGen {
                                  method.visitFieldInsn(Opcodes.GETFIELD, 
                         modName, // Owner class internal name
                         slice.labelIdentifier,           // Field name
-                        "LValue;");
+                        "Lede/stl/values/Value;");
                          } else {
                                  Utils.errorAndExit("Error cant find ident " + slice.labelIdentifier);
                          }
                          method.visitMethodInsn(Opcodes.INVOKESTATIC,
-         "Utils", // Internal name of the class
+         "ede/stl/common/Utils", // Internal name of the class
          "shallowAssignSlice",           // Name of the static method
-         "(LValue;LValue;LValue;LValue;)V",                        // Method descriptor (void return, no args)
+         "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;)V",                        // Method descriptor (void return, no args)
          false);      
                  } else if(assign.leftHandSide instanceof Identifier) {
                          Identifier ident = (Identifier)assign.leftHandSide;
@@ -945,9 +934,9 @@ public class VerilogToJavaGen {
                                          method.visitVarInsn(Opcodes.ASTORE, ptr);
                                  } else if(fieldInScope(ident.labelIdentifier)){
                                          method.visitFieldInsn(Opcodes.PUTFIELD, 
-             "Value", // internal name of the owner class
+             "ede/stl/values/Value", // internal name of the owner class
              ident.labelIdentifier,                   // field name
-             "LValue;");
+             "Lede/stl/values/Value;");
                                  } else {
                                          Utils.errorAndExit("Error cant find left hand side of assign " + ident);
                                  }
@@ -974,14 +963,14 @@ public class VerilogToJavaGen {
                                 method.visitFieldInsn(Opcodes.GETFIELD, 
                         modName, // Owner class internal name
                         leftHandElement.labelIdentifier,           // Field name
-                        "LValue;");
+                        "Lede/stl/values/Value;");
                           } else {
                                 Utils.errorAndExit("Error ident" + leftHandElement.labelIdentifier + " doesnt exist in module " + modName);
                           }
                           method.visitMethodInsn(Opcodes.INVOKESTATIC,
-          "Utils", // Internal name of the class
+          "ede/stl/common/Utils", // Internal name of the class
           "shallowAssignElem",           // Name of the static method
-          "(LValue;LValue;LValue;)V",                        // Method descriptor (void return, no args)
+          "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;)V",                        // Method descriptor (void return, no args)
           false);      
                  } else if(val instanceof Slice) {
                          Slice slice = (Slice)val;
@@ -994,14 +983,14 @@ public class VerilogToJavaGen {
                                  method.visitFieldInsn(Opcodes.GETFIELD, 
                         modName, // Owner class internal name
                         slice.labelIdentifier,           // Field name
-                        "LValue;");
+                        "Lede/stl/values/Value;");
                          } else {
                                  Utils.errorAndExit("Error ident " + slice.labelIdentifier + " not found in module " + modName);
                          }
                          method.visitMethodInsn(Opcodes.INVOKESTATIC,
-         "Utils", // Internal name of the class
+         "ede/stl/common/Utils", // Internal name of the class
          "shallowAssignSlice",           // Name of the static method
-         "(LValue;LValue;LValue;LValue;)V",                        // Method descriptor (void return, no args)
+         "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;)V",                        // Method descriptor (void return, no args)
          false);      
                  } else if(val instanceof Identifier) {
                          Identifier ident = (Identifier)val;
@@ -1009,7 +998,7 @@ public class VerilogToJavaGen {
                                  int ptr = this.getFromScope(ident.labelIdentifier);
                                  method.visitVarInsn(Opcodes.ASTORE, ptr);
                          } else if(fieldInScope(ident.labelIdentifier)) {
-                                 method.visitFieldInsn(Opcodes.PUTFIELD, modName, ident.labelIdentifier, "LValue;");
+                                 method.visitFieldInsn(Opcodes.PUTFIELD, modName, ident.labelIdentifier, "Lede/stl/values/Value;");
                          } else {
                                  Utils.errorAndExit("Error field or local variable for ident " + ident + " was not found!!!");
                          }
@@ -1099,13 +1088,13 @@ public class VerilogToJavaGen {
         private void codeGenFieldRegScalarArray(Reg.Scalar.Array arr, MethodVisitor constructor, String modName, ClassWriter modWriter) throws Exception{
 
                 if (arr.annotationLexeme != "@Memory") {
-                        modWriter.visitField(Opcodes.ACC_PRIVATE, arr.declarationIdentifier, "LArrayRegVal;", null, null);
+                        modWriter.visitField(Opcodes.ACC_PRIVATE, arr.declarationIdentifier, "Lede/stl/values/ArrayRegVal;", null, null);
                         
                         codeGenShallowExpression(arr.arrayIndex1, constructor, modName, modWriter);
                         codeGenShallowExpression(arr.arrayIndex2, constructor, modName, modWriter);
 
-                        constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ArrayRegVal", "<init>", "(LValue;LValue;)V", false);
-                        constructor.visitFieldInsn(Opcodes.PUTFIELD, "ArrayRegVal", arr.declarationIdentifier, "LArrayRegVal;"); // Store in field
+                        constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/ArrayRegVal", "<init>", "(Lede/stl/values/Value;Lede/stl/values/Value;)V", false);
+                        constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/ArrayRegVal", arr.declarationIdentifier, "Lede/stl/values/ArrayRegVal;"); // Store in field
                         
                 }
 
@@ -1114,7 +1103,7 @@ public class VerilogToJavaGen {
         private void codeGenFieldRegVectorArray(Reg.Vector.Array arr, MethodVisitor constructor, String modName, ClassWriter modWriter) throws Exception{
 
                 if (arr.annotationLexeme != "@Memory") {
-                        modWriter.visitField(Opcodes.ACC_PRIVATE, arr.declarationIdentifier, "LArrayVectorVal;", null, null);
+                        modWriter.visitField(Opcodes.ACC_PRIVATE, arr.declarationIdentifier, "Lede/stl/values/ArrayVectorVal;", null, null);
 
                         codeGenShallowExpression(arr.arrayIndex1, constructor, modName, modWriter);
                         codeGenShallowExpression(arr.arrayIndex2, constructor, modName, modWriter);
@@ -1122,151 +1111,151 @@ public class VerilogToJavaGen {
                         codeGenShallowExpression(arr.GetIndex1(), constructor, modName, modWriter);
                         codeGenShallowExpression(arr.GetIndex2(), constructor, modName, modWriter);
 
-                        constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ArrayVectorVal", "<init>", "(LValue;LValue;LValue;)V", false);
-                        constructor.visitFieldInsn(Opcodes.PUTFIELD, "ArrayVectorVal", arr.declarationIdentifier, "LArrayVectorVal;");
+                        constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/ArrayVectorVal", "<init>", "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;)V", false);
+                        constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/ArrayVectorVal", arr.declarationIdentifier, "Lede/stl/values/ArrayVectorVal;");
                 }
 
         }
 
         private void codeGenFieldIntArray(Int.Array arr, MethodVisitor constructor, String modName, ClassWriter modWriter) throws Exception{
-                modWriter.visitField(Opcodes.ACC_PRIVATE, arr.declarationIdentifier, "LArrayIntVal;", null, null);
+                modWriter.visitField(Opcodes.ACC_PRIVATE, arr.declarationIdentifier, "Lede/stl/values/ArrayIntVal;", null, null);
 
                 codeGenShallowExpression(arr.arrayIndex1, constructor, modName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "Value", "intValue", "(LValue;)I", false);
+                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
                 codeGenShallowExpression(arr.arrayIndex2, constructor, modName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "Value", "intValue", "(LValue;)I", false);
+                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
                 
                 constructor.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Math", "abs", "(II)I", false);
 
-                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ArrayIntVal", "<init>", "(I)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ArrayIntVal", arr.declarationIdentifier, "LArrayIntVal;"); // Store in
+                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/ArrayIntVal", "<init>", "(I)V", false);
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/ArrayIntVal", arr.declarationIdentifier, "Lede/stl/values/ArrayIntVal;"); // Store in
         }
 
         private void codeGenFieldInputWireVectorIdent(Input.Wire.Vector.Ident declaration, MethodVisitor constructor, String modName, ClassWriter modWriter) throws Exception{
-                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "LVectorVal;", null, null);
+                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/VectorVal;", null, null);
 
                 codeGenShallowExpression(declaration.GetIndex1(), constructor, modName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "Value", "intValue", "(LValue;)I", false);
+                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
                 codeGenShallowExpression(declaration.GetIndex2(), constructor, modName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "Value", "intValue", "(LValue;)I", false);
+                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
                 
                 constructor.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Math", "abs", "(II)I", false);
 
-                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "VectorVal", "<init>", "(II)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "VectorVal", declaration.declarationIdentifier, "LVectorVal;");
+                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/VectorVal", "<init>", "(II)V", false);
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/VectorVal", declaration.declarationIdentifier, "Lede/stl/values/VectorVal;");
         }
 
         private void codeGenFieldInputRegVectorIdent(Input.Reg.Vector.Ident declaration, MethodVisitor constructor, String modName, ClassWriter modWriter) throws Exception{
-                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "LVectorVal;", null, null);
+                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/VectorVal;", null, null);
 
                 codeGenShallowExpression(declaration.GetIndex1(), constructor, modName, modWriter);
                 codeGenShallowExpression(declaration.GetIndex2(), constructor, modName, modWriter);
 
-                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "VectorVal", "<init>", "(II)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "VectorVal", declaration.declarationIdentifier, "LVectorVal;");
+                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/VectorVal", "<init>", "(II)V", false);
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/VectorVal", declaration.declarationIdentifier, "Lede/stl/values/VectorVal;");
         }
 
         private void codeGenFieldInputWireScalarIdent(Input.Wire.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassWriter modWriter){
-                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "LWireVal;", null, null);
-                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "WireVal", "<init>", "()V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "WireVal", declaration.declarationIdentifier, "LWireVal;");
+                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/circuit/WireVal;", null, null);
+                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/WireVal", "<init>", "()V", false);
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/circuit/WireVal", declaration.declarationIdentifier, "Lede/stl/circuit/WireVal;");
         }
 
         private void codeGenFieldInputRegScalarIdent(Input.Reg.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassWriter modWriter){
-                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "LRegVal;", null, null);
+                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/RegVal;", null, null);
                 pushBool(false, constructor);
-                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "RegVal", "<init>", "(B)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "RegVal", declaration.declarationIdentifier, "LRegVal;");
+                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/RegVal", "<init>", "(B)V", false);
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/RegVal", declaration.declarationIdentifier, "Lede/stl/values/RegVal;");
         }
 
         private void codeGenFieldOutputWireVectorIdent(Output.Wire.Vector.Ident declaration, MethodVisitor constructor, String modName, ClassWriter modWriter) throws Exception{
-                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "LVectorVal;", null, null);
+                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/VectorVal;", null, null);
 
     codeGenShallowExpression(declaration.GetIndex1(), constructor, modName, modWriter);
-    constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "Value", "intValue", "(LValue;)I", false);
+    constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
                 codeGenShallowExpression(declaration.GetIndex2(), constructor, modName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "Value", "intValue", "(LValue;)I", false);
+                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
 
-                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "VectorVal", "<init>", "(II)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "VectorVal", declaration.declarationIdentifier, "LVectorVal;");
+                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/VectorVal", "<init>", "(II)V", false);
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/VectorVal", declaration.declarationIdentifier, "Lede/stl/values/VectorVal;");
         }
 
         private void codeGenFieldOutputRegVectorIdent(Output.Reg.Vector.Ident declaration, MethodVisitor constructor, String moduleName, ClassWriter modWriter) throws Exception{
-                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "LVectorVal;", null, null);
+                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/VectorVal;", null, null);
 
                 codeGenShallowExpression(declaration.GetIndex1(), constructor, moduleName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "Value", "intValue", "(LValue;)I", false);
+                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
                 codeGenShallowExpression(declaration.GetIndex2(), constructor, moduleName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "Value", "intValue", "(LValue;)I", false);
+                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
 
-                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "VectorVal", "<init>", "(II)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "VectorVal", declaration.declarationIdentifier, "LVectorVal;");
+                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/VectorVal", "<init>", "(II)V", false);
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/VectorVal", declaration.declarationIdentifier, "Lede/stl/values/VectorVal;");
         }
 
         private void codeGenFieldOutputWireScalarIdent(Output.Wire.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassWriter modWriter){
-                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "LWireVal;", null, null);
-                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "WireVal", "<init>", "()V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "WireVal", declaration.declarationIdentifier, "LWireVal;");
+                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/circuit/WireVal;", null, null);
+                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/WireVal", "<init>", "()V", false);
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/circuit/WireVal", declaration.declarationIdentifier, "Lede/stl/circuit/WireVal;");
         }
 
         private void codeGenFieldOutputRegScalarIdent(Output.Reg.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassWriter modWriter){
-                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "LRegVal;", null, null);
+                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/RegVal;", null, null);
                 pushBool(false, constructor);
-                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "RegVal", "<init>", "(B)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "RegVal", declaration.declarationIdentifier, "LRegVal;");
+                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/RegVal", "<init>", "(B)V", false);
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/RegVal", declaration.declarationIdentifier, "Lede/stl/values/RegVal;");
         }
 
         private void codeGenFieldWireVectorIdent(Wire.Vector.Ident declaration, MethodVisitor constructor, String moduleName, ClassWriter modWriter)
                 throws Exception{
-                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "LVectorVal;", null, null);
+                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/VectorVal;", null, null);
 
                 codeGenShallowExpression(declaration.GetIndex1(), constructor, moduleName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "Value", "intValue", "(LValue;)I", false);
+                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
                 codeGenShallowExpression(declaration.GetIndex2(), constructor, moduleName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "Value", "intValue", "(LValue;)I", false);
+                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
 
-                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "VectorVal", "<init>", "(II)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "VectorVal", declaration.declarationIdentifier, "LVectorVal;");
+                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/VectorVal", "<init>", "(II)V", false);
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/VectorVal", declaration.declarationIdentifier, "Lede/stl/values/VectorVal;");
         }
 
         private void codeGenFieldRegVectorIdent(Reg.Vector.Ident declaration, MethodVisitor constructor, String moduleName, ClassWriter modWriter)
                 throws Exception{
-                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "LVectorVal;", null, null);
+                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/VectorVal;", null, null);
 
                 codeGenShallowExpression(declaration.GetIndex1(), constructor, moduleName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "Value", "intValue", "(LValue;)I", false);
+                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
                 codeGenShallowExpression(declaration.GetIndex2(), constructor, moduleName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "Value", "intValue", "(LValue;)I", false);
+                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
 
-                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "VectorVal", "<init>", "(II)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "VectorVal", declaration.declarationIdentifier, "LVectorVal;");
+                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/VectorVal", "<init>", "(II)V", false);
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/VectorVal", declaration.declarationIdentifier, "Lede/stl/values/VectorVal;");
         }
 
         private void codeGenFieldWireScalarIdent(Wire.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassWriter modWriter){
-                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "LWireVal;", null, null);
-                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "WireVal", "<init>", "()V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "WireVal", declaration.declarationIdentifier, "LWireVal;");
+                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/circuit/WireVal;", null, null);
+                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/WireVal", "<init>", "()V", false);
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/circuit/WireVal", declaration.declarationIdentifier, "Lede/stl/circuit/WireVal;");
         }
 
         private void codeGenFieldRegScalarIdent(Reg.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassWriter modWriter){
-                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "LRegVal;", null, null);
+                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/RegVal;", null, null);
                 pushBool(false, constructor);
-                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "RegVal", "<init>", "(B)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "RegVal", declaration.declarationIdentifier, "LRegVal;");
+                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/RegVal", "<init>", "(B)V", false);
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/RegVal", declaration.declarationIdentifier, "Lede/stl/values/RegVal;");
         }
 
         private void codeGenFieldIntIdent(Int.Ident declaration, MethodVisitor constructor, String modName, ClassWriter modWriter){
-                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "LIntVal;", null, null);
+                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/IntVal;", null, null);
                 pushInt(0, constructor);
-                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "IntVal", "<init>", "(I)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "IntVal", declaration.declarationIdentifier, "LIntVal;");
+                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/IntVal", "<init>", "(I)V", false);
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/IntVal", declaration.declarationIdentifier, "Lede/stl/values/IntVal;");
         }
 
         private void codeGenFieldRealIdent(Real.Ident declaration, MethodVisitor constructor, String modName, ClassWriter modWriter){
-                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "LRealVal;", null, null);
+                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/RealVal;", null, null);
                 pushDouble(0.0, constructor);
-                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "RealVal", "<init>", "(D)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "RealVal", declaration.declarationIdentifier, "LRealVal;");
+                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/RealVal", "<init>", "(D)V", false);
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/RealVal", declaration.declarationIdentifier, "Lede/stl/values/RealVal;");
         }
         
         private void codeGenShallowExpression(Expression exp, MethodVisitor method, String moduleName, ClassWriter module) throws Exception {
@@ -1309,87 +1298,87 @@ public class VerilogToJavaGen {
                 
                 switch(op.Op) {
                         case BAND:{
-                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "add", "(LValue;LValue;)LValue;", false);
+                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "add", "(Lede/stl/values/Value;Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                 break;
                         }
                         case BOR:{
-                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "bitwiseOr", "(LValue;LValue;)LValue;", false);
+                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "bitwiseOr", "(Lede/stl/values/Value;Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                 break;
                         }
                         case BXNOR:{
-                                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "exclusiveNor", "(LValue;LValue;)LValue;", false);
+                                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "exclusiveNor", "(Lede/stl/values/Value;Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                         break;
                         }
                         case BXOR:{
-                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "exclusiveOr", "(LValue;LValue;)LValue;", false);
+                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "exclusiveOr", "(Lede/stl/values/Value;Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                 break;
                         }
                         case DIV:{
-                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "div", "(LValue;LValue;)LValue;", false);
+                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "div", "(Lede/stl/values/Value;Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                 break;
                         }
                         case EQ2:{
-                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "lazyEquality", "(LValue;LValue;)LValue;", false);
+                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "lazyEquality", "(Lede/stl/values/Value;Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                 break;
                         }
                         case EQ3:{
-                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "strictEquality", "(LValue;LValue;)LValue;", false);
+                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "strictEquality", "(Lede/stl/values/Value;Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                 break;
                         }
                         case GE:{
-                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "greaterThanOrEqualTo", "(LValue;LValue;)LValue;", false);
+                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "greaterThanOrEqualTo", "(Lede/stl/values/Value;Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                 break;
                         }
                         case GT:{
-                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "greaterThan", "(LValue;LValue;)LValue;", false);
+                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "greaterThan", "(Lede/stl/values/Value;Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                 break;
                         }
                         case LAND:{
-                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "logicalAnd", "(LValue;LValue;)LValue;", false);
+                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "logicalAnd", "(Lede/stl/values/Value;Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                 break;
                         }
                         case LE:{
-                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "lessThenOrEqualTo", "(LValue;LValue;)LValue;", false);
+                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "lessThenOrEqualTo", "(Lede/stl/values/Value;Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                 break;
                         }
                         case LOR:{
-                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "lessThenOrEqualTo", "(LValue;LValue;)LValue;", false);
+                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "lessThenOrEqualTo", "(Lede/stl/values/Value;Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                 break;
                         }
                         case LSHIFT:{
-                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "leftShift", "(LValue;LValue;)LValue;", false);
+                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "leftShift", "(Lede/stl/values/Value;Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                 break;
                         }
                         case LT:{
-                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "lessThan", "(LValue;LValue;)LValue;", false);
+                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "lessThan", "(Lede/stl/values/Value;Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                 break;
                         }
                         case MINUS:{
-                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "minus", "(LValue;LValue;)LValue;", false);
+                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "minus", "(Lede/stl/values/Value;Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                 break;
                         }
                         case MOD:{
-                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "mod", "(LValue;LValue;)LValue;", false);
+                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "mod", "(Lede/stl/values/Value;Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                 break;
                         }
                         case NE1:{
-                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "lazyInequality", "(LValue;LValue;)LValue;", false);
+                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "lazyInequality", "(Lede/stl/values/Value;Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                 break;
                         }
                         case NE2:{
-                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "strictInequality", "(LValue;LValue;)LValue;", false);
+                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "strictInequality", "(Lede/stl/values/Value;Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                 break;
                         }
                         case PLUS:{
-                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "add", "(LValue;LValue;)LValue;", false);
+                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "add", "(Lede/stl/values/Value;Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                 break;
                         }
                         case RSHIFT:{
-                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "rightShift", "(LValue;LValue;)LValue;", false);
+                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "rightShift", "(Lede/stl/values/Value;Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                 break;
                         }
                         case TIMES:{
-                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "times", "(LValue;LValue;)LValue;", false);
+                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "times", "(Lede/stl/values/Value;Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                 break;
                         }
                         default:
@@ -1403,15 +1392,15 @@ public class VerilogToJavaGen {
                 
                 switch(op.Op){
                         case BNEG:{
-                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "bitwiseNegation", "(LValue;)LValue;", false);
+                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "bitwiseNegation", "(Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                 break;
                         }
                         case LNEG:{
-                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "logicalNegation", "(LValue;)LValue;", false);
+                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "logicalNegation", "(Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                 break;
                         }
                         case MINUS:{
-                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "negation", "(LValue;)LValue;", false);
+                                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "negation", "(Lede/stl/values/Value;)Lede/stl/values/Value;", false);
                                 break;
                         }
                         case PLUS:{
@@ -1430,19 +1419,19 @@ public class VerilogToJavaGen {
                 for(Expression exp: concat.circuitElementExpressionList) {
                         codeGenShallowExpression(exp, method, moduleName, module);
                         method.visitVarInsn(Opcodes.ILOAD, 0);
-                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "addVecSize", "(LValue;I)I", false);
+                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "addVecSize", "(Lede/stl/values/Value;I)I", false);
                         method.visitVarInsn(Opcodes.ISTORE, 0);
                 }
                 
                 method.visitIincInsn(0, -1);
                 method.visitVarInsn(Opcodes.ILOAD, 0);
-                method.visitMethodInsn(Opcodes.INVOKESPECIAL, "VectorVal", "<Init>", "(LVectorVal;I)V", false);
+                method.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/VectorVal", "<Init>", "(Lede/stl/values/VectorVal;I)V", false);
                 
                 for(Expression exp: concat.circuitElementExpressionList) {
                         method.visitInsn(Opcodes.DUP);
                         codeGenShallowExpression(exp, method, moduleName, module);
                         method.visitVarInsn(Opcodes.ILOAD, 0);
-                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "assignVectorInConcatenation", "(LVectorVal;LValue;I)I", false);
+                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "assignVectorInConcatenation", "(Lede/stl/values/VectorVal;Lede/stl/values/Value;I)I", false);
                         method.visitVarInsn(Opcodes.ISTORE, 0);
                 }
         }
@@ -1478,11 +1467,11 @@ public class VerilogToJavaGen {
                 
                 if(Utils.numberIsPattern(afterIndex)) {
                         pushString(afterIndex, method);
-                        method.visitMethodInsn(Opcodes.INVOKESPECIAL, "BinaryPattern", "<init>", "(I)LBinaryPattern;", false);
+                        method.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/BinaryPattern", "<init>", "(I)Lede/stl/values/BinaryPattern;", false);
                 } else {
                         long value = Long.parseUnsignedLong(afterIndex, 2);
                         pushInt((int)value, method);
-                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "getOptimalUnsignedForm", "(I)LValue;", false);
+                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getOptimalUnsignedForm", "(I)Lede/stl/values/Value;", false);
                 }
         }
         
@@ -1497,11 +1486,11 @@ public class VerilogToJavaGen {
                 
                 if(Utils.numberIsPattern(afterIndex)) {
                         pushString(afterIndex, method);
-                        method.visitMethodInsn(Opcodes.INVOKESPECIAL, "HexadecimalPattern", "<init>", "(I)LHexadecimalPattern;", false);
+                        method.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/HexadecimalPattern", "<init>", "(I)Lede/stl/values/HexadecimalPattern;", false);
                 } else {
                         long value = Long.parseUnsignedLong(afterIndex, 16);
                         pushInt((int)value, method);
-                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "getOptimalUnsignedForm", "(I)LValue;", false);
+                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getOptimalUnsignedForm", "(I)Lede/stl/values/Value;", false);
                 }
         }
         
@@ -1511,13 +1500,13 @@ public class VerilogToJavaGen {
                 if(indexOfColon == -1) {
                         long value = Long.parseUnsignedLong(node.lexeme);
                         pushInt((int)value, method);
-                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "getOptimalUnsignedForm", "(I)LValue;", false);
+                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getOptimalUnsignedForm", "(I)Lede/stl/values/Value;", false);
                 } else {
                         String beforeIndex = node.lexeme.substring(0, indexOfColon);
                         String afterIndex = node.lexeme.substring(indexOfColon + 2, node.lexeme.length());
                         long value = Long.parseUnsignedLong(afterIndex, 10);
                         pushInt((int)value, method);
-                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "getOptimalUnsignedForm", "(I)LValue;", false);
+                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getOptimalUnsignedForm", "(I)Lede/stl/values/Value;", false);
                 }
         }
         
@@ -1532,17 +1521,17 @@ public class VerilogToJavaGen {
                 
                 if(Utils.numberIsPattern(afterIndex)) {
                         pushString(afterIndex, method);
-                        method.visitMethodInsn(Opcodes.INVOKESPECIAL, "OctalPattern", "<init>", "(I)LOctalPattern;", false);
+                        method.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/OctalPattern", "<init>", "(I)Lede/stl/values/OctalPattern;", false);
                 } else {
                         long value = Long.parseUnsignedLong(afterIndex, 8);
                         pushInt((int)value, method);
-                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "getOptimalUnsignedForm", "(I)LValue;", false);
+                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getOptimalUnsignedForm", "(I)Lede/stl/values/Value;", false);
                 }
         }
         
         private void codeGenShallowStringNode(StringNode node, MethodVisitor method, String moduleName, ClassWriter module) {
                 pushString(node.lexeme, method);
-                method.visitMethodInsn(Opcodes.INVOKESTATIC, "StrVal", "<Init>", "(S)LValue;", false);
+                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/values/StrVal", "<Init>", "(S)Lede/stl/values/Value;", false);
         }
         
         private void codeGenShallowConstantExpression(ConstantExpression exp, MethodVisitor method, String moduleName, ClassWriter module) throws Exception {
@@ -1558,13 +1547,13 @@ public class VerilogToJavaGen {
                         method.visitFieldInsn(Opcodes.GETFIELD, 
         moduleName, // Owner class internal name
         elem.labelIdentifier,           // Field name
-        "LValue;");
+        "Lede/stl/values/Value;");
                 } else {
                         Utils.errorAndExit("Error cant find elem from identifier " + elem.labelIdentifier);
                 }
                 
                 pushString(elem.labelIdentifier, method);
-                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "getShallowElemFromIndex", "(LValue;LValue;S)LValue;", false);
+                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getShallowElemFromIndex", "(Lede/stl/values/Value;Lede/stl/values/Value;S)Lede/stl/values/Value;", false);
         }
         
         private void codeGenShallowSlice(Slice slice, MethodVisitor method, String moduleName, ClassWriter module) throws Exception{
@@ -1577,13 +1566,13 @@ public class VerilogToJavaGen {
                         method.visitFieldInsn(Opcodes.GETFIELD, 
         moduleName, // Owner class internal name
         slice.labelIdentifier,           // Field name
-        "LValue;");
+        "Lede/stl/values/Value;");
                 } else {
                         Utils.errorAndExit("Error variable is not found!!!");
                 }
                 
                 pushString(slice.labelIdentifier, method);
-                method.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "getShallowSliceFromIndecis", "(LValue;LValue;LValue;S)LValue;", false);
+                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getShallowSliceFromIndecis", "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;S)Lede/stl/values/Value;", false);
         }
         
         private void codeGenFileDescriptor(MethodVisitor mainVisit){
@@ -1606,7 +1595,7 @@ public class VerilogToJavaGen {
                         method.visitFieldInsn(Opcodes.GETFIELD, 
         moduleName, // Owner class internal name
         ident.labelIdentifier,           // Field name
-        "LValue;");
+        "Lede/stl/values/Value;");
                 } else {
                         Utils.errorAndExit("Error identifier " + ident.labelIdentifier + " not found in scope!!!");
                 }

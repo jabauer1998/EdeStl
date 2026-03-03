@@ -4,13 +4,17 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.concurrent.Callable;
 import ede.stl.common.ErrorLog;
 import ede.stl.common.Destination;
+import ede.stl.compiler.CompiledEnvironment;
+
 import ede.stl.gui.GuiEde;
 import ede.stl.interpreter.EdeInterpreter;
 import javax.swing.*;
 import javax.swing.text.*;
-import java.util.concurrent.Callable;
 
 public class GuiVerilogJob extends GuiJob {
     private GuiEde edeInstance;
@@ -53,32 +57,33 @@ public class GuiVerilogJob extends GuiJob {
             errLog.printLog();
             edeInstance.appendIoText(errorPane, writer.toString());
         } else {
-            CompilerEnvironment env = new CompilerEnvironment(edeInstance);
+            CompiledEnvironment env = new CompiledEnvironment(edeInstance);
 
-	    try {
-		// 1. Load the class dynamically
-		Class<?> targetClass = Class.forName("ede/instance/Processor.class");
+            try {
+                // 1. Load the class dynamically
+                Class<?> targetClass = Class.forName("ede/instance/Processor.class");
 
-		// Example of getting all public methods, including inherited ones
-		Method[] publicMethods = targetClass.getMethods();
-		
-		for (Method method : publicMethods) {
-		   int modifiers = method.getModifiers();
+                // Example of getting all public methods, including inherited ones
+                Method[] publicMethods = targetClass.getMethods();
+                
+                for (Method method : publicMethods) {
+                   int modifiers = method.getModifiers();
                    if (Modifier.isPublic(modifiers) && Modifier.isStatic(modifiers)) {
-                       env.addProcess(new Callable<Void>(){
-			       public Void call(){
-				   method.invoke(edeInstance);
-			       }
-		       });
+                       env.addThread(new Callable<Void>(){
+                               public Void call() throws Exception {
+                                   method.invoke(edeInstance);
+                                   return null;
+                               }
+                       });
                    }
-		}
+                }
 
-		env.runProcesses();
-	    } catch (ClassNotFoundException e) {
-		System.err.println("Error: Class not found - " + className);
-		e.printStackTrace();
-		edeInstance.appendIoText("StandardError", e.toString());
-	    }
+                env.runThreads();
+            } catch (ClassNotFoundException e) {
+                System.err.println("Error: Class not found - " + e.getMessage());
+                e.printStackTrace();
+                edeInstance.appendIoText("StandardError", e.toString());
+            }
         }
     }
 
