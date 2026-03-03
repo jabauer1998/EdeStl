@@ -4,6 +4,7 @@ package ede.stl.compiler;
 import java.util.HashSet;
 import java.util.Stack;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -52,6 +53,8 @@ import ede.stl.ast.FunctionDeclaration;
 import ede.stl.ast.ProcedureDeclaration;
 import ede.stl.ast.TaskDeclaration;
 import ede.stl.ast.ProcessBase;
+import ede.stl.ast.InitialProcess;
+import ede.stl.ast.AllwaysProcess;
 import ede.stl.ast.ArrayDeclaration;
 import ede.stl.ast.IdentDeclaration;
 import ede.stl.ast.Input;
@@ -81,6 +84,10 @@ import ede.stl.ast.SystemTaskStatement;
 import ede.stl.ast.TaskStatement;
 import java.awt.Toolkit;
 import java.awt.Dimension;
+import org.objectweb.asm.util.CheckClassAdapter;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.FileInputStream;
 
 public class VerilogToJavaGen {
 
@@ -91,10 +98,12 @@ public class VerilogToJavaGen {
         private Stack<HashSet<String>> scopedFields;
         private SymbolTable<String> funcTypes;
         private Integer currentNum = 10;
+        private int processNumber;
         
         public VerilogToJavaGen(int javaVersion) {
                 this.javaVersion = javaVersion;
                 this.errLog = new ErrorLog();
+		this.processNumber = 0;
         }
         
         boolean localInScope(String name){
@@ -129,51 +138,20 @@ public class VerilogToJavaGen {
         }
 
         public void codeGenVerilogFile(VerilogFile file, int bytesPerRow, String addressFormat, String memoryFormat) throws Exception{
-                String name = "edeDriver";
-		this.mainWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-                this.mainWriter.visit(this.javaVersion, // Java version (e.g., V1_8 for Java 8)
-                        Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER, // Access flags (public class)
-                        "ede/instance/" + name, // Internal class name
-                        null, // Signature (null for non-generic classes)
-                        "java/lang/Object", // Superclass
-                        null); // Interfaces (null if none)
-
+	        ClassWriter processWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
                 for (ModuleDeclaration module : file.modules) {
                         ClassWriter moduleWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-                        codeGenModule(module, moduleWriter);
+                        codeGenModule(module, moduleWriter, processWriter);
+			FileInputStream fis = new FileInputStream("ede/instance/mods/" + module.moduleName + ".class");
+			ClassReader classReader = new ClassReader(fis);
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			// 'true' to print results even if no errors are found (for full trace)
+			boolean printResults = true;
+			CheckClassAdapter.verify(classReader, printResults, pw); 
+			// The results (or errors) are in sw.toString()
+			System.out.println(sw.toString());
                 }
-
-	        MethodVisitor mainVisit = mainWriter.visitMethod(
-	          Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC, // Access: public static
-                  "main",                                  // Name: main
-                  "([Ljava/lang/String;)V",                // Descriptor: takes String[] and returns void
-		  null,                                    // Signature: null
-		  null                                     // Exceptions: null
-		);
-
-		mainVisit.visitCode();
-                codeGenScreenDimensions(mainVisit);
-                codeGenEdeEnvironment(file, mainVisit, name, mainWriter, bytesPerRow, addressFormat, memoryFormat);
-                // End the method (RETURN)
-                mainVisit.visitInsn(Opcodes.RETURN);
-                mainVisit.visitMaxs(0, 0); // COMPUTE_MAXS and COMPUTE_FRAMES handle these automatically
-                mainVisit.visitEnd();
-
-                // End the main class
-                this.mainWriter.visitEnd();
-        }
-
-        private static void codeGenScreenDimensions(MethodVisitor mainVisit){
-                mainVisit.visitMethodInsn(Opcodes.INVOKESTATIC, "java/awt/Toolkit", "getDefaultToolkit", "()Ljava/awt/Toolkit;", false);
-                mainVisit.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/awt/Toolkit", "getScreenSize", "()Ljava/awt/Dimension;", false);
-                mainVisit.visitVarInsn(Opcodes.ASTORE, 0);
-                
-                mainVisit.visitVarInsn(Opcodes.ALOAD, 0);
-		mainVisit.visitFieldInsn(Opcodes.GETFIELD, "java/awt/Dimension", "width", "I");
-		mainVisit.visitInsn(Opcodes.I2D);
-		mainVisit.visitVarInsn(Opcodes.ALOAD, 0);
-		mainVisit.visitFieldInsn(Opcodes.GETFIELD, "java/awt/Dimension", "height", "I");
-		mainVisit.visitInsn(Opcodes.I2D);
         }
 
         private static void pushString(String val, MethodVisitor main){
@@ -215,77 +193,7 @@ public class VerilogToJavaGen {
                 main.visitFieldInsn(Opcodes.GETSTATIC, specificName, enumName, "L" + specificName + ";");
         }
 
-        private static void pushEdeEnvironment(MethodVisitor main){
-                String owner = "GuiEde";
-                main.visitTypeInsn(Opcodes.NEW, owner);
-                main.visitInsn(Opcodes.DUP);
-                main.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/gui/GuiEde", "<init>", "(DDILede/stl/gui/GuiRam$AddressFormat;Lede/stl/gui/GuiRam$AddressFormat;)V",
-                        false);
-                main.visitVarInsn(Opcodes.ASTORE, 1); // Use ASTORE for object references
-        }
-
-        private void codeGenEdeEnvironment(VerilogFile file, MethodVisitor main, String modName, ClassWriter writer, int numBytesPerRowInMem, String addressFormat, String memoryFormat) throws Exception{
-                pushInt(numBytesPerRowInMem, main);
-                pushEnum("ede/stl/gui/GuiRam$AddressFormat", addressFormat, main);
-                pushEnum("ede/stl/gui/GuiRam$MemoryFormat", memoryFormat, main);
-                pushEdeEnvironment(main); // Pops all previous pushes and results in an Ede object
-                loadEdeWithMemRegistersAndFlags(file, main, modName, writer);
-        }
-
-        private void loadEdeWithMemRegistersAndFlags(VerilogFile file, MethodVisitor main, String modName, ClassWriter writer) throws Exception{
-
-                for (ModuleDeclaration decl : file.modules) { loadPossibleRegisterOrFlagOrMemory(decl, main, modName, writer); }
-
-        }
-
-        private void loadPossibleRegisterOrFlagOrMemory(ModuleDeclaration decl, MethodVisitor main, String modName, ClassWriter writer) throws Exception{
-                for (ModuleItem item : decl.moduleItemList) { loadPossibleRegisterOrFlagOrMemory(item, main, modName, writer); }
-        }
-
-        private void loadPossibleRegisterOrFlagOrMemory(ModuleItem item, MethodVisitor main, String modName, ClassWriter mainWriter) throws Exception{
-                if (item instanceof Reg.Vector.Ident)
-                        loadPossibleReg((Reg.Vector.Ident)item, modName, main, mainWriter);
-                else if (item instanceof Reg.Scalar.Ident) 
-                        loadPossibleFlag((Reg.Scalar.Ident)item, main);
-                else if(item instanceof Reg.Vector.Array) {
-                        loadPossibleMemory((Reg.Vector.Array)item, main, modName, mainWriter);
-                }
-        }
-        
-        private void loadPossibleMemory(Reg.Vector.Array arr, MethodVisitor main, String modName, ClassWriter mainWriter) throws Exception {
-                if(arr.annotationLexeme.equals("@Memory")){
-                        codeGenShallowExpression(arr.arrayIndex2, main, modName, mainWriter);
-                        codeGenShallowExpression(arr.arrayIndex1, main, modName, mainWriter);
-                        main.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/gui/GuiEde", "setMemory", "(Lede/atl/gui/Value;Lede/stl/gui/Value;)V", false);
-                }
-        }
-
-        private void loadPossibleFlag(Reg.Scalar.Ident item, MethodVisitor main){
-
-                if (item.annotationLexeme.equals("@Flag")) {
-                        main.visitVarInsn(Opcodes.AALOAD, 1);
-                        pushString(item.declarationIdentifier, main);
-                        main.visitMethodInsn(Opcodes.AALOAD, "ede/stl/gui/GuiEde", "addFlag", "(S)V", false);
-                }
-
-        }
-
-        private void loadPossibleReg(Reg.Vector.Ident item, String modName, MethodVisitor main, ClassWriter writer) throws Exception{
-
-                if (item.annotationLexeme.equals("@Register")) {
-                        main.visitVarInsn(Opcodes.ALOAD, 1);
-                        pushString(item.declarationIdentifier, main);
-                        
-                        codeGenShallowExpression(item.GetIndex1(), main, modName, writer);
-                        codeGenShallowExpression(item.GetIndex2(), main, modName, writer);
-
-                        pushEnum("GuiRegister$Format", "BINARY", main);
-                        main.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/gui/GuiEde", "addRegister", "(SLede/stl/gui/Value;Lede/stl/gui/Value;Lede/stl/gui/GuiRegister$Format;)V", false);
-                }
-
-        }
-
-        private void codeGenModule(ModuleDeclaration mod, ClassWriter moduleWriter) throws Exception{
+        private void codeGenModule(ModuleDeclaration mod, ClassWriter moduleWriter, ClassWriter processWriter) throws Exception{
                 moduleWriter.visit(this.javaVersion, // Java version (e.g., V1_8 for Java 8)
                         Opcodes.ACC_PUBLIC | Opcodes.ACC_SUPER, // Access flags (public class)
                         mod.moduleName, // Internal class name
@@ -304,15 +212,42 @@ public class VerilogToJavaGen {
 
                 for(ModuleItem item : mod.moduleItemList) { codeGenPossibleProcedure(item, moduleConstructor, mod.moduleName, moduleWriter); }
                 
-                for(ModuleItem item : mod.moduleItemList) { codeGenRestModuleItem(item, moduleConstructor, mod.moduleName, moduleWriter); }
+                for(ModuleItem item : mod.moduleItemList) { codeGenRestModuleItem(item, moduleConstructor, mod.moduleName, moduleWriter, processWriter); }
         }
         
-        private void codeGenRestModuleItem(ModuleItem item, MethodVisitor moduleConstructor, String modName, ClassWriter moduleWriter) throws Exception {
+        private void codeGenRestModuleItem(ModuleItem item, MethodVisitor moduleConstructor, String modName, ClassWriter moduleWriter, ClassWriter processWriter) throws Exception {
                 if(item instanceof GateDeclaration) codeGenGateDeclaration(item, moduleConstructor, modName, moduleWriter);
                 else if(item instanceof ContinuousAssignment) codeGenContinuousAssignment((ContinuousAssignment)item, moduleConstructor, modName, moduleWriter);
                 else if(item instanceof EmptyModItem) codeGenEmptyModItem();
                 else if(item instanceof ModuleInstantiation) codeGenModuleInstantiation((ModuleInstantiation)item, moduleConstructor, modName, moduleWriter);
+		else if(item instanceof ProcessBase) codeGenProcess((ProcessBase)item, modName, processWriter);
         }
+
+       private void codeGenProcess(ProcessBase process, String modName, ClassWriter processWriter) throws Exception{
+	   if(process instanceof InitialProcess) codeGenInitialProcess((InitialProcess)process, modName, processWriter);
+	   else if(process instanceof AllwaysProcess) codeGenAllwaysProcess((AllwaysProcess)process, modName, processWriter);
+       }
+
+       private void codeGenInitialProcess(InitialProcess process, String modName, ClassWriter processWriter) throws Exception{
+	   MethodVisitor methodVisit = processWriter.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, "process" + this.processNumber, "(Lede/stl/compiler/CompilerEnvironment;)V", null, null);
+           methodVisit.visitCode();
+           codeGenShallowStatement(process.statement, "processes " + this.processNumber, methodVisit, modName, processWriter);
+           methodVisit.visitInsn(Opcodes.RETURN); // Static methods return to the caller
+           methodVisit.visitMaxs(0, 0); // Values are ignored if COMPUTE_MAXS is used
+           methodVisit.visitEnd();
+       }
+
+      private void codeGenAllwaysProcess(AllwaysProcess process, String modName, ClassWriter processWriter) throws Exception{
+	    MethodVisitor methodVisit = processWriter.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, "process" + this.processNumber, "(Lede/stl/compiler/CompilerEnvironment;)V", null, null);
+           methodVisit.visitCode();
+           Label begin = new Label();
+           methodVisit.visitLabel(begin);
+           codeGenShallowStatement(process.statement, "process" + this.processNumber, methodVisit, modName, processWriter);
+           methodVisit.visitJumpInsn(Opcodes.GOTO, begin);
+           methodVisit.visitInsn(Opcodes.RETURN); // Static methods return to the caller
+           methodVisit.visitMaxs(0, 0); // Values are ignored if COMPUTE_MAXS is used
+           methodVisit.visitEnd();
+       }
         
         private void codeGenGateDeclaration(ModuleItem item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception{
                 if(item instanceof AndGateDeclaration) codeGenAndGateDeclaration((AndGateDeclaration)item, moduleConstructor, modName, writer);
@@ -352,11 +287,11 @@ public class VerilogToJavaGen {
                                 constructor.visitFieldInsn(Opcodes.GETFIELD, 
                 modName, // Owner class internal name
                 elem.labelIdentifier,           // Field name
-                "LValue;");
+                "Lede/stl/values/Value;");
                         } else {
                                 Utils.errorAndExit("Error cant find local or field in deep assignment");
                         }
-                        constructor.visitMethodInsn(Opcodes.INVOKESTATIC, "Utils", "assignDeepElem", "(LValue;LValue;LValue;)V", false);
+                        constructor.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "assignDeepElem", "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/value/Value;)V", false);
                 } else if (assign.rightHandSide instanceof Slice){
                         Slice slice = (Slice)assign.rightHandSide;
                         codeGenShallowExpression(slice.index1, constructor, modName, moduleWriter);
@@ -369,7 +304,7 @@ public class VerilogToJavaGen {
                                 constructor.visitFieldInsn(Opcodes.GETFIELD, 
                 modName, // Owner class internal name
                 slice.labelIdentifier,           // Field name
-                "LValue;");
+                "Lede/stl/values/Value;");
                         } else {
                                 Utils.errorAndExit("Error cant find local or field in deep assignment");
                         }
