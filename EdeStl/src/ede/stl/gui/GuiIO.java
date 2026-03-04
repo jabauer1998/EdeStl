@@ -1,0 +1,96 @@
+package ede.stl.gui;
+
+import java.util.HashMap;
+import javax.swing.*;
+import java.awt.*;
+
+public class GuiIO extends JPanel {
+    private JTabbedPane TabPane;
+
+    private double actualWidth;
+    private double actualHeight;
+
+    public enum Editable{
+        READ_ONLY,
+        EDITABLE
+    }
+
+    private HashMap<String, JTextArea> IoPaneMap;
+    private HashMap<String, JPanel> TabMap;
+    private HashMap<String, Integer> TabPaneCountMap;
+    
+    public GuiIO(double Width, double Height){
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        TabPane = new JTabbedPane();
+        TabPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int)Height));
+        TabPane.setPreferredSize(new Dimension((int)Width, (int)Height));
+
+        IoPaneMap = new HashMap<>();
+        TabMap = new HashMap<>();
+        TabPaneCountMap = new HashMap<>();
+        this.actualWidth = Width;
+        this.actualHeight = Height;
+    }
+
+    public void AddIoSection(String TabTitle, String PaneTitle, Editable editable){
+        JPanel IoPanes;
+        int paneCount;
+
+        if (TabMap.containsKey(TabTitle)) {
+            IoPanes = TabMap.get(TabTitle);
+            paneCount = TabPaneCountMap.get(TabTitle) + 1;
+            TabPaneCountMap.put(TabTitle, paneCount);
+        } else {
+            IoPanes = new JPanel();
+            IoPanes.setLayout(new BoxLayout(IoPanes, BoxLayout.Y_AXIS));
+            TabMap.put(TabTitle, IoPanes);
+            paneCount = 1;
+            TabPaneCountMap.put(TabTitle, paneCount);
+
+            JScrollPane outerScroll = new JScrollPane(IoPanes);
+            outerScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            TabPane.addTab(TabTitle, outerScroll);
+        }
+
+        int paneHeight = (int)(actualHeight / 3);
+
+        JPanel IoPaneWithLabel = new JPanel(new BorderLayout());
+        IoPaneWithLabel.setPreferredSize(new Dimension((int)actualWidth, paneHeight));
+        IoPaneWithLabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, paneHeight));
+        IoPaneWithLabel.setMinimumSize(new Dimension(0, paneHeight));
+
+        JLabel Name = new JLabel(PaneTitle);
+        JTextArea Area = new JTextArea();
+        Area.setLineWrap(true);
+        Area.setWrapStyleWord(true);
+        Area.setEditable(editable == Editable.EDITABLE);
+
+        IoPaneMap.put(PaneTitle, Area);
+        IoPaneWithLabel.add(Name, BorderLayout.NORTH);
+        IoPaneWithLabel.add(new JScrollPane(Area), BorderLayout.CENTER);
+        IoPanes.add(IoPaneWithLabel);
+
+        IoPanes.revalidate();
+        IoPanes.repaint();
+    }
+
+    public JTabbedPane getTabPane(){
+        return TabPane;
+    }
+
+    public void writeIoText(String textAreaName, String toWrite){
+        JTextArea ioArea = IoPaneMap.get(textAreaName);
+        ioArea.setText(toWrite);
+    }
+
+    public String readIoText(String textAreaName){
+        JTextArea ioArea = IoPaneMap.get(textAreaName);
+        return ioArea.getText();
+    }
+
+    public void appendIoText(String textAreaName, String toAppend){
+        JTextArea ioArea = IoPaneMap.get(textAreaName);
+        ioArea.append(toAppend);
+    }
+}
