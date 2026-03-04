@@ -200,10 +200,11 @@ public class Parser {
                 Token modTok = match(Token.Type.IDENT);
                 String moduleName = modTok.getLexeme();
 
+                List<ModuleItem> paramList = new ArrayList<>();
                 List<ModuleItem> moduleItemList = new ArrayList<>();
 
                 if(skipIfYummy(Token.Type.LPAR) && !willMatch(Token.Type.RPAR)){
-                        moduleItemList = parseModuleParDeclarationList();
+                        paramList = parseModuleParDeclarationList();
                         match(Token.Type.RPAR);
                 } else if(willMatch(Token.Type.RPAR)){
                         skip();
@@ -219,7 +220,7 @@ public class Parser {
                 match(Token.Type.ENDMODULE);
 
 
-                return new ModuleDeclaration(start, moduleName, moduleItemList);
+                return new ModuleDeclaration(start, moduleName, paramList, moduleItemList);
 
         }
 

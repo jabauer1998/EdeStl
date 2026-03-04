@@ -27,7 +27,6 @@
 /home/runner/workspace/src/ede/stl/ast/InitialProcess.java
 /home/runner/workspace/src/ede/stl/ast/Input.java
 /home/runner/workspace/src/ede/stl/ast/Int.java
-/home/runner/workspace/src/ede/stl/ast/ModuleDeclaration.java
 /home/runner/workspace/src/ede/stl/ast/ModuleInstance.java
 /home/runner/workspace/src/ede/stl/ast/ModuleInstantiation.java
 /home/runner/workspace/src/ede/stl/ast/ModuleItem.java
@@ -73,6 +72,7 @@
 /home/runner/workspace/src/ede/stl/ast/ProcessBase.java
 /home/runner/workspace/src/ede/stl/ast/FunctionCall.java
 /home/runner/workspace/src/ede/stl/ast/TaskStatement.java
+/home/runner/workspace/src/ede/stl/ast/ModuleDeclaration.java
 /home/runner/workspace/src/ede/stl/circuit/Node.java
 /home/runner/workspace/src/ede/stl/circuit/Web.java
 /home/runner/workspace/src/ede/stl/circuit/Gate.java

@@ -2,6 +2,7 @@ package ede.stl.compiler;
 
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Stack;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.ClassReader;
@@ -205,17 +206,27 @@ public class VerilogToJavaGen {
                 main.visitFieldInsn(Opcodes.GETSTATIC, specificName, enumName, "L" + specificName + ";");
         }
 
+        private String getTypes(List<ModuleItem> args) throws Exception{
+                StringBuilder typeStr = new StringBuilder();
+                for(ModuleItem item: args) {
+                        typeStr.append(typeOf(item));
+                }
+                return typeStr.toString();
+        }
+
         private void codeGenModule(ModuleDeclaration mod, ClassWriter moduleWriter, ClassWriter processWriter) throws Exception{
                 moduleWriter.visit(this.javaVersion, // Java version (e.g., V1_8 for Java 8)
                         Opcodes.ACC_PUBLIC | Opcodes.ACC_SUPER, // Access flags (public class)
                         mod.moduleName, // Internal class name
                         null, // Signature (null for non-generic classes)
                         "java/lang/Object", // Superclass
-                        null); // Interfaces (null if none)
+                        null); // Interfaces (null if none
 
+                String typeStr = getTypes(mod.args);
+                
                 MethodVisitor moduleConstructor = moduleWriter.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_VARARGS, // Access flags: public
                         "<init>", // Method name: <init> for constructor
-                        "(W;[L)V", // Descriptor: no arguments, void return
+                        "(" + typeStr + ")V", // Descriptor: no arguments, void return
                         null, // Signature: generic signature (null for non-generic)
                         null // Exceptions: no exceptions thrown
                 );
@@ -241,7 +252,7 @@ public class VerilogToJavaGen {
        }
 
        private void codeGenInitialProcess(InitialProcess process, String modName, ClassWriter processWriter) throws Exception{
-           MethodVisitor methodVisit = processWriter.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, "process" + this.processNumber, "(Lede/stl/compiler/CompiledEnvironment;)V", null, null);
+           MethodVisitor methodVisit = processWriter.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, "process" + this.processNumber, "(Lede/stl/gui/GuiEde;)V", null, null);
            methodVisit.visitCode();
            codeGenShallowStatement(process.statement, "process" + this.processNumber, methodVisit, modName, processWriter);
            methodVisit.visitInsn(Opcodes.RETURN);
@@ -507,7 +518,7 @@ public class VerilogToJavaGen {
                 if (declaration instanceof Input.Wire.Vector.Ident)
                         return "Lede/stl/values/VectorVal;";
                 else if (declaration instanceof Input.Reg.Vector.Ident)
-                        return "LVectorVal";
+                        return "Lede/stl/values/VectorVal";
                 else if (declaration instanceof Input.Wire.Scalar.Ident)
                         return "Lede/stl/circuit/WireVal;";
                 else if (declaration instanceof Input.Reg.Scalar.Ident)
