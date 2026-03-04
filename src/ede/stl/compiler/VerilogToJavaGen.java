@@ -139,7 +139,7 @@ public class VerilogToJavaGen {
                 scopedFields.pop();
         }
 
-        public void codeGenVerilogFile(VerilogFile file, int bytesPerRow, String addressFormat, String memoryFormat) throws Exception{
+        public void codeGenVerilogFile(VerilogFile file) throws Exception{
                 new File("ede/instance/mods").mkdirs();
 
                 ClassWriter processWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
