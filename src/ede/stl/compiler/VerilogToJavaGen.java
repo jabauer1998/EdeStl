@@ -1104,9 +1104,6 @@ public class VerilogToJavaGen {
                         codeGenFieldIntIdent((Int.Ident)declaration, constructor, modName, moduleWriter);
                 else if (declaration instanceof Real.Ident)
                         codeGenFieldRealIdent((Real.Ident)declaration, constructor, modName, moduleWriter);
-                else {
-                        Utils.errorAndExit("Error Could not find Ident Declaration with the following type " + declaration.getClass().getName());
-                }
         }
 
         private void codeGenFieldArray(ArrayDeclaration declaration, MethodVisitor constructor, String modName, ClassWriter modWriter) throws Exception{
