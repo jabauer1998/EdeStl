@@ -7,30 +7,41 @@ import ede.stl.ast.ModuleItem;
 
 public class ModuleDeclaration extends AstNode {
 
-	public final String           moduleName;
-	public final List<ModuleItem> moduleItemList;
+        public final String           moduleName;
+        public final List<ModuleItem> args;
+        public final List<ModuleItem> moduleItemList;
 
-	public ModuleDeclaration(Position start, String moduleName, List<ModuleItem> moduleItemList) {
-		super(start);
-		this.moduleName = moduleName;
-		this.moduleItemList = Collections.unmodifiableList(moduleItemList);
-	}
+        public ModuleDeclaration(Position start, String moduleName, List<ModuleItem> args, List<ModuleItem> moduleItemList) {
+                super(start);
+                this.moduleName = moduleName;
+                this.args = Collections.unmodifiableList(args);
+                this.moduleItemList = Collections.unmodifiableList(moduleItemList);
+        }
 
-	@Override
-	public String toString(){ // TODO Auto-generated method stub
-		StringBuilder sb = new StringBuilder();
-		sb.append("module ");
-		sb.append(moduleName);
-		sb.append(";\n");
+        @Override
+        public String toString(){ // TODO Auto-generated method stub
+                StringBuilder sb = new StringBuilder();
+                sb.append("module ");
+                sb.append(moduleName);
+                sb.append("(");
 
-		for (ModuleItem item : moduleItemList) {
-			sb.append(item.toString());
-			sb.append("\n");
-		}
+                int count = 0;
+                for(ModuleItem item : args){
+                        if(count > 0){
+                                sb.append(", ");
+                        }
+                        sb.append(item.toString());
+                        count++;
+                }
 
-		sb.append("endmodule\n");
-		return sb.toString();
-	}
+                for (ModuleItem item : moduleItemList) {
+                        sb.append(item.toString());
+                        sb.append("\n");
+                }
+
+                sb.append("endmodule\n");
+                return sb.toString();
+        }
 }
 
 
