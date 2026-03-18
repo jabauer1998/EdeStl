@@ -1,6 +1,5 @@
 package ede.stl.ast;
 import ede.stl.common.ErrorLog;
-import ede.stl.interpreter.Environment;
 import ede.stl.values.Value;
 import ede.stl.passes.ExpressionVisitor;
 

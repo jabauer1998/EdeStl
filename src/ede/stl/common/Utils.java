@@ -6,7 +6,7 @@ import javax.management.RuntimeErrorException;
 import org.objectweb.asm.Opcodes;
 import ede.stl.common.Pointer;
 import ede.stl.common.FormattedScanner;
-import ede.stl.interpreter.Environment;
+import ede.stl.common.Environment;
 import ede.stl.values.BoolVal;
 import ede.stl.values.ByteVal;
 import ede.stl.values.IntVal;
@@ -18,6 +18,8 @@ import ede.stl.values.UnsignedByteVal;
 import ede.stl.values.UnsignedIntVal;
 import ede.stl.values.UnsignedLongVal;
 import ede.stl.values.UnsignedShortVal;
+import ede.stl.values.EdeMemVal;
+import ede.stl.values.EdeRegVal;
 import ede.stl.values.Value;
 import ede.stl.values.VectorVal;
 import ede.stl.values.ArrayIntVal;
@@ -5345,6 +5347,18 @@ public class Utils {
                 }
          }
 
+        public static void shallowAssignElemEde(Value leftHandDeref, Value leftHandIndex, Value expVal) throws Exception{
+                if(leftHandDeref instanceof EdeMemVal){
+                        EdeMemVal leftHandMem = (EdeMemVal)leftHandDeref;
+                        leftHandMem.setElemAtIndex(leftHandIndex.intValue(), expVal.intValue());
+                } else if(leftHandDeref instanceof EdeRegVal){
+                        EdeRegVal leftHandReg = (EdeRegVal)leftHandDeref;
+                        leftHandReg.setBitAtIndex(leftHandIndex.intValue(), expVal.intValue());
+                } else {
+                        Utils.shallowAssignElem(leftHandDeref, leftHandIndex, expVal);
+                }
+         }
+
         public static void shallowAssignSlice(Value leftHandDeref, Value leftHandStartIndex, Value leftHandEndIndex, Value expVal) throws Exception{
                 if (leftHandDeref instanceof VectorVal) {
                         VectorVal leftHandVector = (VectorVal)leftHandDeref;
@@ -5352,6 +5366,15 @@ public class Utils {
                         Utils.shallowAssign(leftHandVector, leftHandStartIndex.intValue(), leftHandEndIndex.intValue(), expVal.longValue());
                 } else {
                         Utils.errorAndExit("Invalid Type for the left hand side of the slice assingment " + leftHandDeref.getClass().getName());
+                }
+        }
+
+        public static void shallowAssignSliceEde(Value leftHandDeref, Value leftHandStartIndex, Value leftHandEndIndex, Value expVal) throws Exception{
+                if (leftHandDeref instanceof EdeRegVal) {
+                        EdeRegVal leftHandVector = (EdeRegVal)leftHandDeref;
+                        leftHandVector.setBitsAtIndex(leftHandStartIndex.intValue(), leftHandEndIndex.intValue(), expVal.intValue());
+                } else {
+                        Utils.shallowAssignSlice(leftHandDeref, leftHandStartIndex, leftHandEndIndex, expVal);
                 }
         }
         
@@ -5416,7 +5439,7 @@ public class Utils {
                 return total;
         }
 
-        public static Value getShallowElemFromIndex(Value expr, Value dataObject, String ident) throws Exception{ // TODO Auto-generated method stub
+        public static Value getShallowElemFromIndex(Value dataObject, Value expr, String ident) throws Exception{ // TODO Auto-generated method stub
                 if (dataObject instanceof ArrayVectorVal) {
                         ArrayVectorVal arr = (ArrayVectorVal)dataObject;
                         VectorVal vec = arr.ElemAtIndex(expr.intValue());
@@ -5462,6 +5485,71 @@ public class Utils {
                         Utils.deepAssign(Elems, begin.intValue(), end.intValue(), vector2);
                 } else {
                         Utils.errorAndExit("Error: Invalid Type for slice expression");
+                }
+        }
+
+        public static String formatString(Value fString, Value... args){
+                Object[] Params = new Object[args.length];
+
+                for (int paramIndex = 0; paramIndex < args.length; paramIndex++) {
+                        Object rawValue = Utils.getRawValue(args[paramIndex]);
+                        Params[paramIndex] = rawValue;
+                }
+
+                return String.format(fString.toString(), Params);
+        }
+
+        public static void display(String toDisp){
+                System.out.println(toDisp);
+        }
+
+        public static void finish(){
+                throw new RuntimeException("Success program terminated");
+        }
+
+        public static IntVal fOpen(Value fname, Value access, Environment environment) throws Exception {
+                String basePath = Utils.GetRuntimeDir();
+                String fullPath = basePath + '/' + fname;
+
+                if (access.toString().equals("r")) {
+                        int fileDescriptor = environment.createReadOnlyFileDescriptor(fullPath);
+                        return new IntVal(fileDescriptor);
+                } else if (access.toString().equals("w")) {
+                        int fileDescriptor = environment.createWritableFileDescriptor(fullPath);
+                        return new IntVal(fileDescriptor);
+                } else {
+                        Utils.errorAndExit("Unexpected Access type " + access + " for file " + basePath + '/' + fname);
+                }
+                return new IntVal(-1);
+        }
+
+        public static BoolVal fEof(Value fileDescriptor, Environment environment){
+                FormattedScanner reader = environment.getFileReader(fileDescriptor.intValue());
+                try {
+                        return new BoolVal(reader.atEof());
+                } catch (Exception exp) {
+                        throw new RuntimeException(exp);
+                }
+        }
+
+        public static Value fScanf(Value fileDescriptor, Value fString, Value location, Environment env) throws Exception {
+                FormattedScanner fScanner = env.getFileReader(fileDescriptor.intValue());
+                List<Object> result = fScanner.scanf(fString.toString());
+
+                if (result.size() == 0) {
+                        Utils.errorAndExit("Result in Scanf returned no Objects");
+                        return Utils.errorOccured();
+                } else {
+                        Value scanfResult = Utils.convertToRawValue(result.get(0));
+
+                        if (location.isVector()) {
+                                VectorVal vecVal = (VectorVal)location;
+                                Utils.shallowAssign(vecVal, scanfResult.longValue());
+                                return Utils.success();
+                        } else {
+                                Utils.errorAndExit("Invalid location type of " + location.getClass().getName());
+                                return Utils.errorOccured();
+                        }
                 }
         }
 }

@@ -370,7 +370,7 @@ module Arm();
                  
                  for(i = 0; i <= `WIDTH; i = i + 1)
                    //copy = CSPR[(i + (INSTR[11:8] * 2)) % (`WIDTH+1)]; //not implemented yet
-                   CSPR = copy;
+                   CPSR = copy;
               end
            end
            21: begin //MUL | MLA Instruction
@@ -471,10 +471,10 @@ module Arm();
                    totalholder[23:16] = (getRegister(INSTR[15:12]) >> 16) & 8'b11111111;
                    totalholder[15:8] = (getRegister(INSTR[15:12]) >> 8) & 8'b11111111;
                    totalholder[7:0] = (getRegister(INSTR[15:12]) & 8'b11111111);
-                   MEM[address] = totalHolder[0:7];
-                   MEM[address + 1] = totalHolder[8:15];
-                   MEM[address + 2] = totalHolder[16:23];
-                   MEM[address + 3] = totalHolder[24:31];
+                   MEM[address] = totalholder[0:7];
+                   MEM[address + 1] = totalholder[8:15];
+                   MEM[address + 2] = totalholder[16:23];
+                   MEM[address + 3] = totalholder[24:31];
                 end
               
               if(!INSTR[24])//Post Indexed
@@ -564,7 +564,7 @@ module Arm();
                     
                     for(i = 0; i < 16; i = i + 1)
                       if(regList[i] == 1) begin
-                         R[i] = MEM[address];
+                         setRegister(i, MEM[address]);
                          address = address + 4;
                       end
                  end else begin 

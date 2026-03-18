@@ -4,7 +4,6 @@
 .#*
 
 # Java
-*.jar
 *.war
 *.ear
 *.iml
