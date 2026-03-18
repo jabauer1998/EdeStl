@@ -3,6 +3,7 @@ package ede.stl.common;
 
 import java.util.Stack;
 import java.util.HashMap;
+import java.util.Set;
 import java.lang.String;
 import java.lang.StringBuilder;
 
@@ -44,6 +45,11 @@ public class SymbolTable<TableType> {
      */
     public void addScope(){ table.push(new HashMap<>()); }
 
+    public Set<String> getKeysInScope(){
+        Set<String> saved = table.peek().keySet();
+        return saved;
+    }
+
     /**
      * This method is used to check if a variable exists within the entire stack
      * 
@@ -70,6 +76,7 @@ public class SymbolTable<TableType> {
      * @author        Jacob Bauer
      */
     public boolean inScope(String symbolName){
+        if(table.isEmpty()) return false;
         HashMap<String, TableType> list = table.pop();
         boolean tf = list.containsKey(symbolName);
         table.push(list);

@@ -121,11 +121,11 @@ public abstract class Interpreter {
          * ErrorLog
          */
         protected ErrorLog    errorLog;
-        protected Environment environment;
+        protected InterpreterEnvironment environment;
 
         protected Interpreter(ErrorLog errorLog) {
                 this.errorLog = errorLog;
-                this.environment = new Environment(null);
+                this.environment = new InterpreterEnvironment();
         }
 
         protected IntVal interpretFile(VerilogFile File) throws Exception{

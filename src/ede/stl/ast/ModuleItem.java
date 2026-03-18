@@ -1,6 +1,5 @@
 package ede.stl.ast;
 
-import ede.stl.interpreter.Environment;
 import ede.stl.passes.ModuleVisitor;
 
 public interface ModuleItem {

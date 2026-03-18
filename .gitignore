@@ -4,7 +4,6 @@
 .#*
 ./build/BuildList.txt
 # Java
-*.jar
 *.war
 *.ear
 *.iml

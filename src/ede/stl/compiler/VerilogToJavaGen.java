@@ -2,19 +2,21 @@ package ede.stl.compiler;
 
 
 import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
 import java.util.Stack;
+import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.util.CheckClassAdapter;
 import ede.stl.common.Pointer;
 import ede.stl.common.SymbolTable;
 import ede.stl.common.ErrorLog;
 import ede.stl.common.ErrorItem;
 import ede.stl.common.Utils;
-import ede.stl.interpreter.Environment;
 import ede.stl.interpreter.VerilogInterpreter;
 import ede.stl.values.IntVal;
 import ede.stl.values.Value;
@@ -25,6 +27,7 @@ import ede.stl.ast.VerilogFile;
 import ede.stl.ast.ConstantExpression;
 import ede.stl.ast.Expression;
 import ede.stl.ast.FunctionCall;
+import ede.stl.ast.SystemFunctionCall;
 import ede.stl.ast.BinaryOperation;
 import ede.stl.ast.Concatenation;
 import ede.stl.ast.TernaryOperation;
@@ -89,124 +92,126 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 public class VerilogToJavaGen {
-        private ClassWriter mainWriter;
         private int         javaVersion;
         private ErrorLog    errLog;
-        private Stack<SymbolTable<Integer>> scopedTable;
+        private SymbolTable<Integer> scopedTable;
         private Stack<HashSet<String>> scopedFields;
         private SymbolTable<String> funcTypes;
         private int processNumber;
-        private int localVariableNumber;
+        private int localAndArgNumber;
         
         public VerilogToJavaGen(int javaVersion) {
                 this.javaVersion = javaVersion;
                 this.errLog = new ErrorLog();
                 this.processNumber = 0;
-                this.scopedTable = new Stack<>();
+                this.localAndArgNumber = 3;
+                this.scopedTable = new SymbolTable<Integer>();
                 this.scopedFields = new Stack<>();
-                this.funcTypes = new SymbolTable<>();
-		this.localVariableNumber = 0;
+                this.funcTypes = new SymbolTable<String>();
         }
         
-        boolean localInScope(String name){
-                SymbolTable<Integer> scope = scopedTable.peek();
-                return scope.entryExists(name);
+        protected boolean localInScope(String name){
+                return scopedTable.inScope(name);
         }
         
-        boolean fieldInScope(String field) {
+        protected boolean fieldInScope(String field) {
                 HashSet<String> scope = scopedFields.peek();
                 return scope.contains(field);
         }
+
+        protected void printStringNow(String toPrint){
+                System.out.println(toPrint);
+        }
         
-        int getFromScope(String elem) {
-                SymbolTable<Integer> scope = scopedTable.peek();
-                return scope.getEntry(elem);
+        protected int getFromScope(String elem) {
+                return scopedTable.getEntry(elem);
+        }
+
+        protected int getSmallestInScope(){
+                Set<String> keys = scopedTable.getKeysInScope();
+                int smallest = Integer.MAX_VALUE;
+                for(String key: keys){
+                        int val = scopedTable.getEntry(key);
+                        if(val < smallest) smallest = val;
+                }
+
+                return smallest;
+        }
+
+        protected int getLargestInScope(){
+                Set<String> keys = scopedTable.getKeysInScope();
+                int largest = Integer.MIN_VALUE;
+                for(String key: keys){
+                        int val = scopedTable.getEntry(key);
+                        if(val > largest) largest = val;
+                }
+
+                return largest;
         }
         
         public void addElem(String elem) {
-                SymbolTable<Integer> scope = scopedTable.peek();
-                scope.addEntry(elem, localVariableNumber);
-		localVariableNumber++;
+                scopedTable.addEntry(elem, localAndArgNumber);
+                localAndArgNumber++;
+        }
+
+        public void addField(String field){
+                scopedFields.peek().add(field);
+        }
+
+        public void addType(String funcName, String type){
+                funcTypes.addEntry(funcName, type);
+        }
+
+        private void pushModule(){
+                scopedFields.push(new HashSet<>());
+                funcTypes.addScope();
+        }
+
+        private void popModule(){
+                scopedFields.pop();
+                funcTypes.removeScope();
         }
         
-        void pushScope(boolean inModule){
-                scopedTable.add(new SymbolTable<>());
-		if(inModule)
-		    scopedFields.add(new HashSet<String>());
-		funcTypes.addScope();
-		this.localVariableNumber = 0;
+        private void pushScope(){
+                scopedTable.addScope();
         }
         
-        void popScope(boolean inModule) {
-                scopedTable.pop();
-		if(inModule)
-		    scopedFields.pop();
-		funcTypes.removeScope();
-		this.localVariableNumber = 0;
+        private void popScope() {
+                scopedTable.removeScope();
         }
 
         public void codeGenVerilogFile(VerilogFile file) throws Exception{
                 new File("ede/instance/mods").mkdirs();
 
-                ClassWriter processWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-                processWriter.visit(this.javaVersion,
-                        Opcodes.ACC_PUBLIC | Opcodes.ACC_SUPER,
-                        "Processes",
-                        null,
-                        "java/lang/Object",
-                        null);
-
                 for (ModuleDeclaration module : file.modules) {
-		        pushScope(true);
-                        ClassWriter moduleWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
-                        codeGenModule(module, moduleWriter, processWriter);
+                        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+                        CheckClassAdapter moduleWriter = new CheckClassAdapter(cw);
+                        HashSet<String> usedFunctions = new HashSet<String>();
+                        calculateUsedFunctions(module, usedFunctions);
+                        codeGenModule(module, moduleWriter, usedFunctions);
                         moduleWriter.visitEnd();
-                        byte[] moduleBytes = moduleWriter.toByteArray();
+                        byte[] moduleBytes = cw.toByteArray();
                         try (FileOutputStream fos = new FileOutputStream("ede/instance/mods/" + module.moduleName + ".class")) {
                                 fos.write(moduleBytes);
                         }
-			popScope(true);
-                }
-
-                processWriter.visitEnd();
-                byte[] processBytes = processWriter.toByteArray();
-                try (FileOutputStream fos = new FileOutputStream("ede/instance/Processes.class")) {
-                        fos.write(processBytes);
                 }
         }
 
         private static void pushString(String val, MethodVisitor main){
-                // 1. Instantiate the object
-                main.visitTypeInsn(Opcodes.NEW, "java/lang/String");
-                // 2. Duplicate the reference
-                main.visitInsn(Opcodes.DUP);
                 main.visitLdcInsn(val);
         }
 
         private static void pushDouble(double val, MethodVisitor main){
-                // 1. Instantiate the object
-                main.visitTypeInsn(Opcodes.NEW, "java/lang/Double");
-                // 2. Duplicate the reference
-                main.visitInsn(Opcodes.DUP);
-                // 3. Load the double constant value 123.45 onto the stack
                 double value = val;
                 main.visitLdcInsn(value);
         }
 
         private static void pushBool(boolean bool, MethodVisitor main){
-                main.visitTypeInsn(Opcodes.NEW, "java/lang/Boolean");
-                // 2. Duplicate the reference
-                main.visitInsn(Opcodes.DUP);
                 // 3. Load the double constant value 123.45 onto the stack
-                main.visitLdcInsn(bool);
+                main.visitLdcInsn(bool ? 1 : 0);
         }
 
         private static void pushInt(int val, MethodVisitor main){
-                // 1. Instantiate the object
-                main.visitTypeInsn(Opcodes.NEW, "java/lang/Integer");
-                // 2. Duplicate the reference
-                main.visitInsn(Opcodes.DUP);
-                // 3. Load the double constant value 123.45 onto the stack
                 main.visitLdcInsn(val);
         }
 
@@ -222,71 +227,342 @@ public class VerilogToJavaGen {
                 return typeStr.toString();
         }
 
-        private void codeGenModule(ModuleDeclaration mod, ClassWriter moduleWriter, ClassWriter processWriter) throws Exception{
-                moduleWriter.visit(this.javaVersion, // Java version (e.g., V1_8 for Java 8)
-                        Opcodes.ACC_PUBLIC | Opcodes.ACC_SUPER, // Access flags (public class)
-                        mod.moduleName, // Internal class name
-                        null, // Signature (null for non-generic classes)
-                        "java/lang/Object", // Superclass
-                        null); // Interfaces (null if none
+        private void calculateUsedFunctions(ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                for(ModuleItem item: mod.moduleItemList){
+                        if(item instanceof ContinuousAssignment) calculateUsedDeepFunctions((ContinuousAssignment)item, mod, usedFunctions);
+                        else if(item instanceof ProcessBase) calculateUsedShallowFunctions((ProcessBase)item, mod, usedFunctions);
+                }
+        }
+
+        private void calculateUsedShallowFunctions(ProcessBase process, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                calculateUsedShallowFunctions(process.statement, mod, usedFunctions);
+        }
+
+        private void calculateUsedShallowFunctions(Statement stat, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                 if(stat instanceof CaseStatement) calculateUsedShallowFunctions((CaseStatement)stat, mod, usedFunctions);
+                 else if(stat instanceof Assignment) calculateUsedShallowFunctions((Assignment)stat, mod, usedFunctions);
+                 else if(stat instanceof IfStatement) calculateUsedShallowFunctions((IfStatement)stat, mod, usedFunctions);
+                 else if(stat instanceof ForeverStatement) calculateUsedShallowFunctions((ForeverStatement)stat, mod, usedFunctions);
+                 else if(stat instanceof ForStatement) calculateUsedShallowFunctions((ForStatement)stat, mod, usedFunctions);
+                 else if(stat instanceof RepeatStatement) calculateUsedShallowFunctions((RepeatStatement)stat, mod, usedFunctions);
+                 else if(stat instanceof WhileStatement) calculateUsedShallowFunctions((WhileStatement)stat, mod, usedFunctions);
+                 else if(stat instanceof TaskStatement) calculateUsedShallowFunctions((TaskStatement)stat, mod, usedFunctions);
+                 else if(stat instanceof SeqBlockStatement) calculateUsedShallowFunctions((SeqBlockStatement)stat, mod, usedFunctions);
+                 else Utils.errorAndExit("Error invalid statement type " + stat.getClass().getName());
+        }
+
+        private void calculateUsedShallowFunctions(CaseStatement stat, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                 calculateUsedShallowFunctions(stat.exp, mod, usedFunctions);
+                 for(CaseItem item: stat.itemList){
+                         if(item instanceof ExprCaseItem) calculateUsedShallowFunctions((ExprCaseItem)item, mod, usedFunctions);
+                         else if(item instanceof DefCaseItem) calculateUsedShallowFunctions((DefCaseItem)item, mod, usedFunctions);
+                         else Utils.errorAndExit("Error invalid case item type " + item.getClass().getName());
+                 }
+        }
+
+        private void calculateUsedShallowFunctions(ExprCaseItem item, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                 for(Expression exp: item.expList){
+                         calculateUsedShallowFunctions(exp, mod, usedFunctions);
+                 }
+                 calculateUsedShallowFunctions(item.statement, mod, usedFunctions);
+        }
+
+        private void calculateUsedShallowFunctions(DefCaseItem item, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                 calculateUsedShallowFunctions(item.statement, mod, usedFunctions);
+        }
+
+        private void calculateUsedShallowFunctions(Assignment assign, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                 if(assign instanceof BlockingAssignment) calculateUsedShallowFunctions((BlockingAssignment)assign, mod, usedFunctions);
+                 else if(assign instanceof NonBlockingAssignment) calculateUsedShallowFunctions((NonBlockingAssignment)assign, mod, usedFunctions);
+                 else Utils.errorAndExit("Error invalid assignment type " + assign.getClass().getName());
+        }
+
+        private void calculateUsedShallowFunctions(BlockingAssignment assign, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                 calculateUsedShallowFunctions(assign.rightHandSide, mod, usedFunctions);
+        }
+
+        private void calculateUsedShallowFunctions(NonBlockingAssignment assign, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                 for(Expression exp: assign.rightHandSide){
+                         calculateUsedShallowFunctions(exp, mod, usedFunctions);
+                 }
+        }
+
+        private void calculateUsedShallowFunctions(IfStatement stat, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                 calculateUsedShallowFunctions(stat.condition, mod, usedFunctions);
+                 calculateUsedShallowFunctions(stat.trueStatement, mod, usedFunctions);
+                 if(stat instanceof IfElseStatement) calculateUsedShallowFunctions(((IfElseStatement)stat).falseStatement, mod, usedFunctions);
+        }
+
+        private void calculateUsedShallowFunctions(ForeverStatement stat, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                 calculateUsedShallowFunctions(stat.stat, mod, usedFunctions);
+        }
+
+        private void calculateUsedShallowFunctions(ForStatement stat, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                 calculateUsedShallowFunctions(stat.init, mod, usedFunctions);
+                 calculateUsedShallowFunctions(stat.exp, mod, usedFunctions);
+                 calculateUsedShallowFunctions(stat.change, mod, usedFunctions);
+                 calculateUsedShallowFunctions(stat.stat, mod, usedFunctions);
+        }
+
+        private void calculateUsedShallowFunctions(RepeatStatement stat, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                 calculateUsedShallowFunctions(stat.exp, mod, usedFunctions);
+                 calculateUsedShallowFunctions(stat.stat, mod, usedFunctions);
+        }
+
+        private void calculateUsedShallowFunctions(WhileStatement stat, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                 calculateUsedShallowFunctions(stat.exp, mod, usedFunctions);
+                 calculateUsedShallowFunctions(stat.stat, mod, usedFunctions);
+        }
+
+        private void calculateUsedShallowFunctions(TaskStatement stat, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                 if(!usedFunctions.contains(stat.taskName + "Shallow")){
+                         usedFunctions.add(stat.taskName + "Shallow");
+                         for(ModuleItem item: mod.moduleItemList){
+                                 if(item instanceof TaskDeclaration){
+                                         if(((TaskDeclaration)item).taskName.equals(stat.taskName)){
+                                                 calculateUsedShallowFunctions(((ProcedureDeclaration)item).stat, mod, usedFunctions);
+                                         }
+                                 }
+                         }
+                 }
+        }
+
+        private void calculateUsedShallowFunctions(SeqBlockStatement stat, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                 for(Statement myStat: stat.statementList){
+                         calculateUsedShallowFunctions(myStat, mod, usedFunctions);
+                 }
+        }
+
+        private void calculateUsedShallowFunctions(Expression exp, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                 if(exp instanceof FunctionCall) calculateUsedShallowFunctions((FunctionCall)exp, mod, usedFunctions);
+                 else if(exp instanceof BinaryOperation) calculateUsedShallowFunctions((BinaryOperation)exp, mod, usedFunctions);
+                 else if(exp instanceof Concatenation) calculateUsedShallowFunctions((Concatenation)exp, mod, usedFunctions);
+                 else if(exp instanceof TernaryOperation) calculateUsedShallowFunctions((TernaryOperation)exp, mod, usedFunctions);
+                 else if(exp instanceof UnaryOperation) calculateUsedShallowFunctions((UnaryOperation)exp, mod, usedFunctions);
+                 else if(exp instanceof Element) calculateUsedShallowFunctions((Element)exp, mod, usedFunctions);
+                 else if(exp instanceof Slice) calculateUsedShallowFunctions((Slice)exp, mod, usedFunctions);
+        }
+
+        private void calculateUsedShallowFunctions(FunctionCall call, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                 if(!usedFunctions.contains(call.functionName + "Shallow")){
+                         usedFunctions.add(call.functionName + "Shallow");
+                         for(ModuleItem item: mod.moduleItemList){
+                                 if(item instanceof FunctionDeclaration){
+                                         if(nameOf(((FunctionDeclaration)item).functionName).equals(call.functionName))
+                                                 calculateUsedShallowFunctions(((FunctionDeclaration)item).stat, mod, usedFunctions);
+                                 }
+                         }
+                 }
+        }
+
+        private void calculateUsedShallowFunctions(BinaryOperation exp, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                 calculateUsedShallowFunctions(exp.left, mod, usedFunctions);
+                 calculateUsedShallowFunctions(exp.right, mod, usedFunctions);
+        }
+
+        private void calculateUsedShallowFunctions(Concatenation exp, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                 for(Expression myExp: exp.circuitElementExpressionList){
+                         calculateUsedShallowFunctions(myExp, mod, usedFunctions);
+                 }
+        }
+
+        private void calculateUsedShallowFunctions(TernaryOperation exp, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                 calculateUsedShallowFunctions(exp.condition, mod, usedFunctions);
+                 calculateUsedShallowFunctions(exp.ifTrue, mod, usedFunctions);
+                 calculateUsedShallowFunctions(exp.ifFalse, mod, usedFunctions);
+        }
+
+        private void calculateUsedShallowFunctions(UnaryOperation exp, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                 calculateUsedShallowFunctions(exp.rightHandSideExpression, mod, usedFunctions);
+        }
+
+        private void calculateUsedShallowFunctions(Element exp, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                 calculateUsedShallowFunctions(exp.index1, mod, usedFunctions);
+        }
+
+        private void calculateUsedShallowFunctions(Slice exp, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                 calculateUsedShallowFunctions(exp.index1, mod, usedFunctions);
+                 calculateUsedShallowFunctions(exp.index2, mod, usedFunctions);
+        }
+
+        private void calculateUsedDeepFunctions(ContinuousAssignment decl, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                for(BlockingAssignment assign: decl.assignmentList){
+                        calculateUsedDeepFunctions(assign.rightHandSide, mod, usedFunctions);
+                }
+        }
+
+        private void calculateUsedDeepFunctions(Expression exp, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                if(exp instanceof FunctionCall) calculateUsedDeepFunctions((FunctionCall)exp, mod, usedFunctions);
+                else if(exp instanceof BinaryOperation) calculateUsedDeepFunctions((BinaryOperation)exp, mod, usedFunctions);
+                else if(exp instanceof Concatenation) calculateUsedDeepFunctions((Concatenation)exp, mod, usedFunctions);
+                else if(exp instanceof TernaryOperation) calculateUsedDeepFunctions((TernaryOperation)exp, mod, usedFunctions);
+                else if(exp instanceof UnaryOperation) calculateUsedDeepFunctions((UnaryOperation)exp, mod, usedFunctions);
+                else if(exp instanceof Element) calculateUsedDeepFunctions((Element)exp, mod, usedFunctions);
+                else if(exp instanceof Slice) calculateUsedDeepFunctions((Slice)exp, mod, usedFunctions);
+        }
+
+        private void calculateUsedDeepFunctions(BinaryOperation exp, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                calculateUsedDeepFunctions(exp.left, mod, usedFunctions);
+                calculateUsedDeepFunctions(exp.right, mod, usedFunctions);
+        }
+
+        private void calculateUsedDeepFunctions(Concatenation exp, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                for(Expression myExp: exp.circuitElementExpressionList){
+                        calculateUsedDeepFunctions(myExp, mod, usedFunctions);
+                }
+        }
+
+        private void calculateUsedDeepFunctions(TernaryOperation exp, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                calculateUsedDeepFunctions(exp.condition, mod, usedFunctions);
+                calculateUsedDeepFunctions(exp.ifTrue, mod, usedFunctions);
+                calculateUsedDeepFunctions(exp.ifFalse, mod, usedFunctions);
+        }
+
+        private void calculateUsedDeepFunctions(UnaryOperation exp, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                calculateUsedDeepFunctions(exp.rightHandSideExpression, mod, usedFunctions);
+        }
+
+        private void calculateUsedDeepFunctions(Element exp, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                calculateUsedDeepFunctions(exp.index1, mod, usedFunctions);
+        }
+
+        private void calculateUsedDeepFunctions(Slice exp, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                calculateUsedDeepFunctions(exp.index1, mod, usedFunctions);
+                calculateUsedDeepFunctions(exp.index2, mod, usedFunctions);
+        }
+
+        private void calculateUsedDeepFunctions(Statement stat, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                if(stat instanceof SeqBlockStatement) {
+                        for(Statement s : ((SeqBlockStatement)stat).statementList)
+                                calculateUsedDeepFunctions(s, mod, usedFunctions);
+                } else if(stat instanceof IfElseStatement) {
+                        IfElseStatement ies = (IfElseStatement)stat;
+                        calculateUsedDeepFunctions(ies.condition, mod, usedFunctions);
+                        calculateUsedDeepFunctions(ies.trueStatement, mod, usedFunctions);
+                        calculateUsedDeepFunctions(ies.falseStatement, mod, usedFunctions);
+                } else if(stat instanceof IfStatement) {
+                        IfStatement is = (IfStatement)stat;
+                        calculateUsedDeepFunctions(is.condition, mod, usedFunctions);
+                        calculateUsedDeepFunctions(is.trueStatement, mod, usedFunctions);
+                } else if(stat instanceof ForStatement) {
+                        ForStatement fs = (ForStatement)stat;
+                        calculateUsedDeepFunctions(fs.init, mod, usedFunctions);
+                        calculateUsedDeepFunctions(fs.exp, mod, usedFunctions);
+                        calculateUsedDeepFunctions(fs.change, mod, usedFunctions);
+                        calculateUsedDeepFunctions(fs.stat, mod, usedFunctions);
+                } else if(stat instanceof WhileStatement) {
+                        WhileStatement ws = (WhileStatement)stat;
+                        calculateUsedDeepFunctions(ws.exp, mod, usedFunctions);
+                        calculateUsedDeepFunctions(ws.stat, mod, usedFunctions);
+                } else if(stat instanceof RepeatStatement) {
+                        RepeatStatement rs = (RepeatStatement)stat;
+                        calculateUsedDeepFunctions(rs.exp, mod, usedFunctions);
+                        calculateUsedDeepFunctions(rs.stat, mod, usedFunctions);
+                } else if(stat instanceof ForeverStatement) {
+                        calculateUsedDeepFunctions(((ForeverStatement)stat).stat, mod, usedFunctions);
+                } else if(stat instanceof CaseStatement) {
+                        CaseStatement cs = (CaseStatement)stat;
+                        calculateUsedDeepFunctions(cs.exp, mod, usedFunctions);
+                        for(CaseItem item : cs.itemList)
+                                calculateUsedDeepFunctions(item.statement, mod, usedFunctions);
+                } else if(stat instanceof BlockingAssignment) {
+                        calculateUsedDeepFunctions(((BlockingAssignment)stat).rightHandSide, mod, usedFunctions);
+                } else if(stat instanceof TaskStatement) {
+                        for(Expression arg : ((TaskStatement)stat).argumentList)
+                                calculateUsedDeepFunctions(arg, mod, usedFunctions);
+                }
+        }
+
+        private void calculateUsedDeepFunctions(FunctionCall call, ModuleDeclaration mod, HashSet<String> usedFunctions) throws Exception{
+                if(!usedFunctions.contains(call.functionName + "Deep")){
+                        usedFunctions.add(call.functionName + "Deep");
+                        for(ModuleItem item: mod.moduleItemList){
+                                if(item instanceof FunctionDeclaration)
+                                        if(nameOf(((FunctionDeclaration)item).functionName).equals(call.functionName))
+                                                calculateUsedDeepFunctions(((FunctionDeclaration)item).stat, mod, usedFunctions);
+                        }
+                }
+        }
+
+        private void codeGenModule(ModuleDeclaration mod, ClassVisitor moduleWriter, HashSet<String> usedFunctions) throws Exception{
+                pushModule();
+                moduleWriter.visit(Opcodes.V1_6,
+                        Opcodes.ACC_PUBLIC | Opcodes.ACC_SUPER,
+                        mod.moduleName,
+                        null,
+                        "ede/stl/compiler/VerilogAsJavaBase",
+                        null);
 
                 String typeStr = getTypes(mod.args);
                 
-                MethodVisitor moduleConstructor = moduleWriter.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_VARARGS, // Access flags: public
-                        "<init>", // Method name: <init> for constructor
-                        "(" + typeStr + ")V", // Descriptor: no arguments, void return
-                        null, // Signature: generic signature (null for non-generic)
-                        null // Exceptions: no exceptions thrown
+                MethodVisitor moduleConstructor =                   moduleWriter.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_VARARGS,
+                        "<init>",
+                        "(" + typeStr + ")V",
+                        null,
+                        null
                 );
 
+                moduleConstructor.visitCode();
+                moduleConstructor.visitVarInsn(Opcodes.ALOAD, 0);
+                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/compiler/VerilogAsJavaBase", "<init>", "()V", false);
                 for(ModuleItem item : mod.moduleItemList) { codeGenField(item, moduleConstructor, mod.moduleName, moduleWriter); }
 
-                for(ModuleItem item : mod.moduleItemList) { codeGenPossibleProcedure(item, moduleConstructor, mod.moduleName, moduleWriter); }
+                for(ModuleItem item : mod.moduleItemList) { codeGenParamTypesForProcedure(item, moduleConstructor, mod.moduleName, moduleWriter, usedFunctions); }
+
+                for(ModuleItem item : mod.moduleItemList) { codeGenPossibleProcedure(item, moduleConstructor, mod.moduleName, moduleWriter, usedFunctions); }
                 
-                for(ModuleItem item : mod.moduleItemList) { codeGenRestModuleItem(item, moduleConstructor, mod.moduleName, moduleWriter, processWriter); }
+                for(ModuleItem item : mod.moduleItemList) { codeGenRestModuleItem(item, moduleConstructor, mod.moduleName, moduleWriter); }
+                moduleConstructor.visitInsn(Opcodes.RETURN);
+                moduleConstructor.visitMaxs(0, 0);
+                moduleConstructor.visitEnd();
+
+                popModule();
         }
         
-        private void codeGenRestModuleItem(ModuleItem item, MethodVisitor moduleConstructor, String modName, ClassWriter moduleWriter, ClassWriter processWriter) throws Exception {
+        private void codeGenRestModuleItem(ModuleItem item, MethodVisitor moduleConstructor, String modName, ClassVisitor moduleWriter) throws Exception {
                 if(item instanceof GateDeclaration) codeGenGateDeclaration(item, moduleConstructor, modName, moduleWriter);
                 else if(item instanceof ContinuousAssignment) codeGenContinuousAssignment((ContinuousAssignment)item, moduleConstructor, modName, moduleWriter);
                 else if(item instanceof EmptyModItem) codeGenEmptyModItem();
                 else if(item instanceof ModuleInstantiation) codeGenModuleInstantiation((ModuleInstantiation)item, moduleConstructor, modName, moduleWriter);
-                else if(item instanceof ProcessBase) codeGenProcess((ProcessBase)item, modName, processWriter);
+                else if(item instanceof ProcessBase) codeGenProcess((ProcessBase)item, modName, moduleWriter);
         }
 
-       private void codeGenProcess(ProcessBase process, String modName, ClassWriter processWriter) throws Exception{
-           if(process instanceof InitialProcess) codeGenInitialProcess((InitialProcess)process, modName, processWriter);
-           else if(process instanceof AllwaysProcess) codeGenAllwaysProcess((AllwaysProcess)process, modName, processWriter);
+       private void codeGenProcess(ProcessBase process, String modName, ClassVisitor moduleWriter) throws Exception{
+           if(process instanceof InitialProcess) codeGenInitialProcess((InitialProcess)process, modName, moduleWriter);
+           else if(process instanceof AllwaysProcess) codeGenAllwaysProcess((AllwaysProcess)process, modName, moduleWriter);
        }
 
-       private void codeGenInitialProcess(InitialProcess process, String modName, ClassWriter processWriter) throws Exception{
-	   pushScope(false);
-           MethodVisitor methodVisit = processWriter.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, "process" + this.processNumber, "(Lede/stl/gui/GuiEde;)V", null, null);
+       private void codeGenInitialProcess(InitialProcess process, String modName, ClassVisitor moduleWriter) throws Exception{
+           MethodVisitor methodVisit = moduleWriter.visitMethod(Opcodes.ACC_PUBLIC, "process" + this.processNumber, "(Lede/stl/gui/GuiEde;Lede/stl/compiler/CompiledEnvironment;)V", null, null);
            methodVisit.visitCode();
-           codeGenShallowStatement(process.statement, "process" + this.processNumber, methodVisit, modName, processWriter);
+           pushScope();
+           this.localAndArgNumber = 3;
+           codeGenShallowStatement(process.statement, "process" + this.processNumber, methodVisit, modName, moduleWriter);
+           
+           popScope();
            methodVisit.visitInsn(Opcodes.RETURN);
            methodVisit.visitMaxs(0, 0);
            methodVisit.visitEnd();
            this.processNumber++;
-	   popScope(false);
        }
 
-      private void codeGenAllwaysProcess(AllwaysProcess process, String modName, ClassWriter processWriter) throws Exception{
-	   pushScope(false);
-           MethodVisitor methodVisit = processWriter.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, "process" + this.processNumber, "(Lede/stl/compiler/CompiledEnvironment;)V", null, null);
+      private void codeGenAllwaysProcess(AllwaysProcess process, String modName, ClassVisitor moduleWriter) throws Exception{
+           MethodVisitor methodVisit = moduleWriter.visitMethod(Opcodes.ACC_PUBLIC, "process" + this.processNumber, "(Lede/stl/gui/GuiEde;Lede/stl/compiler/CompiledEnvironment;)V", null, null);
            methodVisit.visitCode();
+           pushScope();
+           this.localAndArgNumber = 3;
            Label begin = new Label();
            methodVisit.visitLabel(begin);
-           codeGenShallowStatement(process.statement, "process" + this.processNumber, methodVisit, modName, processWriter);
+           codeGenShallowStatement(process.statement, "process" + this.processNumber, methodVisit, modName, moduleWriter);
+           popScope();
            methodVisit.visitJumpInsn(Opcodes.GOTO, begin);
            methodVisit.visitInsn(Opcodes.RETURN);
            methodVisit.visitMaxs(0, 0);
            methodVisit.visitEnd();
            this.processNumber++;
-	   popScope(false);
        }
         
-        private void codeGenGateDeclaration(ModuleItem item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception{
+        private void codeGenGateDeclaration(ModuleItem item, MethodVisitor moduleConstructor, String modName, ClassVisitor writer) throws Exception{
                 if(item instanceof AndGateDeclaration) codeGenAndGateDeclaration((AndGateDeclaration)item, moduleConstructor, modName, writer);
                 else if(item instanceof NandGateDeclaration) codeGenNandGateDeclaration((NandGateDeclaration)item, moduleConstructor, modName, writer);
                 else if(item instanceof OrGateDeclaration) codeGenOrGateDeclaration((OrGateDeclaration)item, moduleConstructor, modName, writer);
@@ -301,17 +577,20 @@ public class VerilogToJavaGen {
                 //Do nothing this is just a placeholder
         }
         
-        private void codeGenModuleInstantiation(ModuleInstantiation instant, MethodVisitor constructor, String modName, ClassWriter moduleWriter){
+        private void codeGenModuleInstantiation(ModuleInstantiation instant, MethodVisitor constructor, String modName, ClassVisitor moduleWriter){
                 
         }
         
-        private void codeGenContinuousAssignment(ContinuousAssignment item, MethodVisitor moduleConstructor, String modName, ClassWriter moduleWriter) throws Exception{
+        private void codeGenContinuousAssignment(ContinuousAssignment item, MethodVisitor moduleConstructor, String modName, ClassVisitor moduleWriter) throws Exception{
+                pushScope();
+                this.localAndArgNumber = 3;
                 for(BlockingAssignment assign: item.assignmentList) {
                         codeGenDeepAssignment(assign, moduleConstructor, modName, moduleWriter);
                 }
+                popScope();
         }
         
-        private void codeGenDeepAssignment(BlockingAssignment assign, MethodVisitor constructor, String modName, ClassWriter moduleWriter) throws Exception {
+        private void codeGenDeepAssignment(BlockingAssignment assign, MethodVisitor constructor, String modName, ClassVisitor moduleWriter) throws Exception {
                 codeGenDeepExpression(assign.rightHandSide, constructor, modName, moduleWriter);
                 
                 if(assign.rightHandSide instanceof Element){
@@ -354,9 +633,9 @@ public class VerilogToJavaGen {
                                 constructor.visitVarInsn(Opcodes.ASTORE, place);
                         } else if(this.fieldInScope(ident.labelIdentifier)) {
                                 constructor.visitFieldInsn(Opcodes.PUTFIELD, 
-							   modName, // Owner class internal name
-							   ident.labelIdentifier,           // Field name
-							   "Lede/stl/values/Value;");
+                modName, // Owner class internal name
+                ident.labelIdentifier,           // Field name
+                "Lede/stl/values/Value;");
                         } else {
                                 Utils.errorAndExit("Error no ident found for deep assignment with " + ident.labelIdentifier + " as its name");
                         }
@@ -365,7 +644,7 @@ public class VerilogToJavaGen {
                 }
         }
         
-        private void codeGenAndGateDeclaration(AndGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception {
+        private void codeGenAndGateDeclaration(AndGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassVisitor writer) throws Exception {
                 int count = item.gateConnections.size() - 3;
                 
                 for(int i = 0; i < count; i++) {
@@ -382,10 +661,10 @@ public class VerilogToJavaGen {
                         codeGenDeepExpression(exp, moduleConstructor, modName, writer);   // Value
                         moduleConstructor.visitInsn(Opcodes.AASTORE);
                 }
-                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/AndGate", "<Init>", "(Lede/stl/circuit/Web;Lede/stl/circuit/Web;Lede/stl/circuit/Web;[Lede/stl/circuit/Web;)V", false);
+                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/AndGate", "<init>", "(Lede/stl/circuit/Web;Lede/stl/circuit/Web;Lede/stl/circuit/Web;[Lede/stl/circuit/Web;)V", false);
         }
         
-        private void codeGenNandGateDeclaration(NandGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception {
+        private void codeGenNandGateDeclaration(NandGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassVisitor writer) throws Exception {
                 int count = item.gateConnections.size() - 3;
                 
                 for(int i = 0; i < count; i++) {
@@ -402,10 +681,10 @@ public class VerilogToJavaGen {
                         codeGenDeepExpression(exp, moduleConstructor, modName, writer);   // Value
                         moduleConstructor.visitInsn(Opcodes.AASTORE);
                 }
-                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/NandGate", "<Init>", "(Lede/stl/circuit/Web;Lede/stl/circuit/Web;Lede/stl/circuit/Web;[Lede/stl/circuit/Web;)V", false);
+                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/NandGate", "<init>", "(Lede/stl/circuit/Web;Lede/stl/circuit/Web;Lede/stl/circuit/Web;[Lede/stl/circuit/Web;)V", false);
         }
         
-        private void codeGenNorGateDeclaration(NorGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception {
+        private void codeGenNorGateDeclaration(NorGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassVisitor writer) throws Exception {
                 int count = item.gateConnections.size() - 3;
                 
                 for(int i = 0; i < count; i++) {
@@ -422,16 +701,16 @@ public class VerilogToJavaGen {
                         codeGenDeepExpression(exp, moduleConstructor, modName, writer);   // Value
                         moduleConstructor.visitInsn(Opcodes.AASTORE);
                 }
-                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/NorGate", "<Init>", "(Lede/stl/circuit/Web;Lede/stl/circuit/Web;Lede/stl/circuit/Web;[Lede/stl/circuit/Web;)V", false);
+                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/NorGate", "<init>", "(Lede/stl/circuit/Web;Lede/stl/circuit/Web;Lede/stl/circuit/Web;[Lede/stl/circuit/Web;)V", false);
         }
         
-        private void codeGenNotGateDeclaration(NotGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception {
+        private void codeGenNotGateDeclaration(NotGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassVisitor writer) throws Exception {
                 codeGenDeepExpression(item.gateConnections.get(0), moduleConstructor, modName, writer);
                 codeGenDeepExpression(item.gateConnections.get(1), moduleConstructor, modName, writer);
-                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/NandGate", "<Init>", "(Lede/stl/circuit/Web;Lede/stl/circuit/Web;)V", false);
+                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/NandGate", "<init>", "(Lede/stl/circuit/Web;Lede/stl/circuit/Web;)V", false);
         }
         
-        private void codeGenOrGateDeclaration(OrGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception {
+        private void codeGenOrGateDeclaration(OrGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassVisitor writer) throws Exception {
                 int count = item.gateConnections.size() - 3;
                 
                 for(int i = 0; i < count; i++) {
@@ -448,10 +727,10 @@ public class VerilogToJavaGen {
                         codeGenDeepExpression(exp, moduleConstructor, modName, writer);   // Value
                         moduleConstructor.visitInsn(Opcodes.AASTORE);
                 }
-                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/NorGate", "<Init>", "(Lede/stl/circuit/Web;Lede/stl/circuit/Web;Lede/stl/circuit/Web;[Lede/stl/circuit/Web;)V", false);
+                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/NorGate", "<init>", "(Lede/stl/circuit/Web;Lede/stl/circuit/Web;Lede/stl/circuit/Web;[Lede/stl/circuit/Web;)V", false);
         }
         
-        private void codeGenXnorGateDeclaration(XnorGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception {
+        private void codeGenXnorGateDeclaration(XnorGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassVisitor writer) throws Exception {
                 int count = item.gateConnections.size() - 3;
                 
                 for(int i = 0; i < count; i++) {
@@ -468,10 +747,10 @@ public class VerilogToJavaGen {
                         codeGenDeepExpression(exp, moduleConstructor, modName, writer);   // Value
                         moduleConstructor.visitInsn(Opcodes.AASTORE);
                 }
-                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/XnorGate", "<Init>", "(Lede/stl/circuit/Web;Lede/stl/circuit/Web;Lede/stl/circuit/Web;[Lede/stl/circuit/Web;)V", false);
+                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/XnorGate", "<init>", "(Lede/stl/circuit/Web;Lede/stl/circuit/Web;Lede/stl/circuit/Web;[Lede/stl/circuit/Web;)V", false);
         }
         
-        private void codeGenXorGateDeclaration(XorGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception {
+        private void codeGenXorGateDeclaration(XorGateDeclaration item, MethodVisitor moduleConstructor, String modName, ClassVisitor writer) throws Exception {
                 int count = item.gateConnections.size() - 3;
                 
                 for(int i = 0; i < count; i++) {
@@ -488,7 +767,7 @@ public class VerilogToJavaGen {
                         codeGenDeepExpression(exp, moduleConstructor, modName, writer);   // Value
                         moduleConstructor.visitInsn(Opcodes.AASTORE);
                 }
-                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/XnorGate", "<Init>", "(Lede/stl/circuit/Web;Lede/stl/circuit/Web;Lede/stl/circuit/Web;[Lede/stl/circuit/Web;)V", false);
+                moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/XnorGate", "<init>", "(Lede/stl/circuit/Web;Lede/stl/circuit/Web;Lede/stl/circuit/Web;[Lede/stl/circuit/Web;)V", false);
         }
 
         private String nameOf(ModuleItem declaration) throws Exception {
@@ -528,54 +807,51 @@ public class VerilogToJavaGen {
 
         private String typeOf(ModuleItem declaration) throws Exception {
                 if (declaration instanceof Input.Wire.Vector.Ident)
-                        return "Lede/stl/values/VectorVal;";
+                        return "Lede/stl/values/Value;";
                 else if (declaration instanceof Input.Reg.Vector.Ident)
-                        return "Lede/stl/values/VectorVal";
+                        return "Lede/stl/values/Value;";
                 else if (declaration instanceof Input.Wire.Scalar.Ident)
-                        return "Lede/stl/circuit/WireVal;";
+                        return "Lede/stl/values/Value;";
                 else if (declaration instanceof Input.Reg.Scalar.Ident)
-                        return "Lede/stl/values/RegVal;";
+                        return "Lede/stl/values/Value;";
                 else if (declaration instanceof Output.Wire.Vector.Ident)
-                        return "Lede/stl/values/VectorVal;";
+                        return "Lede/stl/values/Value;";
                 else if (declaration instanceof Output.Reg.Vector.Ident)
-                        return "Lede/stl/values/VectorVal;";
+                        return "Lede/stl/values/Value;";
                 else if (declaration instanceof Output.Wire.Scalar.Ident)
-                        return "Lede/stl/circuit/WireVal;";
+                        return "Lede/stl/values/Value;";
                 else if (declaration instanceof Output.Reg.Scalar.Ident)
-                        return "Lede/stl/values/RegVal;";
+                        return "Lede/stl/values/Value;";
                 else if (declaration instanceof Wire.Vector.Ident)
-                        return "Lede/stl/values/VectorVal;";
+                        return "Lede/stl/values/Value;";
                 else if (declaration instanceof Reg.Vector.Ident)
-                        return "Lede/stl/values/VectorVal;";
+                        return "Lede/stl/values/Value;";
                 else if (declaration instanceof Wire.Scalar.Ident)
-                        return "Lede/stl/circuit/WireVal;";
+                        return "Lede/stl/values/Value;";
                 else if (declaration instanceof Reg.Scalar.Ident)
-                        return "Lede/stl/values/RegVal;";
+                        return "Lede/stl/values/Value;";
                 else if (declaration instanceof Int.Ident)
-                        return "Lede/stl/values/IntVal;";
+                        return "Lede/stl/values/Value;";
                 else if (declaration instanceof Real.Ident)
-                        return "Lede/stl/values/RealVal;";
+                        return "Lede/stl/values/Value;";
                 else {
                         Utils.errorAndExit("Error Could not find Ident Declaration with the following type " + declaration.getClass().getName());
                         return "";
                 }
         }
         
-        private void codeGenDeepFunction(FunctionDeclaration decl, String modName, ClassWriter moduleWriter) throws Exception{
-	        pushScope(false);
-                StringBuilder methodType = new StringBuilder();
-                methodType.append('(');
+        private void codeGenDeepFunction(FunctionDeclaration decl, String modName, ClassVisitor moduleWriter) throws Exception{
+                pushScope();
 
+                this.localAndArgNumber = 3;
                 for (ModuleItem param : decl.paramaters) {
-                        String str = typeOf(param);
-                        methodType.append(str);
+                        if(isParam(param)){
+                                addElem(nameOf(param));
+                        }
                 }
 
-                methodType.append(')');
-                methodType.append(typeOf(decl.functionName));
-                
                 String methodName = nameOf(decl.functionName);
-                funcTypes.addEntry(methodName + "Deep", methodType.toString());
+                String methodType = funcTypes.getEntry(methodName + "Deep");
 
                 MethodVisitor methodVisit = moduleWriter.visitMethod(Opcodes.ACC_PUBLIC, // Access: public static
                         methodName + "Deep", // Name: main
@@ -584,28 +860,40 @@ public class VerilogToJavaGen {
                 );
 
                 methodVisit.visitCode();
-                codeGenDeepStatement(decl.stat, methodName + "Deep", methodVisit, modName, moduleWriter);
-                methodVisit.visitInsn(Opcodes.RETURN);
-                methodVisit.visitMaxs(0, 0); // COMPUTE_MAXS and COMPUTE_FRAMES handle these automatically
-                methodVisit.visitEnd();
-		popScope(false);
-        }
 
-        private void codeGenShallowFunction(FunctionDeclaration decl, String modName, ClassWriter moduleWriter) throws Exception{
-	        pushScope(false);
-                StringBuilder methodType = new StringBuilder();
-                methodType.append('(');
-
-                for (ModuleItem param : decl.paramaters) {
-                        String str = typeOf(param);
-                        methodType.append(str);
+                for(ModuleItem param: decl.paramaters){
+                        if(!isParam(param)){
+                                addElem(nameOf(param));
+                        }
                 }
 
-                methodType.append(')');
-                methodType.append(typeOf(decl.functionName));
-                
+                codeGenDeepStatement(decl.stat, methodName + "Deep", methodVisit, modName, moduleWriter);
+                int l = getLargestInScope();
+                int s = getSmallestInScope();
+                for(int i = l; i >= s; i--){
+                        methodVisit.visitInsn(Opcodes.ACONST_NULL);
+                        methodVisit.visitVarInsn(Opcodes.ASTORE, i);
+                }
+                methodVisit.visitInsn(Opcodes.ARETURN);
+                methodVisit.visitMaxs(0, 0); // COMPUTE_MAXS and COMPUTE_FRAMES handle these automatically
+                methodVisit.visitEnd();
+                this.localAndArgNumber = s;
+                popScope();
+        }
+
+        private void codeGenShallowFunction(FunctionDeclaration decl, String modName, ClassVisitor moduleWriter) throws Exception{
+                printStringNow("Function is " + nameOf(decl.functionName));
+                pushScope();
+
+                this.localAndArgNumber = 3;
+                for (ModuleItem param : decl.paramaters) {
+                        if(isParam(param)){
+                                addElem(nameOf(param));
+                        }
+                }
+
                 String methodName = nameOf(decl.functionName);
-                funcTypes.addEntry(methodName + "Shallow", methodType.toString());
+                String methodType = funcTypes.getEntry(methodName + "Shallow");
 
                 MethodVisitor methodVisit = moduleWriter.visitMethod(Opcodes.ACC_PUBLIC, // Access: public static
                         methodName + "Shallow", // Name: main
@@ -614,98 +902,282 @@ public class VerilogToJavaGen {
                 );
 
                 methodVisit.visitCode();
+                
+                for(ModuleItem param: decl.paramaters){
+                        if(!isParam(param)){
+                                addElem(nameOf(param));
+                                codeGenLocalVariable(param, modName, methodVisit, moduleWriter);
+                        }
+                }
+                
                 codeGenShallowStatement(decl.stat, methodName + "Shallow", methodVisit, modName, moduleWriter);
-                methodVisit.visitInsn(Opcodes.RETURN);
-                methodVisit.visitMaxs(0, 0); // COMPUTE_MAXS and COMPUTE_FRAMES handle these automatically
+                int l = getLargestInScope();
+                int s = getSmallestInScope();
+                for(int i = l; i >= s; i--){
+                        methodVisit.visitInsn(Opcodes.ACONST_NULL);
+                        methodVisit.visitVarInsn(Opcodes.ASTORE, i);
+                }
+                methodVisit.visitInsn(Opcodes.ARETURN);
+                methodVisit.visitMaxs(0, 0);
                 methodVisit.visitEnd();
-		popScope(false);
+                this.localAndArgNumber = s;
+                popScope();
         }
         
-        private void codeGenDeepTask(TaskDeclaration decl, String modName, ClassWriter moduleWriter) throws Exception {
-	        pushScope(false);
-                StringBuilder methodType = new StringBuilder();
-                methodType.append('(');
-		this.localVariableNumber = 1;
+        private void codeGenDeepTask(TaskDeclaration decl, String modName, ClassVisitor moduleWriter) throws Exception {
+                pushScope();
+
+                this.localAndArgNumber = 3;
                 for (ModuleItem param : decl.paramaters) {
-                        String str = typeOf(param);
-			String name = nameOf(param);
-                        methodType.append(str);
-			addElem(name);
+                        if(isParam(param)){
+                                addElem(nameOf(param));
+                        }
                 }
 
-                methodType.append(')');
-                methodType.append('V');
-                
                 String methodName = decl.taskName + "Deep";
-                funcTypes.addEntry(methodName, methodType.toString());
-                
+                String methodType = funcTypes.getEntry(methodName);
+
                 MethodVisitor methodVisit = moduleWriter.visitMethod(Opcodes.ACC_PUBLIC, // Access: public static
                         methodName, // Name: main
                         methodType.toString(), null, // Signature (generics related, null for simple types)
                         null // Exceptions thrown (null for none)
                 );
-                
+
                 methodVisit.visitCode();
-                codeGenDeepStatement(decl.stat, methodName, methodVisit, modName, moduleWriter);
-                methodVisit.visitInsn(Opcodes.RETURN);
-                methodVisit.visitMaxs(0, 0); // COMPUTE_MAXS and COMPUTE_FRAMES handle these automatically
-                methodVisit.visitEnd();
-		popScope(false);
-        }
-        
-        private void codeGenShallowTask(TaskDeclaration decl, String modName, ClassWriter moduleWriter) throws Exception {
-	        pushScope(false);
-	        StringBuilder methodType = new StringBuilder();
-                methodType.append('(');
-		this.localVariableNumber = 1;
-                for (ModuleItem param : decl.paramaters) {
-                        String str = typeOf(param);
-			String name = nameOf(param);
-                        methodType.append(str);
-			addElem(name);
+                
+                for(ModuleItem param: decl.paramaters){
+                        if(!isParam(param)){
+                                addElem(nameOf(param));
+                        }
                 }
 
-                methodType.append(')');
-                methodType.append('V');
-                 
-                String methodName = decl.taskName + "Shallow";
-                funcTypes.addEntry(methodName, methodType.toString());
-
-                MethodVisitor methodVisit = moduleWriter.visitMethod(Opcodes.ACC_PUBLIC, // Access: public static
-                        methodName + "Shallow", // Name: main
-                        methodType.toString(), null, // Signature (generics related, null for simple types)
-                        null // Exceptions thrown (null for none)
-                );
-
-                methodVisit.visitCode();
-                codeGenShallowStatement(decl.stat, methodName, methodVisit, modName, moduleWriter);
+                
+                codeGenDeepStatement(decl.stat, methodName, methodVisit, modName, moduleWriter);
+                int l = getLargestInScope();
+                int s = getSmallestInScope();
+                for(int i = l; i >= s; i--){
+                        methodVisit.visitInsn(Opcodes.ACONST_NULL);
+                        methodVisit.visitVarInsn(Opcodes.ASTORE, i);
+                }
                 methodVisit.visitInsn(Opcodes.RETURN);
                 methodVisit.visitMaxs(0, 0); // COMPUTE_MAXS and COMPUTE_FRAMES handle these automatically
                 methodVisit.visitEnd();
-		popScope(false);
-        }
-        
-        private void codeGenPossibleProcedure(ModuleItem item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception{
-                if(item instanceof ProcedureDeclaration) codeGenProcedure((ProcedureDeclaration)item, modName, writer);
+                this.localAndArgNumber = s;
+                popScope();
         }
 
-        private void codeGenProcedure(ProcedureDeclaration decl, String modName, ClassWriter moduleWriter) throws Exception{
-                if(decl instanceof TaskDeclaration) codeGenTask((TaskDeclaration)decl, modName, moduleWriter);
-                else if(decl instanceof FunctionDeclaration) codeGenFunction((FunctionDeclaration)decl, modName, moduleWriter);
+        private boolean isParam(ModuleItem item){
+                if(item instanceof Input.Wire.Vector.Ident || item instanceof Input.Reg.Vector.Ident || item instanceof Input.Wire.Scalar.Ident || item instanceof Input.Reg.Scalar.Ident){
+                        return true;
+                } else {
+                        return false;
+                }
+        }
+        
+        private void codeGenShallowTask(TaskDeclaration decl, String modName, ClassVisitor moduleWriter) throws Exception {
+                printStringNow("Task is " + decl.taskName);
+                pushScope();
+
+                this.localAndArgNumber = 3;
+                for (ModuleItem param : decl.paramaters) {
+                        if(isParam(param)){
+                                addElem(nameOf(param));
+                        }
+                }
+
+                String methodName = decl.taskName + "Shallow";
+                String methodType = funcTypes.getEntry(methodName);
+
+                MethodVisitor methodVisit = moduleWriter.visitMethod(Opcodes.ACC_PUBLIC,
+                        methodName,
+                        methodType.toString(), null,
+                        null
+                );
+                
+                methodVisit.visitCode();
+                
+                for(ModuleItem param: decl.paramaters){
+                        if(!isParam(param)){
+                                addElem(nameOf(param));
+                                codeGenLocalVariable(param, modName, methodVisit, moduleWriter);
+                        }
+                }
+
+                codeGenShallowStatement(decl.stat, methodName, methodVisit, modName, moduleWriter);
+                int l = getLargestInScope();
+                int s = getSmallestInScope();
+                for(int i = l; i >= s; i--){
+                        methodVisit.visitInsn(Opcodes.ACONST_NULL);
+                        methodVisit.visitVarInsn(Opcodes.ASTORE, i);
+                }
+                methodVisit.visitInsn(Opcodes.RETURN);
+                methodVisit.visitMaxs(0, 0); // COMPUTE_MAXS and COMPUTE_FRAMES handle these automatically
+                methodVisit.visitEnd();
+                this.localAndArgNumber = s;
+                popScope();
+        }
+
+        private void codeGenLocalVariable(ModuleItem item, String modName, MethodVisitor methodVisit, ClassVisitor moduleWriter) throws Exception{
+                if(item instanceof Int.Ident){
+                        codeGenIntIdentLocal((Int.Ident)item, modName, methodVisit, moduleWriter);
+                } else if(item instanceof Real.Ident){
+                        codeGenRealIdentLocal((Real.Ident)item, modName, methodVisit, moduleWriter);
+                } else if(item instanceof Int.Array){
+                        codeGenIntArrayLocal((Int.Array)item, modName, methodVisit, moduleWriter);
+                } else if(item instanceof Reg.Scalar.Ident){
+                        codeGenRegScalarIdentLocal((Reg.Scalar.Ident)item, modName, methodVisit, moduleWriter);
+                } else if(item instanceof Reg.Vector.Ident){
+                        codeGenRegVectorIdentLocal((Reg.Vector.Ident)item, modName, methodVisit, moduleWriter);
+                } else if(item instanceof Reg.Scalar.Array){
+                        codeGenRegScalarArrayLocal((Reg.Scalar.Array)item, modName, methodVisit, moduleWriter);
+                } else if(item instanceof Reg.Vector.Array){
+                        codeGenRegVectorArrayLocal((Reg.Vector.Array)item, modName, methodVisit, moduleWriter);
+                } else {
+                        Utils.errorAndExit("Error invalid local variable type" + item.getClass().getName());
+                }
+        }
+
+        private void codeGenIntIdentLocal(Int.Ident item, String modName, MethodVisitor methodVisit, ClassVisitor moduleWriter) throws Exception{
+                methodVisit.visitTypeInsn(Opcodes.NEW, "ede/stl/values/IntVal");
+                methodVisit.visitInsn(Opcodes.DUP);
+                pushInt(0, methodVisit);
+                methodVisit.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/IntVal", "<init>", "(I)V", false);
+                methodVisit.visitVarInsn(Opcodes.ASTORE, this.getFromScope(nameOf(item)));
+        }
+
+        private void codeGenRealIdentLocal(Real.Ident item, String modName, MethodVisitor methodVisit, ClassVisitor moduleWriter) throws Exception{
+                methodVisit.visitTypeInsn(Opcodes.NEW, "ede/stl/values/RealVal");
+                methodVisit.visitInsn(Opcodes.DUP);
+                pushDouble(0.0, methodVisit);
+                methodVisit.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/RealVal", "<init>", "(D)V", false);
+                methodVisit.visitVarInsn(Opcodes.ASTORE, this.getFromScope(nameOf(item)));
+        }
+
+        private void codeGenIntArrayLocal(Int.Array arr, String modName, MethodVisitor methodVisit, ClassVisitor moduleWriter) throws Exception{
+                methodVisit.visitTypeInsn(Opcodes.NEW, "ede/stl/values/ArrayIntVal");
+                methodVisit.visitInsn(Opcodes.DUP);
+                codeGenShallowExpression(arr.arrayIndex1, methodVisit, modName, moduleWriter);
+                codeGenShallowExpression(arr.arrayIndex2, methodVisit, modName, moduleWriter);
+                methodVisit.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/ArrayIntVal", "<init>", "(Lede/stl/values/Value;Lede/stl/values/Value;)V", false);
+                methodVisit.visitVarInsn(Opcodes.ASTORE, this.getFromScope(nameOf(arr)));
+        }
+
+        private void codeGenRegScalarIdentLocal(Reg.Scalar.Ident item, String modName, MethodVisitor methodVisit, ClassVisitor moduleWriter) throws Exception{
+                methodVisit.visitTypeInsn(Opcodes.NEW, "ede/stl/values/RegVal");
+                methodVisit.visitInsn(Opcodes.DUP);
+                pushInt(0, methodVisit);
+                methodVisit.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/RegVal", "<init>", "(Z)V", false);
+                methodVisit.visitVarInsn(Opcodes.ASTORE, this.getFromScope(nameOf(item)));
+        }
+
+        private void codeGenRegVectorIdentLocal(Reg.Vector.Ident item, String modName, MethodVisitor methodVisit, ClassVisitor moduleWriter) throws Exception{
+                methodVisit.visitTypeInsn(Opcodes.NEW, "ede/stl/values/VectorVal");
+                methodVisit.visitInsn(Opcodes.DUP);
+                codeGenShallowExpression(item.GetIndex1(), methodVisit, modName, moduleWriter);
+                codeGenShallowExpression(item.GetIndex2(), methodVisit, modName, moduleWriter);
+                methodVisit.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/VectorVal", "<init>", "(Lede/stl/values/Value;Lede/stl/values/Value;)V", false);
+                methodVisit.visitVarInsn(Opcodes.ASTORE, this.getFromScope(nameOf(item)));
+        }
+
+        private void codeGenRegScalarArrayLocal(Reg.Scalar.Array arr, String modName, MethodVisitor methodVisit, ClassVisitor moduleWriter) throws Exception{
+                methodVisit.visitTypeInsn(Opcodes.NEW, "ede/stl/values/ArrayRegVal");
+                methodVisit.visitInsn(Opcodes.DUP);
+                codeGenShallowExpression(arr.arrayIndex1, methodVisit, modName, moduleWriter);
+                codeGenShallowExpression(arr.arrayIndex2, methodVisit, modName, moduleWriter);
+                methodVisit.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/ArrayRegVal", "<init>", "(Lede/stl/values/Value;Lede/stl/values/Value;)V", false);
+                methodVisit.visitVarInsn(Opcodes.ASTORE, this.getFromScope(nameOf(arr)));
+        }
+
+        private void codeGenRegVectorArrayLocal(Reg.Vector.Array arr, String modName, MethodVisitor methodVisit, ClassVisitor moduleWriter) throws Exception{
+                methodVisit.visitTypeInsn(Opcodes.NEW, "ede/stl/values/ArrayVectorVal");
+                methodVisit.visitInsn(Opcodes.DUP);
+                codeGenShallowExpression(arr.arrayIndex1, methodVisit, modName, moduleWriter);
+                codeGenShallowExpression(arr.arrayIndex2, methodVisit, modName, moduleWriter);
+                codeGenShallowExpression(arr.GetIndex1(), methodVisit, modName, moduleWriter);
+                codeGenShallowExpression(arr.GetIndex2(), methodVisit, modName, moduleWriter);
+                methodVisit.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/ArrayVectorVal", "<init>", "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;)V", false);
+                methodVisit.visitVarInsn(Opcodes.ASTORE, this.getFromScope(nameOf(arr)));
+        }
+
+        private void codeGenParamTypesForProcedure(ModuleItem item, MethodVisitor moduleConstructor, String modName, ClassVisitor moduleWriter, HashSet<String> methods) throws Exception{
+                if(item instanceof ProcedureDeclaration) codeGenParamTypesForProcedure((ProcedureDeclaration)item, moduleConstructor, modName, moduleWriter, methods);
+        }
+        
+        private void codeGenPossibleProcedure(ModuleItem item, MethodVisitor moduleConstructor, String modName, ClassVisitor writer, HashSet<String> methods) throws Exception{
+                if(item instanceof ProcedureDeclaration) codeGenProcedure((ProcedureDeclaration)item, modName, writer, methods);
+        }
+
+        private void codeGenParamTypesForProcedure(ProcedureDeclaration decl, MethodVisitor moduleConstructor, String modName, ClassVisitor moduleWriter, HashSet<String> methods) throws Exception{
+                if(decl instanceof TaskDeclaration) codeGenParamTypesForTask((TaskDeclaration)decl, moduleConstructor, modName, moduleWriter, methods);
+                else if(decl instanceof FunctionDeclaration) codeGenParamTypesForFunction((FunctionDeclaration)decl, moduleConstructor, modName, moduleWriter, methods);
+        }
+
+        private void codeGenParamTypesForTask(TaskDeclaration task, MethodVisitor moduleConstructor, String modName, ClassVisitor moduleWriter, HashSet<String> methods) throws Exception{
+                StringBuilder sb = new StringBuilder();
+                sb.append('(');
+                sb.append("Lede/stl/gui/GuiEde;Lede/stl/compiler/CompiledEnvironment;");
+                for(ModuleItem item: task.paramaters){
+                        if(isParam(item)){
+                                String type = typeOf(item);
+                                sb.append(type);
+                        }
+                }
+                sb.append(')');
+                sb.append('V');
+
+                if(methods.contains(task.taskName + "Shallow"))
+                        addType(task.taskName + "Shallow", sb.toString());
+                if(methods.contains(task.taskName + "Deep"))
+                        addType(task.taskName + "Deep", sb.toString());
+        }
+
+        private void codeGenParamTypesForFunction(FunctionDeclaration func, MethodVisitor moduleConstructor, String modName, ClassVisitor moduleWriter, HashSet<String> methods) throws Exception{
+                StringBuilder sb = new StringBuilder();
+                sb.append('(');
+                sb.append("Lede/stl/gui/GuiEde;Lede/stl/compiler/CompiledEnvironment;");
+                for(ModuleItem item: func.paramaters){
+                        if(isParam(item)){
+                                String type = typeOf(item);
+                                sb.append(type);
+                        }
+                }
+                sb.append(')');
+                sb.append(typeOf(func.functionName));
+                String name = nameOf(func.functionName);
+
+                if(methods.contains(name + "Shallow"))
+                        addType(name + "Shallow", sb.toString());
+                if(methods.contains(name + "Deep"))
+                        addType(name + "Deep", sb.toString());
+        }
+
+        private void codeGenProcedure(ProcedureDeclaration decl, String modName, ClassVisitor moduleWriter, HashSet<String> methods) throws Exception{
+                if(decl instanceof TaskDeclaration) codeGenTask((TaskDeclaration)decl, modName, moduleWriter, methods);
+                else if(decl instanceof FunctionDeclaration) codeGenFunction((FunctionDeclaration)decl, modName, moduleWriter, methods);
                 else Utils.errorAndExit("Error invalid procGen");
         }
         
-        private void codeGenTask(TaskDeclaration task, String modName, ClassWriter moduleWriter) throws Exception {
-                codeGenShallowTask(task, modName, moduleWriter);
-                codeGenDeepTask(task, modName, moduleWriter);
+        private void codeGenTask(TaskDeclaration task, String modName, ClassVisitor moduleWriter, HashSet<String> methods) throws Exception {
+                if(methods.contains(task.taskName + "Shallow"))
+                        codeGenShallowTask(task, modName, moduleWriter);
+                if(methods.contains(task.taskName + "Deep"))
+                        codeGenDeepTask(task, modName, moduleWriter);
         }
         
-        private void codeGenFunction(FunctionDeclaration myDecl, String modName, ClassWriter moduleWriter) throws Exception {
+        private void codeGenFunction(FunctionDeclaration myDecl, String modName, ClassVisitor moduleWriter) throws Exception {
                 codeGenShallowFunction(myDecl, modName, moduleWriter);
                 codeGenDeepFunction(myDecl, modName, moduleWriter);
         }
 
-        private void codeGenShallowStatement(Statement stat, String methodName, MethodVisitor method, String modName, ClassWriter modWriter) throws Exception{
+        private void codeGenFunction(FunctionDeclaration myDecl, String modName, ClassVisitor moduleWriter, HashSet<String> methods) throws Exception {
+                String name = nameOf(myDecl.functionName);
+                if(methods.contains(name + "Shallow"))
+                        codeGenShallowFunction(myDecl, modName, moduleWriter);
+                if(methods.contains(name + "Deep"))
+                        codeGenDeepFunction(myDecl, modName, moduleWriter);
+        }
+
+        private void codeGenShallowStatement(Statement stat, String methodName, MethodVisitor method, String modName, ClassVisitor modWriter) throws Exception{
                 if (stat instanceof CaseStatement)
                         codeGenCaseShallowStatement((CaseStatement)stat, methodName, method, modName, modWriter);
                 else if (stat instanceof Assignment)
@@ -729,14 +1201,16 @@ public class VerilogToJavaGen {
                 }
         }
 
-        private void codeGenCaseShallowStatement(CaseStatement stat, String methodName, MethodVisitor method, String modName, ClassWriter module) throws Exception{
+        private void codeGenCaseShallowStatement(CaseStatement stat, String methodName, MethodVisitor method, String modName, ClassVisitor module) throws Exception{
                 if (stat instanceof CaseXStatement)
                         codeGenShallowCaseXStatement((CaseXStatement)stat, methodName, method, modName, module);
                 else if (stat instanceof CaseZStatement)
                         codeGenCaseZStatement((CaseZStatement)stat, methodName, method, modName, module);
                 else {
                         codeGenShallowExpression(stat.exp, method, modName, module);
-                        method.visitVarInsn(Opcodes.ASTORE, 0);
+                        int exprResult = this.localAndArgNumber;
+                        this.localAndArgNumber++;
+                        method.visitVarInsn(Opcodes.ASTORE, exprResult);
 
                         for (CaseItem statement : stat.itemList) {
                                 if (statement instanceof ExprCaseItem) {
@@ -746,12 +1220,12 @@ public class VerilogToJavaGen {
 
                                         for (Expression exp : item.expList) {
                                                         codeGenShallowExpression(exp, method, modName, module);
-                                                        method.visitVarInsn(Opcodes.ALOAD, 0);
+                                                        method.visitVarInsn(Opcodes.ALOAD, exprResult);
                                                         method.visitMethodInsn(Opcodes.INVOKESTATIC,
-                      "ede/stl/common/Utils", // Internal name of the class
-                      "caseBoolean",           // Name of the static method
-                      "(Lede/stl/values/Value;Lede/stl/values/Value;)B",                        // Method descriptor (void return, no args)
-                      false);
+                                                      "ede/stl/common/Utils", // Internal name of the class
+                                                      "caseBoolean",           // Name of the static method
+                                                      "(Lede/stl/values/Value;Lede/stl/values/Value;)B",                        // Method descriptor (void return, no args)
+                                                      false);
                                                         method.visitJumpInsn(Opcodes.IFNE, equalLabel);
                                         }
 
@@ -767,9 +1241,11 @@ public class VerilogToJavaGen {
                 }
         }
         
-        private void codeGenShallowCaseXStatement(CaseXStatement stat, String methodName, MethodVisitor method, String modName, ClassWriter module) throws Exception{
+        private void codeGenShallowCaseXStatement(CaseXStatement stat, String methodName, MethodVisitor method, String modName, ClassVisitor module) throws Exception{
                 codeGenShallowExpression(stat.exp, method, modName, module);
-                method.visitVarInsn(Opcodes.ASTORE, 0);
+                int exprResult = this.localAndArgNumber;
+                this.localAndArgNumber++;
+                method.visitVarInsn(Opcodes.ASTORE, exprResult);
                 
                 for(CaseItem statement: stat.itemList) {
                         if(statement instanceof ExprCaseItem) {
@@ -780,7 +1256,41 @@ public class VerilogToJavaGen {
 
                                 for (Expression exp : item.expList) {
                                                 codeGenShallowExpression(exp, method, modName, module);
-                                                method.visitVarInsn(Opcodes.ALOAD, 0);
+                                                method.visitVarInsn(Opcodes.ALOAD, exprResult);
+                                                method.visitMethodInsn(Opcodes.INVOKESTATIC,
+              "ede/stl/common/Utils", // Internal name of the class
+              "caseBoolean",           // Name of the static method
+              "(Lede/stl/values/Value;Lede/stl/values/Value;)Z",                        // Method descriptor (void return, no args)
+              false);
+                                                method.visitJumpInsn(Opcodes.IFNE, equalLabel);
+                                }
+                                
+                                method.visitJumpInsn(Opcodes.GOTO, endStatLabel);
+                                method.visitLabel(equalLabel);
+                                codeGenShallowStatement(item.statement, methodName, method, modName, module);
+                                method.visitLabel(endStatLabel);
+                        } else {
+                                codeGenShallowStatement(statement.statement, methodName, method, modName, module);
+                        }
+                }
+        }
+        
+        private void codeGenCaseZStatement(CaseZStatement stat, String methodName, MethodVisitor method, String modName, ClassVisitor module) throws Exception {
+                codeGenShallowExpression(stat.exp, method, modName, module);
+                int exprResult = this.localAndArgNumber;
+                this.localAndArgNumber++;
+                method.visitVarInsn(Opcodes.ASTORE, exprResult);
+                
+                for(CaseItem statement: stat.itemList) {
+                        if(statement instanceof ExprCaseItem) {
+                                ExprCaseItem item = (ExprCaseItem)statement;
+                                
+                                Label equalLabel = new Label();
+                                Label endStatLabel = new Label();
+
+                                for (Expression exp : item.expList) {
+                                                codeGenShallowExpression(exp, method, modName, module);
+                                                method.visitVarInsn(Opcodes.ALOAD, exprResult);
                                                 method.visitMethodInsn(Opcodes.INVOKESTATIC,
               "ede/stl/common/Utils", // Internal name of the class
               "caseBoolean",           // Name of the static method
@@ -799,64 +1309,32 @@ public class VerilogToJavaGen {
                 }
         }
         
-        private void codeGenCaseZStatement(CaseZStatement stat, String methodName, MethodVisitor method, String modName, ClassWriter module) throws Exception {
-                codeGenShallowExpression(stat.exp, method, modName, module);
-                method.visitVarInsn(Opcodes.ASTORE, 0);
-                
-                for(CaseItem statement: stat.itemList) {
-                        if(statement instanceof ExprCaseItem) {
-                                ExprCaseItem item = (ExprCaseItem)statement;
-                                
-                                Label equalLabel = new Label();
-                                Label endStatLabel = new Label();
-
-                                for (Expression exp : item.expList) {
-                                                codeGenShallowExpression(exp, method, modName, module);
-                                                method.visitVarInsn(Opcodes.ALOAD, 0);
-                                                method.visitMethodInsn(Opcodes.INVOKESTATIC,
-              "ede/stl/common/Utils", // Internal name of the class
-              "caseBoolean",           // Name of the static method
-              "(Lede/stl/values/Value;Lede/stl/values/Value;)B",                        // Method descriptor (void return, no args)
-              false);
-                                                method.visitJumpInsn(Opcodes.IFNE, equalLabel);
-                                }
-                                
-                                method.visitJumpInsn(Opcodes.GOTO, endStatLabel);
-                                method.visitLabel(equalLabel);
-                                codeGenShallowStatement(item.statement, methodName, method, modName, module);
-                                method.visitLabel(endStatLabel);
-                        } else {
-                                codeGenShallowStatement(statement.statement, methodName, method, modName, module);
-                        }
-                }
-        }
-        
-        private void codeGenShallowIfStatement(IfStatement stat, String methodName, MethodVisitor method, String modName, ClassWriter module) throws Exception{
+        private void codeGenShallowIfStatement(IfStatement stat, String methodName, MethodVisitor method, String modName, ClassVisitor module) throws Exception{
                 if(stat instanceof IfElseStatement) {
                         codeGenShallowIfElseStatement((IfElseStatement)stat, methodName, method, modName, module);
                 } else {
                         codeGenShallowExpression(stat.condition, method, modName, module);
                         Label endLabel = new Label();
                         method.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-              "ede/stl/values/Value", // Internal name of the class
-              "boolValue",           // Name of the static method
-              "(Lede/stl/values/Value;)B",                        // Method descriptor (void return, no args)
-              false);
+                      "ede/stl/values/Value", // Internal name of the class
+                      "boolValue",           // Name of the static method
+                      "()Z",                        // Method descriptor (void return, no args)
+                      false);
                         method.visitJumpInsn(Opcodes.IFEQ, endLabel);
                         codeGenShallowStatement(stat.trueStatement, methodName, method, modName, module);
                         method.visitLabel(endLabel);
                 }
         }
         
-        private void codeGenShallowIfElseStatement(IfElseStatement stat, String methodName, MethodVisitor method, String modName, ClassWriter module) throws Exception {
+        private void codeGenShallowIfElseStatement(IfElseStatement stat, String methodName, MethodVisitor method, String modName, ClassVisitor module) throws Exception {
                 codeGenShallowExpression(stat.condition, method, modName, module);
                 Label endLabel = new Label();
                 Label elseLabel = new Label();
                 method.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-      "ede/stl/values/Value", // Internal name of the class
-      "boolValue",           // Name of the static method
-      "(Lede/stl/values/Value;)B",                        // Method descriptor (void return, no args)
-      false);
+              "ede/stl/values/Value", // Internal name of the class
+              "boolValue",           // Name of the static method
+              "()Z",                        // Method descriptor (void return, no args)
+              false);
                 method.visitJumpInsn(Opcodes.IFEQ, elseLabel);
                 codeGenShallowStatement(stat.trueStatement, methodName, method, modName, module);
                 method.visitJumpInsn(Opcodes.GOTO, endLabel);
@@ -865,14 +1343,14 @@ public class VerilogToJavaGen {
                 method.visitLabel(endLabel);
         }
         
-        private void codeGenShallowForeverLoop(ForeverStatement loop, String methodName, MethodVisitor method, String modName, ClassWriter writer) throws Exception {
+        private void codeGenShallowForeverLoop(ForeverStatement loop, String methodName, MethodVisitor method, String modName, ClassVisitor writer) throws Exception {
                 Label begin = new Label();
                 method.visitLabel(begin);
                 codeGenShallowStatement(loop.stat, methodName, method, modName, writer);
                 method.visitJumpInsn(Opcodes.GOTO, begin);
         }
         
-        private void codeGenShallowForLoop(ForStatement stat, String methodName, MethodVisitor method, String modName, ClassWriter module) throws Exception{
+        private void codeGenShallowForLoop(ForStatement stat, String methodName, MethodVisitor method, String modName, ClassVisitor module) throws Exception{
                 codeGenShallowStatement(stat.init, methodName, method, modName, module);
                 
                 Label loopBegin = new Label();
@@ -888,21 +1366,25 @@ public class VerilogToJavaGen {
                 method.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
       "ede/stl/values/Value", // Internal name of the class
       "boolValue",           // Name of the static method
-      "(Lede/stl/values/Value;)B",                        // Method descriptor (void return, no args)
+      "()Z",                        // Method descriptor (void return, no args)
       false);
                 method.visitJumpInsn(Opcodes.IFNE, loopBody);
         }
         
-        private void codeGenShallowRepeatLoop(RepeatStatement loop, String methodName, MethodVisitor method, String modName, ClassWriter module) throws Exception{
+        private void codeGenShallowRepeatLoop(RepeatStatement loop, String methodName, MethodVisitor method, String modName, ClassVisitor module) throws Exception{
                  pushInt(0, method);
-                 method.visitVarInsn(Opcodes.ISTORE, 0);
+                 int localArg1 = this.localAndArgNumber;
+                 method.visitVarInsn(Opcodes.ISTORE, localArg1);
+                 this.localAndArgNumber++;
                  codeGenShallowExpression(loop.exp, method, modName, module);
                  method.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
               "ede/stl/values/Value", // Internal name of the class
               "intValue",           // Name of the static method
-              "(Lede/stl/values/Value;)I",                        // Method descriptor (void return, no args)
+              "()I",                        // Method descriptor (void return, no args)
               false);
-                 method.visitVarInsn(Opcodes.ISTORE, 1);
+                 int localArg2 = this.localAndArgNumber;
+                 method.visitVarInsn(Opcodes.ISTORE, localArg2);
+                 this.localAndArgNumber++;
                  
                  Label loopBegin = new Label();
                  method.visitJumpInsn(Opcodes.GOTO, loopBegin);
@@ -910,15 +1392,15 @@ public class VerilogToJavaGen {
                  Label loopBody = new Label();
                  method.visitLabel(loopBody);
                  codeGenShallowStatement(loop.stat, methodName, method, modName, module);
-                 method.visitIincInsn(0, 1);
+                 method.visitIincInsn(localArg1, 1);
                  
                  method.visitLabel(loopBegin);
-                 method.visitVarInsn(Opcodes.ILOAD, 0);
-                 method.visitVarInsn(Opcodes.ILOAD, 1);
+                 method.visitVarInsn(Opcodes.ILOAD, localArg1);
+                 method.visitVarInsn(Opcodes.ILOAD, localArg2);
                  method.visitJumpInsn(Opcodes.IF_ICMPLT, loopBody);
         }
         
-        private void codeGenShallowWhileLoop(WhileStatement loop, String methodName, MethodVisitor method, String modName, ClassWriter module) throws Exception {
+        private void codeGenShallowWhileLoop(WhileStatement loop, String methodName, MethodVisitor method, String modName, ClassVisitor module) throws Exception {
                 Label loopBegin = new Label();
                 method.visitJumpInsn(Opcodes.GOTO, loopBegin);
                 
@@ -929,76 +1411,82 @@ public class VerilogToJavaGen {
                 method.visitLabel(loopBegin);
                 codeGenShallowExpression(loop.exp, method, modName, module);
                 method.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-      "ede/stl/values/Value", // Internal name of the class
-      "boolValue",           // Name of the static method
-      "(Lede/stl/values/Value;)B",                        // Method descriptor (void return, no args)
-      false);
+                "ede/stl/values/Value", // Internal name of the class
+                "boolValue",           // Name of the static method
+                "()Z",                        // Method descriptor (void return, no args)
+                false);
                 method.visitJumpInsn(Opcodes.IFNE, loopBody);
         }
 
-        private void codeGenShallowAssignment(Assignment assign, String methodName, MethodVisitor method, String moduleName, ClassWriter module) throws Exception {
+        private void codeGenShallowAssignment(Assignment assign, String methodName, MethodVisitor method, String moduleName, ClassVisitor module) throws Exception {
                 if(assign instanceof BlockingAssignment) codeGenShallowBlockingAssign((BlockingAssignment)assign, methodName, method, moduleName, module);
                 else if(assign instanceof NonBlockingAssignment) codeGenShallowNonBlockingAssign((NonBlockingAssignment)assign, method, moduleName, module);
                 else Utils.errorAndExit("Invalid Assignment found");
         }
         
-        private void codeGenShallowBlockingAssign(BlockingAssignment assign, String funcName, MethodVisitor method, String modName, ClassWriter module) throws Exception {
-                 codeGenShallowExpression(assign.rightHandSide, method, modName, module);
+        protected void codeGenShallowBlockingAssign(BlockingAssignment assign, String funcName, MethodVisitor method, String modName, ClassVisitor module) throws Exception {
                  if(assign.leftHandSide instanceof Element) {
                           Element leftHandElement = (Element)assign.leftHandSide;
-                          codeGenShallowExpression(leftHandElement.index1, method, modName, module);
                           if(this.localInScope(leftHandElement.labelIdentifier)){
                                 int ptr = this.getFromScope(leftHandElement.labelIdentifier);
-                                  method.visitVarInsn(Opcodes.ALOAD, ptr);
+                                 method.visitVarInsn(Opcodes.ALOAD, ptr);
                           } else if(this.fieldInScope(leftHandElement.labelIdentifier)) {
+                                method.visitVarInsn(Opcodes.ALOAD, 0);
                                 method.visitFieldInsn(Opcodes.GETFIELD, 
-                        modName, // Owner class internal name
-                        leftHandElement.labelIdentifier,           // Field name
-                        "Lede/stl/values/Value;");
+                                modName, // Owner class internal name
+                                leftHandElement.labelIdentifier,           // Field name
+                                "Lede/stl/values/Value;");
                           } else {
                                 Utils.errorAndExit("Error can not find left hand side of assignment" + leftHandElement.labelIdentifier);
                           }
+                          codeGenShallowExpression(leftHandElement.index1, method, modName, module);
+                          codeGenShallowExpression(assign.rightHandSide, method, modName, module);
                           method.visitMethodInsn(Opcodes.INVOKESTATIC,
-          "ede/stl/common/Utils", // Internal name of the class
-          "shallowAssignElem",           // Name of the static method
-          "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;)V",                        // Method descriptor (void return, no args)
-          false);      
+                          "ede/stl/common/Utils", // Internal name of the class
+                          "shallowAssignElem",           // Name of the static method
+                          "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;)V",                        // Method descriptor (void return, no args)
+                          false);      
                  } else if(assign.leftHandSide instanceof Slice) {
                          Slice slice = (Slice)assign.leftHandSide;
-                         codeGenShallowExpression(slice.index2, method, modName, module);
-                         codeGenShallowExpression(slice.index1, method, modName, module);
                          
                          if(this.localInScope(slice.labelIdentifier)) {
                                  int ptr = this.getFromScope(slice.labelIdentifier);
                                  method.visitVarInsn(Opcodes.ALOAD, ptr);
                          } else if(this.fieldInScope(slice.labelIdentifier)) {
+                                 method.visitVarInsn(Opcodes.ALOAD, 0);
                                  method.visitFieldInsn(Opcodes.GETFIELD, 
-                        modName, // Owner class internal name
-                        slice.labelIdentifier,           // Field name
-                        "Lede/stl/values/Value;");
+                                 modName, // Owner class internal name
+                                 slice.labelIdentifier,           // Field name
+                                 "Lede/stl/values/Value;");
                          } else {
                                  Utils.errorAndExit("Error cant find ident " + slice.labelIdentifier);
                          }
+                         codeGenShallowExpression(slice.index2, method, modName, module);
+                         codeGenShallowExpression(slice.index1, method, modName, module);
+                         codeGenShallowExpression(assign.rightHandSide, method, modName, module);
                          method.visitMethodInsn(Opcodes.INVOKESTATIC,
-         "ede/stl/common/Utils", // Internal name of the class
-         "shallowAssignSlice",           // Name of the static method
-         "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;)V",                        // Method descriptor (void return, no args)
-         false);      
+                         "ede/stl/common/Utils", // Internal name of the class
+                         "shallowAssignSlice",           // Name of the static method
+                         "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;)V",                        // Method descriptor (void return, no args)
+                         false);      
                  } else if(assign.leftHandSide instanceof Identifier) {
                          Identifier ident = (Identifier)assign.leftHandSide;
-                         if(ident.labelIdentifier.equals(funcName)) {
-                                 method.visitInsn(Opcodes.RETURN);
+                         if((ident.labelIdentifier + "Shallow").equals(funcName) || (ident.labelIdentifier + "Deep").equals(funcName)) {
+                                 method.visitInsn(Opcodes.ARETURN);
                          } else {
                                  if(localInScope(ident.labelIdentifier)) {
+                                         codeGenShallowExpression(assign.rightHandSide, method, modName, module);
                                          int ptr = this.getFromScope(ident.labelIdentifier);
                                          method.visitVarInsn(Opcodes.ASTORE, ptr);
                                  } else if(fieldInScope(ident.labelIdentifier)){
+                                         method.visitVarInsn(Opcodes.ALOAD, 0);
+                                         codeGenShallowExpression(assign.rightHandSide, method, modName, module);
                                          method.visitFieldInsn(Opcodes.PUTFIELD, 
-             "ede/stl/values/Value", // internal name of the owner class
-             ident.labelIdentifier,                   // field name
-             "Lede/stl/values/Value;");
+                                         modName,
+                                         ident.labelIdentifier,
+                                         "Lede/stl/values/Value;");
                                  } else {
-                                         Utils.errorAndExit("Error cant find left hand side of assign " + ident);
+                                         Utils.errorAndExit("Error cant find left hand side of assign " + ident + "\n in assignment " + assign.toString() + "\nin function" + funcName + "\nin module " + modName);
                                  }
                          }
                  } else {
@@ -1006,7 +1494,7 @@ public class VerilogToJavaGen {
                  }
         }
         
-        private void codeGenShallowNonBlockingAssign(NonBlockingAssignment assign, MethodVisitor method, String modName, ClassWriter module) throws Exception {
+        private void codeGenShallowNonBlockingAssign(NonBlockingAssignment assign, MethodVisitor method, String modName, ClassVisitor module) throws Exception {
                 for(Expression exp: assign.rightHandSide){
                         codeGenShallowExpression(exp, method, modName, module);
                 }
@@ -1020,10 +1508,11 @@ public class VerilogToJavaGen {
                                 int ptr = this.getFromScope(leftHandElement.labelIdentifier);
                                   method.visitVarInsn(Opcodes.ALOAD, ptr);
                           } else if(fieldInScope(leftHandElement.labelIdentifier)) {
+                                method.visitVarInsn(Opcodes.ALOAD, 0);
                                 method.visitFieldInsn(Opcodes.GETFIELD, 
-                        modName, // Owner class internal name
-                        leftHandElement.labelIdentifier,           // Field name
-                        "Lede/stl/values/Value;");
+                                modName, // Owner class internal name
+                                leftHandElement.labelIdentifier,           // Field name
+                                "Lede/stl/values/Value;");
                           } else {
                                 Utils.errorAndExit("Error ident" + leftHandElement.labelIdentifier + " doesnt exist in module " + modName);
                           }
@@ -1040,6 +1529,7 @@ public class VerilogToJavaGen {
                                  int ptr = this.getFromScope(slice.labelIdentifier);
                                  method.visitVarInsn(Opcodes.ALOAD, ptr);
                          } else if(fieldInScope(slice.labelIdentifier)) {
+                                 method.visitVarInsn(Opcodes.ALOAD, 0);
                                  method.visitFieldInsn(Opcodes.GETFIELD, 
                         modName, // Owner class internal name
                         slice.labelIdentifier,           // Field name
@@ -1058,6 +1548,7 @@ public class VerilogToJavaGen {
                                  int ptr = this.getFromScope(ident.labelIdentifier);
                                  method.visitVarInsn(Opcodes.ASTORE, ptr);
                          } else if(fieldInScope(ident.labelIdentifier)) {
+                                 method.visitVarInsn(Opcodes.ALOAD, 0);
                                  method.visitFieldInsn(Opcodes.PUTFIELD, modName, ident.labelIdentifier, "Lede/stl/values/Value;");
                          } else {
                                  Utils.errorAndExit("Error field or local variable for ident " + ident + " was not found!!!");
@@ -1068,35 +1559,56 @@ public class VerilogToJavaGen {
                 }
         }
         
-        private void codeGenShallowTaskCall(TaskStatement stat, MethodVisitor method, String modName, ClassWriter module) throws Exception {
+        protected void codeGenShallowTaskCall(TaskStatement stat, MethodVisitor method, String modName, ClassVisitor module) throws Exception {
                 if(stat instanceof SystemTaskStatement) {
                         codeGenShallowSystemTaskCall((SystemTaskStatement)stat, method, modName, module);
                 } else {
-                        String typeStr = funcTypes.getEntry(stat.taskName);
+                        String typeStr = funcTypes.getEntry(stat.taskName + "Shallow");
+                        method.visitVarInsn(Opcodes.ALOAD, 0);
+                        method.visitVarInsn(Opcodes.ALOAD, 1);
+                        method.visitVarInsn(Opcodes.ALOAD, 2);
+                        
                         for(Expression exp: stat.argumentList) {
                                 codeGenShallowExpression(exp, method, modName, module);
                         }
-                        method.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-					       modName, // Internal name of the class
-					       stat.taskName,           // Name of the static method
-					       typeStr,                        // Method descriptor (void return, no args)
-					       false);
-                }
-        }
-        
-        private void codeGenShallowSystemTaskCall(SystemTaskStatement stat, MethodVisitor method, String modName, ClassWriter module) {
-                if(stat.taskName.equals("fclose")){
                         
+                        method.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
+        modName,
+        stat.taskName + "Shallow",
+        typeStr,
+        false);
                 }
         }
         
-        private void codeGenShallowBlockOfStatements(SeqBlockStatement stat, String methodName, MethodVisitor method, String modName, ClassWriter module) throws Exception{
+        protected void codeGenShallowSystemTaskCall(SystemTaskStatement stat, MethodVisitor method, String modName, ClassVisitor module) throws Exception {
+                if(stat.taskName.equals("fclose")){
+                        codeGenShallowExpression(stat.argumentList.get(0), method, modName, module);
+                        method.visitVarInsn(Opcodes.ALOAD, 2);
+                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "fClose", "(Lede/stl/values/Value;Lede/stl/common/Environment;)V", false);
+                } else if(stat.taskName.equals("display")){
+                        codeGenShallowExpression(stat.argumentList.get(0), method, modName, module);
+                        method.visitIntInsn(Opcodes.BIPUSH, stat.argumentList.size() - 1);
+                        method.visitTypeInsn(Opcodes.ANEWARRAY, "ede/stl/values/Value");
+                        for(int i = 1; i < stat.argumentList.size(); i++){
+                                method.visitInsn(Opcodes.DUP);
+                                method.visitIntInsn(Opcodes.BIPUSH, i - 1);
+                                codeGenShallowExpression(stat.argumentList.get(i), method, modName, module);
+                                method.visitInsn(Opcodes.AASTORE); 
+                        }
+                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "formatString", "(Lede/stl/values/Value;[Lede/stl/values/Value;)Ljava/lang/String;", false);
+                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "display", "(Ljava/lang/String;)V", false);
+                } else if(stat.taskName.equals("finish")){
+                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "finish", "()V", false);
+                }
+        }
+        
+        private void codeGenShallowBlockOfStatements(SeqBlockStatement stat, String methodName, MethodVisitor method, String modName, ClassVisitor module) throws Exception{
                 for(Statement myStat: stat.statementList){
                         codeGenShallowStatement(myStat, methodName, method, modName, module);
                 }
         }
 
-        private void codeGenField(ModuleItem declaration, MethodVisitor constructor, String modName, ClassWriter moduleWriter)
+        private void codeGenField(ModuleItem declaration, MethodVisitor constructor, String modName, ClassVisitor moduleWriter)
                 throws Exception{
                 if (declaration instanceof ArrayDeclaration)
                         codeGenFieldArray((ArrayDeclaration)declaration, constructor, modName, moduleWriter);
@@ -1130,7 +1642,7 @@ public class VerilogToJavaGen {
                         codeGenFieldRealIdent((Real.Ident)declaration, constructor, modName, moduleWriter);
         }
 
-        private void codeGenFieldArray(ArrayDeclaration declaration, MethodVisitor constructor, String modName, ClassWriter modWriter) throws Exception{
+        private void codeGenFieldArray(ArrayDeclaration declaration, MethodVisitor constructor, String modName, ClassVisitor modWriter) throws Exception{
                 if (declaration instanceof Reg.Scalar.Array)
                         codeGenFieldRegScalarArray((Reg.Scalar.Array)declaration, constructor, modName, modWriter);
                 else if (declaration instanceof Reg.Vector.Array)
@@ -1142,180 +1654,180 @@ public class VerilogToJavaGen {
                 }
         }
 
-        private void codeGenFieldRegScalarArray(Reg.Scalar.Array arr, MethodVisitor constructor, String modName, ClassWriter modWriter) throws Exception{
-
-                if (arr.annotationLexeme != "@Memory") {
+        private void codeGenFieldRegScalarArray(Reg.Scalar.Array arr, MethodVisitor constructor, String modName, ClassVisitor modWriter) throws Exception{
                         modWriter.visitField(Opcodes.ACC_PRIVATE, arr.declarationIdentifier, "Lede/stl/values/ArrayRegVal;", null, null);
-                        
+                        constructor.visitVarInsn(Opcodes.ALOAD, 0);
+                        constructor.visitTypeInsn(Opcodes.NEW, "ede/stl/values/ArrayRegVal");
+                        constructor.visitInsn(Opcodes.DUP);
                         codeGenShallowExpression(arr.arrayIndex1, constructor, modName, modWriter);
                         codeGenShallowExpression(arr.arrayIndex2, constructor, modName, modWriter);
-
                         constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/ArrayRegVal", "<init>", "(Lede/stl/values/Value;Lede/stl/values/Value;)V", false);
-                        constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/ArrayRegVal", arr.declarationIdentifier, "Lede/stl/values/ArrayRegVal;"); // Store in field
-                        
-                }
-
+                        constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, arr.declarationIdentifier, "Lede/stl/values/ArrayRegVal;");
+                        addField(arr.declarationIdentifier);
         }
 
-        private void codeGenFieldRegVectorArray(Reg.Vector.Array arr, MethodVisitor constructor, String modName, ClassWriter modWriter) throws Exception{
-
-                if (arr.annotationLexeme != "@Memory") {
+        protected void codeGenFieldRegVectorArray(Reg.Vector.Array arr, MethodVisitor constructor, String modName, ClassVisitor modWriter) throws Exception{
                         modWriter.visitField(Opcodes.ACC_PRIVATE, arr.declarationIdentifier, "Lede/stl/values/ArrayVectorVal;", null, null);
-
+                        constructor.visitVarInsn(Opcodes.ALOAD, 0);
+                        constructor.visitTypeInsn(Opcodes.NEW, "ede/stl/values/ArrayVectorVal");
+                        constructor.visitInsn(Opcodes.DUP);
                         codeGenShallowExpression(arr.arrayIndex1, constructor, modName, modWriter);
                         codeGenShallowExpression(arr.arrayIndex2, constructor, modName, modWriter);
-
                         codeGenShallowExpression(arr.GetIndex1(), constructor, modName, modWriter);
                         codeGenShallowExpression(arr.GetIndex2(), constructor, modName, modWriter);
-
-                        constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/ArrayVectorVal", "<init>", "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;)V", false);
-                        constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/ArrayVectorVal", arr.declarationIdentifier, "Lede/stl/values/ArrayVectorVal;");
-                }
-
+                        constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/ArrayVectorVal", "<init>", "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;)V", false);
+                        constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, arr.declarationIdentifier, "Lede/stl/values/ArrayVectorVal;");
+                        addField(arr.declarationIdentifier);
         }
 
-        private void codeGenFieldIntArray(Int.Array arr, MethodVisitor constructor, String modName, ClassWriter modWriter) throws Exception{
+        private void codeGenFieldIntArray(Int.Array arr, MethodVisitor constructor, String modName, ClassVisitor modWriter) throws Exception{
                 modWriter.visitField(Opcodes.ACC_PRIVATE, arr.declarationIdentifier, "Lede/stl/values/ArrayIntVal;", null, null);
-
+                constructor.visitVarInsn(Opcodes.ALOAD, 0);
+                constructor.visitTypeInsn(Opcodes.NEW, "ede/stl/values/ArrayIntVal");
+                constructor.visitInsn(Opcodes.DUP);
                 codeGenShallowExpression(arr.arrayIndex1, constructor, modName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
                 codeGenShallowExpression(arr.arrayIndex2, constructor, modName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
-                
-                constructor.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Math", "abs", "(II)I", false);
-
-                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/ArrayIntVal", "<init>", "(I)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/ArrayIntVal", arr.declarationIdentifier, "Lede/stl/values/ArrayIntVal;"); // Store in
+                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/ArrayIntVal", "<init>", "(Lede/stl/values/Value;Lede/stl/values/Value;)V", false);
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, arr.declarationIdentifier, "Lede/stl/values/ArrayIntVal;");
+                addField(arr.declarationIdentifier);
         }
 
-        private void codeGenFieldInputWireVectorIdent(Input.Wire.Vector.Ident declaration, MethodVisitor constructor, String modName, ClassWriter modWriter) throws Exception{
-                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/VectorVal;", null, null);
-
-                codeGenShallowExpression(declaration.GetIndex1(), constructor, modName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
-                codeGenShallowExpression(declaration.GetIndex2(), constructor, modName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
-                
-                constructor.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Math", "abs", "(II)I", false);
-
+        private void initVectorValField(String fieldName, MethodVisitor constructor, String modName, Expression idx1, Expression idx2, ClassVisitor modWriter) throws Exception {
+                constructor.visitVarInsn(Opcodes.ALOAD, 0);
+                constructor.visitTypeInsn(Opcodes.NEW, "ede/stl/values/VectorVal");
+                constructor.visitInsn(Opcodes.DUP);
+                codeGenShallowExpression(idx1, constructor, modName, modWriter);
+                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "()I", false);
+                codeGenShallowExpression(idx2, constructor, modName, modWriter);
+                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "()I", false);
                 constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/VectorVal", "<init>", "(II)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/VectorVal", declaration.declarationIdentifier, "Lede/stl/values/VectorVal;");
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, fieldName, "Lede/stl/values/VectorVal;");
         }
 
-        private void codeGenFieldInputRegVectorIdent(Input.Reg.Vector.Ident declaration, MethodVisitor constructor, String modName, ClassWriter modWriter) throws Exception{
+        private void codeGenFieldInputWireVectorIdent(Input.Wire.Vector.Ident declaration, MethodVisitor constructor, String modName, ClassVisitor modWriter) throws Exception{
                 modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/VectorVal;", null, null);
-
-                codeGenShallowExpression(declaration.GetIndex1(), constructor, modName, modWriter);
-                codeGenShallowExpression(declaration.GetIndex2(), constructor, modName, modWriter);
-
-                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/VectorVal", "<init>", "(II)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/VectorVal", declaration.declarationIdentifier, "Lede/stl/values/VectorVal;");
+                initVectorValField(declaration.declarationIdentifier, constructor, modName, declaration.GetIndex1(), declaration.GetIndex2(), modWriter);
+                addField(declaration.declarationIdentifier);
         }
 
-        private void codeGenFieldInputWireScalarIdent(Input.Wire.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassWriter modWriter){
+        private void codeGenFieldInputRegVectorIdent(Input.Reg.Vector.Ident declaration, MethodVisitor constructor, String modName, ClassVisitor modWriter) throws Exception{
+                modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/VectorVal;", null, null);
+                initVectorValField(declaration.declarationIdentifier, constructor, modName, declaration.GetIndex1(), declaration.GetIndex2(), modWriter);
+                addField(declaration.declarationIdentifier);
+        }
+
+        private void codeGenFieldInputWireScalarIdent(Input.Wire.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassVisitor modWriter){
                 modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/circuit/WireVal;", null, null);
+                constructor.visitVarInsn(Opcodes.ALOAD, 0);
+                constructor.visitTypeInsn(Opcodes.NEW, "ede/stl/circuit/WireVal");
+                constructor.visitInsn(Opcodes.DUP);
                 constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/WireVal", "<init>", "()V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/circuit/WireVal", declaration.declarationIdentifier, "Lede/stl/circuit/WireVal;");
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, declaration.declarationIdentifier, "Lede/stl/circuit/WireVal;");
+                addField(declaration.declarationIdentifier);
         }
 
-        private void codeGenFieldInputRegScalarIdent(Input.Reg.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassWriter modWriter){
+        private void codeGenFieldInputRegScalarIdent(Input.Reg.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassVisitor modWriter){
                 modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/RegVal;", null, null);
-                pushBool(false, constructor);
+                constructor.visitVarInsn(Opcodes.ALOAD, 0);
+                constructor.visitTypeInsn(Opcodes.NEW, "ede/stl/values/RegVal");
+                constructor.visitInsn(Opcodes.DUP);
+                constructor.visitIntInsn(Opcodes.BIPUSH, 0);
                 constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/RegVal", "<init>", "(B)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/RegVal", declaration.declarationIdentifier, "Lede/stl/values/RegVal;");
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, declaration.declarationIdentifier, "Lede/stl/values/RegVal;");
+                addField(declaration.declarationIdentifier);
         }
 
-        private void codeGenFieldOutputWireVectorIdent(Output.Wire.Vector.Ident declaration, MethodVisitor constructor, String modName, ClassWriter modWriter) throws Exception{
+        private void codeGenFieldOutputWireVectorIdent(Output.Wire.Vector.Ident declaration, MethodVisitor constructor, String modName, ClassVisitor modWriter) throws Exception{
                 modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/VectorVal;", null, null);
-
-    codeGenShallowExpression(declaration.GetIndex1(), constructor, modName, modWriter);
-    constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
-                codeGenShallowExpression(declaration.GetIndex2(), constructor, modName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
-
-                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/VectorVal", "<init>", "(II)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/VectorVal", declaration.declarationIdentifier, "Lede/stl/values/VectorVal;");
+                initVectorValField(declaration.declarationIdentifier, constructor, modName, declaration.GetIndex1(), declaration.GetIndex2(), modWriter);
+                addField(declaration.declarationIdentifier);
         }
 
-        private void codeGenFieldOutputRegVectorIdent(Output.Reg.Vector.Ident declaration, MethodVisitor constructor, String moduleName, ClassWriter modWriter) throws Exception{
+        private void codeGenFieldOutputRegVectorIdent(Output.Reg.Vector.Ident declaration, MethodVisitor constructor, String moduleName, ClassVisitor modWriter) throws Exception{
                 modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/VectorVal;", null, null);
-
-                codeGenShallowExpression(declaration.GetIndex1(), constructor, moduleName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
-                codeGenShallowExpression(declaration.GetIndex2(), constructor, moduleName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
-
-                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/VectorVal", "<init>", "(II)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/VectorVal", declaration.declarationIdentifier, "Lede/stl/values/VectorVal;");
+                initVectorValField(declaration.declarationIdentifier, constructor, moduleName, declaration.GetIndex1(), declaration.GetIndex2(), modWriter);
+                addField(declaration.declarationIdentifier);
         }
 
-        private void codeGenFieldOutputWireScalarIdent(Output.Wire.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassWriter modWriter){
+        private void codeGenFieldOutputWireScalarIdent(Output.Wire.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassVisitor modWriter){
                 modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/circuit/WireVal;", null, null);
+                constructor.visitVarInsn(Opcodes.ALOAD, 0);
+                constructor.visitTypeInsn(Opcodes.NEW, "ede/stl/circuit/WireVal");
+                constructor.visitInsn(Opcodes.DUP);
                 constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/WireVal", "<init>", "()V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/circuit/WireVal", declaration.declarationIdentifier, "Lede/stl/circuit/WireVal;");
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, declaration.declarationIdentifier, "Lede/stl/circuit/WireVal;");
+                addField(declaration.declarationIdentifier);
         }
 
-        private void codeGenFieldOutputRegScalarIdent(Output.Reg.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassWriter modWriter){
+        private void codeGenFieldOutputRegScalarIdent(Output.Reg.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassVisitor modWriter){
                 modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/RegVal;", null, null);
-                pushBool(false, constructor);
+                constructor.visitVarInsn(Opcodes.ALOAD, 0);
+                constructor.visitTypeInsn(Opcodes.NEW, "ede/stl/values/RegVal");
+                constructor.visitInsn(Opcodes.DUP);
+                constructor.visitIntInsn(Opcodes.BIPUSH, 0);
                 constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/RegVal", "<init>", "(B)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/RegVal", declaration.declarationIdentifier, "Lede/stl/values/RegVal;");
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, declaration.declarationIdentifier, "Lede/stl/values/RegVal;");
+                addField(declaration.declarationIdentifier);
         }
 
-        private void codeGenFieldWireVectorIdent(Wire.Vector.Ident declaration, MethodVisitor constructor, String moduleName, ClassWriter modWriter)
+        private void codeGenFieldWireVectorIdent(Wire.Vector.Ident declaration, MethodVisitor constructor, String moduleName, ClassVisitor modWriter)
                 throws Exception{
                 modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/VectorVal;", null, null);
-
-                codeGenShallowExpression(declaration.GetIndex1(), constructor, moduleName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
-                codeGenShallowExpression(declaration.GetIndex2(), constructor, moduleName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
-
-                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/VectorVal", "<init>", "(II)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/VectorVal", declaration.declarationIdentifier, "Lede/stl/values/VectorVal;");
+                initVectorValField(declaration.declarationIdentifier, constructor, moduleName, declaration.GetIndex1(), declaration.GetIndex2(), modWriter);
+                addField(declaration.declarationIdentifier);
         }
 
-        private void codeGenFieldRegVectorIdent(Reg.Vector.Ident declaration, MethodVisitor constructor, String moduleName, ClassWriter modWriter)
+        protected void codeGenFieldRegVectorIdent(Reg.Vector.Ident declaration, MethodVisitor constructor, String moduleName, ClassVisitor modWriter)
                 throws Exception{
                 modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/VectorVal;", null, null);
-
-                codeGenShallowExpression(declaration.GetIndex1(), constructor, moduleName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
-                codeGenShallowExpression(declaration.GetIndex2(), constructor, moduleName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "(Lede/stl/values/Value;)I", false);
-
-                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/VectorVal", "<init>", "(II)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/VectorVal", declaration.declarationIdentifier, "Lede/stl/values/VectorVal;");
+                initVectorValField(declaration.declarationIdentifier, constructor, moduleName, declaration.GetIndex1(), declaration.GetIndex2(), modWriter);
+                addField(declaration.declarationIdentifier);
         }
 
-        private void codeGenFieldWireScalarIdent(Wire.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassWriter modWriter){
+        private void codeGenFieldWireScalarIdent(Wire.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassVisitor modWriter){
                 modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/circuit/WireVal;", null, null);
+                constructor.visitVarInsn(Opcodes.ALOAD, 0);
+                constructor.visitTypeInsn(Opcodes.NEW, "ede/stl/circuit/WireVal");
+                constructor.visitInsn(Opcodes.DUP);
                 constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/WireVal", "<init>", "()V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/circuit/WireVal", declaration.declarationIdentifier, "Lede/stl/circuit/WireVal;");
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, declaration.declarationIdentifier, "Lede/stl/circuit/WireVal;");
+                addField(declaration.declarationIdentifier);
         }
 
-        private void codeGenFieldRegScalarIdent(Reg.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassWriter modWriter){
+        protected void codeGenFieldRegScalarIdent(Reg.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassVisitor modWriter){
                 modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/RegVal;", null, null);
-                pushBool(false, constructor);
-                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/RegVal", "<init>", "(B)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/RegVal", declaration.declarationIdentifier, "Lede/stl/values/RegVal;");
+                constructor.visitVarInsn(Opcodes.ALOAD, 0);
+                constructor.visitTypeInsn(Opcodes.NEW, "ede/stl/values/RegVal");
+                constructor.visitInsn(Opcodes.DUP);
+                constructor.visitIntInsn(Opcodes.BIPUSH, 0);
+                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/RegVal", "<init>", "(Z)V", false);
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, declaration.declarationIdentifier, "Lede/stl/values/RegVal;");
+                addField(declaration.declarationIdentifier);
         }
 
-        private void codeGenFieldIntIdent(Int.Ident declaration, MethodVisitor constructor, String modName, ClassWriter modWriter){
+        private void codeGenFieldIntIdent(Int.Ident declaration, MethodVisitor constructor, String modName, ClassVisitor modWriter){
                 modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/IntVal;", null, null);
+                constructor.visitVarInsn(Opcodes.ALOAD, 0);
+                constructor.visitTypeInsn(Opcodes.NEW, "ede/stl/values/IntVal");
+                constructor.visitInsn(Opcodes.DUP);
                 pushInt(0, constructor);
                 constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/IntVal", "<init>", "(I)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/IntVal", declaration.declarationIdentifier, "Lede/stl/values/IntVal;");
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, declaration.declarationIdentifier, "Lede/stl/values/IntVal;");
+                addField(declaration.declarationIdentifier);
         }
 
-        private void codeGenFieldRealIdent(Real.Ident declaration, MethodVisitor constructor, String modName, ClassWriter modWriter){
+        private void codeGenFieldRealIdent(Real.Ident declaration, MethodVisitor constructor, String modName, ClassVisitor modWriter){
                 modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/RealVal;", null, null);
+                constructor.visitVarInsn(Opcodes.ALOAD, 0);
+                constructor.visitTypeInsn(Opcodes.NEW, "ede/stl/values/RealVal");
+                constructor.visitInsn(Opcodes.DUP);
                 pushDouble(0.0, constructor);
                 constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/RealVal", "<init>", "(D)V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, "ede/stl/values/RealVal", declaration.declarationIdentifier, "Lede/stl/values/RealVal;");
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, declaration.declarationIdentifier, "Lede/stl/values/RealVal;");
+                addField(declaration.declarationIdentifier);
         }
         
-        private void codeGenShallowExpression(Expression exp, MethodVisitor method, String moduleName, ClassWriter module) throws Exception {
+        protected void codeGenShallowExpression(Expression exp, MethodVisitor method, String moduleName, ClassVisitor module) throws Exception {
                 if (exp instanceof BinaryOperation)
                         codeGenShallowBinaryOperation((BinaryOperation)exp, method, moduleName, module);
                 else if (exp instanceof UnaryOperation)
@@ -1349,7 +1861,7 @@ public class VerilogToJavaGen {
                 }
         }
         
-        private void codeGenShallowBinaryOperation(BinaryOperation op, MethodVisitor method, String moduleName, ClassWriter module) throws Exception {
+        private void codeGenShallowBinaryOperation(BinaryOperation op, MethodVisitor method, String moduleName, ClassVisitor module) throws Exception {
                 codeGenShallowExpression(op.left, method, moduleName, module);
                 codeGenShallowExpression(op.right, method, moduleName, module);
                 
@@ -1444,7 +1956,7 @@ public class VerilogToJavaGen {
                 }
         }
         
-        private void codeGenShallowUnaryOperation(UnaryOperation op, MethodVisitor method, String moduleName, ClassWriter module) throws Exception{
+        private void codeGenShallowUnaryOperation(UnaryOperation op, MethodVisitor method, String moduleName, ClassVisitor module) throws Exception{
                 codeGenShallowExpression(op.rightHandSideExpression, method, moduleName, module);
                 
                 switch(op.Op){
@@ -1469,40 +1981,77 @@ public class VerilogToJavaGen {
                 }
         }
         
-        private void codeGenShallowConcatenation(Concatenation concat, MethodVisitor method, String moduleName, ClassWriter module) throws Exception {
+        private void codeGenShallowConcatenation(Concatenation concat, MethodVisitor method, String moduleName, ClassVisitor module) throws Exception {
                 pushInt(0, method);
-                method.visitVarInsn(Opcodes.ISTORE, 0);
+                int argNum = this.localAndArgNumber;
+                method.visitVarInsn(Opcodes.ISTORE, argNum);
+                this.localAndArgNumber++;
                 
                 for(Expression exp: concat.circuitElementExpressionList) {
                         codeGenShallowExpression(exp, method, moduleName, module);
-                        method.visitVarInsn(Opcodes.ILOAD, 0);
+                        method.visitVarInsn(Opcodes.ILOAD, argNum);
                         method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "addVecSize", "(Lede/stl/values/Value;I)I", false);
-                        method.visitVarInsn(Opcodes.ISTORE, 0);
+                        method.visitVarInsn(Opcodes.ISTORE, argNum);
                 }
-                
-                method.visitIincInsn(0, -1);
-                method.visitVarInsn(Opcodes.ILOAD, 0);
-                method.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/VectorVal", "<Init>", "(Lede/stl/values/VectorVal;I)V", false);
+
+                method.visitIincInsn(argNum, -1);
+                method.visitTypeInsn(Opcodes.NEW, "ede/stl/values/VectorVal");
+                method.visitInsn(Opcodes.DUP);
+                method.visitVarInsn(Opcodes.ILOAD, argNum);
+                method.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/VectorVal", "<init>", "(I)V", false);
                 
                 for(Expression exp: concat.circuitElementExpressionList) {
                         method.visitInsn(Opcodes.DUP);
                         codeGenShallowExpression(exp, method, moduleName, module);
-                        method.visitVarInsn(Opcodes.ILOAD, 0);
+                        method.visitVarInsn(Opcodes.ILOAD, argNum);
                         method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "assignVectorInConcatenation", "(Lede/stl/values/VectorVal;Lede/stl/values/Value;I)I", false);
-                        method.visitVarInsn(Opcodes.ISTORE, 0);
+                        method.visitVarInsn(Opcodes.ISTORE, argNum);
                 }
         }
         
-        private void codeGenShallowFunctionCall(FunctionCall call, MethodVisitor method, String moduleName, ClassWriter module) throws Exception{
-                for(Expression exp: call.argumentList){
-                        codeGenShallowExpression(exp, method, moduleName, module);
+        private void codeGenShallowFunctionCall(FunctionCall call, MethodVisitor method, String moduleName, ClassVisitor module) throws Exception{
+                if(call instanceof SystemFunctionCall)
+                        codeGenShallowSystemFunctionCall((SystemFunctionCall)call, method, moduleName, module);
+                else {
+                        method.visitVarInsn(Opcodes.ALOAD, 0);
+                        method.visitVarInsn(Opcodes.ALOAD, 1);
+                        method.visitVarInsn(Opcodes.ALOAD, 2);
+                        for(Expression exp: call.argumentList){
+                                codeGenShallowExpression(exp, method, moduleName, module);
+                        }
+
+                        if(!this.funcTypes.entryExists(call.functionName + "Shallow"))
+                            Utils.errorAndExit("Error funcTypes does not exist for " + call.functionName + "Shallow");
+
+                        method.visitMethodInsn(Opcodes.INVOKEVIRTUAL, moduleName, call.functionName + "Shallow", this.funcTypes.getEntry(call.functionName + "Shallow"), false);
                 }
-                
-                method.visitMethodInsn(Opcodes.INVOKEVIRTUAL, moduleName, call.functionName, this.funcTypes.getEntry(call.functionName), false);
+        }
+
+        private void codeGenShallowSystemFunctionCall(SystemFunctionCall call, MethodVisitor method, String moduleName, ClassVisitor module) throws Exception {
+                if(call.functionName.equals("fopen")){
+                        codeGenShallowExpression(call.argumentList.get(0), method, moduleName, module);
+                        codeGenShallowExpression(call.argumentList.get(1), method, moduleName, module);
+                        method.visitVarInsn(Opcodes.ALOAD, 2);
+                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "fOpen", "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/common/Environment;)Lede/stl/values/IntVal;", false);
+                } else if(call.functionName.equals("feof")){
+                        codeGenShallowExpression(call.argumentList.get(0), method, moduleName, module);
+                        method.visitVarInsn(Opcodes.ALOAD, 2);
+                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "fEof", "(Lede/stl/values/Value;Lede/stl/common/Environment;)Lede/stl/values/BoolVal;", false);     
+                } else if(call.functionName.equals("fscanf")){
+                        codeGenShallowExpression(call.argumentList.get(0), method, moduleName, module);
+                        codeGenShallowExpression(call.argumentList.get(1), method, moduleName, module);
+                        codeGenShallowExpression(call.argumentList.get(2), method, moduleName, module);
+                        method.visitVarInsn(Opcodes.ALOAD, 2);
+                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "fScanf", "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/common/Environment;)Lede/stl/values/Value;", false);
+                }
         }
         
-        private void codeGenShallowTernaryOperation(TernaryOperation call, MethodVisitor method, String moduleName, ClassWriter module) throws Exception {
+        private void codeGenShallowTernaryOperation(TernaryOperation call, MethodVisitor method, String moduleName, ClassVisitor module) throws Exception {
                 codeGenShallowExpression(call.condition, method, moduleName, module);
+                method.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
+                        "ede/stl/values/Value", // Internal name of the class
+                        "boolValue",           // Name of the static method
+                        "()Z", false);
                 Label elseLabel = new Label();
                 Label endLabel = new Label();
                 method.visitJumpInsn(Opcodes.IFEQ, elseLabel);
@@ -1513,7 +2062,7 @@ public class VerilogToJavaGen {
                 method.visitLabel(endLabel);
         }
         
-        private void codeGenShallowBinaryNode(BinaryNode node, MethodVisitor method, String moduleName, ClassWriter module) throws Exception {
+        private void codeGenShallowBinaryNode(BinaryNode node, MethodVisitor method, String moduleName, ClassVisitor module) throws Exception {
                 int indexOfColon = node.lexeme.indexOf('\'');
                 
                 if(indexOfColon == -1)
@@ -1523,8 +2072,10 @@ public class VerilogToJavaGen {
                 String afterIndex = node.lexeme.substring(indexOfColon + 2, node.lexeme.length());
                 
                 if(Utils.numberIsPattern(afterIndex)) {
+                        method.visitTypeInsn(Opcodes.NEW, "ede/stl/values/BinaryPattern");
+                        method.visitInsn(Opcodes.DUP);
                         pushString(afterIndex, method);
-                        method.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/BinaryPattern", "<init>", "(I)Lede/stl/values/BinaryPattern;", false);
+                        method.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/BinaryPattern", "<init>", "(Ljava/lang/String;)V", false);
                 } else {
                         long value = Long.parseUnsignedLong(afterIndex, 2);
                         pushInt((int)value, method);
@@ -1532,7 +2083,7 @@ public class VerilogToJavaGen {
                 }
         }
         
-        private void codeGenShallowHexadecimalNode(HexadecimalNode node, MethodVisitor method, String moduleName, ClassWriter module) throws Exception {
+        private void codeGenShallowHexadecimalNode(HexadecimalNode node, MethodVisitor method, String moduleName, ClassVisitor module) throws Exception {
                 int indexOfColon = node.lexeme.indexOf('\'');
                 
                 if(indexOfColon == -1)
@@ -1542,8 +2093,10 @@ public class VerilogToJavaGen {
                 String afterIndex = node.lexeme.substring(indexOfColon + 2, node.lexeme.length());
                 
                 if(Utils.numberIsPattern(afterIndex)) {
+                        method.visitTypeInsn(Opcodes.NEW, "ede/stl/values/HexadecimalPattern");
+                        method.visitInsn(Opcodes.DUP);
                         pushString(afterIndex, method);
-                        method.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/HexadecimalPattern", "<init>", "(I)Lede/stl/values/HexadecimalPattern;", false);
+                        method.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/HexadecimalPattern", "<init>", "(Ljava/lang/String;)V", false);
                 } else {
                         long value = Long.parseUnsignedLong(afterIndex, 16);
                         pushInt((int)value, method);
@@ -1551,7 +2104,7 @@ public class VerilogToJavaGen {
                 }
         }
         
-        private void codeGenShallowDecimalNode(DecimalNode node, MethodVisitor method, String moduleName, ClassWriter module) {
+        private void codeGenShallowDecimalNode(DecimalNode node, MethodVisitor method, String moduleName, ClassVisitor module) {
                 int indexOfColon = node.lexeme.indexOf('\'');
                 
                 if(indexOfColon == -1) {
@@ -1567,7 +2120,7 @@ public class VerilogToJavaGen {
                 }
         }
         
-        private void codeGenShallowOctalNode(OctalNode node, MethodVisitor method, String moduleName, ClassWriter module) throws Exception {
+        private void codeGenShallowOctalNode(OctalNode node, MethodVisitor method, String moduleName, ClassVisitor module) throws Exception {
                 int indexOfColon = node.lexeme.indexOf('\'');
                 
                 if(indexOfColon == -1)
@@ -1577,8 +2130,10 @@ public class VerilogToJavaGen {
                 String afterIndex = node.lexeme.substring(indexOfColon + 2, node.lexeme.length());
                 
                 if(Utils.numberIsPattern(afterIndex)) {
+                        method.visitTypeInsn(Opcodes.NEW, "ede/stl/values/OctalPattern");
+                        method.visitInsn(Opcodes.DUP);
                         pushString(afterIndex, method);
-                        method.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/OctalPattern", "<init>", "(I)Lede/stl/values/OctalPattern;", false);
+                        method.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/OctalPattern", "<init>", "(Ljava/lang/String;)V", false);
                 } else {
                         long value = Long.parseUnsignedLong(afterIndex, 8);
                         pushInt((int)value, method);
@@ -1586,73 +2141,76 @@ public class VerilogToJavaGen {
                 }
         }
         
-        private void codeGenShallowStringNode(StringNode node, MethodVisitor method, String moduleName, ClassWriter module) {
+        private void codeGenShallowStringNode(StringNode node, MethodVisitor method, String moduleName, ClassVisitor module) {
+                method.visitTypeInsn(Opcodes.NEW, "ede/stl/values/StrVal");
+                method.visitInsn(Opcodes.DUP);
                 pushString(node.lexeme, method);
-                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/values/StrVal", "<Init>", "(S)Lede/stl/values/Value;", false);
+                method.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/StrVal", "<init>", "(Ljava/lang/String;)V", false);
         }
         
-        private void codeGenShallowConstantExpression(ConstantExpression exp, MethodVisitor method, String moduleName, ClassWriter module) throws Exception {
+        private void codeGenShallowConstantExpression(ConstantExpression exp, MethodVisitor method, String moduleName, ClassVisitor module) throws Exception {
                 codeGenShallowExpression(exp.expression, method, moduleName, module);
         }
         
-        private void codeGenShallowElement(Element elem, MethodVisitor method, String moduleName, ClassWriter module) throws Exception{
-                codeGenShallowExpression(elem.index1, method, moduleName, module);
+        private void codeGenShallowElement(Element elem, MethodVisitor method, String moduleName, ClassVisitor module) throws Exception{
                 if(this.localInScope(elem.labelIdentifier)) {
                         int num = this.getFromScope(elem.labelIdentifier);
                         method.visitVarInsn(Opcodes.ALOAD, num);
                 } else if(this.fieldInScope(elem.labelIdentifier)){
+                        method.visitVarInsn(Opcodes.ALOAD, 0);
                         method.visitFieldInsn(Opcodes.GETFIELD, 
-        moduleName, // Owner class internal name
-        elem.labelIdentifier,           // Field name
-        "Lede/stl/values/Value;");
+                        moduleName, // Owner class internal name
+                        elem.labelIdentifier,           // Field name
+                        "Lede/stl/values/Value;");
                 } else {
                         Utils.errorAndExit("Error cant find elem from identifier " + elem.labelIdentifier);
                 }
+
+                codeGenShallowExpression(elem.index1, method, moduleName, module);
                 
                 pushString(elem.labelIdentifier, method);
-                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getShallowElemFromIndex", "(Lede/stl/values/Value;Lede/stl/values/Value;S)Lede/stl/values/Value;", false);
+                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getShallowElemFromIndex", "(Lede/stl/values/Value;Lede/stl/values/Value;Ljava/lang/String;)Lede/stl/values/Value;", false);
         }
         
-        private void codeGenShallowSlice(Slice slice, MethodVisitor method, String moduleName, ClassWriter module) throws Exception{
+        private void codeGenShallowSlice(Slice slice, MethodVisitor method, String moduleName, ClassVisitor module) throws Exception{
                 codeGenShallowExpression(slice.index1, method, moduleName, module);
                 codeGenShallowExpression(slice.index2, method, moduleName, module);
+                
                 if(localInScope(slice.labelIdentifier)) {
                         int num = this.getFromScope(slice.labelIdentifier);
                         method.visitVarInsn(Opcodes.ALOAD, num);
                 } else if(fieldInScope(slice.labelIdentifier)) {
+                        method.visitVarInsn(Opcodes.ALOAD, 0);
                         method.visitFieldInsn(Opcodes.GETFIELD, 
-        moduleName, // Owner class internal name
-        slice.labelIdentifier,           // Field name
-        "Lede/stl/values/Value;");
+                        moduleName, // Owner class internal name
+                        slice.labelIdentifier,           // Field name
+                        "Lede/stl/values/Value;");
                 } else {
-                        Utils.errorAndExit("Error variable is not found!!!");
+                        Utils.errorAndExit("Error variable " + slice.labelIdentifier + " is not found!!!\nin module " + moduleName + "\nat position " + slice.position.toString());
                 }
                 
                 pushString(slice.labelIdentifier, method);
-                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getShallowSliceFromIndecis", "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;S)Lede/stl/values/Value;", false);
-        }
-        
-        private void codeGenFileDescriptor(MethodVisitor mainVisit){
-                // TODO: stub - method lost during code corruption, needs reimplementation
+                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getShallowSliceFromIndecis", "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;Ljava/lang/String;)Lede/stl/values/Value;", false);
         }
 
-        private void codeGenDeepExpression(Expression exp, MethodVisitor method, String modName, ClassWriter writer) throws Exception{
+        private void codeGenDeepExpression(Expression exp, MethodVisitor method, String modName, ClassVisitor writer) throws Exception{
                 codeGenShallowExpression(exp, method, modName, writer);
         }
 
-        private void codeGenDeepStatement(Statement stat, String methodName, MethodVisitor method, String modName, ClassWriter modWriter) throws Exception{
+        private void codeGenDeepStatement(Statement stat, String methodName, MethodVisitor method, String modName, ClassVisitor modWriter) throws Exception{
                 codeGenShallowStatement(stat, methodName, method, modName, modWriter);
         }
 
-        private void codeGenShallowIdentifier(Identifier ident, MethodVisitor method, String moduleName, ClassWriter module) throws Exception{
+        private void codeGenShallowIdentifier(Identifier ident, MethodVisitor method, String moduleName, ClassVisitor module) throws Exception{
                 if(this.localInScope(ident.labelIdentifier)) {
                         Integer num = this.getFromScope(ident.labelIdentifier);
                         method.visitVarInsn(Opcodes.ALOAD, num);
                 } else if(this.fieldInScope(ident.labelIdentifier)){
+                        method.visitVarInsn(Opcodes.ALOAD, 0);
                         method.visitFieldInsn(Opcodes.GETFIELD, 
-        moduleName, // Owner class internal name
-        ident.labelIdentifier,           // Field name
-        "Lede/stl/values/Value;");
+                        moduleName, // Owner class internal name
+                        ident.labelIdentifier,           // Field name
+                        "Lede/stl/values/Value;");
                 } else {
                         Utils.errorAndExit("Error identifier " + ident.labelIdentifier + " not found in scope!!!");
                 }
