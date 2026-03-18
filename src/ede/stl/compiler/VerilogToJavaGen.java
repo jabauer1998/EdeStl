@@ -89,15 +89,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 public class VerilogToJavaGen {
-
         private ClassWriter mainWriter;
         private int         javaVersion;
         private ErrorLog    errLog;
         private Stack<SymbolTable<Integer>> scopedTable;
         private Stack<HashSet<String>> scopedFields;
         private SymbolTable<String> funcTypes;
-        private Integer currentNum = 10;
         private int processNumber;
+        private int localVariableNumber;
         
         public VerilogToJavaGen(int javaVersion) {
                 this.javaVersion = javaVersion;
@@ -106,6 +105,7 @@ public class VerilogToJavaGen {
                 this.scopedTable = new Stack<>();
                 this.scopedFields = new Stack<>();
                 this.funcTypes = new SymbolTable<>();
+		this.localVariableNumber = 0;
         }
         
         boolean localInScope(String name){
@@ -125,18 +125,24 @@ public class VerilogToJavaGen {
         
         public void addElem(String elem) {
                 SymbolTable<Integer> scope = scopedTable.peek();
-                scope.addEntry(elem, currentNum);
-                currentNum++;
+                scope.addEntry(elem, localVariableNumber);
+		localVariableNumber++;
         }
         
-        void pushScope(){
+        void pushScope(boolean inModule){
                 scopedTable.add(new SymbolTable<>());
-                scopedFields.add(new HashSet<String>());
+		if(inModule)
+		    scopedFields.add(new HashSet<String>());
+		funcTypes.addScope();
+		this.localVariableNumber = 0;
         }
         
-        void popScope() {
+        void popScope(boolean inModule) {
                 scopedTable.pop();
-                scopedFields.pop();
+		if(inModule)
+		    scopedFields.pop();
+		funcTypes.removeScope();
+		this.localVariableNumber = 0;
         }
 
         public void codeGenVerilogFile(VerilogFile file) throws Exception{
@@ -151,6 +157,7 @@ public class VerilogToJavaGen {
                         null);
 
                 for (ModuleDeclaration module : file.modules) {
+		        pushScope(true);
                         ClassWriter moduleWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
                         codeGenModule(module, moduleWriter, processWriter);
                         moduleWriter.visitEnd();
@@ -158,6 +165,7 @@ public class VerilogToJavaGen {
                         try (FileOutputStream fos = new FileOutputStream("ede/instance/mods/" + module.moduleName + ".class")) {
                                 fos.write(moduleBytes);
                         }
+			popScope(true);
                 }
 
                 processWriter.visitEnd();
@@ -252,6 +260,7 @@ public class VerilogToJavaGen {
        }
 
        private void codeGenInitialProcess(InitialProcess process, String modName, ClassWriter processWriter) throws Exception{
+	   pushScope(false);
            MethodVisitor methodVisit = processWriter.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, "process" + this.processNumber, "(Lede/stl/gui/GuiEde;)V", null, null);
            methodVisit.visitCode();
            codeGenShallowStatement(process.statement, "process" + this.processNumber, methodVisit, modName, processWriter);
@@ -259,9 +268,11 @@ public class VerilogToJavaGen {
            methodVisit.visitMaxs(0, 0);
            methodVisit.visitEnd();
            this.processNumber++;
+	   popScope(false);
        }
 
       private void codeGenAllwaysProcess(AllwaysProcess process, String modName, ClassWriter processWriter) throws Exception{
+	   pushScope(false);
            MethodVisitor methodVisit = processWriter.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC, "process" + this.processNumber, "(Lede/stl/compiler/CompiledEnvironment;)V", null, null);
            methodVisit.visitCode();
            Label begin = new Label();
@@ -272,6 +283,7 @@ public class VerilogToJavaGen {
            methodVisit.visitMaxs(0, 0);
            methodVisit.visitEnd();
            this.processNumber++;
+	   popScope(false);
        }
         
         private void codeGenGateDeclaration(ModuleItem item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception{
@@ -342,9 +354,9 @@ public class VerilogToJavaGen {
                                 constructor.visitVarInsn(Opcodes.ASTORE, place);
                         } else if(this.fieldInScope(ident.labelIdentifier)) {
                                 constructor.visitFieldInsn(Opcodes.PUTFIELD, 
-                modName, // Owner class internal name
-                ident.labelIdentifier,           // Field name
-                "Lede/stl/values/Value;");
+							   modName, // Owner class internal name
+							   ident.labelIdentifier,           // Field name
+							   "Lede/stl/values/Value;");
                         } else {
                                 Utils.errorAndExit("Error no ident found for deep assignment with " + ident.labelIdentifier + " as its name");
                         }
@@ -550,6 +562,7 @@ public class VerilogToJavaGen {
         }
         
         private void codeGenDeepFunction(FunctionDeclaration decl, String modName, ClassWriter moduleWriter) throws Exception{
+	        pushScope(false);
                 StringBuilder methodType = new StringBuilder();
                 methodType.append('(');
 
@@ -575,9 +588,11 @@ public class VerilogToJavaGen {
                 methodVisit.visitInsn(Opcodes.RETURN);
                 methodVisit.visitMaxs(0, 0); // COMPUTE_MAXS and COMPUTE_FRAMES handle these automatically
                 methodVisit.visitEnd();
+		popScope(false);
         }
 
         private void codeGenShallowFunction(FunctionDeclaration decl, String modName, ClassWriter moduleWriter) throws Exception{
+	        pushScope(false);
                 StringBuilder methodType = new StringBuilder();
                 methodType.append('(');
 
@@ -603,15 +618,19 @@ public class VerilogToJavaGen {
                 methodVisit.visitInsn(Opcodes.RETURN);
                 methodVisit.visitMaxs(0, 0); // COMPUTE_MAXS and COMPUTE_FRAMES handle these automatically
                 methodVisit.visitEnd();
+		popScope(false);
         }
         
         private void codeGenDeepTask(TaskDeclaration decl, String modName, ClassWriter moduleWriter) throws Exception {
+	        pushScope(false);
                 StringBuilder methodType = new StringBuilder();
                 methodType.append('(');
-
+		this.localVariableNumber = 1;
                 for (ModuleItem param : decl.paramaters) {
                         String str = typeOf(param);
+			String name = nameOf(param);
                         methodType.append(str);
+			addElem(name);
                 }
 
                 methodType.append(')');
@@ -631,20 +650,24 @@ public class VerilogToJavaGen {
                 methodVisit.visitInsn(Opcodes.RETURN);
                 methodVisit.visitMaxs(0, 0); // COMPUTE_MAXS and COMPUTE_FRAMES handle these automatically
                 methodVisit.visitEnd();
+		popScope(false);
         }
         
         private void codeGenShallowTask(TaskDeclaration decl, String modName, ClassWriter moduleWriter) throws Exception {
-                StringBuilder methodType = new StringBuilder();
+	        pushScope(false);
+	        StringBuilder methodType = new StringBuilder();
                 methodType.append('(');
-
+		this.localVariableNumber = 1;
                 for (ModuleItem param : decl.paramaters) {
                         String str = typeOf(param);
+			String name = nameOf(param);
                         methodType.append(str);
+			addElem(name);
                 }
 
                 methodType.append(')');
                 methodType.append('V');
-                
+                 
                 String methodName = decl.taskName + "Shallow";
                 funcTypes.addEntry(methodName, methodType.toString());
 
@@ -659,6 +682,7 @@ public class VerilogToJavaGen {
                 methodVisit.visitInsn(Opcodes.RETURN);
                 methodVisit.visitMaxs(0, 0); // COMPUTE_MAXS and COMPUTE_FRAMES handle these automatically
                 methodVisit.visitEnd();
+		popScope(false);
         }
         
         private void codeGenPossibleProcedure(ModuleItem item, MethodVisitor moduleConstructor, String modName, ClassWriter writer) throws Exception{
@@ -1053,10 +1077,10 @@ public class VerilogToJavaGen {
                                 codeGenShallowExpression(exp, method, modName, module);
                         }
                         method.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-        modName, // Internal name of the class
-        stat.taskName,           // Name of the static method
-        typeStr,                        // Method descriptor (void return, no args)
-        false);
+					       modName, // Internal name of the class
+					       stat.taskName,           // Name of the static method
+					       typeStr,                        // Method descriptor (void return, no args)
+					       false);
                 }
         }
         

@@ -1,0 +1,14 @@
+*~
+*#
+*.class
+.#*
+./build/BuildList.txt
+# Java
+*.war
+*.ear
+*.iml
+.idea/
+*.swp
+*.swo
+tools/jdk-25.0.2
+jre/
