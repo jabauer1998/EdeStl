@@ -167,7 +167,11 @@ public class EdeRegVal implements Value{
 
     @Override
     public Value getShallowSlice(int startIndex, int endIndex) throws Exception{ // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getShallowSlice'"); }
+	throw new UnsupportedOperationException("Unimplemented method 'getShallowSlice'");
+    }
 
-    
+    @Override
+    public void setValue(Value val){
+	//None
+    }
 }

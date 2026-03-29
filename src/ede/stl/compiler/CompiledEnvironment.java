@@ -20,9 +20,11 @@ public class CompiledEnvironment extends Environment{
     private Pointer<Semaphore> sema;
 	
     public CompiledEnvironment(GuiEde edeInstance){
-        super();
+       super();
 	   this.edeInstance = edeInstance;
+           this.threads = new LinkedList<RunnableThread>();
 	   this.tickets = 0;
+           this.sema = new Pointer<Semaphore>(null);
     }
 
     public void addThread(Callable<Void> thread){
@@ -31,7 +33,7 @@ public class CompiledEnvironment extends Environment{
     }
 
     public void runThreads(){
-    	sema.assign(new Semaphore(-tickets + 1));
+    	this.sema.assign(new Semaphore(-this.tickets + 1));
     	for(RunnableThread thread: threads){
     	    Thread realThread = new Thread(thread);
     	    realThread.start();

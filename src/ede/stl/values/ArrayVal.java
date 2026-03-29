@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import ede.stl.common.Utils;
 import ede.stl.values.Value;
 
-public class ArrayVal<ArrayType extends Value> implements Value {
+public abstract class ArrayVal<ArrayType extends Value> implements Value {
     private final ArrayList<ArrayType> ArrList;
 
     public ArrayVal(Value begin, Value end){

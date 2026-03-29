@@ -3,6 +3,7 @@ package ede.stl.circuit;
 import ede.stl.circuit.CircuitElem;
 import ede.stl.circuit.Web;
 import ede.stl.circuit.WireVal;
+import ede.stl.values.Value;
 
 public abstract class Node extends CircuitElem {
 
@@ -35,6 +36,9 @@ public abstract class Node extends CircuitElem {
 
     public abstract String toString();
 
+    public void setValue(Value stat){
+	//Do nothing
+    }
 }
 
 

@@ -126,5 +126,10 @@ public class IntVal implements Value{
 
         return Utils.getOptimalUnsignedForm(val & toKeepMask);
     }
+
+    @Override
+    public void setValue(Value exp){
+	this.value = exp.intValue();
+    }
     
 }

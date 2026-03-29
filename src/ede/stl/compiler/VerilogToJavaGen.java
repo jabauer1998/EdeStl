@@ -95,7 +95,7 @@ public class VerilogToJavaGen {
         private int         javaVersion;
         private ErrorLog    errLog;
         private SymbolTable<Integer> scopedTable;
-        private Stack<HashSet<String>> scopedFields;
+        private SymbolTable<String> scopedFields;
         private SymbolTable<String> funcTypes;
         private int processNumber;
         private int localAndArgNumber;
@@ -106,17 +106,16 @@ public class VerilogToJavaGen {
                 this.processNumber = 0;
                 this.localAndArgNumber = 3;
                 this.scopedTable = new SymbolTable<Integer>();
-                this.scopedFields = new Stack<>();
+                this.scopedFields = new SymbolTable<String>();
                 this.funcTypes = new SymbolTable<String>();
         }
         
         protected boolean localInScope(String name){
-                return scopedTable.inScope(name);
+	    return scopedTable.inScope(name);
         }
         
         protected boolean fieldInScope(String field) {
-                HashSet<String> scope = scopedFields.peek();
-                return scope.contains(field);
+	    return scopedFields.inScope(field);
         }
 
         protected void printStringNow(String toPrint){
@@ -124,7 +123,11 @@ public class VerilogToJavaGen {
         }
         
         protected int getFromScope(String elem) {
-                return scopedTable.getEntry(elem);
+	    return scopedTable.getEntry(elem);
+        }
+
+        protected String getTypeFromFieldScope(String scope){
+	    return scopedFields.getEntry(scope);
         }
 
         protected int getSmallestInScope(){
@@ -154,8 +157,8 @@ public class VerilogToJavaGen {
                 localAndArgNumber++;
         }
 
-        public void addField(String field){
-                scopedFields.peek().add(field);
+        public void addField(String field, String type){
+	    scopedFields.addEntry(field, type);
         }
 
         public void addType(String funcName, String type){
@@ -163,13 +166,13 @@ public class VerilogToJavaGen {
         }
 
         private void pushModule(){
-                scopedFields.push(new HashSet<>());
-                funcTypes.addScope();
+	    scopedFields.addScope();
+            funcTypes.addScope();
         }
 
         private void popModule(){
-                scopedFields.pop();
-                funcTypes.removeScope();
+	    scopedFields.removeScope();
+            funcTypes.removeScope();
         }
         
         private void pushScope(){
@@ -184,7 +187,12 @@ public class VerilogToJavaGen {
                 new File("ede/instance/mods").mkdirs();
 
                 for (ModuleDeclaration module : file.modules) {
-                        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+                        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES) {
+                                @Override
+                                protected String getCommonSuperClass(String type1, String type2) {
+                                        return "java/lang/Object";
+                                }
+                        };
                         CheckClassAdapter moduleWriter = new CheckClassAdapter(cw);
                         HashSet<String> usedFunctions = new HashSet<String>();
                         calculateUsedFunctions(module, usedFunctions);
@@ -213,6 +221,10 @@ public class VerilogToJavaGen {
 
         private static void pushInt(int val, MethodVisitor main){
                 main.visitLdcInsn(val);
+        }
+
+        private static void pushLong(long val, MethodVisitor main){
+	    main.visitLdcInsn(val);
         }
 
         private static void pushEnum(String enumName, String specificName, MethodVisitor main){
@@ -486,9 +498,10 @@ public class VerilogToJavaGen {
 
         private void codeGenModule(ModuleDeclaration mod, ClassVisitor moduleWriter, HashSet<String> usedFunctions) throws Exception{
                 pushModule();
+                String modName = "ede/instance/mods/" + mod.moduleName;
                 moduleWriter.visit(Opcodes.V1_6,
                         Opcodes.ACC_PUBLIC | Opcodes.ACC_SUPER,
-                        mod.moduleName,
+                        modName,
                         null,
                         "ede/stl/compiler/VerilogAsJavaBase",
                         null);
@@ -505,13 +518,13 @@ public class VerilogToJavaGen {
                 moduleConstructor.visitCode();
                 moduleConstructor.visitVarInsn(Opcodes.ALOAD, 0);
                 moduleConstructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/compiler/VerilogAsJavaBase", "<init>", "()V", false);
-                for(ModuleItem item : mod.moduleItemList) { codeGenField(item, moduleConstructor, mod.moduleName, moduleWriter); }
+                for(ModuleItem item : mod.moduleItemList) { codeGenField(item, moduleConstructor, modName, moduleWriter); }
 
-                for(ModuleItem item : mod.moduleItemList) { codeGenParamTypesForProcedure(item, moduleConstructor, mod.moduleName, moduleWriter, usedFunctions); }
+                for(ModuleItem item : mod.moduleItemList) { codeGenParamTypesForProcedure(item, moduleConstructor, modName, moduleWriter, usedFunctions); }
 
-                for(ModuleItem item : mod.moduleItemList) { codeGenPossibleProcedure(item, moduleConstructor, mod.moduleName, moduleWriter, usedFunctions); }
+                for(ModuleItem item : mod.moduleItemList) { codeGenPossibleProcedure(item, moduleConstructor, modName, moduleWriter, usedFunctions); }
                 
-                for(ModuleItem item : mod.moduleItemList) { codeGenRestModuleItem(item, moduleConstructor, mod.moduleName, moduleWriter); }
+                for(ModuleItem item : mod.moduleItemList) { codeGenRestModuleItem(item, moduleConstructor, modName, moduleWriter); }
                 moduleConstructor.visitInsn(Opcodes.RETURN);
                 moduleConstructor.visitMaxs(0, 0);
                 moduleConstructor.visitEnd();
@@ -1431,11 +1444,12 @@ public class VerilogToJavaGen {
                                 int ptr = this.getFromScope(leftHandElement.labelIdentifier);
                                  method.visitVarInsn(Opcodes.ALOAD, ptr);
                           } else if(this.fieldInScope(leftHandElement.labelIdentifier)) {
+			        String getType = getTypeFromFieldScope(leftHandElement.labelIdentifier);
                                 method.visitVarInsn(Opcodes.ALOAD, 0);
                                 method.visitFieldInsn(Opcodes.GETFIELD, 
                                 modName, // Owner class internal name
                                 leftHandElement.labelIdentifier,           // Field name
-                                "Lede/stl/values/Value;");
+                                getType);
                           } else {
                                 Utils.errorAndExit("Error can not find left hand side of assignment" + leftHandElement.labelIdentifier);
                           }
@@ -1453,11 +1467,12 @@ public class VerilogToJavaGen {
                                  int ptr = this.getFromScope(slice.labelIdentifier);
                                  method.visitVarInsn(Opcodes.ALOAD, ptr);
                          } else if(this.fieldInScope(slice.labelIdentifier)) {
+			         String typeSlice = getTypeFromFieldScope(slice.labelIdentifier);
                                  method.visitVarInsn(Opcodes.ALOAD, 0);
                                  method.visitFieldInsn(Opcodes.GETFIELD, 
                                  modName, // Owner class internal name
                                  slice.labelIdentifier,           // Field name
-                                 "Lede/stl/values/Value;");
+                                 typeSlice);
                          } else {
                                  Utils.errorAndExit("Error cant find ident " + slice.labelIdentifier);
                          }
@@ -1472,6 +1487,7 @@ public class VerilogToJavaGen {
                  } else if(assign.leftHandSide instanceof Identifier) {
                          Identifier ident = (Identifier)assign.leftHandSide;
                          if((ident.labelIdentifier + "Shallow").equals(funcName) || (ident.labelIdentifier + "Deep").equals(funcName)) {
+			         codeGenShallowExpression(assign.rightHandSide, method, modName, module);
                                  method.visitInsn(Opcodes.ARETURN);
                          } else {
                                  if(localInScope(ident.labelIdentifier)) {
@@ -1479,12 +1495,18 @@ public class VerilogToJavaGen {
                                          int ptr = this.getFromScope(ident.labelIdentifier);
                                          method.visitVarInsn(Opcodes.ASTORE, ptr);
                                  } else if(fieldInScope(ident.labelIdentifier)){
-                                         method.visitVarInsn(Opcodes.ALOAD, 0);
-                                         codeGenShallowExpression(assign.rightHandSide, method, modName, module);
-                                         method.visitFieldInsn(Opcodes.PUTFIELD, 
+				         String myType = getTypeFromFieldScope(ident.labelIdentifier);
+					 method.visitVarInsn(Opcodes.ALOAD, 0);
+                                         method.visitFieldInsn(Opcodes.GETFIELD, 
                                          modName,
                                          ident.labelIdentifier,
-                                         "Lede/stl/values/Value;");
+                                         myType);
+					 codeGenShallowExpression(assign.rightHandSide, method, modName, module);
+					 method.visitMethodInsn(Opcodes.INVOKESTATIC,
+								"ede/stl/common/Utils", // Internal name of the class
+								"shallowAssignValue",           // Name of the static method
+								"(Lede/stl/values/Value;Lede/stl/values/Value;)V",                        // Method descriptor (void return, no args)
+								false); 
                                  } else {
                                          Utils.errorAndExit("Error cant find left hand side of assign " + ident + "\n in assignment " + assign.toString() + "\nin function" + funcName + "\nin module " + modName);
                                  }
@@ -1508,11 +1530,12 @@ public class VerilogToJavaGen {
                                 int ptr = this.getFromScope(leftHandElement.labelIdentifier);
                                   method.visitVarInsn(Opcodes.ALOAD, ptr);
                           } else if(fieldInScope(leftHandElement.labelIdentifier)) {
+			        String labelType = getTypeFromFieldScope(leftHandElement.labelIdentifier);
                                 method.visitVarInsn(Opcodes.ALOAD, 0);
                                 method.visitFieldInsn(Opcodes.GETFIELD, 
                                 modName, // Owner class internal name
                                 leftHandElement.labelIdentifier,           // Field name
-                                "Lede/stl/values/Value;");
+                                labelType);
                           } else {
                                 Utils.errorAndExit("Error ident" + leftHandElement.labelIdentifier + " doesnt exist in module " + modName);
                           }
@@ -1529,11 +1552,12 @@ public class VerilogToJavaGen {
                                  int ptr = this.getFromScope(slice.labelIdentifier);
                                  method.visitVarInsn(Opcodes.ALOAD, ptr);
                          } else if(fieldInScope(slice.labelIdentifier)) {
+			         String labelType = getTypeFromFieldScope(slice.labelIdentifier);
                                  method.visitVarInsn(Opcodes.ALOAD, 0);
                                  method.visitFieldInsn(Opcodes.GETFIELD, 
                         modName, // Owner class internal name
                         slice.labelIdentifier,           // Field name
-                        "Lede/stl/values/Value;");
+                        labelType);
                          } else {
                                  Utils.errorAndExit("Error ident " + slice.labelIdentifier + " not found in module " + modName);
                          }
@@ -1548,8 +1572,17 @@ public class VerilogToJavaGen {
                                  int ptr = this.getFromScope(ident.labelIdentifier);
                                  method.visitVarInsn(Opcodes.ASTORE, ptr);
                          } else if(fieldInScope(ident.labelIdentifier)) {
+			         String labelType = getTypeFromFieldScope(ident.labelIdentifier);
+                                 // Value is already on stack from pre-computed RHS; ALOAD_0 goes on top.
+                                 // PUTFIELD needs [objectref, value]; SWAP corrects [value, objectref] → [objectref, value].
                                  method.visitVarInsn(Opcodes.ALOAD, 0);
-                                 method.visitFieldInsn(Opcodes.PUTFIELD, modName, ident.labelIdentifier, "Lede/stl/values/Value;");
+                                 method.visitInsn(Opcodes.SWAP);
+                                 method.visitFieldInsn(Opcodes.GETFIELD, modName, ident.labelIdentifier, labelType);
+				 method.visitMethodInsn(Opcodes.INVOKESTATIC,
+							"ede/stl/common/Utils", // Internal name of the class
+							"shallowAssignValue",           // Name of the static method
+							"(Lede/stl/values/Value;Lede/stl/values/Value;)V",                        // Method descriptor (void return, no args)
+							false);      
                          } else {
                                  Utils.errorAndExit("Error field or local variable for ident " + ident + " was not found!!!");
                          }
@@ -1663,7 +1696,7 @@ public class VerilogToJavaGen {
                         codeGenShallowExpression(arr.arrayIndex2, constructor, modName, modWriter);
                         constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/ArrayRegVal", "<init>", "(Lede/stl/values/Value;Lede/stl/values/Value;)V", false);
                         constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, arr.declarationIdentifier, "Lede/stl/values/ArrayRegVal;");
-                        addField(arr.declarationIdentifier);
+                        addField(arr.declarationIdentifier, "Lede/stl/values/ArrayRegVal;");
         }
 
         protected void codeGenFieldRegVectorArray(Reg.Vector.Array arr, MethodVisitor constructor, String modName, ClassVisitor modWriter) throws Exception{
@@ -1677,7 +1710,7 @@ public class VerilogToJavaGen {
                         codeGenShallowExpression(arr.GetIndex2(), constructor, modName, modWriter);
                         constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/ArrayVectorVal", "<init>", "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;)V", false);
                         constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, arr.declarationIdentifier, "Lede/stl/values/ArrayVectorVal;");
-                        addField(arr.declarationIdentifier);
+                        addField(arr.declarationIdentifier, "Lede/stl/values/ArrayVectorVal;");
         }
 
         private void codeGenFieldIntArray(Int.Array arr, MethodVisitor constructor, String modName, ClassVisitor modWriter) throws Exception{
@@ -1689,7 +1722,7 @@ public class VerilogToJavaGen {
                 codeGenShallowExpression(arr.arrayIndex2, constructor, modName, modWriter);
                 constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/ArrayIntVal", "<init>", "(Lede/stl/values/Value;Lede/stl/values/Value;)V", false);
                 constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, arr.declarationIdentifier, "Lede/stl/values/ArrayIntVal;");
-                addField(arr.declarationIdentifier);
+                addField(arr.declarationIdentifier, "Lede/stl/values/ArrayIntVal;");
         }
 
         private void initVectorValField(String fieldName, MethodVisitor constructor, String modName, Expression idx1, Expression idx2, ClassVisitor modWriter) throws Exception {
@@ -1707,13 +1740,13 @@ public class VerilogToJavaGen {
         private void codeGenFieldInputWireVectorIdent(Input.Wire.Vector.Ident declaration, MethodVisitor constructor, String modName, ClassVisitor modWriter) throws Exception{
                 modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/VectorVal;", null, null);
                 initVectorValField(declaration.declarationIdentifier, constructor, modName, declaration.GetIndex1(), declaration.GetIndex2(), modWriter);
-                addField(declaration.declarationIdentifier);
+                addField(declaration.declarationIdentifier, "Lede/stl/values/VectorVal;");
         }
 
         private void codeGenFieldInputRegVectorIdent(Input.Reg.Vector.Ident declaration, MethodVisitor constructor, String modName, ClassVisitor modWriter) throws Exception{
                 modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/VectorVal;", null, null);
                 initVectorValField(declaration.declarationIdentifier, constructor, modName, declaration.GetIndex1(), declaration.GetIndex2(), modWriter);
-                addField(declaration.declarationIdentifier);
+                addField(declaration.declarationIdentifier, "Lede/stl/values/VectorVal;");
         }
 
         private void codeGenFieldInputWireScalarIdent(Input.Wire.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassVisitor modWriter){
@@ -1722,8 +1755,8 @@ public class VerilogToJavaGen {
                 constructor.visitTypeInsn(Opcodes.NEW, "ede/stl/circuit/WireVal");
                 constructor.visitInsn(Opcodes.DUP);
                 constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/WireVal", "<init>", "()V", false);
-                constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, declaration.declarationIdentifier, "Lede/stl/circuit/WireVal;");
-                addField(declaration.declarationIdentifier);
+                constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, declaration.declarationIdentifier, "Lede/stl/cirdfcuit/WireVal;");
+                addField(declaration.declarationIdentifier, "Lede/stl/circuit/WireVal;");
         }
 
         private void codeGenFieldInputRegScalarIdent(Input.Reg.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassVisitor modWriter){
@@ -1734,19 +1767,19 @@ public class VerilogToJavaGen {
                 constructor.visitIntInsn(Opcodes.BIPUSH, 0);
                 constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/RegVal", "<init>", "(B)V", false);
                 constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, declaration.declarationIdentifier, "Lede/stl/values/RegVal;");
-                addField(declaration.declarationIdentifier);
+                addField(declaration.declarationIdentifier, "Lede/stl/values/RegVal;");
         }
 
         private void codeGenFieldOutputWireVectorIdent(Output.Wire.Vector.Ident declaration, MethodVisitor constructor, String modName, ClassVisitor modWriter) throws Exception{
                 modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/VectorVal;", null, null);
                 initVectorValField(declaration.declarationIdentifier, constructor, modName, declaration.GetIndex1(), declaration.GetIndex2(), modWriter);
-                addField(declaration.declarationIdentifier);
+                addField(declaration.declarationIdentifier, "Lede/stl/values/VectorVal;");
         }
 
         private void codeGenFieldOutputRegVectorIdent(Output.Reg.Vector.Ident declaration, MethodVisitor constructor, String moduleName, ClassVisitor modWriter) throws Exception{
                 modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/VectorVal;", null, null);
                 initVectorValField(declaration.declarationIdentifier, constructor, moduleName, declaration.GetIndex1(), declaration.GetIndex2(), modWriter);
-                addField(declaration.declarationIdentifier);
+                addField(declaration.declarationIdentifier, "Lede/stl/values/VectorVal;");
         }
 
         private void codeGenFieldOutputWireScalarIdent(Output.Wire.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassVisitor modWriter){
@@ -1756,7 +1789,7 @@ public class VerilogToJavaGen {
                 constructor.visitInsn(Opcodes.DUP);
                 constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/WireVal", "<init>", "()V", false);
                 constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, declaration.declarationIdentifier, "Lede/stl/circuit/WireVal;");
-                addField(declaration.declarationIdentifier);
+                addField(declaration.declarationIdentifier, "Lede/stl/circuit/WireVal;");
         }
 
         private void codeGenFieldOutputRegScalarIdent(Output.Reg.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassVisitor modWriter){
@@ -1765,23 +1798,23 @@ public class VerilogToJavaGen {
                 constructor.visitTypeInsn(Opcodes.NEW, "ede/stl/values/RegVal");
                 constructor.visitInsn(Opcodes.DUP);
                 constructor.visitIntInsn(Opcodes.BIPUSH, 0);
-                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/RegVal", "<init>", "(B)V", false);
+                constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/RegVal", "<init>", "(Z)V", false);
                 constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, declaration.declarationIdentifier, "Lede/stl/values/RegVal;");
-                addField(declaration.declarationIdentifier);
+                addField(declaration.declarationIdentifier, "Lede/stl/values/RegVal;");
         }
 
         private void codeGenFieldWireVectorIdent(Wire.Vector.Ident declaration, MethodVisitor constructor, String moduleName, ClassVisitor modWriter)
                 throws Exception{
                 modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/VectorVal;", null, null);
                 initVectorValField(declaration.declarationIdentifier, constructor, moduleName, declaration.GetIndex1(), declaration.GetIndex2(), modWriter);
-                addField(declaration.declarationIdentifier);
+                addField(declaration.declarationIdentifier, "Lede/stl/values/VectorVal;");
         }
 
         protected void codeGenFieldRegVectorIdent(Reg.Vector.Ident declaration, MethodVisitor constructor, String moduleName, ClassVisitor modWriter)
                 throws Exception{
                 modWriter.visitField(Opcodes.ACC_PRIVATE, declaration.declarationIdentifier, "Lede/stl/values/VectorVal;", null, null);
                 initVectorValField(declaration.declarationIdentifier, constructor, moduleName, declaration.GetIndex1(), declaration.GetIndex2(), modWriter);
-                addField(declaration.declarationIdentifier);
+                addField(declaration.declarationIdentifier, "Lede/stl/values/VectorVal;");
         }
 
         private void codeGenFieldWireScalarIdent(Wire.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassVisitor modWriter){
@@ -1791,7 +1824,7 @@ public class VerilogToJavaGen {
                 constructor.visitInsn(Opcodes.DUP);
                 constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/circuit/WireVal", "<init>", "()V", false);
                 constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, declaration.declarationIdentifier, "Lede/stl/circuit/WireVal;");
-                addField(declaration.declarationIdentifier);
+                addField(declaration.declarationIdentifier, "Lede/stl/circuit/WireVal;");
         }
 
         protected void codeGenFieldRegScalarIdent(Reg.Scalar.Ident declaration, MethodVisitor constructor, String modName, ClassVisitor modWriter){
@@ -1802,7 +1835,7 @@ public class VerilogToJavaGen {
                 constructor.visitIntInsn(Opcodes.BIPUSH, 0);
                 constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/RegVal", "<init>", "(Z)V", false);
                 constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, declaration.declarationIdentifier, "Lede/stl/values/RegVal;");
-                addField(declaration.declarationIdentifier);
+                addField(declaration.declarationIdentifier, "Lede/stl/values/RegVal;");
         }
 
         private void codeGenFieldIntIdent(Int.Ident declaration, MethodVisitor constructor, String modName, ClassVisitor modWriter){
@@ -1813,7 +1846,7 @@ public class VerilogToJavaGen {
                 pushInt(0, constructor);
                 constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/IntVal", "<init>", "(I)V", false);
                 constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, declaration.declarationIdentifier, "Lede/stl/values/IntVal;");
-                addField(declaration.declarationIdentifier);
+                addField(declaration.declarationIdentifier, "Lede/stl/values/IntVal;");
         }
 
         private void codeGenFieldRealIdent(Real.Ident declaration, MethodVisitor constructor, String modName, ClassVisitor modWriter){
@@ -1824,7 +1857,7 @@ public class VerilogToJavaGen {
                 pushDouble(0.0, constructor);
                 constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/RealVal", "<init>", "(D)V", false);
                 constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, declaration.declarationIdentifier, "Lede/stl/values/RealVal;");
-                addField(declaration.declarationIdentifier);
+                addField(declaration.declarationIdentifier, "Lede/stl/values/RealVal;");
         }
         
         protected void codeGenShallowExpression(Expression exp, MethodVisitor method, String moduleName, ClassVisitor module) throws Exception {
@@ -2078,8 +2111,8 @@ public class VerilogToJavaGen {
                         method.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/BinaryPattern", "<init>", "(Ljava/lang/String;)V", false);
                 } else {
                         long value = Long.parseUnsignedLong(afterIndex, 2);
-                        pushInt((int)value, method);
-                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getOptimalUnsignedForm", "(I)Lede/stl/values/Value;", false);
+                        pushLong(value, method);
+                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getOptimalUnsignedForm", "(J)Lede/stl/values/Value;", false);
                 }
         }
         
@@ -2099,8 +2132,8 @@ public class VerilogToJavaGen {
                         method.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/HexadecimalPattern", "<init>", "(Ljava/lang/String;)V", false);
                 } else {
                         long value = Long.parseUnsignedLong(afterIndex, 16);
-                        pushInt((int)value, method);
-                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getOptimalUnsignedForm", "(I)Lede/stl/values/Value;", false);
+                        pushLong(value, method);
+                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getOptimalUnsignedForm", "(J)Lede/stl/values/Value;", false);
                 }
         }
         
@@ -2109,14 +2142,14 @@ public class VerilogToJavaGen {
                 
                 if(indexOfColon == -1) {
                         long value = Long.parseUnsignedLong(node.lexeme);
-                        pushInt((int)value, method);
-                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getOptimalUnsignedForm", "(I)Lede/stl/values/Value;", false);
+                        pushLong(value, method);
+                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getOptimalUnsignedForm", "(J)Lede/stl/values/Value;", false);
                 } else {
                         String beforeIndex = node.lexeme.substring(0, indexOfColon);
                         String afterIndex = node.lexeme.substring(indexOfColon + 2, node.lexeme.length());
                         long value = Long.parseUnsignedLong(afterIndex, 10);
-                        pushInt((int)value, method);
-                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getOptimalUnsignedForm", "(I)Lede/stl/values/Value;", false);
+                        pushLong(value, method);
+                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getOptimalUnsignedForm", "(J)Lede/stl/values/Value;", false);
                 }
         }
         
@@ -2136,8 +2169,8 @@ public class VerilogToJavaGen {
                         method.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/OctalPattern", "<init>", "(Ljava/lang/String;)V", false);
                 } else {
                         long value = Long.parseUnsignedLong(afterIndex, 8);
-                        pushInt((int)value, method);
-                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getOptimalUnsignedForm", "(I)Lede/stl/values/Value;", false);
+                        pushLong(value, method);
+                        method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getOptimalUnsignedForm", "(J)Lede/stl/values/Value;", false);
                 }
         }
         
@@ -2157,11 +2190,12 @@ public class VerilogToJavaGen {
                         int num = this.getFromScope(elem.labelIdentifier);
                         method.visitVarInsn(Opcodes.ALOAD, num);
                 } else if(this.fieldInScope(elem.labelIdentifier)){
+		        String fieldType = getTypeFromFieldScope(elem.labelIdentifier);
                         method.visitVarInsn(Opcodes.ALOAD, 0);
                         method.visitFieldInsn(Opcodes.GETFIELD, 
                         moduleName, // Owner class internal name
                         elem.labelIdentifier,           // Field name
-                        "Lede/stl/values/Value;");
+                        fieldType);
                 } else {
                         Utils.errorAndExit("Error cant find elem from identifier " + elem.labelIdentifier);
                 }
@@ -2173,21 +2207,22 @@ public class VerilogToJavaGen {
         }
         
         private void codeGenShallowSlice(Slice slice, MethodVisitor method, String moduleName, ClassVisitor module) throws Exception{
-                codeGenShallowExpression(slice.index1, method, moduleName, module);
-                codeGenShallowExpression(slice.index2, method, moduleName, module);
-                
                 if(localInScope(slice.labelIdentifier)) {
                         int num = this.getFromScope(slice.labelIdentifier);
                         method.visitVarInsn(Opcodes.ALOAD, num);
                 } else if(fieldInScope(slice.labelIdentifier)) {
+		        String fieldType = getTypeFromFieldScope(slice.labelIdentifier);
                         method.visitVarInsn(Opcodes.ALOAD, 0);
                         method.visitFieldInsn(Opcodes.GETFIELD, 
                         moduleName, // Owner class internal name
                         slice.labelIdentifier,           // Field name
-                        "Lede/stl/values/Value;");
+                        fieldType);
                 } else {
                         Utils.errorAndExit("Error variable " + slice.labelIdentifier + " is not found!!!\nin module " + moduleName + "\nat position " + slice.position.toString());
                 }
+
+                codeGenShallowExpression(slice.index1, method, moduleName, module);
+                codeGenShallowExpression(slice.index2, method, moduleName, module);
                 
                 pushString(slice.labelIdentifier, method);
                 method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getShallowSliceFromIndecis", "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;Ljava/lang/String;)Lede/stl/values/Value;", false);
@@ -2206,11 +2241,12 @@ public class VerilogToJavaGen {
                         Integer num = this.getFromScope(ident.labelIdentifier);
                         method.visitVarInsn(Opcodes.ALOAD, num);
                 } else if(this.fieldInScope(ident.labelIdentifier)){
+		        String fieldType = getTypeFromFieldScope(ident.labelIdentifier);
                         method.visitVarInsn(Opcodes.ALOAD, 0);
                         method.visitFieldInsn(Opcodes.GETFIELD, 
                         moduleName, // Owner class internal name
                         ident.labelIdentifier,           // Field name
-                        "Lede/stl/values/Value;");
+                        fieldType);
                 } else {
                         Utils.errorAndExit("Error identifier " + ident.labelIdentifier + " not found in scope!!!");
                 }

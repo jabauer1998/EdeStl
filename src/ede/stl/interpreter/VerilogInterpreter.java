@@ -737,7 +737,7 @@ public class VerilogInterpreter extends Interpreter {
                         Pointer<Value> data = environment.lookupVariable(ident);
                         Value dataObject = data.deRefrence();
                         
-                        return Utils.getShallowSliceFromFromIndices(startIndex, endIndex, dataObject, ident);
+                        return Utils.getShallowSliceFromFromIndices(dataObject, startIndex, endIndex, ident);
                 } else {
                         Utils.errorAndExit("Array or VectorVal " + ident + " not found");
                         return Utils.errorOccured();
@@ -759,7 +759,7 @@ public class VerilogInterpreter extends Interpreter {
                 if (environment.variableExists(ident)) {
                         Pointer<Value> data = environment.lookupVariable(ident);
                         Value dataObject = data.deRefrence();
-                        return Utils.getShallowElemFromIndex(expr, dataObject, ident);
+                        return Utils.getShallowElemFromIndex(dataObject, expr, ident);
                 } else {
                         Utils.errorAndExit("Array or VectorVal " + ident + " not found", Elem.position);
                         return Utils.errorOccured();

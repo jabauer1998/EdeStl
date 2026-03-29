@@ -2,6 +2,7 @@ package ede.stl.values;
 
 import ede.stl.values.Value;
 import ede.stl.values.RegVal;
+import ede.stl.common.Utils;
 
 public class ArrayRegVal extends ArrayVal<RegVal> {
     public ArrayRegVal(Value arrayBegin, Value arrayEnd){
@@ -10,5 +11,9 @@ public class ArrayRegVal extends ArrayVal<RegVal> {
         for(int i = 0; i < size; i++){
             this.AddElem(new RegVal(false));
         }
+    }
+
+    public void setValue(Value val){
+	//Do nothing
     }
 }

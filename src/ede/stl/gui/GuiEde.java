@@ -117,12 +117,12 @@ public class GuiEde extends JPanel {
         this.Machine.setUpMemory(numBytes);
     }
 
-    public void AddVerilogJob(String jobName, String verilogFile, String inputFile, String inputPane, String outputPane, String errorPane, boolean isInterpreted){
-        this.Jobs.AddVerilogJob(jobName, TextAreaNumbered.IS_NOT_NUMBERED, verilogFile, inputFile, inputPane, outputPane, errorPane, this, isInterpreted);
+    public void AddVerilogJob(String jobName, String mainModule, String verilogFile, String inputFile, String inputPane, String outputPane, String errorPane, boolean isInterpreted){
+        this.Jobs.AddVerilogJob(jobName, mainModule, TextAreaNumbered.IS_NOT_NUMBERED, verilogFile, inputFile, inputPane, outputPane, errorPane, this, isInterpreted);
     }
 
-    public void AddVerilogJob(String jobName, TextAreaNumbered numbered, String verilogFile, String inputFile, String inputPane, String outputPane, String errorPane, boolean isInterpreted){
-        this.Jobs.AddVerilogJob(jobName, numbered, verilogFile, inputFile, inputPane, outputPane, errorPane, this, isInterpreted);
+    public void AddVerilogJob(String jobName, String mainModule, TextAreaNumbered numbered, String verilogFile, String inputFile, String inputPane, String outputPane, String errorPane, boolean isInterpreted){
+        this.Jobs.AddVerilogJob(jobName, mainModule, numbered, verilogFile, inputFile, inputPane, outputPane, errorPane, this, isInterpreted);
     }
 
     public void AddExeJob(String jobName, TextAreaType type, String execString, String... keywords){

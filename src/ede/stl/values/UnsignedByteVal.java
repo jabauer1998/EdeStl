@@ -121,5 +121,10 @@ public class UnsignedByteVal implements Value, Unsigned{
 
         return Utils.getOptimalUnsignedForm(val & toKeepMask);
     }
-    
+
+
+    @Override
+    public void setValue(Value exp){
+	this.value = exp.byteValue();
+    }
 }

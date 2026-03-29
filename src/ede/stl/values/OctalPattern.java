@@ -396,4 +396,9 @@ public class OctalPattern extends Pattern{
     @Override
     public boolean isWire(){ // TODO Auto-generated method stub
     return false; }
+
+    @Override
+    public void setValue(Value exp){
+	//Do nothing
+    }
 }

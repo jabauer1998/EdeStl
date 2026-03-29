@@ -44,4 +44,6 @@ public interface Value {
     public boolean isWire();
 
     public Value getShallowSlice(int startIndex, int endIndex) throws Exception;
+
+    public void setValue(Value val);
 }

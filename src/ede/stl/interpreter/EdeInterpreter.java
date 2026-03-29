@@ -200,13 +200,13 @@ public class EdeInterpreter extends VerilogInterpreter {
         if (environment.variableExists(ident.labelIdentifier)) {
                         Pointer<Value> data = environment.lookupVariable(ident.labelIdentifier);
                         Value typeData = data.deRefrence();
-            if(typeData instanceof EdeStatVal){
-                EdeStatVal stat = (EdeStatVal)typeData;
-                return new LongVal(stat.intValue());
-            } else if(typeData instanceof EdeRegVal){
-                EdeRegVal reg = (EdeRegVal)typeData;
-                return new LongVal(reg.longValue());
-            }
+                        if(typeData instanceof EdeStatVal){
+                            EdeStatVal stat = (EdeStatVal)typeData;
+                            return new LongVal(stat.intValue());
+                        } else if(typeData instanceof EdeRegVal){
+                            EdeRegVal reg = (EdeRegVal)typeData;
+                            return new LongVal(reg.longValue());
+                        }
                 }
         return super.interpretShallowOptimizedIdentifier(ident);
     }
