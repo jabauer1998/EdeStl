@@ -11,4 +11,8 @@ public class ArrayVectorVal extends ArrayVal<VectorVal>{
             this.AddElem(new VectorVal(vectorBegin.intValue(), vectorEnd.intValue()));
         }
     }
+
+    public void setValue(Value val){
+	//Do nothing
+    }
 }

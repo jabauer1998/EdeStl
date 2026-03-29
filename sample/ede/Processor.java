@@ -77,7 +77,7 @@ public class Processor {
                         }
                 }, keywords);
 
-                EdeInstance.AddVerilogJob("Execute", TextAreaNumbered.IS_NUMBERED, "./sample/processor/ARM7TDMIS.v", "default", "StandardInput", "StandardOutput", "StandardError", true);
+                EdeInstance.AddVerilogJob("Execute", "Arm", TextAreaNumbered.IS_NUMBERED, "./sample/processor/ARM7TDMIS.v", "default", "StandardInput", "StandardOutput", "StandardError", true);
 
                 EdeInstance.linkJobs();
 

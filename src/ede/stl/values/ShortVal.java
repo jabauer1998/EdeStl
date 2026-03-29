@@ -129,5 +129,9 @@ public class ShortVal implements Value{
 
         return Utils.getOptimalUnsignedForm(val & toKeepMask);
     }
-    
+
+
+    public void setValue(Value exp){
+	this.value = exp.shortValue();
+    }
 }

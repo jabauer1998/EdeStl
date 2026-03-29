@@ -131,4 +131,9 @@ public class ByteVal implements Value{
 
         return Utils.getOptimalUnsignedForm(val & toKeepMask);
     }
+
+    @Override
+    public void setValue(Value val){
+	this.value = val.byteValue();
+    }
 }

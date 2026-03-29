@@ -396,4 +396,9 @@ public class BinaryPattern extends Pattern{
     @Override
     public boolean isWire(){ // TODO Auto-generated method stub
     return false; }
+
+    @Override
+    public void setValue(Value val){
+	//Do nothing
+    }
 }

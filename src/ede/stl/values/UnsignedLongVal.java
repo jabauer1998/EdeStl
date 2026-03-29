@@ -133,5 +133,10 @@ public class UnsignedLongVal implements Value, Unsigned{
     long val = (value >> start);
     long toKeepMask = ((1 << size) - 1);
 
-    return Utils.getOptimalUnsignedForm(val & toKeepMask); } 
+    return Utils.getOptimalUnsignedForm(val & toKeepMask); }
+
+    @Override
+    public void setValue(Value exp){
+	this.value = exp.longValue();
+    }
 }

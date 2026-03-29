@@ -120,4 +120,9 @@ public class StrVal implements Value{
     public char charAt(int index){
         return value.charAt(index);
     }
+
+    @Override
+    public void setValue(Value exp){
+	this.value = exp.toString();
+    }
 }

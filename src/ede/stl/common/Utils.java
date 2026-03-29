@@ -14,6 +14,9 @@ import ede.stl.values.LongVal;
 import ede.stl.values.RealVal;
 import ede.stl.values.ShortVal;
 import ede.stl.values.StrVal;
+import ede.stl.values.EdeStatVal;
+import ede.stl.values.EdeMemVal;
+import ede.stl.values.EdeRegVal;
 import ede.stl.values.UnsignedByteVal;
 import ede.stl.values.UnsignedIntVal;
 import ede.stl.values.UnsignedLongVal;
@@ -5458,7 +5461,7 @@ public class Utils {
                 }
         }
 
-        public static Value getShallowSliceFromFromIndices(Value startIndex, Value endIndex, Value dataObject, String ident) throws Exception{ // TODO Auto-generated method stub
+        public static Value getShallowSliceFromFromIndices(Value dataObject, Value startIndex, Value endIndex, String ident) throws Exception{ // TODO Auto-generated method stub
                 if(dataObject instanceof VectorVal) {
                         VectorVal toRet = ((VectorVal)dataObject).getShallowSlice(startIndex.intValue(), endIndex.intValue());
                         return toRet;
@@ -5552,4 +5555,18 @@ public class Utils {
                         }
                 }
         }
+
+    public static void setValueOfIdent(Value deref, Value rightHandSide){
+	if(deref instanceof EdeStatVal){
+	    EdeStatVal status = (EdeStatVal)deref;
+            status.setStatusValue(rightHandSide.intValue());
+        } else if(deref instanceof EdeRegVal){
+            EdeRegVal reg = (EdeRegVal)deref;
+            reg.setAllBits(rightHandSide.intValue());
+        }
+    }
+
+    public static void shallowAssignValue(Value src, Value exp){
+	src.setValue(exp);
+    }
 }

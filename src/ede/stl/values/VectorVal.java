@@ -37,6 +37,10 @@ public class VectorVal implements Value{
 		}
 	}
 
+	public VectorVal(Value index1, Value index2){
+		this(index1.intValue(), index2.intValue());
+	}
+
 	public CircuitElem getValue(int index){
 		return (index1 <= index2) ? data.get(index - index1) : data.get(index1 - index);
 	}
@@ -295,5 +299,10 @@ public class VectorVal implements Value{
 	@Override
 	public boolean isWire(){ // 
 		return false; 
+	}
+
+        @Override
+        public void setValue(Value exp){
+	    //Do nothing
 	}
 }

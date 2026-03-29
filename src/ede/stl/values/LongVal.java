@@ -126,4 +126,8 @@ public class LongVal implements Value{
 
         return Utils.getOptimalUnsignedForm(val & toKeepMask);
     }
+
+    public void setValue(Value val){
+	this.value = val.longValue();
+    }
 }

@@ -11,4 +11,8 @@ public class ArrayIntVal extends ArrayVal<UnsignedIntVal> {
             this.AddElem(new UnsignedIntVal(0));
         }
     }
+
+    public void setValue(Value val){
+	//DO nothing
+    }
 }

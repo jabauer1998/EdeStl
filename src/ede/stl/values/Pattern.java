@@ -93,4 +93,8 @@ public abstract class Pattern implements Value{
     public Value getShallowSlice(int index1, int index2) throws Exception{
         throw new UnsupportedOperationException("Error unsupported operation getShallowSlice");
     }
+
+    public void setValue(Value val){
+	//DO nothing
+    }
 }

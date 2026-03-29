@@ -108,5 +108,8 @@ public class EdeMemVal implements Value{
         throw new UnsupportedOperationException("Unimplemented method 'getShallowSlice'"); 
     }
 
-    
+    @Override
+    public void setValue(Value val){
+	//do nothing 
+    }
 }
