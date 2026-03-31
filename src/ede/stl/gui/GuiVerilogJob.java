@@ -76,7 +76,7 @@ public class GuiVerilogJob extends GuiJob {
                 HashSet<String> visitedClasses = new HashSet<String>();
                 HashSet<String> allVerilogModules = collectModules();
                 Class<?> rootClass = Class.forName("ede.instance.mods." + mainModule);
-                Object rootInstance = rootClass.getDeclaredConstructor().newInstance();
+                Object rootInstance = rootClass.getDeclaredConstructor(edeInstance.getClass()).newInstance(edeInstance);
                 visitRootClass(rootInstance, visitedClasses, allVerilogModules, env);
                 env.runThreads();
             } catch (ClassNotFoundException e) {

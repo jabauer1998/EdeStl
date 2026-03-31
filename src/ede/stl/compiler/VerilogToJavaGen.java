@@ -111,11 +111,11 @@ public class VerilogToJavaGen {
         }
         
         protected boolean localInScope(String name){
-	    return scopedTable.inScope(name);
+            return scopedTable.inScope(name);
         }
         
         protected boolean fieldInScope(String field) {
-	    return scopedFields.inScope(field);
+            return scopedFields.inScope(field);
         }
 
         protected void printStringNow(String toPrint){
@@ -123,11 +123,11 @@ public class VerilogToJavaGen {
         }
         
         protected int getFromScope(String elem) {
-	    return scopedTable.getEntry(elem);
+            return scopedTable.getEntry(elem);
         }
 
         protected String getTypeFromFieldScope(String scope){
-	    return scopedFields.getEntry(scope);
+            return scopedFields.getEntry(scope);
         }
 
         protected int getSmallestInScope(){
@@ -158,7 +158,7 @@ public class VerilogToJavaGen {
         }
 
         public void addField(String field, String type){
-	    scopedFields.addEntry(field, type);
+            scopedFields.addEntry(field, type);
         }
 
         public void addType(String funcName, String type){
@@ -166,12 +166,12 @@ public class VerilogToJavaGen {
         }
 
         private void pushModule(){
-	    scopedFields.addScope();
+            scopedFields.addScope();
             funcTypes.addScope();
         }
 
         private void popModule(){
-	    scopedFields.removeScope();
+            scopedFields.removeScope();
             funcTypes.removeScope();
         }
         
@@ -205,7 +205,7 @@ public class VerilogToJavaGen {
                 }
         }
 
-        private static void pushString(String val, MethodVisitor main){
+        protected static void pushString(String val, MethodVisitor main){
                 main.visitLdcInsn(val);
         }
 
@@ -224,7 +224,7 @@ public class VerilogToJavaGen {
         }
 
         private static void pushLong(long val, MethodVisitor main){
-	    main.visitLdcInsn(val);
+            main.visitLdcInsn(val);
         }
 
         private static void pushEnum(String enumName, String specificName, MethodVisitor main){
@@ -510,7 +510,7 @@ public class VerilogToJavaGen {
                 
                 MethodVisitor moduleConstructor =                   moduleWriter.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_VARARGS,
                         "<init>",
-                        "(" + typeStr + ")V",
+                        "(Lede/stl/gui/GuiEde;" + typeStr + ")V",
                         null,
                         null
                 );
@@ -1328,11 +1328,11 @@ public class VerilogToJavaGen {
                 } else {
                         codeGenShallowExpression(stat.condition, method, modName, module);
                         Label endLabel = new Label();
-                        method.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
+                        method.visitMethodInsn(Opcodes.INVOKEINTERFACE,
                       "ede/stl/values/Value", // Internal name of the class
                       "boolValue",           // Name of the static method
                       "()Z",                        // Method descriptor (void return, no args)
-                      false);
+                      true);
                         method.visitJumpInsn(Opcodes.IFEQ, endLabel);
                         codeGenShallowStatement(stat.trueStatement, methodName, method, modName, module);
                         method.visitLabel(endLabel);
@@ -1343,11 +1343,11 @@ public class VerilogToJavaGen {
                 codeGenShallowExpression(stat.condition, method, modName, module);
                 Label endLabel = new Label();
                 Label elseLabel = new Label();
-                method.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
+                method.visitMethodInsn(Opcodes.INVOKEINTERFACE,
               "ede/stl/values/Value", // Internal name of the class
               "boolValue",           // Name of the static method
               "()Z",                        // Method descriptor (void return, no args)
-              false);
+              true);
                 method.visitJumpInsn(Opcodes.IFEQ, elseLabel);
                 codeGenShallowStatement(stat.trueStatement, methodName, method, modName, module);
                 method.visitJumpInsn(Opcodes.GOTO, endLabel);
@@ -1376,11 +1376,11 @@ public class VerilogToJavaGen {
                 
                 method.visitLabel(loopBegin);
                 codeGenShallowExpression(stat.exp, method, modName, module);
-                method.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
+                method.visitMethodInsn(Opcodes.INVOKEINTERFACE,
       "ede/stl/values/Value", // Internal name of the class
       "boolValue",           // Name of the static method
       "()Z",                        // Method descriptor (void return, no args)
-      false);
+      true);
                 method.visitJumpInsn(Opcodes.IFNE, loopBody);
         }
         
@@ -1390,11 +1390,11 @@ public class VerilogToJavaGen {
                  method.visitVarInsn(Opcodes.ISTORE, localArg1);
                  this.localAndArgNumber++;
                  codeGenShallowExpression(loop.exp, method, modName, module);
-                 method.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
+                 method.visitMethodInsn(Opcodes.INVOKEINTERFACE,
               "ede/stl/values/Value", // Internal name of the class
               "intValue",           // Name of the static method
               "()I",                        // Method descriptor (void return, no args)
-              false);
+              true);
                  int localArg2 = this.localAndArgNumber;
                  method.visitVarInsn(Opcodes.ISTORE, localArg2);
                  this.localAndArgNumber++;
@@ -1423,11 +1423,11 @@ public class VerilogToJavaGen {
                 
                 method.visitLabel(loopBegin);
                 codeGenShallowExpression(loop.exp, method, modName, module);
-                method.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
+                method.visitMethodInsn(Opcodes.INVOKEINTERFACE,
                 "ede/stl/values/Value", // Internal name of the class
                 "boolValue",           // Name of the static method
                 "()Z",                        // Method descriptor (void return, no args)
-                false);
+                true);
                 method.visitJumpInsn(Opcodes.IFNE, loopBody);
         }
 
@@ -1444,7 +1444,7 @@ public class VerilogToJavaGen {
                                 int ptr = this.getFromScope(leftHandElement.labelIdentifier);
                                  method.visitVarInsn(Opcodes.ALOAD, ptr);
                           } else if(this.fieldInScope(leftHandElement.labelIdentifier)) {
-			        String getType = getTypeFromFieldScope(leftHandElement.labelIdentifier);
+                                String getType = getTypeFromFieldScope(leftHandElement.labelIdentifier);
                                 method.visitVarInsn(Opcodes.ALOAD, 0);
                                 method.visitFieldInsn(Opcodes.GETFIELD, 
                                 modName, // Owner class internal name
@@ -1467,7 +1467,7 @@ public class VerilogToJavaGen {
                                  int ptr = this.getFromScope(slice.labelIdentifier);
                                  method.visitVarInsn(Opcodes.ALOAD, ptr);
                          } else if(this.fieldInScope(slice.labelIdentifier)) {
-			         String typeSlice = getTypeFromFieldScope(slice.labelIdentifier);
+                                 String typeSlice = getTypeFromFieldScope(slice.labelIdentifier);
                                  method.visitVarInsn(Opcodes.ALOAD, 0);
                                  method.visitFieldInsn(Opcodes.GETFIELD, 
                                  modName, // Owner class internal name
@@ -1487,7 +1487,7 @@ public class VerilogToJavaGen {
                  } else if(assign.leftHandSide instanceof Identifier) {
                          Identifier ident = (Identifier)assign.leftHandSide;
                          if((ident.labelIdentifier + "Shallow").equals(funcName) || (ident.labelIdentifier + "Deep").equals(funcName)) {
-			         codeGenShallowExpression(assign.rightHandSide, method, modName, module);
+                                 codeGenShallowExpression(assign.rightHandSide, method, modName, module);
                                  method.visitInsn(Opcodes.ARETURN);
                          } else {
                                  if(localInScope(ident.labelIdentifier)) {
@@ -1495,18 +1495,18 @@ public class VerilogToJavaGen {
                                          int ptr = this.getFromScope(ident.labelIdentifier);
                                          method.visitVarInsn(Opcodes.ASTORE, ptr);
                                  } else if(fieldInScope(ident.labelIdentifier)){
-				         String myType = getTypeFromFieldScope(ident.labelIdentifier);
-					 method.visitVarInsn(Opcodes.ALOAD, 0);
+                                         String myType = getTypeFromFieldScope(ident.labelIdentifier);
+                                         method.visitVarInsn(Opcodes.ALOAD, 0);
                                          method.visitFieldInsn(Opcodes.GETFIELD, 
                                          modName,
                                          ident.labelIdentifier,
                                          myType);
-					 codeGenShallowExpression(assign.rightHandSide, method, modName, module);
-					 method.visitMethodInsn(Opcodes.INVOKESTATIC,
-								"ede/stl/common/Utils", // Internal name of the class
-								"shallowAssignValue",           // Name of the static method
-								"(Lede/stl/values/Value;Lede/stl/values/Value;)V",                        // Method descriptor (void return, no args)
-								false); 
+                                         codeGenShallowExpression(assign.rightHandSide, method, modName, module);
+                                         method.visitMethodInsn(Opcodes.INVOKESTATIC,
+                                                                "ede/stl/common/Utils", // Internal name of the class
+                                                                "shallowAssignValue",           // Name of the static method
+                                                                "(Lede/stl/values/Value;Lede/stl/values/Value;)V",                        // Method descriptor (void return, no args)
+                                                                false); 
                                  } else {
                                          Utils.errorAndExit("Error cant find left hand side of assign " + ident + "\n in assignment " + assign.toString() + "\nin function" + funcName + "\nin module " + modName);
                                  }
@@ -1530,7 +1530,7 @@ public class VerilogToJavaGen {
                                 int ptr = this.getFromScope(leftHandElement.labelIdentifier);
                                   method.visitVarInsn(Opcodes.ALOAD, ptr);
                           } else if(fieldInScope(leftHandElement.labelIdentifier)) {
-			        String labelType = getTypeFromFieldScope(leftHandElement.labelIdentifier);
+                                String labelType = getTypeFromFieldScope(leftHandElement.labelIdentifier);
                                 method.visitVarInsn(Opcodes.ALOAD, 0);
                                 method.visitFieldInsn(Opcodes.GETFIELD, 
                                 modName, // Owner class internal name
@@ -1552,7 +1552,7 @@ public class VerilogToJavaGen {
                                  int ptr = this.getFromScope(slice.labelIdentifier);
                                  method.visitVarInsn(Opcodes.ALOAD, ptr);
                          } else if(fieldInScope(slice.labelIdentifier)) {
-			         String labelType = getTypeFromFieldScope(slice.labelIdentifier);
+                                 String labelType = getTypeFromFieldScope(slice.labelIdentifier);
                                  method.visitVarInsn(Opcodes.ALOAD, 0);
                                  method.visitFieldInsn(Opcodes.GETFIELD, 
                         modName, // Owner class internal name
@@ -1572,17 +1572,17 @@ public class VerilogToJavaGen {
                                  int ptr = this.getFromScope(ident.labelIdentifier);
                                  method.visitVarInsn(Opcodes.ASTORE, ptr);
                          } else if(fieldInScope(ident.labelIdentifier)) {
-			         String labelType = getTypeFromFieldScope(ident.labelIdentifier);
+                                 String labelType = getTypeFromFieldScope(ident.labelIdentifier);
                                  // Value is already on stack from pre-computed RHS; ALOAD_0 goes on top.
                                  // PUTFIELD needs [objectref, value]; SWAP corrects [value, objectref] → [objectref, value].
                                  method.visitVarInsn(Opcodes.ALOAD, 0);
                                  method.visitInsn(Opcodes.SWAP);
                                  method.visitFieldInsn(Opcodes.GETFIELD, modName, ident.labelIdentifier, labelType);
-				 method.visitMethodInsn(Opcodes.INVOKESTATIC,
-							"ede/stl/common/Utils", // Internal name of the class
-							"shallowAssignValue",           // Name of the static method
-							"(Lede/stl/values/Value;Lede/stl/values/Value;)V",                        // Method descriptor (void return, no args)
-							false);      
+                                 method.visitMethodInsn(Opcodes.INVOKESTATIC,
+                                                        "ede/stl/common/Utils", // Internal name of the class
+                                                        "shallowAssignValue",           // Name of the static method
+                                                        "(Lede/stl/values/Value;Lede/stl/values/Value;)V",                        // Method descriptor (void return, no args)
+                                                        false);      
                          } else {
                                  Utils.errorAndExit("Error field or local variable for ident " + ident + " was not found!!!");
                          }
@@ -1730,9 +1730,9 @@ public class VerilogToJavaGen {
                 constructor.visitTypeInsn(Opcodes.NEW, "ede/stl/values/VectorVal");
                 constructor.visitInsn(Opcodes.DUP);
                 codeGenShallowExpression(idx1, constructor, modName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "()I", false);
+                constructor.visitMethodInsn(Opcodes.INVOKEINTERFACE, "ede/stl/values/Value", "intValue", "()I", true);
                 codeGenShallowExpression(idx2, constructor, modName, modWriter);
-                constructor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "ede/stl/values/Value", "intValue", "()I", false);
+                constructor.visitMethodInsn(Opcodes.INVOKEINTERFACE, "ede/stl/values/Value", "intValue", "()I", true);
                 constructor.visitMethodInsn(Opcodes.INVOKESPECIAL, "ede/stl/values/VectorVal", "<init>", "(II)V", false);
                 constructor.visitFieldInsn(Opcodes.PUTFIELD, modName, fieldName, "Lede/stl/values/VectorVal;");
         }
@@ -2081,10 +2081,10 @@ public class VerilogToJavaGen {
         
         private void codeGenShallowTernaryOperation(TernaryOperation call, MethodVisitor method, String moduleName, ClassVisitor module) throws Exception {
                 codeGenShallowExpression(call.condition, method, moduleName, module);
-                method.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
+                method.visitMethodInsn(Opcodes.INVOKEINTERFACE,
                         "ede/stl/values/Value", // Internal name of the class
                         "boolValue",           // Name of the static method
-                        "()Z", false);
+                        "()Z", true);
                 Label elseLabel = new Label();
                 Label endLabel = new Label();
                 method.visitJumpInsn(Opcodes.IFEQ, elseLabel);
@@ -2190,7 +2190,7 @@ public class VerilogToJavaGen {
                         int num = this.getFromScope(elem.labelIdentifier);
                         method.visitVarInsn(Opcodes.ALOAD, num);
                 } else if(this.fieldInScope(elem.labelIdentifier)){
-		        String fieldType = getTypeFromFieldScope(elem.labelIdentifier);
+                        String fieldType = getTypeFromFieldScope(elem.labelIdentifier);
                         method.visitVarInsn(Opcodes.ALOAD, 0);
                         method.visitFieldInsn(Opcodes.GETFIELD, 
                         moduleName, // Owner class internal name
@@ -2211,7 +2211,7 @@ public class VerilogToJavaGen {
                         int num = this.getFromScope(slice.labelIdentifier);
                         method.visitVarInsn(Opcodes.ALOAD, num);
                 } else if(fieldInScope(slice.labelIdentifier)) {
-		        String fieldType = getTypeFromFieldScope(slice.labelIdentifier);
+                        String fieldType = getTypeFromFieldScope(slice.labelIdentifier);
                         method.visitVarInsn(Opcodes.ALOAD, 0);
                         method.visitFieldInsn(Opcodes.GETFIELD, 
                         moduleName, // Owner class internal name
@@ -2225,7 +2225,7 @@ public class VerilogToJavaGen {
                 codeGenShallowExpression(slice.index2, method, moduleName, module);
                 
                 pushString(slice.labelIdentifier, method);
-                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getShallowSliceFromIndecis", "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;Ljava/lang/String;)Lede/stl/values/Value;", false);
+                method.visitMethodInsn(Opcodes.INVOKESTATIC, "ede/stl/common/Utils", "getShallowSliceFromFromIndices", "(Lede/stl/values/Value;Lede/stl/values/Value;Lede/stl/values/Value;Ljava/lang/String;)Lede/stl/values/Value;", false);
         }
 
         private void codeGenDeepExpression(Expression exp, MethodVisitor method, String modName, ClassVisitor writer) throws Exception{
@@ -2241,7 +2241,7 @@ public class VerilogToJavaGen {
                         Integer num = this.getFromScope(ident.labelIdentifier);
                         method.visitVarInsn(Opcodes.ALOAD, num);
                 } else if(this.fieldInScope(ident.labelIdentifier)){
-		        String fieldType = getTypeFromFieldScope(ident.labelIdentifier);
+                        String fieldType = getTypeFromFieldScope(ident.labelIdentifier);
                         method.visitVarInsn(Opcodes.ALOAD, 0);
                         method.visitFieldInsn(Opcodes.GETFIELD, 
                         moduleName, // Owner class internal name

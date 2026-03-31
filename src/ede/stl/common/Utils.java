@@ -5461,7 +5461,7 @@ public class Utils {
                 }
         }
 
-        public static Value getShallowSliceFromFromIndices(Value startIndex, Value endIndex, Value dataObject, String ident) throws Exception{ // TODO Auto-generated method stub
+        public static Value getShallowSliceFromFromIndices(Value dataObject, Value startIndex, Value endIndex, String ident) throws Exception{ // TODO Auto-generated method stub
                 if(dataObject instanceof VectorVal) {
                         VectorVal toRet = ((VectorVal)dataObject).getShallowSlice(startIndex.intValue(), endIndex.intValue());
                         return toRet;
