@@ -1,7 +1,6 @@
 package ede.stl.interpreter;
 
 import javax.swing.tree.ExpandVetoException;
-import ede.stl.common.Pointer;
 import ede.stl.common.ErrorLog;
 import ede.stl.common.ErrorItem;
 import ede.stl.gui.GuiEde;
@@ -23,6 +22,8 @@ import ede.stl.ast.Reg;
 import ede.stl.ast.BlockingAssignment;
 import ede.stl.ast.SystemTaskStatement;
 import ede.stl.ast.TaskStatement;
+import java.util.List;
+import java.util.LinkedList;
 
 public class EdeInterpreter extends VerilogInterpreter {
     private GuiEde guiInstance;
@@ -117,20 +118,16 @@ public class EdeInterpreter extends VerilogInterpreter {
         if(identifier.equals("display")){
            if (stat.argumentList.size() >= 2) {
                Value fString = interpretShallowOptimizedExpression(stat.argumentList.get(0));
-
-               Object[] Params = new Object[stat.argumentList.size() - 1];
-               for(int paramIndex = 0, i = 1; i < stat.argumentList.size(); i++, paramIndex++){
-                    Value  fData = interpretShallowOptimizedExpression(stat.argumentList.get(i));
-                    Object rawValue = Utils.getRawValue(fData);
-                    Params[paramIndex] = rawValue;
+               Value[] vals = new Value[stat.argumentList.size() - 1];
+               for(int i = 1; i < stat.argumentList.size(); i++){
+                   Value val = interpretShallowOptimizedExpression(stat.argumentList.get(i));
+                   vals[i - 1] = val;
                }
-               
-
-               String formattedString = String.format(fString.toString(), Params);
-               guiInstance.appendIoText(standardOutputPane, formattedString + "\r\n");
+               String formattedString = Utils.formatString(fString, vals);
+               guiInstance.appendIoText(standardOutputPane, formattedString);
            } else if (stat.argumentList.size() == 1) {
                Value data = interpretShallowOptimizedExpression(stat.argumentList.get(0));
-               guiInstance.appendIoText(standardOutputPane, data.toString() + "\r\n");
+               guiInstance.appendIoText(standardOutputPane, data.toString());
            } else {
                Utils.errorAndExit("Unknown number of print arguments in " + stat.taskName, stat.position);
            }
@@ -145,8 +142,7 @@ public class EdeInterpreter extends VerilogInterpreter {
 
         if(assign.leftHandSide instanceof Element){
             Element leftHandSide = (Element)assign.leftHandSide;
-            Pointer<Value> val = environment.lookupVariable(leftHandSide.labelIdentifier);
-            Value deref = val.deRefrence();
+            Value deref = environment.lookupVariable(leftHandSide.labelIdentifier);
             if(deref instanceof EdeMemVal){
                 EdeMemVal memory = (EdeMemVal)deref;
                 Value rightHandSideValue = interpretShallowOptimizedExpression(assign.rightHandSide);
@@ -162,8 +158,7 @@ public class EdeInterpreter extends VerilogInterpreter {
             }
         } else if(assign.leftHandSide instanceof Slice){
             Slice leftHandSide = (Slice)assign.leftHandSide;
-            Pointer<Value> val = environment.lookupVariable(leftHandSide.labelIdentifier);
-            Value deref = val.deRefrence();
+            Value deref = environment.lookupVariable(leftHandSide.labelIdentifier);
             if(deref instanceof EdeRegVal){
                 EdeRegVal register = (EdeRegVal)deref;
                 Value rightHandSideValue = interpretShallowOptimizedExpression(assign.rightHandSide);
@@ -174,12 +169,11 @@ public class EdeInterpreter extends VerilogInterpreter {
             }
         } else if(assign.leftHandSide instanceof Identifier){
             Identifier leftHandSide = (Identifier)assign.leftHandSide;
-            Pointer<Value> val = environment.lookupVariable(leftHandSide.labelIdentifier);
-            if(val == null){
+            Value deref = environment.lookupVariable(leftHandSide.labelIdentifier);
+            if(deref == null){
                 errorLog.addItem(new ErrorItem("Variable " + leftHandSide.labelIdentifier + " does not exist in the current scope", leftHandSide.position));
                 return Utils.errorOccured();
             }
-            Value deref = val.deRefrence();
             if(deref instanceof EdeStatVal){
                 EdeStatVal status = (EdeStatVal)deref;
                 Value rightHandSide = interpretShallowOptimizedExpression(assign.rightHandSide);
@@ -198,8 +192,7 @@ public class EdeInterpreter extends VerilogInterpreter {
 
     public Value interpretShallowOptimizedIdentifier(Identifier ident) throws Exception{
         if (environment.variableExists(ident.labelIdentifier)) {
-                        Pointer<Value> data = environment.lookupVariable(ident.labelIdentifier);
-                        Value typeData = data.deRefrence();
+                        Value typeData = environment.lookupVariable(ident.labelIdentifier);
                         if(typeData instanceof EdeStatVal){
                             EdeStatVal stat = (EdeStatVal)typeData;
                             return new LongVal(stat.intValue());
@@ -213,8 +206,7 @@ public class EdeInterpreter extends VerilogInterpreter {
 
     public Value interpretShallowOptimizedElement(Element elem) throws Exception{
         if(environment.variableExists(elem.labelIdentifier)){
-            Pointer<Value> data = environment.lookupVariable(elem.labelIdentifier);
-                        Value typeData = data.deRefrence();
+                        Value typeData = environment.lookupVariable(elem.labelIdentifier);
             if(typeData instanceof EdeMemVal){
                 EdeMemVal edeMemVal = (EdeMemVal)typeData;
                 Value result = interpretShallowOptimizedExpression(elem.index1);
@@ -230,8 +222,7 @@ public class EdeInterpreter extends VerilogInterpreter {
 
     public Value interpretShallowOptimizedSlice(Slice elem) throws Exception{
         if(environment.variableExists(elem.labelIdentifier)){
-            Pointer<Value> data = environment.lookupVariable(elem.labelIdentifier);
-                        Value typeData = data.deRefrence();
+                        Value typeData = environment.lookupVariable(elem.labelIdentifier);
             if(typeData instanceof EdeRegVal){
                 EdeRegVal edeRegVal = (EdeRegVal)typeData;
                 Value result1 = interpretShallowOptimizedExpression(elem.index1);

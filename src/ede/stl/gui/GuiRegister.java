@@ -3,6 +3,11 @@ package ede.stl.gui;
 import javax.swing.*;
 import java.awt.*;
 
+import ede.stl.common.Utils;
+import ede.stl.values.RegVal;
+import ede.stl.values.Value;
+import ede.stl.values.VectorVal;
+
 public class GuiRegister extends JPanel {
     private JLabel TitleReg;
     private JLabel RegisterValue;
@@ -52,45 +57,90 @@ public class GuiRegister extends JPanel {
         return Sb.toString();
     }
 
-    public void SetRegisterValue(long Value){
-        if(this.regFormat == Format.BINARY){
-            String strVal = Long.toBinaryString(Value);
-            if(strVal.length() > this.RegisterDecimalLength){
-                strVal = strVal.substring(strVal.length() - RegisterDecimalLength);
-            } else if(strVal.length() < this.RegisterDecimalLength){
-                StringBuilder padder = new StringBuilder();
-                int NumberOfZeros = this.RegisterDecimalLength - strVal.length();
-                for(int i = 0; i < NumberOfZeros; i++){
-                    padder.append('0');
-                }
-                padder.append(strVal);
-                strVal = padder.toString();
-            }
-            this.RegisterValue.setText(strVal);
-        } else {
-            String strVal = Long.toHexString(Value);
-            int HexDecimalLength = this.RegisterDecimalLength/4;
-            if(strVal.length() > HexDecimalLength){
-                strVal = strVal.substring(strVal.length() - HexDecimalLength);
-            } else if(strVal.length() < HexDecimalLength){
-                StringBuilder padder = new StringBuilder();
-                int NumberOfZeros = HexDecimalLength - strVal.length();
-                for(int i = 0; i < NumberOfZeros; i++){
-                    padder.append('0');
-                }
-                padder.append(strVal);
-                strVal = padder.toString();
-            }
-            this.RegisterValue.setText(strVal);
-        }
+    public int getRegisterLength(){
+        return RegisterDecimalLength;
     }
 
-    public long GetRegisterValue(){
+    public VectorVal GetRegisterVector(){
         String RegisterText = this.RegisterValue.getText();
+        int width = (RegisterDecimalLength <= 0) ? 1 : RegisterDecimalLength;
+        VectorVal vec = new VectorVal(width - 1, 0);
         if(this.regFormat == Format.BINARY){
-            return Long.parseLong(RegisterText, 2);
+            int len = RegisterText.length();
+            for(int j = 0; j < len; j++){
+                int vecIdx = width - 1 - j;
+                if(vecIdx < 0) continue;
+                boolean bit = (RegisterText.charAt(j) == '1');
+                vec.setValue(vecIdx, new RegVal(bit));
+            }
         } else {
-            return Long.parseLong(RegisterText, 16);
+            int len = RegisterText.length();
+            for(int j = 0; j < len; j++){
+                int nibble = Character.digit(RegisterText.charAt(j), 16);
+                if(nibble < 0) nibble = 0;
+                int baseIdx = width - 1 - 4 * j;
+                for(int b = 0; b < 4; b++){
+                    int vecIdx = baseIdx - b;
+                    if(vecIdx < 0) continue;
+                    boolean bit = ((nibble >> (3 - b)) & 1) != 0;
+                    vec.setValue(vecIdx, new RegVal(bit));
+                }
+            }
         }
+        return vec;
+    }
+
+    public Value GetRegisterValue(){
+        return Utils.getOptimalUnsignedForm(GetRegisterVector());
+    }
+
+    public void SetRegisterValue(Value value){
+        int width = (RegisterDecimalLength <= 0) ? 1 : RegisterDecimalLength;
+        boolean[] bits = new boolean[width];
+        VectorVal inVec = null;
+        if(value != null){
+            try {
+                inVec = value.asVector();
+            } catch(UnsupportedOperationException ignored){
+                inVec = null;
+            }
+        }
+        if(inVec != null){
+            int inSize = inVec.getSize();
+            int idx1 = inVec.getIndex1();
+            int idx2 = inVec.getIndex2();
+            int step = (idx1 > idx2) ? 1 : (idx1 < idx2) ? -1 : 0;
+            for(int k = 0; k < width && k < inSize; k++){
+                int vecIdx = (step == 0) ? idx2 : idx2 + step * k;
+                bits[k] = inVec.getValue(vecIdx).getStateSignal();
+            }
+        } else if(value != null){
+            long raw = value.longValue();
+            int copyBits = Math.min(width, 64);
+            for(int k = 0; k < copyBits; k++){
+                bits[k] = ((raw >> k) & 1L) != 0;
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        if(this.regFormat == Format.BINARY){
+            for(int k = width - 1; k >= 0; k--){
+                sb.append(bits[k] ? '1' : '0');
+            }
+        } else {
+            int hexLen = width / 4;
+            for(int j = 0; j < hexLen; j++){
+                int nibble = 0;
+                int baseLsbPos = width - 1 - 4 * j;
+                for(int b = 0; b < 4; b++){
+                    int kPos = baseLsbPos - b;
+                    if(kPos < 0) continue;
+                    if(bits[kPos]){
+                        nibble |= (1 << (3 - b));
+                    }
+                }
+                sb.append(Character.forDigit(nibble, 16));
+            }
+        }
+        this.RegisterValue.setText(sb.toString());
     }
 }

@@ -128,6 +128,16 @@ public class LongVal implements Value{
     }
 
     public void setValue(Value val){
-	this.value = val.longValue();
+        this.value = val.longValue();
+    }
+
+    @Override
+    public VectorVal asVector(){
+        long v = this.value;
+        VectorVal vec = new VectorVal(63, 0);
+        for(int i = 0; i < 64; i++){
+            vec.setValue(i, new RegVal(((v >> i) & 1L) != 0));
+        }
+        return vec;
     }
 }

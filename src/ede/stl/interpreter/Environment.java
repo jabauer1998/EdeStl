@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
-import ede.stl.common.Pointer;
 import ede.stl.common.SymbolTable;
 import ede.stl.common.FormattedScanner;
 import ede.stl.gui.GuiEde;
@@ -23,12 +22,12 @@ import ede.stl.ast.ProcessBase;
 
 public class Environment {
   private SymbolTable<ModuleDeclaration>  moduleTable;
-	private SymbolTable<TaskDeclaration> taskTable;
-	private SymbolTable<FunctionDeclaration> functionTable;
-	private SymbolTable<Pointer<Value>> variableTable;
+        private SymbolTable<TaskDeclaration> taskTable;
+        private SymbolTable<FunctionDeclaration> functionTable;
+        private SymbolTable<Value> variableTable;
 
    private Stack<String> callStack;
-	 private Stack<Boolean> exitStack;
+         private Stack<Boolean> exitStack;
 
     private ArrayList<FormattedScanner> readOnlyFileDescriptorArray;
     private ArrayList<FileWriter> writableFileDescriptorArray;
@@ -114,7 +113,7 @@ public class Environment {
         return functionTable.getEntry(symbol);
     }
 
-    public Pointer<Value> lookupVariable(String symbol){
+    public Value lookupVariable(String symbol){
         return variableTable.getEntry(symbol);
     }
 
@@ -151,8 +150,7 @@ public class Environment {
     }
 
     public void addVariable(String symbol, Value value){
-        Pointer<Value> valuePointer = new Pointer<Value>(value);
-        variableTable.addEntry(symbol, valuePointer);
+        variableTable.addEntry(symbol, value);
     }
 
     public void addStackFrame(String ScopeName){

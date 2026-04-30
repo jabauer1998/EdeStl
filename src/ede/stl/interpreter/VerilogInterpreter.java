@@ -10,7 +10,6 @@ import java.io.StringReader;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
-import ede.stl.common.Pointer;
 import ede.stl.common.ErrorLog;
 import ede.stl.common.ErrorItem;
 import ede.stl.common.Destination;
@@ -545,8 +544,7 @@ public class VerilogInterpreter extends Interpreter {
                 if (assign.leftHandSide instanceof Element) {
                         Element leftHandElement = (Element)assign.leftHandSide;
 
-                        Pointer<Value> leftHandPtr = environment.lookupVariable(leftHandElement.labelIdentifier);
-                        Value leftHandDeref = leftHandPtr.deRefrence();
+                        Value leftHandDeref = environment.lookupVariable(leftHandElement.labelIdentifier);
 
                         Value leftHandIndex = interpretShallowOptimizedExpression(leftHandElement.index1);
 
@@ -554,8 +552,7 @@ public class VerilogInterpreter extends Interpreter {
                 } else if (assign.leftHandSide instanceof Slice) {
                         Slice leftHandSlice = (Slice)assign.leftHandSide;
 
-                        Pointer<Value> leftHandPtr = environment.lookupVariable(leftHandSlice.labelIdentifier);
-                        Value leftHandDeref = leftHandPtr.deRefrence();
+                        Value leftHandDeref = environment.lookupVariable(leftHandSlice.labelIdentifier);
 
                         Value leftHandStartIndex = interpretShallowOptimizedExpression(leftHandSlice.index1);
                         Value leftHandEndIndex = interpretShallowOptimizedExpression(leftHandSlice.index2);
@@ -563,9 +560,9 @@ public class VerilogInterpreter extends Interpreter {
                         Utils.shallowAssignSlice(leftHandDeref, leftHandStartIndex, leftHandEndIndex, expVal);
                 } else if (assign.leftHandSide instanceof Identifier) {
                         Identifier leftHandIdent = (Identifier)assign.leftHandSide;
-                        Pointer<Value> leftHandPtr = environment.lookupVariable(leftHandIdent.labelIdentifier);
+                        Value leftHandVal = environment.lookupVariable(leftHandIdent.labelIdentifier);
 
-                        Utils.shallowAssignIdent(leftHandPtr, expVal);
+                        leftHandVal.setValue(expVal);
 
                         String currentStackFrameTitle = environment.stackFrameTitle();
 
@@ -594,8 +591,7 @@ public class VerilogInterpreter extends Interpreter {
                         if (assign.leftHandSide.get(i) instanceof Element) {
                                 Element leftHandElement = (Element)assign.leftHandSide.get(i);
 
-                                Pointer<Value> leftHandPtr = environment.lookupVariable(leftHandElement.labelIdentifier);
-                                Value leftHandDeref = leftHandPtr.deRefrence();
+                                Value leftHandDeref = environment.lookupVariable(leftHandElement.labelIdentifier);
 
                                 Value leftHandIndex = interpretShallowOptimizedExpression(leftHandElement.index1);
 
@@ -620,8 +616,7 @@ public class VerilogInterpreter extends Interpreter {
                         } else if (assign.leftHandSide.get(i) instanceof Slice) {
                                 Slice leftHandSlice = (Slice)assign.leftHandSide.get(i);
 
-                                Pointer<Value> leftHandPtr = environment.lookupVariable(leftHandSlice.labelIdentifier);
-                                Value leftHandDeref = leftHandPtr.deRefrence();
+                                Value leftHandDeref = environment.lookupVariable(leftHandSlice.labelIdentifier);
 
                                 Value leftHandStartIndex = interpretShallowOptimizedExpression(leftHandSlice.index1);
                                 Value leftHandEndIndex = interpretShallowOptimizedExpression(leftHandSlice.index2);
@@ -638,8 +633,8 @@ public class VerilogInterpreter extends Interpreter {
 
                         } else if (assign.leftHandSide.get(i) instanceof Identifier) {
                                 Identifier leftHandIdent = (Identifier)assign.leftHandSide.get(i);
-                                Pointer<Value> leftHandPtr = environment.lookupVariable(leftHandIdent.labelIdentifier);
-                                leftHandPtr.assign(resultList.get(i));
+                                Value leftHandVal = environment.lookupVariable(leftHandIdent.labelIdentifier);
+                                leftHandVal.setValue(resultList.get(i));
                         } else {
                                 Utils.errorAndExit("Invalid Left Hand side of the expression " + assign.leftHandSide.getClass().getName());
                                 return Utils.errorOccured();
@@ -684,8 +679,7 @@ public class VerilogInterpreter extends Interpreter {
         protected Value interpretShallowOptimizedIdentifier(Identifier ident) throws Exception{
 
                 if (environment.variableExists(ident.labelIdentifier)) {
-                        Pointer<Value> data = environment.lookupVariable(ident.labelIdentifier);
-                        Value dataDeref = data.deRefrence();
+                        Value dataDeref = environment.lookupVariable(ident.labelIdentifier);
 
                         if (dataDeref.isVector()) {
                                 return Utils.getOptimalForm((VectorVal)dataDeref);
@@ -703,8 +697,7 @@ public class VerilogInterpreter extends Interpreter {
         protected Value interpretShallowRawIdentifier(Identifier ident) throws Exception{
 
                 if (environment.variableExists(ident.labelIdentifier)) {
-                        Pointer<Value> data = environment.lookupVariable(ident.labelIdentifier);
-                        Value dataDeref = data.deRefrence();
+                        Value dataDeref = environment.lookupVariable(ident.labelIdentifier);
                         return dataDeref;
                 } else {
                         Utils.errorAndExit("Variable Entry " + ident.labelIdentifier + " Doesnt Exist", ident.position);
@@ -719,8 +712,7 @@ public class VerilogInterpreter extends Interpreter {
                 Value endIndex = interpretShallowOptimizedExpression(vector.index2);
 
                 if (environment.variableExists(ident)) {
-                        Pointer<Value> data = environment.lookupVariable(ident);
-                        Value dataObject = data.deRefrence();
+                        Value dataObject = environment.lookupVariable(ident);
                         return dataObject.getShallowSlice(startIndex.intValue(), endIndex.intValue());
                 } else {
                         Utils.errorAndExit("Array or VectorVal " + ident + " not found");
@@ -734,8 +726,7 @@ public class VerilogInterpreter extends Interpreter {
                 Value endIndex = interpretShallowOptimizedExpression(vector.index2);
 
                 if (environment.variableExists(ident)) {
-                        Pointer<Value> data = environment.lookupVariable(ident);
-                        Value dataObject = data.deRefrence();
+                        Value dataObject = environment.lookupVariable(ident);
                         
                         return Utils.getShallowSliceFromFromIndices(dataObject, startIndex, endIndex, ident);
                 } else {
@@ -757,8 +748,7 @@ public class VerilogInterpreter extends Interpreter {
                 Value expr = interpretShallowOptimizedExpression(Elem.index1);
 
                 if (environment.variableExists(ident)) {
-                        Pointer<Value> data = environment.lookupVariable(ident);
-                        Value dataObject = data.deRefrence();
+                        Value dataObject = environment.lookupVariable(ident);
                         return Utils.getShallowElemFromIndex(dataObject, expr, ident);
                 } else {
                         Utils.errorAndExit("Array or VectorVal " + ident + " not found", Elem.position);
@@ -779,8 +769,7 @@ public class VerilogInterpreter extends Interpreter {
                 Value expr = interpretShallowOptimizedExpression(Elem.index1);
 
                 if (environment.variableExists(ident)) {
-                        Pointer<Value> data = environment.lookupVariable(ident);
-                        Value dataObject = data.deRefrence();
+                        Value dataObject = environment.lookupVariable(ident);
 
                         if (dataObject instanceof ArrayVectorVal) {
                                 ArrayVectorVal arr = (ArrayVectorVal)dataObject;

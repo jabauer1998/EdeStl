@@ -30,7 +30,20 @@ public class VerilogAsJavaBase {
                 Method method = currentClass.getDeclaredMethod(methodName, GuiEde.class, CompiledEnvironment.class);
                 env.addThread(new Callable<Void>() {
                     public Void call() throws Exception {
-                        method.invoke(VerilogAsJavaBase.this, edeInstance, env);
+                        try {
+                            method.invoke(VerilogAsJavaBase.this, edeInstance, env);
+                        } catch (InvocationTargetException ite) {
+                            Throwable cause = ite.getCause();
+                            if (cause instanceof RuntimeException) {
+                                throw (RuntimeException) cause;
+                            } else if (cause instanceof Exception) {
+                                throw (Exception) cause;
+                            } else if (cause instanceof Error) {
+                                throw (Error) cause;
+                            } else {
+                                throw ite;
+                            }
+                        }
                         return null;
                     }
                 });

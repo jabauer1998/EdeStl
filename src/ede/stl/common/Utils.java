@@ -47,6 +47,7 @@ import ede.stl.ast.Input;
 import ede.stl.ast.Int;
 import ede.stl.ast.Real;
 import ede.stl.ast.Reg;
+import java.util.LinkedList;
 
 public class Utils {
         /**
@@ -4629,7 +4630,10 @@ public class Utils {
          */
 
         public static boolean caseBoolean(Value target, Value Val) throws Exception{
-                if (Val instanceof Pattern) {
+                if (target instanceof Pattern) {
+                        Pattern pat = (Pattern)target;
+                        return pat.match(Val);
+                } else if (Val instanceof Pattern) {
                         Pattern pat = (Pattern)Val;
                         return pat.match(target);
                 } else {
@@ -5261,17 +5265,17 @@ public class Utils {
                 else return val.longValue();
         }
 
-        public static String formatString(StrVal valString, List<Value> values){
+        public static String formatString(Value valString, List<Value> values){
                 int valueIndex = 0;
                 int valStrIndex = 0;
-                int valStrSize = valString.length();
+                int valStrSize = valString.toString().length();
 
                 StringBuilder result = new StringBuilder();
                 while(valStrIndex < valStrSize){
-                        char currentChar = valString.charAt(valStrIndex);
+                        char currentChar = valString.toString().charAt(valStrIndex);
                         if(currentChar == '%'){
                                 if(valStrIndex + 1 < valStrSize){
-                                        char nextChar = valString.charAt(valStrIndex + 1);
+                                        char nextChar = valString.toString().charAt(valStrIndex + 1);
                                         if(nextChar == 'd'){
                                                 Value nextVal = values.get(valueIndex);
                                                 result.append(nextVal.intValue());
@@ -5322,6 +5326,16 @@ public class Utils {
                 else if(value <= 65535) return new UnsignedShortVal((short)value);
                 else if(value <= 16777215) return new UnsignedIntVal((int)value);
                 else return new UnsignedLongVal(value);
+        }
+
+        public static Value getOptimalUnsignedForm(VectorVal vec){
+                int size = vec.getSize();
+                if(size == 1) return new RegVal(vec.getValue(vec.getStart()).getStateSignal());
+                else if(size == 8) return new UnsignedByteVal(vec.byteValue());
+                else if(size == 16) return new UnsignedShortVal(vec.shortValue());
+                else if(size == 32) return new UnsignedIntVal(vec.intValue());
+                else if(size == 64) return new UnsignedLongVal(vec.longValue());
+                else return vec;
         }
 
         public static void shallowAssignElem(Value leftHandDeref, Value leftHandIndex, Value expVal) throws Exception{
@@ -5465,6 +5479,9 @@ public class Utils {
                 if(dataObject instanceof VectorVal) {
                         VectorVal toRet = ((VectorVal)dataObject).getShallowSlice(startIndex.intValue(), endIndex.intValue());
                         return toRet;
+                } else if (dataObject instanceof LongVal) {
+                        VectorVal toRet = ((LongVal)dataObject).asVector().getShallowSlice(startIndex.intValue(), endIndex.intValue());
+                        return toRet;
                 } else {
                         Utils.errorAndExit("Unkown slice type for " + ident + " [ Type -> " + dataObject.getClass() + " ]");
                         return Utils.errorOccured();
@@ -5492,14 +5509,20 @@ public class Utils {
         }
 
         public static String formatString(Value fString, Value... args){
-                Object[] Params = new Object[args.length];
+                List<Value> Params = new LinkedList<Value>();
 
-                for (int paramIndex = 0; paramIndex < args.length; paramIndex++) {
-                        Object rawValue = Utils.getRawValue(args[paramIndex]);
-                        Params[paramIndex] = rawValue;
+                for(int i = 0; i < args.length; i++){
+                        Params.add(args[i]);
                 }
 
-                return String.format(fString.toString(), Params);
+                String formatted = Utils.formatString(fString, Params);
+                return formatted
+                        .replace("\\\\n", "\n")
+                        .replace("\\\\t", "\t")
+                        .replace("\\\\r", "\r")
+                        .replace("\\n", "\n")
+                        .replace("\\t", "\t")
+                        .replace("\\r", "\r");
         }
 
         public static void display(String toDisp){
@@ -5507,7 +5530,7 @@ public class Utils {
         }
 
         public static void finish(){
-                throw new RuntimeException("Success program terminated");
+                throw new FinishException("Success program terminated");
         }
 
         public static IntVal fOpen(Value fname, Value access, Environment environment) throws Exception {
@@ -5557,8 +5580,8 @@ public class Utils {
         }
 
     public static void setValueOfIdent(Value deref, Value rightHandSide){
-	if(deref instanceof EdeStatVal){
-	    EdeStatVal status = (EdeStatVal)deref;
+        if(deref instanceof EdeStatVal){
+            EdeStatVal status = (EdeStatVal)deref;
             status.setStatusValue(rightHandSide.intValue());
         } else if(deref instanceof EdeRegVal){
             EdeRegVal reg = (EdeRegVal)deref;
@@ -5567,6 +5590,10 @@ public class Utils {
     }
 
     public static void shallowAssignValue(Value src, Value exp){
-	src.setValue(exp);
+        src.setValue(exp);
+    }
+
+    public static Value toLongValue(Value val){
+        return new LongVal(val.longValue());        
     }
 }

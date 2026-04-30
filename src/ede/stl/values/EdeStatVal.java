@@ -107,6 +107,13 @@ public class EdeStatVal implements Value{
 
     @Override
     public void setValue(Value exp){
-	
+        this.setStatusValue(exp.intValue());
+    }
+
+    @Override
+    public VectorVal asVector(){
+        VectorVal vec = new VectorVal(0, 0);
+        vec.setValue(0, new RegVal(this.boolValue()));
+        return vec;
     }
 }

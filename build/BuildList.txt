@@ -96,6 +96,7 @@ C:\Users\jabau\Source\Repos\EdeGen\lib\EdeStl\src\ede\stl\common\EdeCallable.jav
 C:\Users\jabau\Source\Repos\EdeGen\lib\EdeStl\src\ede\stl\common\Environment.java
 C:\Users\jabau\Source\Repos\EdeGen\lib\EdeStl\src\ede\stl\common\ErrorItem.java
 C:\Users\jabau\Source\Repos\EdeGen\lib\EdeStl\src\ede\stl\common\ErrorLog.java
+C:\Users\jabau\Source\Repos\EdeGen\lib\EdeStl\src\ede\stl\common\FinishException.java
 C:\Users\jabau\Source\Repos\EdeGen\lib\EdeStl\src\ede\stl\common\FormattedScanner.java
 C:\Users\jabau\Source\Repos\EdeGen\lib\EdeStl\src\ede\stl\common\InfoItem.java
 C:\Users\jabau\Source\Repos\EdeGen\lib\EdeStl\src\ede\stl\common\Pointer.java
@@ -104,7 +105,6 @@ C:\Users\jabau\Source\Repos\EdeGen\lib\EdeStl\src\ede\stl\common\Search.java
 C:\Users\jabau\Source\Repos\EdeGen\lib\EdeStl\src\ede\stl\common\Source.java
 C:\Users\jabau\Source\Repos\EdeGen\lib\EdeStl\src\ede\stl\common\SymbolTable.java
 C:\Users\jabau\Source\Repos\EdeGen\lib\EdeStl\src\ede\stl\common\Utils.java
-C:\Users\jabau\Source\Repos\EdeGen\lib\EdeStl\src\ede\stl\compiler\.#VerilogToJavaGen.java
 C:\Users\jabau\Source\Repos\EdeGen\lib\EdeStl\src\ede\stl\compiler\CompiledEnvironment.java
 C:\Users\jabau\Source\Repos\EdeGen\lib\EdeStl\src\ede\stl\compiler\RunnableThread.java
 C:\Users\jabau\Source\Repos\EdeGen\lib\EdeStl\src\ede\stl\compiler\VerilogAsJavaBase.java

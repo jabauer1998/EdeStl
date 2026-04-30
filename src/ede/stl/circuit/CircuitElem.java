@@ -2,6 +2,7 @@ package ede.stl.circuit;
 
 import javax.naming.OperationNotSupportedException;
 import ede.stl.values.Value;
+import ede.stl.values.VectorVal;
 /**
  * The generic class for Circuit Objects
  * 
@@ -28,8 +29,6 @@ public abstract class CircuitElem implements Value {
 
     public abstract boolean getStateSignal();
 
-    public abstract String toString();
-
     public double realValue(){
         return getStateSignal() ? 1.0 : 0.0;
     }
@@ -54,6 +53,10 @@ public abstract class CircuitElem implements Value {
         return getStateSignal();
     }
 
+    public String toString(){
+        return getStateSignal() ? "1" : "0";
+    }
+
     public boolean isBoolValue(){ return false; }
     public boolean isShortValue(){ return false; }
     public boolean isUnsignedShortValue(){ return false; }
@@ -71,6 +74,10 @@ public abstract class CircuitElem implements Value {
 
     public Value getShallowSlice(int index1, int index2){
         throw new UnsupportedOperationException("Error no slice operation found for CirsuitElem");
+    }
+
+    public VectorVal asVector(){
+        throw new UnsupportedOperationException("Cannot convert CircuitElem to a vector");
     }
 
 }

@@ -158,10 +158,6 @@ public class GuiEde extends JPanel {
         this.Machine.AddGuiRegister(Title, Length, Format);
     }
 
-    public void setRegisterValue(String registerName, long registerValue){
-        SwingUtilities.invokeLater(() -> this.Machine.setRegisterValue(registerName, registerValue));
-    }
-
     public void setMemoryValue(int memoryAddress, long registerValue){
         SwingUtilities.invokeLater(() -> this.Machine.setMemoryValue(memoryAddress, registerValue));
     }
@@ -170,26 +166,56 @@ public class GuiEde extends JPanel {
         SwingUtilities.invokeLater(() -> this.Machine.setStatusValue(statusName, registerName));
     }
 
-    public long getRegisterValue(String regName){
+    public ede.stl.values.Value getRegisterValue(String regName){
         if(SwingUtilities.isEventDispatchThread()){
             return this.Machine.getRegisterValue(regName);
         }
-        final long[] result = new long[1];
+        final ede.stl.values.Value[] result = new ede.stl.values.Value[1];
         try {
             SwingUtilities.invokeAndWait(() -> result[0] = this.Machine.getRegisterValue(regName));
         } catch(Exception e) { throw new RuntimeException(e); }
         return result[0];
     }
 
-    public long getRegisterValue(int RegNumber){
+    public ede.stl.values.Value getRegisterValue(int RegNumber){
         if(SwingUtilities.isEventDispatchThread()){
             return this.Machine.getRegisterValue(RegNumber);
         }
-        final long[] result = new long[1];
+        final ede.stl.values.Value[] result = new ede.stl.values.Value[1];
         try {
             SwingUtilities.invokeAndWait(() -> result[0] = this.Machine.getRegisterValue(RegNumber));
         } catch(Exception e) { throw new RuntimeException(e); }
         return result[0];
+    }
+
+    public ede.stl.values.VectorVal getRegisterVector(String regName){
+        if(SwingUtilities.isEventDispatchThread()){
+            return this.Machine.getRegisterVector(regName);
+        }
+        final ede.stl.values.VectorVal[] result = new ede.stl.values.VectorVal[1];
+        try {
+            SwingUtilities.invokeAndWait(() -> result[0] = this.Machine.getRegisterVector(regName));
+        } catch(Exception e) { throw new RuntimeException(e); }
+        return result[0];
+    }
+
+    public ede.stl.values.VectorVal getRegisterVector(int RegNumber){
+        if(SwingUtilities.isEventDispatchThread()){
+            return this.Machine.getRegisterVector(RegNumber);
+        }
+        final ede.stl.values.VectorVal[] result = new ede.stl.values.VectorVal[1];
+        try {
+            SwingUtilities.invokeAndWait(() -> result[0] = this.Machine.getRegisterVector(RegNumber));
+        } catch(Exception e) { throw new RuntimeException(e); }
+        return result[0];
+    }
+
+    public void setRegisterValue(String registerName, ede.stl.values.Value registerValue){
+        SwingUtilities.invokeLater(() -> this.Machine.setRegisterValue(registerName, registerValue));
+    }
+
+    public void setRegisterValue(int regNumber, ede.stl.values.Value regValue){
+        SwingUtilities.invokeLater(() -> this.Machine.setRegisterValue(regNumber, regValue));
     }
 
     public long getMemoryValue(int memoryAddress){
@@ -212,10 +238,6 @@ public class GuiEde extends JPanel {
             SwingUtilities.invokeAndWait(() -> result[0] = this.Machine.getStatusValue(statusName));
         } catch(Exception e) { throw new RuntimeException(e); }
         return result[0];
-    }
-
-    public void setRegisterValue(int regNumber, long regValue){
-        SwingUtilities.invokeLater(() -> this.Machine.setRegisterValue(regNumber, regValue));
     }
 
     public void writeIoText(String textAreaName, String textToWrite){

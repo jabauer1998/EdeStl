@@ -5,6 +5,9 @@ import java.util.HashMap;
 import javax.swing.*;
 import java.awt.*;
 
+import ede.stl.values.Value;
+import ede.stl.values.VectorVal;
+
 public class GuiRegisterFile extends JPanel {
     private JScrollPane Pane;
     private JPanel contentPanel;
@@ -68,22 +71,32 @@ public class GuiRegisterFile extends JPanel {
         contentPanel.repaint();
     }
 
-    public long getRegisterValue(String regName){
+    public Value getRegisterValue(String regName){
         GuiRegister Reg = regFile.get(regName);
         return Reg.GetRegisterValue();
     }
 
-    public long getRegisterValue(int RegNumber){
+    public Value getRegisterValue(int RegNumber){
         GuiRegister Reg = intRegFile.get(RegNumber);
         return Reg.GetRegisterValue();
     }
 
-    public void setRegisterValue(String regName, long regValue){ 
-       GuiRegister Reg = regFile.get(regName);
-       Reg.SetRegisterValue(regValue);
+    public VectorVal getRegisterVector(String regName){
+        GuiRegister Reg = regFile.get(regName);
+        return Reg.GetRegisterVector();
     }
 
-    public void setRegisterValue(int regNumber, long regValue){
+    public VectorVal getRegisterVector(int RegNumber){
+        GuiRegister Reg = intRegFile.get(RegNumber);
+        return Reg.GetRegisterVector();
+    }
+
+    public void setRegisterValue(String regName, Value regValue){
+        GuiRegister Reg = regFile.get(regName);
+        Reg.SetRegisterValue(regValue);
+    }
+
+    public void setRegisterValue(int regNumber, Value regValue){
         GuiRegister Reg = intRegFile.get(regNumber);
         Reg.SetRegisterValue(regValue);
     }
@@ -91,7 +104,10 @@ public class GuiRegisterFile extends JPanel {
     public void clearRegisters(){
         Collection<GuiRegister> registers = regFile.values();
         for(GuiRegister register : registers){
-            register.SetRegisterValue(0);
+            int width = register.getRegisterLength();
+            if(width <= 0) width = 1;
+            VectorVal zeroVec = new VectorVal(width - 1, 0);
+            register.SetRegisterValue(zeroVec);
         }
     }
 }

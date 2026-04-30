@@ -27,7 +27,7 @@ if($javaExists -ne ""){
                 Remove-Item -Force build\BuildList.txt
             }
             New-Item -Path "build\BuildList.txt" -ItemType File | Out-Null
-            Get-ChildItem -Path "$srcRoot/src" -Recurse -File | Where-Object { $_.Name -notlike "#*" -and $_.Name -notlike "*~" } | Select-Object -ExpandProperty FullName > build\BuildList.txt
+            Get-ChildItem -Path "$srcRoot/src" -Recurse -File | Where-Object { $_.Name -notlike ".#*" -and $_.Name -notlike "*~" -and $_.Name -notlike "#*" } | Select-Object -ExpandProperty FullName > build\BuildList.txt
             foreach ($line in Get-Content -Path 'build\BuildList.txt') {
                 $content = Get-Content -Path $line -Raw
                 $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False

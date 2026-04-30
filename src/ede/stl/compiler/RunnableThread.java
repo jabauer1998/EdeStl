@@ -1,5 +1,6 @@
 package ede.stl.compiler;
 
+import ede.stl.common.FinishException;
 import ede.stl.common.Pointer;
 import java.lang.Runnable;
 import java.util.concurrent.Semaphore;
@@ -10,18 +11,20 @@ public class RunnableThread implements Runnable{
     private Pointer<Semaphore> sema;
     
     public RunnableThread(Callable<Void> funcToRun, Pointer<Semaphore> sema){
-	this.toRun = funcToRun;
-	this.sema = sema;
+        this.toRun = funcToRun;
+        this.sema = sema;
     }
 
     public void run(){
-	try{
-	    toRun.call();
-	    sema.deRefrence().acquire();
-	} catch(RuntimeException exp){
-	    throw exp;
-	} catch(Exception exp){
-	    throw new RuntimeException(exp);
-	}
+        try{
+            toRun.call();
+            sema.deRefrence().acquire();
+        } catch(FinishException exp){
+            // Verilog $finish - clean termination, message already shown via appendIoText
+        } catch(RuntimeException exp){
+            throw exp;
+        } catch(Exception exp){
+            throw new RuntimeException(exp);
+        }
     }
 }

@@ -13,99 +13,102 @@ public class EdeRegVal implements Value{
     }
 
     public void setAllBits(int value){
-        gui.setRegisterValue(regString, value);
+        gui.setRegisterValue(regString, new LongVal((long) value));
     }
 
     public void setBitAtIndex(int index, int value){
-        long regValue = gui.getRegisterValue(regString);
-        boolean bitSet = value != 0;
-        if(!bitSet){
-            regValue &= ~(1L << index);
-        } else {
-            regValue |= (1L << index);
-        }
-        gui.setRegisterValue(regString, regValue);
+        VectorVal vec = gui.getRegisterVector(regString);
+        if(index < 0 || index >= vec.getSize()) return;
+        vec.setValue(index, new RegVal(value != 0));
+        gui.setRegisterValue(regString, vec);
     }
 
     public long getBitAtIndex(int index){
-        long regValue = gui.getRegisterValue(regString);
-        return (regValue >> index) & 1;
+        VectorVal vec = gui.getRegisterVector(regString);
+        if(index < 0 || index >= vec.getSize()) return 0L;
+        return vec.getValue(index).getStateSignal() ? 1L : 0L;
     }
 
     public void setBitsAtIndex(int maxIndex, int minIndex, int value){
-        long regValue = gui.getRegisterValue(regString);
+        VectorVal vec = gui.getRegisterVector(regString);
+        int width = vec.getSize();
         if(minIndex < maxIndex){
             int index = minIndex;
             int size = maxIndex - minIndex + 1;
             int numIndex = 0;
             while(index <= maxIndex && numIndex < size){
-                boolean isSet = ((value >> numIndex) & 1) != 0;
-                if(isSet){
-                    regValue |= (1L << index);
-                } else {
-                    regValue &= ~(1L << index);
+                if(index >= 0 && index < width){
+                    boolean isSet = ((value >> numIndex) & 1) != 0;
+                    vec.setValue(index, new RegVal(isSet));
                 }
                 index++;
                 numIndex++;
             }
-            gui.setRegisterValue(regString, regValue);
         } else {
             int index = minIndex;
             int size = minIndex - maxIndex + 1;
             int numIndex = 0;
             while(index >= maxIndex && numIndex < size){
-                boolean isSet = ((value >> numIndex) & 1) != 0;
-                if(isSet){
-                    regValue |= (1L << index);
-                } else {
-                    regValue &= ~(1L << index);
+                if(index >= 0 && index < width){
+                    boolean isSet = ((value >> numIndex) & 1) != 0;
+                    vec.setValue(index, new RegVal(isSet));
                 }
                 index--;
                 numIndex++;
             }
-            gui.setRegisterValue(regString, regValue);
         }
+        gui.setRegisterValue(regString, vec);
     }
 
     public long getBitsInRange(int begin, int end){
-        long val = this.longValue();
-        if(begin < end){
-            long mask = (1L << (end + 1)) - 1;
-            mask ^= (1L << begin) - 1;
-            return (val & mask) >> begin;
-        } else {
-            long mask = (1L << (begin + 1)) - 1;
-            mask ^= (1L << end) - 1;
-            return (val & mask) >> end;
+        VectorVal vec = gui.getRegisterVector(regString);
+        int width = vec.getSize();
+        int lo = (begin < end) ? begin : end;
+        int hi = (begin < end) ? end : begin;
+        int rangeWidth = hi - lo + 1;
+        if(rangeWidth > 64) rangeWidth = 64;
+        long result = 0L;
+        for(int k = 0; k < rangeWidth; k++){
+            int srcIdx = lo + k;
+            if(srcIdx < 0 || srcIdx >= width) continue;
+            if(vec.getValue(srcIdx).getStateSignal()){
+                result |= (1L << k);
+            }
         }
+        return result;
     }
 
     @Override
     public double realValue(){
-        return (double)gui.getRegisterValue(regString);    
+        return gui.getRegisterValue(regString).realValue();
     }
 
     @Override
     public long longValue(){
-        return (long)gui.getRegisterValue(regString);
+        return gui.getRegisterValue(regString).longValue();
     }
     @Override
     public int intValue(){
-        return (int)gui.getRegisterValue(regString);
+        return gui.getRegisterValue(regString).intValue();
     }
     @Override
     public short shortValue(){
-        return (short)gui.getRegisterValue(regString);
+        return gui.getRegisterValue(regString).shortValue();
     }
 
     @Override
     public byte byteValue(){
-        return (byte)gui.getRegisterValue(regString);
+        return gui.getRegisterValue(regString).byteValue();
+    }
+
+    @Override
+    public String toString(){
+        return gui.getRegisterVector(regString).toString();
     }
     
     @Override
     public boolean boolValue(){
-        return gui.getRegisterValue(regString) != 0;
+        return gui.getRegisterValue(regString).boolValue();
     }
 
     @Override
@@ -167,11 +170,16 @@ public class EdeRegVal implements Value{
 
     @Override
     public Value getShallowSlice(int startIndex, int endIndex) throws Exception{ // TODO Auto-generated method stub
-	throw new UnsupportedOperationException("Unimplemented method 'getShallowSlice'");
+        throw new UnsupportedOperationException("Unimplemented method 'getShallowSlice'");
     }
 
     @Override
     public void setValue(Value val){
-	//None
+        this.gui.setRegisterValue(this.regString, val);
+    }
+
+    @Override
+    public VectorVal asVector(){
+        return this.gui.getRegisterVector(this.regString);
     }
 }

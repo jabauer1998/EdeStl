@@ -138,6 +138,16 @@ public class UnsignedIntVal implements Value, Unsigned {
 
     @Override
     public void setValue(Value exp){
-	this.value = exp.intValue();
+        this.value = exp.intValue();
+    }
+
+    @Override
+    public VectorVal asVector(){
+        long v = Integer.toUnsignedLong(this.value);
+        VectorVal vec = new VectorVal(31, 0);
+        for(int i = 0; i < 32; i++){
+            vec.setValue(i, new RegVal(((v >> i) & 1L) != 0));
+        }
+        return vec;
     }
 }
