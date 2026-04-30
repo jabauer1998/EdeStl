@@ -111,6 +111,11 @@ public class RealVal implements Value{
 
     @Override
     public void setValue(Value val){
-	this.value = val.realValue();
+        this.value = val.realValue();
+    }
+
+    @Override
+    public VectorVal asVector(){
+        throw new UnsupportedOperationException("Cannot convert RealVal to a vector");
     }
 }

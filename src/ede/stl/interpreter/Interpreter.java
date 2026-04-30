@@ -4,7 +4,6 @@ package ede.stl.interpreter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
-import ede.stl.common.Pointer;
 import ede.stl.common.ErrorLog;
 import ede.stl.common.ErrorItem;
 import ede.stl.common.Destination;
@@ -538,9 +537,9 @@ public abstract class Interpreter {
                         Element leftHandElement = (Element)Assignment.leftHandSide;
                         Value leftHandIndex = interpretShallowOptimizedExpression(leftHandElement.index1);
 
-                        Pointer<Value> Ptr = environment.lookupVariable(leftHandElement.labelIdentifier);
+                        Value Ptr = environment.lookupVariable(leftHandElement.labelIdentifier);
 
-                        Utils.assignDeepElem(Ptr.deRefrence(), leftHandIndex, ExpressionResult);
+                        Utils.assignDeepElem(Ptr, leftHandIndex, ExpressionResult);
 
                 } else if (Assignment.leftHandSide instanceof Slice) {
                         Slice Ident = (Slice)Assignment.leftHandSide;
@@ -549,16 +548,15 @@ public abstract class Interpreter {
                         Value Begin = interpretShallowOptimizedExpression(Ident.index1.expression);
                         Value End = interpretShallowOptimizedExpression(Ident.index2.expression);
 
-                        Pointer<Value> Ptr = environment.lookupVariable(Name);
-                        Value Vector = Ptr.deRefrence();
+                        Value Vector = environment.lookupVariable(Name);
                         
                         Utils.assignDeepSlice(Vector, Begin, End, ExpressionResult);
                 } else if (Assignment.leftHandSide instanceof Identifier) {
                         Identifier Ident = (Identifier)Assignment.leftHandSide;
                         String Name = Ident.labelIdentifier;
 
-                        Pointer<Value> Ptr = environment.lookupVariable(Name);
-                        Ptr.assign(ExpressionResult);
+                        Value Ptr = environment.lookupVariable(Name);
+                        Ptr.setValue(ExpressionResult);
                 } else {
                         Utils.errorAndExit("Invalid LValue of Type " + Assignment.leftHandSide.getClass());
                         return Utils.errorOccured();
@@ -917,8 +915,7 @@ public abstract class Interpreter {
                 if (assign.leftHandSide instanceof Element) {
                         Element leftHandElement = (Element)assign.leftHandSide;
 
-                        Pointer<Value> leftHandPtr = environment.lookupVariable(leftHandElement.labelIdentifier);
-                        Value leftHandDeref = leftHandPtr.deRefrence();
+                        Value leftHandDeref = environment.lookupVariable(leftHandElement.labelIdentifier);
 
                         Value leftHandIndex = interpretShallowOptimizedExpression(leftHandElement.index1);
 
@@ -935,8 +932,7 @@ public abstract class Interpreter {
                 } else if (assign.leftHandSide instanceof Slice) {
                         Slice leftHandSlice = (Slice)assign.leftHandSide;
 
-                        Pointer<Value> leftHandPtr = environment.lookupVariable(leftHandSlice.labelIdentifier);
-                        Value leftHandDeref = leftHandPtr.deRefrence();
+                        Value leftHandDeref = environment.lookupVariable(leftHandSlice.labelIdentifier);
 
                         Value leftHandStartIndex = interpretShallowOptimizedExpression(leftHandSlice.index1);
                         Value leftHandEndIndex = interpretShallowOptimizedExpression(leftHandSlice.index2);
@@ -951,10 +947,10 @@ public abstract class Interpreter {
 
                 } else if (assign.leftHandSide instanceof Identifier) {
                         Identifier leftHandIdent = (Identifier)assign.leftHandSide;
-                        Pointer<Value> leftHandPtr = environment.lookupVariable(leftHandIdent.labelIdentifier);
+                        Value leftHandPtr = environment.lookupVariable(leftHandIdent.labelIdentifier);
 
-                        if (leftHandPtr.deRefrence() instanceof VectorVal) {
-                                VectorVal leftHandVector = (VectorVal)leftHandPtr.deRefrence();
+                        if (leftHandPtr instanceof VectorVal) {
+                                VectorVal leftHandVector = (VectorVal)leftHandPtr;
 
                                 if (expVal instanceof CircuitElem) {
                                         CircuitElem expCircuitElem = (CircuitElem)expVal;
@@ -966,8 +962,8 @@ public abstract class Interpreter {
                                         Utils.errorAndExit("Error: Cannot Exit the program because ");
                                 }
 
-                        } else if (leftHandPtr.deRefrence() instanceof CircuitElem) {
-                                CircuitElem leftHandVector = (CircuitElem)leftHandPtr.deRefrence();
+                        } else if (leftHandPtr instanceof CircuitElem) {
+                                CircuitElem leftHandVector = (CircuitElem)leftHandPtr;
 
                                 if (expVal instanceof CircuitElem) {
                                         CircuitElem expCircuitElem = (CircuitElem)expVal;
@@ -1006,8 +1002,7 @@ public abstract class Interpreter {
                         if (assign.leftHandSide.get(i) instanceof Element) {
                                 Element leftHandElement = (Element)assign.leftHandSide.get(i);
 
-                                Pointer<Value> leftHandPtr = environment.lookupVariable(leftHandElement.labelIdentifier);
-                                Value leftHandDeref = leftHandPtr.deRefrence();
+                                Value leftHandDeref = environment.lookupVariable(leftHandElement.labelIdentifier);
 
                                 Value leftHandIndex = interpretShallowOptimizedExpression(leftHandElement.index1);
 
@@ -1024,8 +1019,7 @@ public abstract class Interpreter {
                         } else if (assign.leftHandSide instanceof Slice) {
                                 Slice leftHandSlice = (Slice)assign.leftHandSide;
 
-                                Pointer<Value> leftHandPtr = environment.lookupVariable(leftHandSlice.labelIdentifier);
-                                Value leftHandDeref = leftHandPtr.deRefrence();
+                                Value leftHandDeref = environment.lookupVariable(leftHandSlice.labelIdentifier);
 
                                 Value leftHandStartIndex = interpretShallowOptimizedExpression(leftHandSlice.index1);
                                 Value leftHandEndIndex = interpretShallowOptimizedExpression(leftHandSlice.index2);
@@ -1040,10 +1034,10 @@ public abstract class Interpreter {
 
                         } else if (assign.leftHandSide.get(i) instanceof Identifier) {
                                 Identifier leftHandIdent = (Identifier)assign.leftHandSide.get(i);
-                                Pointer<Value> leftHandPtr = environment.lookupVariable(leftHandIdent.labelIdentifier);
+                                Value leftHandPtr = environment.lookupVariable(leftHandIdent.labelIdentifier);
 
-                                if (leftHandPtr.deRefrence() instanceof VectorVal) {
-                                        VectorVal leftHandVector = (VectorVal)leftHandPtr.deRefrence();
+                                if (leftHandPtr instanceof VectorVal) {
+                                        VectorVal leftHandVector = (VectorVal)leftHandPtr;
 
                                         if (resultList.get(i) instanceof CircuitElem) {
                                                 CircuitElem expCircuitElem = (CircuitElem)resultList.get(i);
@@ -1055,8 +1049,8 @@ public abstract class Interpreter {
                                                 Utils.errorAndExit("Error: Cannot Exit the program because ");
                                         }
 
-                                } else if (leftHandPtr.deRefrence() instanceof CircuitElem) {
-                                        CircuitElem leftHandVector = (CircuitElem)leftHandPtr.deRefrence();
+                                } else if (leftHandPtr instanceof CircuitElem) {
+                                        CircuitElem leftHandVector = (CircuitElem)leftHandPtr;
 
                                         if (resultList.get(i) instanceof CircuitElem) {
                                                 CircuitElem expCircuitElem = (CircuitElem)resultList.get(i);
@@ -1358,10 +1352,10 @@ public abstract class Interpreter {
                                         // Assign parameter value
                                         for (int i = 0; i < paramaterNames.size(); i++) {
                                                 String paramaterName = paramaterNames.get(i);
-                                                Pointer<Value> paramaterValue = environment.lookupVariable(paramaterName);
+                                                Value paramaterValue = environment.lookupVariable(paramaterName);
                                                 Expression argExpr = task.argumentList.get(i);
                                                 Value argValue = argumentValues.get(i);
-                                                paramaterValue.assign(argValue);
+                                                paramaterValue.setValue(argValue);
                                         }
 
                                 } else {
@@ -1747,7 +1741,7 @@ public abstract class Interpreter {
                                 // Add the Function Name to the Symbol Table
                                 interpretModuleItem(funcData.functionName);
 
-                                Pointer<Value> returnData = environment.lookupVariable(tname); // get return object
+                                Value returnData = environment.lookupVariable(tname); // get return object
 
                                 List<Value> paramaterValues = new LinkedList<Value>();
 
@@ -1772,8 +1766,8 @@ public abstract class Interpreter {
                                                 String paramaterName = paramaterNames.get(i);
                                                 Value paramaterValue = paramaterValues.get(i);
 
-                                                Pointer<Value> paramaterHolder = environment.lookupVariable(paramaterName);
-                                                paramaterHolder.assign(paramaterValue);
+                                                Value paramaterHolder = environment.lookupVariable(paramaterName);
+                                                paramaterHolder.setValue(paramaterValue);
                                         }
 
                                 } else {
@@ -1787,7 +1781,7 @@ public abstract class Interpreter {
                                 environment.EndFunctionBody();
 
                                 environment.removeStackFrame();
-                                return returnData.deRefrence();
+                                return returnData;
                         } else {
                                 Utils.errorAndExit("Function Entry " + tname + " Doesnt Exist", call.position);
                                 return Utils.errorOccured();
@@ -1814,16 +1808,16 @@ public abstract class Interpreter {
                                         paramaterNames.add(parameterName);
                                 } // declare the return variable for the function
 
-                                Pointer<Value> returnData = environment.lookupVariable(tname); // get return object
+                                Value returnData = environment.lookupVariable(tname); // get return object
 
                                 if (call.argumentList.size() == funcData.paramaters.size() && call.argumentList.size() == paramaterNames.size()) {
 
                                         for (int i = 0; i < call.argumentList.size(); i++) {
                                                 String paramaterName = paramaterNames.get(i);
-                                                Pointer<Value> paramValue = environment.lookupVariable(paramaterName);
+                                                Value paramValue = environment.lookupVariable(paramaterName);
                                                 Expression paramExp = call.argumentList.get(i);
                                                 Value argVal = interpretDeepExpression(paramExp);
-                                                paramValue.assign(argVal);
+                                                paramValue.setValue(argVal);
                                         }
 
                                 } else {
@@ -1837,7 +1831,7 @@ public abstract class Interpreter {
                                 environment.EndFunctionBody();
 
                                 environment.removeStackFrame();
-                                return returnData.deRefrence();
+                                return returnData;
                         } else {
                                 Utils.errorAndExit("Function Entry " + tname + " Doesnt Exist", call.position);
                                 return Utils.errorOccured();
@@ -1864,8 +1858,7 @@ public abstract class Interpreter {
         protected Value interpretDeepIdentifier(Identifier ident) throws Exception{
 
                 if (environment.variableExists(ident.labelIdentifier)) {
-                        Pointer<Value> data = environment.lookupVariable(ident.labelIdentifier);
-                        return data.deRefrence();
+                        return environment.lookupVariable(ident.labelIdentifier);
                 } else {
                         Utils.errorAndExit("Variable Entry " + ident.labelIdentifier + " Doesnt Exist", ident.position);
                         return Utils.errorOccured();
@@ -1887,8 +1880,8 @@ public abstract class Interpreter {
                 Value expVal = interpretDeepExpression(exp);
 
                 if (environment.variableExists(connectTo)) {
-                        Pointer<Value> Ptr = environment.lookupVariable(connectTo);
-                        Ptr.assign(expVal);
+                        Value Ptr = environment.lookupVariable(connectTo);
+                        Ptr.setValue(expVal);
                 } else {
                         Utils.errorAndExit("Variable doesnt exist and was assinged to in port expression");
                         return Utils.errorOccured();

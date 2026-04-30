@@ -134,6 +134,16 @@ public class ByteVal implements Value{
 
     @Override
     public void setValue(Value val){
-	this.value = val.byteValue();
+        this.value = val.byteValue();
+    }
+
+    @Override
+    public VectorVal asVector(){
+        long v = Byte.toUnsignedLong(this.value);
+        VectorVal vec = new VectorVal(7, 0);
+        for(int i = 0; i < 8; i++){
+            vec.setValue(i, new RegVal(((v >> i) & 1L) != 0));
+        }
+        return vec;
     }
 }

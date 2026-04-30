@@ -73,20 +73,32 @@ public class GuiMachine extends JPanel {
         this.Mem.setMemoryValue(Address, dataValue);
     }
 
-    public void setRegisterValue(String regName, long regValue){
-        this.RegFile.setRegisterValue(regName, regValue);
-    }
-
     public void setStatusValue(String statusName, long statusValue){
         this.Flags.setStatusValue(statusName, statusValue);
     }
 
-    public long getRegisterValue(String regName){
+    public ede.stl.values.Value getRegisterValue(String regName){
         return this.RegFile.getRegisterValue(regName);
     }
 
-    public long getRegisterValue(int RegNumber){
+    public ede.stl.values.Value getRegisterValue(int RegNumber){
         return this.RegFile.getRegisterValue(RegNumber);
+    }
+
+    public ede.stl.values.VectorVal getRegisterVector(String regName){
+        return this.RegFile.getRegisterVector(regName);
+    }
+
+    public ede.stl.values.VectorVal getRegisterVector(int RegNumber){
+        return this.RegFile.getRegisterVector(RegNumber);
+    }
+
+    public void setRegisterValue(String regName, ede.stl.values.Value regValue){
+        this.RegFile.setRegisterValue(regName, regValue);
+    }
+
+    public void setRegisterValue(int regNumber, ede.stl.values.Value regValue){
+        this.RegFile.setRegisterValue(regNumber, regValue);
     }
 
     public long getMemoryValue(int address){
@@ -95,10 +107,6 @@ public class GuiMachine extends JPanel {
 
     public long getStatusValue(String statusName){
         return this.Flags.getStatusValue(statusName);
-    }
-
-    public void setRegisterValue(int regNumber, long regValue){
-        this.RegFile.setRegisterValue(regNumber, regValue);
     }
 
     public void appendIoText(String Name, String textToAppend){

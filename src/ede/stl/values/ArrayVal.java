@@ -8,9 +8,9 @@ public abstract class ArrayVal<ArrayType extends Value> implements Value {
     private final ArrayList<ArrayType> ArrList;
 
     public ArrayVal(Value begin, Value end){
-    	int intVal = begin.intValue();
-			int intVal2 = end.intValue();
-			int size = (intVal > intVal2 ? (intVal - intVal2) : (intVal2 - intVal));
+        int intVal = begin.intValue();
+                        int intVal2 = end.intValue();
+                        int size = (intVal > intVal2 ? (intVal - intVal2) : (intVal2 - intVal));
       this.ArrList = new ArrayList<ArrayType>(size);
     }
 
@@ -134,5 +134,10 @@ public abstract class ArrayVal<ArrayType extends Value> implements Value {
     @Override
     public Value getShallowSlice(int startIndex, int endIndex){ // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getShallowSlice'"); 
+    }
+
+    @Override
+    public VectorVal asVector(){
+        throw new UnsupportedOperationException("Cannot convert ArrayVal to a vector");
     }
 }

@@ -46,4 +46,6 @@ public interface Value {
     public Value getShallowSlice(int startIndex, int endIndex) throws Exception;
 
     public void setValue(Value val);
+
+    public VectorVal asVector();
 }

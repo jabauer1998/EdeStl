@@ -123,6 +123,11 @@ public class StrVal implements Value{
 
     @Override
     public void setValue(Value exp){
-	this.value = exp.toString();
+        this.value = exp.toString();
+    }
+
+    @Override
+    public VectorVal asVector(){
+        throw new UnsupportedOperationException("Cannot convert StrVal to a vector");
     }
 }

@@ -141,6 +141,16 @@ public class UnsignedShortVal implements Value, Unsigned{
 
     @Override
     public void setValue(Value exp){
-	this.value = exp.shortValue();
+        this.value = exp.shortValue();
+    }
+
+    @Override
+    public VectorVal asVector(){
+        long v = this.value & 0xFFFFL;
+        VectorVal vec = new VectorVal(15, 0);
+        for(int i = 0; i < 16; i++){
+            vec.setValue(i, new RegVal(((v >> i) & 1L) != 0));
+        }
+        return vec;
     }
 }

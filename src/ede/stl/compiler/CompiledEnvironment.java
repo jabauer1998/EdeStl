@@ -18,38 +18,38 @@ public class CompiledEnvironment extends Environment{
     private LinkedList<RunnableThread> threads;
     private int tickets;
     private Pointer<Semaphore> sema;
-	
+        
     public CompiledEnvironment(GuiEde edeInstance){
        super();
-	   this.edeInstance = edeInstance;
+           this.edeInstance = edeInstance;
            this.threads = new LinkedList<RunnableThread>();
-	   this.tickets = 0;
+           this.tickets = 0;
            this.sema = new Pointer<Semaphore>(null);
     }
 
     public void addThread(Callable<Void> thread){
         this.tickets++;
-	   this.threads.add(new RunnableThread(thread, sema));
+           this.threads.add(new RunnableThread(thread, sema));
     }
 
     public void runThreads(){
-    	this.sema.assign(new Semaphore(-this.tickets + 1));
-    	for(RunnableThread thread: threads){
-    	    Thread realThread = new Thread(thread);
-    	    realThread.start();
-    	}
-    	try{
-    	    sema.deRefrence().acquire();
-    	} catch(InterruptedException exp){
-    	    addErrorText("Interupt occured when trying to get semaphore after running all the processes");
-    	}
+        this.sema.assign(new Semaphore(-this.tickets + 1));
+        for(RunnableThread thread: threads){
+            Thread realThread = new Thread(thread);
+            realThread.start();
+        }
+        try{
+            sema.deRefrence().acquire();
+        } catch(InterruptedException exp){
+            addErrorText("Interupt occured when trying to get semaphore after running all the processes");
+        }
     }
 
     public void addErrorText(String errorText){
-	edeInstance.appendIoText("StandardError", errorText);
+        edeInstance.appendIoText("StandardError", errorText);
     }
 
     public void addOutputText(String ioText){
-	edeInstance.appendIoText("StandardOutput", ioText);
+        edeInstance.appendIoText("StandardOutput", ioText);
     }
 }

@@ -95,6 +95,11 @@ public abstract class Pattern implements Value{
     }
 
     public void setValue(Value val){
-	//DO nothing
+        //DO nothing
+    }
+
+    @Override
+    public VectorVal asVector(){
+        throw new UnsupportedOperationException("Cannot convert Pattern to a vector");
     }
 }

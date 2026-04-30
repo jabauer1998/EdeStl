@@ -37,7 +37,7 @@ public abstract class Node extends CircuitElem {
     public abstract String toString();
 
     public void setValue(Value stat){
-	//Do nothing
+        this.stateSignal = stat.boolValue();
     }
 }
 

@@ -111,6 +111,11 @@ public class BoolVal implements Value{
 
     @Override
     public void setValue(Value exp){
-	this.value = exp.boolValue();
+        this.value = exp.boolValue();
+    }
+
+    @Override
+    public VectorVal asVector(){
+        throw new UnsupportedOperationException("Cannot convert BoolVal to a vector");
     }
 }

@@ -34,7 +34,7 @@ module Arm();
 `define MULMLA 32'bzzzz000000zzzzzzzzzzzzzz1001zzzz //10
 `define MULLMLAL 32'bzzzz00001zzzzzzzzzzzzzzz1001zzzz //9
 `define LDRHSTRHLDRSBLDRSH 32'bzzzz000zz0zzzzzzzzzzzzzz1zz1zzzz //6
-`define SWI 32'bzzzz1111zz0zzzzzzzzzzzzzzzzzzzzz //4
+`define SWI 32'bzzzz1111zzzzzzzzzzzzzzzzzzzzzzzz //4
 `define BBL 32'bzzzz101zzzzzzzzzzzzzzzzzzzzzzzzz //3
 `define LDMSTM 32'bzzzz100zzzzzzzzzzzzzzzzzzzzzzzzz //3
 `define DATAPROC 32'bzzzz00zzzzzzzzzzzzzzzzzzzzzzzzzz //2
@@ -626,7 +626,7 @@ module Arm();
                    $display("%d\n", getRegister(0));
                 end //displays value in RO
                 default: begin
-                   $display("Error: invalid interupt vector number");
+                   $display("Error: invalid interupt vector number: INSTR[23:0]=%h, full INSTR=%h", INSTR[23:0], INSTR);
                    $finish;
                 end
               endcase // case (INSTR[])
@@ -650,7 +650,7 @@ module Arm();
       while(InstructionCode != 28 && R15 < `MEMSIZE) begin
          INSTR = fetch(R15); //old Fetch
          InstructionCode = decode(INSTR);
-         $display("Instruction code is %d", InstructionCode);
+         $display("Instruction code is %d\n", InstructionCode);
          incriment; //increment the program counter by a word or 4 bytes
          //@Breakpoint
          execute(InstructionCode);

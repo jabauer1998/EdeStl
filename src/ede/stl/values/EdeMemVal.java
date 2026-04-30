@@ -70,6 +70,7 @@ public class EdeMemVal implements Value{
     public boolean isIntValue(){
         return false;
     }
+
     @Override
     public boolean isUnsignedIntValue(){
         return false;
@@ -110,6 +111,11 @@ public class EdeMemVal implements Value{
 
     @Override
     public void setValue(Value val){
-	//do nothing 
+        //do nothing 
+    }
+
+    @Override
+    public VectorVal asVector(){
+        throw new UnsupportedOperationException("Cannot convert EdeMemVal (memory array) to a vector");
     }
 }
