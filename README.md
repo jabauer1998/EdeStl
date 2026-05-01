@@ -34,19 +34,16 @@
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">project_title</h3>
+<h3 align="center">Emulator Development Environment Standard Library</h3>
 
   <p align="center">
-    project_description
+    This Standard Library is utilized to generate an Ede Instance. It contains all of the Gui Compoments and Methods to create a Ede Instance with the GuiEde class. The EdeStl also contains several other componenets that can be utilized in other projects as well and it is why the EdeStl is separated from the [EdeGen](https://github.com/jabauer1998/EdeGen)(Emulator Debug Environment Genertor tool) repository.
     <br />
-    <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/jabauer1998/EdeStl"><strong>Explore the docs »</strong></a>
     <br />
-    <br />
-    <a href="https://github.com/github_username/repo_name">View Demo</a>
+    <a href="https://github.com/jabauer1998/EdeStl/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     &middot;
-    <a href="https://github.com/github_username/repo_name/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
-    &middot;
-    <a href="https://github.com/github_username/repo_name/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/jabauer1998/EdeStl/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
@@ -93,14 +90,10 @@ Here's a blank template to get started. To avoid retyping too much info, do a se
 
 ### Built With
 
-* [![Next][Next.js]][Next-url]
-* [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
+* [![Java][Java.java]][Java-url] - JRE/JVM/JDK 25 or above
+* [![Verilog][Verilog.v]][Verilog-url]
+* [![Powershell][Powershell.ps1]][Powershell-url] -For Windows
+* [![Bash][Basb.sh]][Bash-url]- For Linux/Mac OS
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -109,8 +102,10 @@ Here's a blank template to get started. To avoid retyping too much info, do a se
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+To get started install git and if you have git clone the repository like so
+```
+git clone https://github.com/jabauer1998/EdeStl
+```
 
 ### Prerequisites
 
@@ -228,17 +223,17 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
-[contributors-url]: https://github.com/github_username/repo_name/graphs/contributors
+[contributors-url]: https://github.com/jabauer1998/EdeStl/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/github_username/repo_name.svg?style=for-the-badge
-[forks-url]: https://github.com/github_username/repo_name/network/members
+[forks-url]: https://github.com/jabauer1998/EdeStl/network/members
 [stars-shield]: https://img.shields.io/github/stars/github_username/repo_name.svg?style=for-the-badge
-[stars-url]: https://github.com/github_username/repo_name/stargazers
+[stars-url]: https://github.com/jabauer1998/EdeStl/stargazers
 [issues-shield]: https://img.shields.io/github/issues/github_username/repo_name.svg?style=for-the-badge
-[issues-url]: https://github.com/github_username/repo_name/issues
+[issues-url]: https://github.com/jabauer1998/EdeStl/issues
 [license-shield]: https://img.shields.io/github/license/github_username/repo_name.svg?style=for-the-badge
-[license-url]: https://github.com/github_username/repo_name/blob/master/LICENSE.txt
+[license-url]: https://github.com/jabauer1998/EdeStl/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/linkedin_username
+[linkedin-url]: https://www.linkedin.com/in/jacobbauer13
 [product-screenshot]: images/screenshot.png
 <!-- Shields.io badges. You can a comprehensive list with many more badges at: https://github.com/inttter/md-badges -->
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
@@ -257,9 +252,6 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 [Bootstrap-url]: https://getbootstrap.com
 [JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
 [JQuery-url]: https://jquery.com 
-
-# This is the Repo for the Emulator Development Environment Standard Library
-This Standard Library is utilized to generate an Ede Instance. It contains all of the Gui Compoments and Methods to create a Ede Instance with the GuiEde class. The EdeStl also contains several other componenets that can be utilized in other projects as well and it is why the EdeStl is seperated from the [EdeGen](https://github.com/jabauer1998/EdeGen)(Emulator Debug Environment Genertor tool) repository.
 
 ##  Directory Structure
 
