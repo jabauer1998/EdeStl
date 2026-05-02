@@ -47,7 +47,14 @@
   </p>
 </div>
 
+The EdeStl is broken down into several sub components and sub directories.
 
+1) ede/stl/gui -> Everything to build the gui Ede instance
+2) ede/stl/interpreter -> Contains a Verilog interpreter that can either report to the Ede Instance(EdeInterpreter) or the console(Verilog Interpreter)
+3) ede/stl/compiler -> Contains a Verilog to Java Byte Code compiler
+4) ede/stl/common -> Contains a bunch of utility files that are utilized elsewhere in the code
+5) ede/stl/ast -> Contains all of the ast nodes of Verilog
+6) ede/stl/parser -> Contains the Verilog Parser and Lexer
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -150,25 +157,11 @@
   
 
 ### Installation
+<p>The package information is available on SourceForge. The steps for installing it are below. Read all steps before clicking on the link for best advice</p>
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/github_username/repo_name.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
-5. Change git remote url to avoid accidental pushes to base project
-   ```sh
-   git remote set-url origin github_username/repo_name
-   git remote -v # confirm the changes
-   ```
+1. Follow this link: [SourceForge.net](https://sourceforge.net/projects/edestl)
+2. Wait five seconds to install or click install
+3. Note: Install in a directory where it is easily accessable.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -188,10 +181,19 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
+- [ ] More Interpreter and Compiler Support
+    - [ ] VHDL Interpreter
+    - [ ] VHDL To Java Bytecode Compiler
+    - [ ] SystemC Interpreter
+    - [ ] SystemC To Java Bytecode Compiler
+    - [ ] C/C++ Interpreter
+    - [ ] C/C++ To Java Bytecode Compiler
+    - [ ] Chisel(Scala) Interpreter (May alraedy Exist)
+    - [ ] Chisel(Scala) To Java Bytecode Compiler (May already exist)
+- [ ] Gate Graph Viewer
+- [ ] Wave Generator / viewer
+- [ ] Pipeline viewer
+- [ ] FPGA Synthesis and Place and Route
 
 See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
 
@@ -217,10 +219,9 @@ Don't forget to give the project a star! Thanks again!
 
 ### Top contributors:
 
-<a href="https://github.com/github_username/repo_name/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=github_username/repo_name" alt="contrib.rocks image" />
+<a href="https://github.com/jabauer1998/EdeStl/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=jabauer1998/EdeStl" alt="contrib.rocks image" />
 </a>
-
 
 
 <!-- LICENSE -->
@@ -235,9 +236,9 @@ Distributed under the project_license. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
+Jacob Bauer - jabauer.1998@gmail.com
 
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
+Project Link: [https://github.com/jabauer1998/EdeStl](https://github.com/jabauer1998/EdeStl)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -246,9 +247,9 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* []()
-* []()
-* []()
+* [DePauw CS Department](https://www.depauw.edu/academics/majors-and-minors/about-computer-science/faculty-and-staff)
+* [PEP 9/Computer Systems By J Stanley Warford](https://computersystemsbook.com/5th-edition/pep9)
+* [Dragon Book](https://en.wikipedia.org/wiki/Compilers:_Principles,_Techniques,_and_Tools)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -265,7 +266,7 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 [issues-shield]: https://img.shields.io/github/issues/jabauer1998/EdeStl.svg?style=for-the-badge
 [issues-url]: https://github.com/jabauer1998/EdeStl/issues
 [license-shield]: https://img.shields.io/github/license/jabauer1998/EdeStl.svg?style=for-the-badge
-[license-url]: https://github.com/jabauer1998/EdeStl/blob/master/LICENSE.txt
+[license-url]: https://github.com/jabauer1998/EdeStl/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/jacobbauer13
 [product-screenshot]: images/EdeStlSample.png
@@ -275,37 +276,6 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 [Powershell-url]: https://learn.microsoft.com/en-us/powershell/scripting/install/install-powershell?view=powershell-7.6
 [Bash.sh]: https://img.shields.io/badge/bash_script-%23121011.svg?style=for-the-badge&logo=gnu-bash&logoColor=white
 [Bash-url]: https://www.gnu.org/software/bash
-
-##  Directory Structure
-
-The EdeStl is broken down into several sub components and sub directories.
-
-1) ede/stl/gui -> Everything to build the gui Ede instance
-2) ede/stl/interpreter -> Contains a Verilog interpreter that can either report to the Ede Instance(EdeInterpreter) or the console(Verilog Interpreter)
-3) ede/stl/compiler -> Contains a Verilog to Java Byte Code compiler
-4) ede/stl/common -> Contains a bunch of utility files that are utilized elsewhere in the code
-5) ede/stl/ast -> Contains all of the ast nodes of Verilog
-6) ede/stl/parser -> Contains the Verilog Parser and Lexer
-
-## Emulator Debug Environment?
-## What is it?
-The EDE is software that is inspired by the PEP9 virtual computer. PEP9 is an educational tool that allows students to learn the basics of how a computer works without having to dive into any actual hardware. It is a much more cost effective solution for universities to teach undergrad/introductory level assembly/computer systems courses. The clever GUI also allows the students to easily visualize whats going on inside the CPU. It does have its limits. Since PEP 9 is not an actual computer, the assembly syntax is useless in industry. It also offers a very impractical register file. To account for this the EDE is a system where an instructor(or anyone else) can create an emulator with a Hardware Description Language(Verilog). This gui can be utilized to like the pep9 to teach a computer systems course, however with a customized processor. The HDL component of the project can be utilized to teach a computer architecture course without having to buy expensive FPGA's. The EDE can also be used in industry as a high level final step pre-silicon verification tool. Fabless semiconductor companies can use it to verify that there architecture works prior to sending the design off to get manufactered and if it doesn't they can use the gui to give them insight about where the error is occuring.
-
-## Software Used in this Project
-Swing - API to create the IDE <br>
-Java - Programming language <br>
-Junit - Unit testing interface <br>
-Verilog - Used to Design Test Processor
-  
-# Features in Development
-
-<p>Currently, the interpreter and compiler are updated to support behavorial verilog. I am working on fixing all the issues with the Parser
-
-# Future Plans(reach out to me if you would like to work on some of these)
-<ul>
-  <li> FPGA synthesis tool built into the GUI to upload designs to an FPGA </li>
-  <li> Built in Logic Analysis to analyze wave-forms etc... </li>
-</ul>
 
 
 
