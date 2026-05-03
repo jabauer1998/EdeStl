@@ -37,7 +37,7 @@
 <h3 align="center">Emulator Development Environment Standard Library</h3>
 
   <p align="center">
-    This Standard Library is utilized to generate an Ede Instance. It contains all of the Gui Compoments and Methods to create a Ede Instance with the GuiEde class. The EdeStl also contains several other componenets that can be utilized in other projects as well and it is why the EdeStl is separated from the <a href="https://github.com/jabauer1998/EdeGen">Emulator Development Environment Generator Tool</a> repository.
+    This Standard Library is utilized to generate an Ede Instance. It contains all of the Gui Compoments and Methods to create a Ede Instance with the GuiEde class. The EdeStl also contains several other components that can be utilized in other projects as well and it is why the EdeStl is separated from the <a href="https://github.com/jabauer1998/EdeGen">Emulator Development Environment Generator Tool</a> repository.
     <br />
     <a href="https://github.com/jabauer1998/EdeStl"><strong>Explore the docs »</strong></a>
     <br />
