@@ -54,7 +54,7 @@ public class EdeInterpreter extends VerilogInterpreter {
                     errorLog.addItem(new ErrorItem("Error variable " + decl.declarationIdentifier + " allready exists inside the scope", decl.position));
                     return Utils.errorOccured();
                 } else {
-                    Value varVal = new EdeMemVal(guiInstance);
+                    Value varVal = new EdeMemVal(guiInstance, decl.declarationIdentifier);
                     environment.addVariable(decl.declarationIdentifier, varVal);
                     return Utils.success();
                 }

@@ -1,8 +1,12 @@
 module Arm();
 `define WIDTH 31
 `define MEMSIZE 1000
+`define ROMSIZE 40
 
    //Initialize the Memory for the EDE
+   // @Memory
+   reg [7:0] ROM [0:`ROMSIZE]; //Simulated Rom for this processor This is where the OS and the Vector table will lie
+   
    // @Memory
    reg [7:0] MEM [0:`MEMSIZE]; //Simulated Ram for this processor
    

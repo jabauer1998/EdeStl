@@ -120,6 +120,7 @@ C:\Users\jabau\Source\Repos\EdeStl\src\ede\stl\gui\GuiJobs.java
 C:\Users\jabau\Source\Repos\EdeStl\src\ede\stl\gui\GuiLineNumberGutter.java
 C:\Users\jabau\Source\Repos\EdeStl\src\ede\stl\gui\GuiMachine.java
 C:\Users\jabau\Source\Repos\EdeStl\src\ede\stl\gui\GuiRam.java
+C:\Users\jabau\Source\Repos\EdeStl\src\ede\stl\gui\GuiRams.java
 C:\Users\jabau\Source\Repos\EdeStl\src\ede\stl\gui\GuiRegister.java
 C:\Users\jabau\Source\Repos\EdeStl\src\ede\stl\gui\GuiRegisterFile.java
 C:\Users\jabau\Source\Repos\EdeStl\src\ede\stl\gui\GuiVerilogJob.java

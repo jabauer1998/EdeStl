@@ -7,6 +7,7 @@ import ede.stl.common.Utils;
 import ede.stl.values.RegVal;
 import ede.stl.values.Value;
 import ede.stl.values.VectorVal;
+import java.awt.event.MouseEvent;
 
 public class GuiRegister extends JPanel {
     private JLabel TitleReg;
@@ -25,6 +26,8 @@ public class GuiRegister extends JPanel {
     public GuiRegister(String Title, int Length, Format Format, double Width, double Height){
         this.setLayout(new BorderLayout());
 
+	JButton button = new JButton("Click Me");
+
         TitleReg = new JLabel(Title);
         TitleReg.setHorizontalAlignment(SwingConstants.LEFT);
 
@@ -36,6 +39,14 @@ public class GuiRegister extends JPanel {
         
         RegisterValue = new JLabel(GenZeros());
         RegisterValue.setHorizontalAlignment(SwingConstants.CENTER);
+	
+	this.setToolTipText("0");
+	RegisterValue.addPropertyChangeListener(e -> {
+		// Update the tooltip text dynamically
+		Value val = GetRegisterValue();
+		this.setToolTipText(val.toString());
+        });
+	
 
         this.setPreferredSize(new Dimension((int)Width, (int)Height));
         this.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int)Height));
@@ -43,6 +54,11 @@ public class GuiRegister extends JPanel {
 
         this.add(TitleReg, BorderLayout.WEST);
         this.add(RegisterValue, BorderLayout.CENTER);
+    }
+
+    @Override
+    public Point getToolTipLocation(MouseEvent e) {
+	return new Point(20, -20);
     }
 
     public String getTitle(){

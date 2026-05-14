@@ -7,7 +7,8 @@ import ede.stl.gui.GuiJob.TextAreaType;
 import ede.stl.gui.GuiJob.TextAreaNumbered;
 import ede.stl.gui.GuiRegister;
 import ede.stl.common.EdeCallable;
-import ede.stl.gui.GuiRam;
+import ede.stl.gui.GuiRams;
+import ede.stl.gui.GuiRams;
 import declan.backend.assembler.ArmAssemblerParser;
 import declan.backend.assembler.ArmAssemblerParser.ProgramContext;
 import declan.backend.assembler.ArmAssemblerLexer;
@@ -38,7 +39,7 @@ public class Processor {
                 JFrame frame = new JFrame("Emulator Development Environment");
 
                 int numBytesInRow = 4;
-                GuiEde EdeInstance = new GuiEde(screenWidth, screenHeight, numBytesInRow, GuiRam.AddressFormat.DECIMAL, GuiRam.MemoryFormat.HEXADECIMAL);
+                GuiEde EdeInstance = new GuiEde(screenWidth, screenHeight, numBytesInRow, GuiRams.AddressFormat.DECIMAL, GuiRams.MemoryFormat.HEXADECIMAL);
 
                 EdeInstance.gatherMetaDataFromVerilogFile("./sample/processor/ARM7TDMIS.v", GuiRegister.Format.BINARY);
 

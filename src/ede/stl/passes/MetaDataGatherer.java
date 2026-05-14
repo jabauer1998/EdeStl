@@ -90,7 +90,7 @@ public class MetaDataGatherer implements ModuleVisitor<Void> {
           int first = constSolver.interpretExpression(decl.arrayIndex1.toString()).intValue();
           int second = constSolver.interpretExpression(decl.arrayIndex2.toString()).intValue();
           int numBytes = Math.abs(first - second) + 1;
-          edeInstance.setUpMemory(numBytes);
+          edeInstance.addMemory(decl.declarationIdentifier, numBytes);
         }
         return null;
     }

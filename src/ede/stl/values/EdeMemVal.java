@@ -5,17 +5,19 @@ import ede.stl.values.Value;
 
 public class EdeMemVal implements Value{
     private GuiEde gui;
+    private String name;
 
-    public EdeMemVal(GuiEde edeInstance){
+    public EdeMemVal(GuiEde edeInstance, String name){
         this.gui = edeInstance;
+	this.name = name;
     }
 
     public long elemAtIndex(int index){
-        return this.gui.getMemoryValue(index);
+        return this.gui.getMemoryValue(name, index);
     }
 
     public void setElemAtIndex(int index, int value){
-        this.gui.setMemoryValue(index, value);
+        this.gui.setMemoryValue(name, index, value);
     }
 
     @Override

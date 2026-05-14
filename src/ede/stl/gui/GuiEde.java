@@ -32,7 +32,7 @@ public class GuiEde extends JPanel {
     private final Object stepLock = new Object();
     private boolean canStep;
 
-    public GuiEde(double Width, double Height, int NumberOfBytesInRow, GuiRam.AddressFormat AddrFormat, GuiRam.MemoryFormat MemFormat){
+    public GuiEde(double Width, double Height, int NumberOfBytesInRow, GuiRams.AddressFormat AddrFormat, GuiRams.MemoryFormat MemFormat){
         this.setLayout(new BorderLayout());
 
         int toolBarHeight = (int)(Height/12);
@@ -113,8 +113,8 @@ public class GuiEde extends JPanel {
         this.add(mainSplit, BorderLayout.CENTER);
     }
     
-    public void setUpMemory(int numBytes) {
-        this.Machine.setUpMemory(numBytes);
+    public void addMemory(String name, int numBytes) {
+        this.Machine.addMemory(name, numBytes);
     }
 
     public void AddVerilogJob(String jobName, String mainModule, String verilogFile, String inputFile, String inputPane, String outputPane, String errorPane, boolean isInterpreted){
@@ -158,8 +158,8 @@ public class GuiEde extends JPanel {
         this.Machine.AddGuiRegister(Title, Length, Format);
     }
 
-    public void setMemoryValue(int memoryAddress, long registerValue){
-        SwingUtilities.invokeLater(() -> this.Machine.setMemoryValue(memoryAddress, registerValue));
+    public void setMemoryValue(String name, int memoryAddress, long registerValue){
+        SwingUtilities.invokeLater(() -> this.Machine.setMemoryValue(name, memoryAddress, registerValue));
     }
 
     public void setStatusValue(String statusName, long registerName){
@@ -218,13 +218,13 @@ public class GuiEde extends JPanel {
         SwingUtilities.invokeLater(() -> this.Machine.setRegisterValue(regNumber, regValue));
     }
 
-    public long getMemoryValue(int memoryAddress){
+    public long getMemoryValue(String name, int memoryAddress){
         if(SwingUtilities.isEventDispatchThread()){
-            return this.Machine.getMemoryValue(memoryAddress);
+            return this.Machine.getMemoryValue(name, memoryAddress);
         }
         final long[] result = new long[1];
         try {
-            SwingUtilities.invokeAndWait(() -> result[0] = this.Machine.getMemoryValue(memoryAddress));
+            SwingUtilities.invokeAndWait(() -> result[0] = this.Machine.getMemoryValue(name, memoryAddress));
         } catch(Exception e) { throw new RuntimeException(e); }
         return result[0];
     }
@@ -263,8 +263,12 @@ public class GuiEde extends JPanel {
         SwingUtilities.invokeLater(() -> this.Machine.clearRegisters());
     }
 
+    public void clearMemory(String name){
+        SwingUtilities.invokeLater(() -> this.Machine.clearMemory(name));
+    }
+
     public void clearMemory(){
-        SwingUtilities.invokeLater(() -> this.Machine.clearMemory());
+	SwingUtilities.invokeLater(() -> this.Machine.clearMemory());
     }
 
     public void clearStatusValues(){

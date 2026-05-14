@@ -1,24 +1,23 @@
 package ede.stl.gui;
 
-import ede.stl.gui.GuiRam.AddressFormat;
-import ede.stl.gui.GuiRam.MemoryFormat;
+import ede.stl.gui.GuiRams;
 import javax.swing.*;
 import java.awt.*;
 
 public class GuiMachine extends JPanel {
     private GuiRegisterFile RegFile;
-    private GuiRam Mem;
+    private GuiRams Mem;
     private GuiFlags Flags;
     private GuiIO Io;
     private JCheckBox debuggerCheckBox;
     
-    public GuiMachine(int NumberOfBytesInRow, AddressFormat AddrFormat, MemoryFormat MemFormat, double Width, double Height){
+    public GuiMachine(int NumberOfBytesInRow, GuiRams.AddressFormat AddrFormat, GuiRams.MemoryFormat MemFormat, double Width, double Height){
         this.setLayout(new BorderLayout());
 
         double thirdWidth = Width / 3;
 
         this.RegFile = new GuiRegisterFile(thirdWidth, Height);
-        this.Mem = new GuiRam(NumberOfBytesInRow, AddrFormat, MemFormat, thirdWidth, Height);
+        this.Mem = new GuiRams(NumberOfBytesInRow, AddrFormat, MemFormat, thirdWidth, Height);
         
         JPanel FlagsAndIo = new JPanel();
         FlagsAndIo.setLayout(new BoxLayout(FlagsAndIo, BoxLayout.Y_AXIS));
@@ -52,9 +51,9 @@ public class GuiMachine extends JPanel {
 
         this.add(mainSplit, BorderLayout.CENTER);
     }
-    
-    public void setUpMemory(int numBytes){
-        this.Mem.setMemory(numBytes);
+
+    public void addMemory(String name, int length){
+	this.Mem.addMemory(name, length);
     }
 
     public void AddGuiRegister(String Title, int Length, GuiRegister.Format Format){
@@ -69,8 +68,8 @@ public class GuiMachine extends JPanel {
         this.Io.AddIoSection(TabTitle, PaneTitle, editable);
     }
 
-    public void setMemoryValue(int Address, long dataValue){
-        this.Mem.setMemoryValue(Address, dataValue);
+    public void setMemoryValue(String name, int Address, long dataValue){
+        this.Mem.setMemoryValue(name, Address, dataValue);
     }
 
     public void setStatusValue(String statusName, long statusValue){
@@ -101,8 +100,8 @@ public class GuiMachine extends JPanel {
         this.RegFile.setRegisterValue(regNumber, regValue);
     }
 
-    public long getMemoryValue(int address){
-        return this.Mem.getMemoryValue(address);
+    public long getMemoryValue(String name, int address){
+        return this.Mem.getMemoryValue(name, address);
     }
 
     public long getStatusValue(String statusName){
@@ -125,8 +124,12 @@ public class GuiMachine extends JPanel {
         this.Flags.clearStatusValues();
     }
 
+    public void clearMemory(String name){
+        this.Mem.clearMemory(name);
+    }
+
     public void clearMemory(){
-        this.Mem.clearMemory();
+	this.Mem.clearMemory();
     }
 
     public void clearRegisters(){
