@@ -26,8 +26,6 @@ public class GuiRegister extends JPanel {
     public GuiRegister(String Title, int Length, Format Format, double Width, double Height){
         this.setLayout(new BorderLayout());
 
-	JButton button = new JButton("Click Me");
-
         TitleReg = new JLabel(Title);
         TitleReg.setHorizontalAlignment(SwingConstants.LEFT);
 
@@ -46,7 +44,6 @@ public class GuiRegister extends JPanel {
 		Value val = GetRegisterValue();
 		this.setToolTipText(val.toString());
         });
-	
 
         this.setPreferredSize(new Dimension((int)Width, (int)Height));
         this.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int)Height));
@@ -54,24 +51,23 @@ public class GuiRegister extends JPanel {
 
         this.add(TitleReg, BorderLayout.WEST);
         this.add(RegisterValue, BorderLayout.CENTER);
-    }
 
-    @Override
-    public Point getToolTipLocation(MouseEvent e) {
-	return new Point(20, -20);
-    }
+	@Override
+	public Point getToolTipLocation(MouseEvent e) {
+	    return new Point(20, -20);
+	}
 
-    public String getTitle(){
-        return TitleReg.getText();
-    }
+	public String getTitle(){
+	    return TitleReg.getText();
+	}
 
-    private String GenZeros(){  
-        StringBuilder Sb = new StringBuilder();
-        for(int i = 0; i < RegisterDecimalLength; i++){
-            Sb.append("0");
-        }
-        return Sb.toString();
-    }
+        private String GenZeros(){  
+	    StringBuilder Sb = new StringBuilder();
+	    for(int i = 0; i < RegisterDecimalLength; i++){
+		Sb.append("0");
+	    }
+	    return Sb.toString();
+	}
 
     public int getRegisterLength(){
         return RegisterDecimalLength;

@@ -5,9 +5,14 @@ import ede.stl.values.Value;
 
 public class EdeMemVal implements Value{
     private GuiEde gui;
+<<<<<<< HEAD
     private String name;
 
     public EdeMemVal(GuiEde edeInstance, String name){
+=======
+
+    public EdeMemVal(GuiEde edeInstance){
+>>>>>>> 43413bcba0463d045023f18674670b136c8b6020
         this.gui = edeInstance;
 	this.name = name;
     }

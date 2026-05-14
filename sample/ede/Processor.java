@@ -7,8 +7,12 @@ import ede.stl.gui.GuiJob.TextAreaType;
 import ede.stl.gui.GuiJob.TextAreaNumbered;
 import ede.stl.gui.GuiRegister;
 import ede.stl.common.EdeCallable;
+<<<<<<< HEAD
 import ede.stl.gui.GuiRams;
 import ede.stl.gui.GuiRams;
+=======
+import ede.stl.gui.GuiRam;
+>>>>>>> 43413bcba0463d045023f18674670b136c8b6020
 import declan.backend.assembler.ArmAssemblerParser;
 import declan.backend.assembler.ArmAssemblerParser.ProgramContext;
 import declan.backend.assembler.ArmAssemblerLexer;
@@ -40,7 +44,6 @@ public class Processor {
 
                 int numBytesInRow = 4;
                 GuiEde EdeInstance = new GuiEde(screenWidth, screenHeight, numBytesInRow, GuiRams.AddressFormat.DECIMAL, GuiRams.MemoryFormat.HEXADECIMAL);
-
                 EdeInstance.gatherMetaDataFromVerilogFile("./sample/processor/ARM7TDMIS.v", GuiRegister.Format.BINARY);
 
                 String[] keywords = {"ADD", "SUB", "MOV", "LDR", "STR", "B", "BL", "CMP", "BEQ", "BNE", "BGT", "BLT", "BGE"};

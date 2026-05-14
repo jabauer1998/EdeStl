@@ -1,6 +1,8 @@
 package ede.stl.gui;
 
 import ede.stl.gui.GuiRams;
+import ede.stl.gui.GuiRam.AddressFormat;
+import ede.stl.gui.GuiRam.MemoryFormat;
 import javax.swing.*;
 import java.awt.*;
 
