@@ -51,6 +51,7 @@ public class GuiRegister extends JPanel {
 
         this.add(TitleReg, BorderLayout.WEST);
         this.add(RegisterValue, BorderLayout.CENTER);
+    }
 
 	@Override
 	public Point getToolTipLocation(MouseEvent e) {
