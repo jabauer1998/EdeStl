@@ -138,6 +138,7 @@ module Arm();
            14: R14 = regValue;
            15: R15 = regValue;
            default: begin
+	      //@Redirect=ErrorOutput
               $display("Error: Can set data for register %d\n", regNumber);
               $finish;
            end
@@ -166,6 +167,7 @@ module Arm();
            14: getRegister = R14;
            15: getRegister = R15;
            default: begin
+	      //@Redirect=ErrorOutput
               $display("Error: Cannot retrieve data for register %d\n", regNumber);
               $finish;
               getRegister = -1;
@@ -215,6 +217,7 @@ module Arm();
            `DATAPROC: decode = instruction[24:21] + 2; // 2 to 17
            `LDRSTR : decode = 23;
            default: begin
+	      //@Redirect=ErrorOutput
               $display("Error: Unidentified intsruction when decoding instruction %d\n", instruction);
               $finish;
               decode = -1;
@@ -243,6 +246,7 @@ module Arm();
            `LE : checkCC = Z | (N != V);
            `AL : checkCC = 1; //allways exec
            default: begin
+	      //@Redirect=ErrorOutput
               $display("Error: Unidentified intsruction when checkingCC %d\n", codecc);
               $finish;
               checkCC = -1;
@@ -347,14 +351,16 @@ module Arm();
               end
            end
            18: begin //MRS Instruction
-              if(INSTR[22]) begin 
+              if(INSTR[22]) begin
+		 //@Redirect=ErrorOutput
                  $display("Error: there is no SPSR on this machine");
                  $finish;        
               end
               setRegister(INSTR[15:12], CPSR); 
            end 
            19:  begin //MSR1 Instruction
-              if(INSTR[22]) begin 
+              if(INSTR[22]) begin
+		 //@Redirect=ErrorOutput
                  $display("Error: there is no SPSR on this machine");
                  $finish;        
               end
@@ -362,6 +368,7 @@ module Arm();
            end  
            20: begin //MSR2 Instruction
               if(INSTR[22]) begin
+		 //@Redirect=ErrorOutput
                  $display("Error: there is no SPSR on this machine");
                  $finish;        
               end
@@ -636,11 +643,13 @@ module Arm();
            end // case: 27
 
            28: begin //stop
+	      //@Redirect=DebugOutput
               $display("Program executed succesfully!!!");
               $finish;
            end // case: 28
 
            default: begin
+	      //@Redirect=ErrorOutput
               $display("Unknown Instruction with opcode: ", code);
               $finish;
            end
@@ -653,6 +662,7 @@ module Arm();
       while(InstructionCode != 28 && R15 < `MEMSIZE) begin
          INSTR = fetch(R15); //old Fetch
          InstructionCode = decode(INSTR);
+	 //@Redirect=DebugOutput
          $display("Instruction code is %d\n", InstructionCode);
          incriment; //increment the program counter by a word or 4 bytes
          //@Breakpoint

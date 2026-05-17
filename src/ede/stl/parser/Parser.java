@@ -1315,7 +1315,26 @@ public class Parser {
                     match(Token.Type.SEMI);
                     return new TaskStatement(start, tok.getLexeme(), ident, new ArrayList<>());
                 }
-            } else {
+            } else if (willMatch(Token.Type.DOLLAR)) { // system tasks
+                        skip();
+                        String ident = parseRawIdentifier();
+                        if (willMatch(Token.Type.SEMI)) {
+                                skip();
+                                return new SystemTaskStatement(start, tok.getLexeme(), ident, new ArrayList<>());
+                        } else {
+                                match(Token.Type.LPAR);
+                                if (willMatch(Token.Type.RPAR)) {
+                                        skip();
+                                        match(Token.Type.SEMI);
+                                        return new SystemTaskStatement(start, tok.getLexeme(), ident, new ArrayList<>());
+                                } else {
+                                        List<Expression> expList = parseExpressionList();
+                                        match(Token.Type.RPAR);
+                                        match(Token.Type.SEMI);
+                                        return new SystemTaskStatement(start, tok.getLexeme(), ident, expList);
+                                }
+                        }
+	    } else {
                 Token nextTok = peek();
                 errorAndExit("Unexpected next token " + nextTok.toString() + " after annotation " + tok.getLexeme());
                 return null;

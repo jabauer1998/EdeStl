@@ -7,8 +7,12 @@ import java.util.List;
 
 public class SystemTaskStatement extends TaskStatement {
 
-    public SystemTaskStatement(Position start, String taskName, List<Expression> argumentList) {
-        super(start, taskName, argumentList);
+    public SystemTaskStatement(Position start, String annotation, String taskName, List<Expression> argumentList) {
+        super(start, annotation, taskName, argumentList);
+    }
+
+    public SystemTaskStatement(Position start, String taskName, List<Expression> argumentList){
+	super(start, taskName, argumentList);
     }
 
     /**

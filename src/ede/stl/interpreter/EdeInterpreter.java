@@ -124,7 +124,12 @@ public class EdeInterpreter extends VerilogInterpreter {
                    vals[i - 1] = val;
                }
                String formattedString = Utils.formatString(fString, vals);
-               guiInstance.appendIoText(standardOutputPane, formattedString);
+	       if(stat.annotationLexeme == null){
+		   guiInstance.appendIoText(standardOutputPane, formattedString);
+	       } else if(stat.annotationLexeme.startsWith("@Redirect=")){
+		   String res = stat.annotationLexeme.split("=")[1];
+		   guiInstance.appendIoText(res, formattedString);
+	       }
            } else if (stat.argumentList.size() == 1) {
                Value data = interpretShallowOptimizedExpression(stat.argumentList.get(0));
                guiInstance.appendIoText(standardOutputPane, data.toString());

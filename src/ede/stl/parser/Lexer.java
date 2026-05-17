@@ -290,7 +290,7 @@ public class Lexer {
 						continue;
 					}
 				case ANNOTATION:
-					if(Character.isLetter(c)){
+					if(Character.isLetter(c) || c == '='){
 						lexeme.append(c);
 						source.advance();
 						continue;

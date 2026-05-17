@@ -84,6 +84,7 @@ public class Processor {
                 EdeInstance.AddIoSection("Errors", "StandardError", ede.stl.gui.GuiIO.Editable.READ_ONLY);
                 EdeInstance.AddIoSection("Io", "StandardInput", ede.stl.gui.GuiIO.Editable.EDITABLE);
                 EdeInstance.AddIoSection("Io", "StandardOutput", ede.stl.gui.GuiIO.Editable.READ_ONLY);
+		EdeInstance.AddIoSection("Trace", "DebugOutput", ede.stl.gui.GuiIO.Editable.READ_ONLY);
 
                 frame.setPreferredSize(screenSize);
                 frame.add(EdeInstance);
